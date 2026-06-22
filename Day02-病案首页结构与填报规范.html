@@ -6,139 +6,164 @@
 <title>病案编码学习 - Day 2（2026年6月20日）</title>
 <style>
   :root {
-    --bg: #ffffff; --card: #f8f9fa; --border: #dee2e6;
-    --text: #212529; --text2: #495057; --text3: #6c757d;
-    --accent: #0d6efd; --accent-bg: #e7f1ff; --accent-light: #f0f6ff;
-    --warn: #856404; --warn-bg: #fff3cd; --warn-border: #ffc107;
-    --code-bg: #f1f3f5; --red: #dc3545; --red-bg: #fce4e4;
-    --green: #198754; --green-bg: #d1f2e0;
-    --master-red: #dc3545; --master-yellow: #fd7e14; --master-green: #198754;
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
     background: var(--bg); color: var(--text); line-height: 1.85;
-    max-width: 880px; margin: 0 auto; padding: 32px 24px 80px;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
   }
-  .day-badge {
-    display: inline-block; background: var(--accent); color: #fff;
-    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px;
-  }
-  h1 { font-size: 28px; margin: 12px 0 4px; color: #111; }
-  .subtitle { color: var(--text3); font-size: 15px; margin-bottom: 24px; }
-  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 32px 0; }
-  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
 
-  h2 {
-    font-size: 20px; margin: 40px 0 16px; padding: 10px 0 8px;
-    border-bottom: 3px solid var(--accent-bg); color: #111;
-    display: flex; align-items: center; gap: 10px;
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
   }
-  h2 .icon { font-size: 22px; }
-  h3 { font-size: 16px; margin: 22px 0 10px; color: var(--text2); }
-  h4 { font-size: 15px; margin: 16px 0 8px; color: var(--text2); font-weight: 600; }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  .hero .progress-bar { background: rgba(255,255,255,.2); border-radius: 10px; height: 8px; margin: 12px 0 4px; overflow: hidden; }
+  .hero .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
   p { margin: 10px 0; font-size: 15px; }
 
+  /* ===== Cards ===== */
   .card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 16px 20px; margin: 14px 0; font-size: 14px;
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
   }
-  .card.tip { background: var(--accent-bg); border-color: #b6d4fe; }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
   .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
-  .card.info { background: var(--accent-light); border-color: #b6d4fe; }
-  .note {
-    background: var(--card); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
-    padding: 12px 18px; margin: 14px 0; font-size: 14px;
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
   }
-  .note strong { color: var(--accent); }
-
-  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; }
-  th, td { border: 1px solid var(--border); padding: 9px 13px; text-align: left; vertical-align: top; }
-  th { background: var(--card); font-weight: 600; color: var(--text2); white-space: nowrap; }
-  tr:hover { background: var(--accent-light); }
-  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-
-  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
-  pre {
-    background: #2d2d2d; color: #f8f8f2; border-radius: 8px;
-    padding: 16px 20px; overflow-x: auto; font-size: 13px; line-height: 1.7;
-    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
   }
-  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
-  li { margin: 5px 0; }
-  li p { margin: 4px 0; }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
 
-  .case { border: 2px solid var(--border); border-radius: 10px; margin: 18px 0; overflow: hidden; }
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
   .case-header {
-    background: var(--card); padding: 12px 18px; font-weight: 600; font-size: 15px;
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
     display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
   }
   .case-num {
-    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 13px; font-weight: 700; flex-shrink: 0;
   }
-  .case-tag {
-    font-size: 12px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
-  }
-  .case-tag.practice { background: var(--accent-light); color: var(--accent); }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
   .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
-  .case-body { padding: 16px 20px; font-size: 14px; }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
   details { margin-top: 12px; }
   details > summary {
-    cursor: pointer; color: var(--accent); font-weight: 600; padding: 8px; font-size: 14px;
-    user-select: none; background: var(--accent-light); border-radius: 6px;
-    transition: background .15s;
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
   }
-  details > summary:hover { background: var(--accent-bg); }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
   .answer-box {
-    margin-top: 10px; padding: 14px 18px; background: var(--green-bg);
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
     border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
   }
   .answer-box strong { color: var(--green); }
 
-  .key-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 10px; margin: 14px 0;
-  }
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
   .key-item {
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
   }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
   .key-num {
-    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
   }
 
-  .mastery-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
-  .mastery-table td { padding: 10px 14px; }
-  .mastery-table .level-icon { text-align: center; width: 50px; }
-  .mastery-badge {
-    display: inline-block; padding: 2px 10px; border-radius: 12px;
-    font-size: 12px; font-weight: 700;
-  }
-  .mastery-badge.l1 { background: var(--red-bg); color: var(--red); }
-  .mastery-badge.l2 { background: var(--warn-bg); color: var(--warn); }
-  .mastery-badge.l3 { background: var(--green-bg); color: var(--green); }
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
 
-  .compare-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0;
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
   }
-  .compare-col {
-    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px;
-  }
-  .compare-col.good { background: var(--green-bg); border-color: #b7e8cd; }
-  .compare-col.bad { background: var(--red-bg); border-color: #f0c8c8; }
-  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
 
-  /* Structure diagram */
-  .struct-box {
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0;
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
   }
-  .struct-row {
-    display: flex; border-bottom: 1px solid var(--border);
-  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Structure Box ===== */
+  .struct-box { border-radius: var(--radius); overflow: hidden; margin: 16px 0; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .struct-row { display: flex; border-bottom: 1px solid var(--border); }
   .struct-row:last-child { border-bottom: none; }
   .struct-label {
     background: var(--accent); color: #fff; min-width: 100px; padding: 14px 16px;
@@ -148,50 +173,108 @@
   .struct-label.l2b { background: #0a58ca; }
   .struct-label.l3b { background: #0550a0; }
   .struct-label.l4b { background: #03337a; }
-  .struct-content {
-    padding: 12px 16px; font-size: 13px; flex: 1; line-height: 1.7;
-  }
-  .struct-content strong { color: var(--accent); }
+  .struct-content { padding: 12px 16px; font-size: 13px; flex: 1; line-height: 1.7; }
 
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px; }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Stat Badges ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Flow Chart ===== */
+  .flow-chart { background: var(--accent-light); border: 1px solid #b6d4fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0; text-align: center; }
+  .flow-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+  .flow-box { background: #fff; border: 2px solid var(--accent); border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
   .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
   .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
 
-  .footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text3); }
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<div class="day-badge">DAY 2 · 2026年6月20日</div>
-<h1>病案编码学习</h1>
-<p class="subtitle">今日主题：病案首页结构与填报规范 —— 编码员的"战场地图"</p>
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 2 · 2026年6月20日</div>
+  <h1>📋 病案编码学习</h1>
+  <p class="subtitle">今日主题：病案首页结构 —— 编码员的"战场地图"</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:3.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 2 / 60 天（3.33%）</p>
+</div>
 
 <hr class="divider">
 
-<!-- ======== 掌握程度 ======== -->
+<!-- ======== 掌握程度 ======= -->
 <h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
 
 <div class="card">
-  <table class="mastery-table">
-    <tr>
-      <td class="level-icon"><span class="mastery-badge l1">必须掌握</span></td>
-      <td>四大部分各自包含哪些字段；主诊断、其他诊断、手术操作的填写位置和顺序；6种离院方式的代码和判定条件；首页与编码的直接关联字段</td>
-    </tr>
-    <tr>
-      <td class="level-icon"><span class="mastery-badge l2">应该理解</span></td>
-      <td>首页数据如何流入 DRG 分组器；各字段的"必填/条件必填/选填"规则；不同离院方式的边界案例判定</td>
-    </tr>
-    <tr>
-      <td class="level-icon"><span class="mastery-badge l3">了解即可</span></td>
-      <td>2011年首页修订的历史背景；医保结算清单与病案首页的字段映射差异；儿科/产科等特殊科室的首页填写差异</td>
-    </tr>
-  </table>
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，首页填报基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>四大部分各自包含哪些字段；主诊断/其他诊断/手术操作的填写位置</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>6种离院方式的代码和判定条件（1医嘱/2转院/3转社区/4非医嘱/5死亡/9其他）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入院病情代码 1-4 的含义和填写规则</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免填报错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>首页数据如何流入 DRG 分组器；各字段的"必填/条件必填/选填"规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>离院方式边界案例判定（转科≠转院、出院后死亡≠代码5）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>2011年首页修订的历史背景；医保结算清单与病案首页的字段映射差异</span></div>
+    </div>
+  </details>
 </div>
 
 <div class="note">
-  <strong>本日学习建议：</strong>把病案首页想象成一张"编码答卷纸"——今天你要搞清这张纸上的每个空在哪里、填什么、谁填、填错会有什么后果。不求背诵所有字段，但要能闭眼画出首页四大块的脑图。
+  <strong>💡 本日学习建议：</strong>把病案首页想象成一张"编码答卷纸"——今天你要搞清这张纸上的每个空在哪里、填什么、谁填、填错会有什么后果。不求背诵所有字段，但要能闭眼画出首页四大块的脑图。
 </div>
 
-<!-- ======== 一 ======== -->
+<!-- ======== 一 ======= -->
 <hr class="divider">
 <h2><span class="icon">📋</span> 一、病案首页到底是什么？</h2>
 
@@ -225,12 +308,12 @@
 
 <div class="card warn">
   <strong>⚠️ 一条数据的蝴蝶效应：</strong>
-  <p style="margin:4px 0;">主诊断编码错一位 → ADRG 入错组 → 权重降 0.3 → 单病例结算亏损 3000 元 → 全院年亏损可能达数百万。这就是为什么编码员的工作叫"小数点后定乾坤"。</p>
+  <p style="margin:4px 0;">主诊断编码错一位 → DRG 入错组 → 权重降 0.3 → 单病例结算亏损 3000 元 → 全院年亏损可能达数百万。这就是为什么编码员的工作叫"小数点后定乾坤"。</p>
 </div>
 
 <hr class="section-divider">
 
-<!-- ======== 二 ======== -->
+<!-- ======== 二 ======= -->
 <h2><span class="icon">🏗️</span> 二、病案首页四大板块深度拆解</h2>
 
 <div class="struct-box">
@@ -278,7 +361,7 @@
 
 <hr class="section-divider">
 
-<!-- ======== 三 ======== -->
+<!-- ======== 三 ======= -->
 <h2><span class="icon">📝</span> 三、诊疗信息——编码员的主战场的 5 条铁律</h2>
 
 <h3>3.1 主要诊断：只有一个，但最难选</h3>
@@ -335,49 +418,19 @@
 
 <hr class="section-divider">
 
-<!-- ======== 四 ======== -->
+<!-- ======== 四 ======= -->
 <h2><span class="icon">🚪</span> 四、离院方式——6 种代码一张表搞定</h2>
 
 <p>离院方式是 2011 年首页修订后新增的<strong>必填</strong>指标，直接影响医保结算类型、30天再住院率统计、分级诊疗考核。错误率据研究高达 <strong>15%以上</strong>。</p>
 
 <table>
   <tr><th>代码</th><th>名称</th><th>核心判定条件</th><th>典型场景</th></tr>
-  <tr>
-    <td><code>1</code></td>
-    <td>医嘱离院</td>
-    <td>病情稳定达到出院标准，遵医嘱出院</td>
-    <td>急性阑尾炎术后恢复良好出院</td>
-  </tr>
-  <tr>
-    <td><code>2</code></td>
-    <td>医嘱转院</td>
-    <td>本院诊疗条件不足，医嘱转往其他医疗机构继续治疗</td>
-    <td>心梗患者本院无介入条件，转往上级医院</td>
-  </tr>
-  <tr>
-    <td><code>3</code></td>
-    <td>医嘱转社区卫生服务机构/乡镇卫生院</td>
-    <td>病情稳定后转往基层医疗机构康复</td>
-    <td>脑梗恢复期患者转社区康复</td>
-  </tr>
-  <tr>
-    <td><code>4</code></td>
-    <td>非医嘱离院</td>
-    <td>患者/家属自行要求离院，未达到出院标准</td>
-    <td>AAD（自动出院），家属签字放弃治疗</td>
-  </tr>
-  <tr>
-    <td><code>5</code></td>
-    <td>死亡</td>
-    <td>住院期间患者死亡</td>
-    <td>经抢救无效宣布临床死亡</td>
-  </tr>
-  <tr>
-    <td><code>9</code></td>
-    <td>其他</td>
-    <td>以上5种以外的特殊情况（极少使用）</td>
-    <td>被司法机关带走等极特殊情况</td>
-  </tr>
+  <tr><td><code>1</code></td><td>医嘱离院</td><td>病情稳定达到出院标准，遵医嘱出院</td><td>急性阑尾炎术后恢复良好出院</td></tr>
+  <tr><td><code>2</code></td><td>医嘱转院</td><td>本院诊疗条件不足，医嘱转往其他医疗机构继续治疗</td><td>心梗患者本院无介入条件，转往上级医院</td></tr>
+  <tr><td><code>3</code></td><td>医嘱转社区卫生服务机构/乡镇卫生院</td><td>病情稳定后转往基层医疗机构康复</td><td>脑梗恢复期患者转社区康复</td></tr>
+  <tr><td><code>4</code></td><td>非医嘱离院</td><td>患者/家属自行要求离院，未达到出院标准</td><td>AAD（自动出院），家属签字放弃治疗</td></tr>
+  <tr><td><code>5</code></td><td>死亡</td><td>住院期间患者死亡</td><td>经抢救无效宣布临床死亡</td></tr>
+  <tr><td><code>9</code></td><td>其他</td><td>以上5种以外的特殊情况（极少使用）</td><td>被司法机关带走等极特殊情况</td></tr>
 </table>
 
 <h3>4.1 最容易踩的三个边界辨析</h3>
@@ -415,30 +468,24 @@
   </div>
 </div>
 
-<hr class="section-divider">
+<hr class="divider">
 
-<!-- ======== 五 ======== -->
+<!-- ======== 五 ======= -->
 <h2><span class="icon">🔗</span> 五、首页与 DRG/DIP 的数据流向</h2>
 
 <p>理解下面这条链路，就知道为什么首页上的每一个编码都值钱：</p>
 
-<div class="card">
-  <p style="font-size:15px;text-align:center;line-height:2.4;">
-    <strong>临床医生写诊断</strong> &nbsp;→&nbsp;
-    <strong>编码员翻译成 ICD 码</strong> &nbsp;→&nbsp;
-    <strong>录入病案首页</strong> &nbsp;→&nbsp;
-    <strong>上传医保平台</strong> &nbsp;→&nbsp;
-    <strong>分组器读取</strong> &nbsp;→&nbsp;
-    <strong>判定 MDC → ADRG → DRG</strong> &nbsp;→&nbsp;
-    <strong>计算权重 × 费率 = 结算金额</strong>
-  </p>
+<div class="flow-chart">
+  <div class="flow-row"><div class="flow-box">临床医生写诊断</div><div style="font-size:18px;color:var(--accent);">→</div><div class="flow-box">编码员翻译成 ICD 码</div><div style="font-size:18px;color:var(--accent);">→</div><div class="flow-box">录入病案首页</div></div>
+  <div class="flow-row" style="margin-top:8px;"><div class="flow-box">上传医保平台</div><div style="font-size:18px;color:var(--accent);">→</div><div class="flow-box">分组器读取</div><div style="font-size:18px;color:var(--accent);">→</div><div class="flow-box">判定 MDC → ADRG → DRG</div></div>
+  <div class="flow-row" style="margin-top:8px;justify-content:center;"><div class="flow-box" style="background:#dcfce7;border-color:#22c55e;color:#166534;font-weight:700;">计算权重 × 费率 = 结算金额</div></div>
 </div>
 
 <p>其中编码员能直接影响的是<strong>前三个环节</strong>：</p>
 <ul>
   <li><strong>主诊断 ICD 码</strong> → 决定进入哪个 MDC（26个大类之一）</li>
   <li><strong>主手术 ICD-9-CM-3 码</strong> → 在 MDC 内决定 ADRG</li>
-  <li><strong>其他诊断</strong>（特别是入院病情=3的并发症） → 可能触发 CC/MCC，提升 DRG 权重</li>
+  <li><strong>其他诊断</strong>（特别是入院病情=3的并发症）→ 可能触发 CC/MCC，提升 DRG 权重</li>
   <li><strong>离院方式</strong> → 死亡（5）和非医嘱离院（4）的病例 DRG 权重可能不同</li>
 </ul>
 
@@ -448,13 +495,16 @@
 
 <hr class="divider">
 
-<!-- ======== 六 ======== -->
+<!-- ======== 六、案例练习 ======= -->
 <h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
 
+<!-- 题1 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">1</span> 首页结构填空
-    <span class="case-tag practice">基础</span>
+    <div class="case-num">1</div>
+    <span>基础题 · 首页结构填空</span>
+    <span class="case-tag practice">PRACTICE</span>
   </div>
   <div class="case-body">
     <p>请判断以下字段分别属于病案首页的哪个部分（A.患者基本信息 B.住院过程信息 C.诊疗信息 D.费用信息）：</p>
@@ -470,6 +520,7 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
         <p>1 → <strong>C（诊疗信息）</strong> | 2 → <strong>B（住院过程信息）</strong> | 3 → <strong>B（住院过程信息）</strong> | 4 → <strong>A（患者基本信息）</strong></p>
         <p>5 → <strong>C（诊疗信息）</strong> | 6 → <strong>C（诊疗信息）</strong>——入院病情代码紧跟其他诊断，在诊疗信息区</p>
         <p>7 → <strong>D（费用信息）</strong></p>
@@ -478,10 +529,12 @@
   </div>
 </div>
 
+<!-- 题2 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">2</span> 入院病情代码判定
-    <span class="case-tag practice">基础</span>
+    <div class="case-num">2</div>
+    <span>基础题 · 入院病情代码判定</span>
+    <span class="case-tag practice">PRACTICE</span>
   </div>
   <div class="case-body">
     <p>为以下场景选择正确的入院病情代码（1-4）：</p>
@@ -495,19 +548,21 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
-        <p><strong>A → 1</strong>（有明确诊断，入院时已有）</p>
-        <p><strong>B → 2</strong>（入院时未明确，住院检查新发现的）。注意：B 如果发现后做了进一步处理（如穿刺活检），仍填2，因为这代表"本次新发现"的状态。</p>
-        <p><strong>C → 3</strong>（住院期间新发生的并发症）——这是最敏感的代码，触发 DRG 并发症/合并症。</p>
-        <p><strong>D → 4</strong>（入院时已有，但本次未进一步明确或处理）。注意：D 表明这个诊断"存在但本次不关心"，不影响本次资源消耗。</p>
+        <p><strong>✅ A → 1</strong>（有明确诊断，入院时已有）</p>
+        <p><strong>✅ B → 2</strong>（入院时未明确，住院检查新发现的）。注意：B 如果发现后做了进一步处理（如穿刺活检），仍填2，因为这代表"本次新发现"的状态。</p>
+        <p><strong>✅ C → 3</strong>（住院期间新发生的并发症）——这是最敏感的代码，触发 DRG 并发症/合并症。</p>
+        <p><strong>✅ D → 4</strong>（入院时已有，但本次未进一步明确或处理）。注意：D 表明这个诊断"存在但本次不关心"，不影响本次资源消耗。</p>
       </div>
     </details>
   </div>
 </div>
 
+<!-- 题3 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">3</span> 离院方式场景判断
-    <span class="case-tag practice">基础</span>
+    <div class="case-num">3</div>
+    <span>基础题 · 离院方式场景判断</span>
+    <span class="case-tag practice">PRACTICE</span>
   </div>
   <div class="case-body">
     <p>判断以下各病例的离院方式代码：</p>
@@ -521,20 +576,22 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
-        <p><strong>1 → 代码 1</strong>（医嘱离院）：医生主动开具出院医嘱，患者达到出院标准。</p>
-        <p><strong>2 → 代码 2</strong>（医嘱转院）：关键——是"医嘱"转院（不是患者自己要求），且转往其他独立医疗机构。</p>
-        <p><strong>3 → 代码 3</strong>（医嘱转社区）：注意与"2"的区别——转院是去其他医院，转社区是去基层。</p>
-        <p><strong>4 → 代码 4</strong>（非医嘱离院）：<strong>不是代码 5！</strong>患者出院时仍有生命体征，死亡发生在出院后。</p>
-        <p><strong>5 → 代码 5</strong>（死亡）：必须在住院期间发生死亡。</p>
+        <p><strong>✅ 1 → 代码 1</strong>（医嘱离院）：医生主动开具出院医嘱，患者达到出院标准。</p>
+        <p><strong>✅ 2 → 代码 2</strong>（医嘱转院）：关键——是"医嘱"转院（不是患者自己要求），且转往其他独立医疗机构。</p>
+        <p><strong>✅ 3 → 代码 3</strong>（医嘱转社区）：注意与"2"的区别——转院是去其他医院，转社区是去基层。</p>
+        <p><strong>✅ 4 → 代码 4</strong>（非医嘱离院）：<strong>不是代码 5！</strong>患者出院时仍有生命体征，死亡发生在出院后。</p>
+        <p><strong>✅ 5 → 代码 5</strong>（死亡）：必须在住院期间发生死亡。</p>
       </div>
     </details>
   </div>
 </div>
 
+<!-- 题4 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">4</span> 主诊断选择判断
-    <span class="case-tag challenge">进阶</span>
+    <div class="case-num">4</div>
+    <span>进阶题 · 主诊断+离院方式综合</span>
+    <span class="case-tag challenge">CHALLENGE</span>
   </div>
   <div class="case-body">
     <p>患者因"腹痛待查"入院，住院期间胃镜+病理确诊"胃窦部低分化腺癌"。出院时患者家属要求转往肿瘤医院进一步治疗。</p>
@@ -547,18 +604,20 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
-        <p><strong>1. 主诊断：</strong><code>C16.3</code> 胃窦恶性肿瘤。因为有明确病理确诊，不能用症状码 R10.4（腹痛）。</p>
-        <p><strong>2. 离院方式：</strong>代码 <strong>2</strong>（医嘱转院）。注意——家属要求转院，医生同意并开了转院医嘱 → 是"医嘱转院"而非"非医嘱离院"。</p>
-        <p><strong>3. 入院病情代码：</strong><strong>2</strong>——入院时未明确诊断（只知道腹痛），住院期间通过胃镜+病理新发现的。注意不能填 1（入院时并未确诊腺癌）。</p>
+        <p><strong>✅ 1. 主诊断：</strong><code>C16.3</code> 胃窦恶性肿瘤。因为有明确病理确诊，不能用症状码 R10.4（腹痛）。</p>
+        <p><strong>✅ 2. 离院方式：</strong>代码 <strong>2</strong>（医嘱转院）。注意——家属要求转院，医生同意并开了转院医嘱 → 是"医嘱转院"而非"非医嘱离院"。</p>
+        <p><strong>✅ 3. 入院病情代码：</strong><strong>2</strong>——入院时未明确诊断（只知道腹痛），住院期间通过胃镜+病理新发现的。注意不能填 1（入院时并未确诊腺癌）。</p>
       </div>
     </details>
   </div>
 </div>
 
+<!-- 题5 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">5</span> 首页+DRG联动题
-    <span class="case-tag challenge">进阶</span>
+    <div class="case-num">5</div>
+    <span>进阶题 · 首页+DRG联动</span>
+    <span class="case-tag challenge">CHALLENGE</span>
   </div>
   <div class="case-body">
     <p>某病例：主诊断 <code>J44.1</code>（慢性阻塞性肺病伴急性加重），其他诊断含 <code>N39.0</code>（泌尿系感染，入院病情=3），主手术 <code>96.59</code>（其他支气管灌洗）。</p>
@@ -571,21 +630,23 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
-        <p><strong>1. → A（呼吸系统 MDC），</strong>因为 MDC 由主诊断决定，J44.1 属于第 IV 章呼吸系统疾病。</p>
-        <p><strong>2. 泌尿系感染（入院病情=3）</strong>作为住院期间新发生的并发症，可能在 DRG 分组中触发<strong>CC（并发症）</strong>，将病例从无并发症组提升到有并发症组，DRG 权重因此增加。</p>
-        <p><strong>3. 如果主诊断被错误填成 N39.0：</strong>病例会进入<strong>泌尿系统 MDC</strong>（而非呼吸系统），而主手术 96.59（支气管灌洗）属于呼吸系统操作——导致诊断与手术不在同一 MDC，分组器无法匹配 → <strong>QY 病例（歧义）</strong>，结算大幅打折。</p>
+        <p><strong>✅ 1. → A（呼吸系统 MDC），</strong>因为 MDC 由主诊断决定，J44.1 属于第 X 章呼吸系统疾病。</p>
+        <p><strong>✅ 2. 泌尿系感染（入院病情=3）</strong>作为住院期间新发生的并发症，可能在 DRG 分组中触发<strong>CC（并发症）</strong>，将病例从无并发症组提升到有并发症组，DRG 权重因此增加。</p>
+        <p><strong>✅ 3. 如果主诊断被错误填成 N39.0：</strong>病例会进入<strong>泌尿系统 MDC</strong>（而非呼吸系统），而主手术 96.59（支气管灌洗）属于呼吸系统操作——导致诊断与手术不在同一 MDC，分组器无法匹配 → <strong>QY 病例（歧义）</strong>，结算大幅打折。</p>
       </div>
     </details>
   </div>
 </div>
 
+<!-- 题6 -->
 <div class="case">
   <div class="case-header">
-    <span class="case-num">6</span> 边界情景综合判断
-    <span class="case-tag challenge">进阶</span>
+    <div class="case-num">6</div>
+    <span>进阶题 · 边界情景综合判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
   </div>
   <div class="case-body">
-    <p>某车祸多发伤患者，入院时诊断：①脾破裂；②左侧多发肋骨骨折；③左肺挫伤。</p>
+    <p>某车祸多发伤患者，入院时诊断：① 脾破裂；② 左侧多发肋骨骨折；③ 左肺挫伤。</p>
     <p>住院期间行急诊脾切除术，术后在ICU监护3天。术后第5天患者出现肺部感染（痰培养铜绿假单胞菌阳性）。第12天患者病情稳定，医生建议转往康复医院，但患者家属坚决要求回家休养，签字自动出院。</p>
     <p><strong>请完整回答：</strong></p>
     <ol>
@@ -597,10 +658,10 @@
     <details>
       <summary>点击查看答案</summary>
       <div class="answer-box">
-        <p><strong>1. 主诊断：</strong><code>S36.0</code> 脾损伤/破裂（损伤章，手术导向→脾切除与脾破裂完全匹配）。<strong>主手术：</strong><code>41.5</code> 脾切除术。</p>
-        <p><strong>2. 肺部感染应填入其他诊断</strong>，编码 <code>J15.1</code>（铜绿假单胞菌性肺炎）。<strong>入院病情代码 = 3</strong>——因为入院时没有肺部感染，是住院第5天新发生的（院内感染）。这个代码3将触发 DRG 的并发症标记。</p>
-        <p><strong>3. 肋骨骨折和肺挫伤应填入其他诊断。</strong>编码 <code>S22.3</code>（肋骨骨折）、<code>S27.3</code>（肺挫伤）。<strong>入院病情代码均 = 1</strong>——因为这些损伤入院时已存在。</p>
-        <p><strong>4. 离院方式 = 代码 4（非医嘱离院）</strong>。医生建议转院但家属坚决要求回家、签字自动出院 → 未达到出院标准但自行离院。</p>
+        <p><strong>✅ 1. 主诊断：</strong><code>S36.0</code> 脾损伤/破裂（损伤章，手术导向→脾切除与脾破裂完全匹配）。<strong>主手术：</strong><code>41.5</code> 脾切除术。</p>
+        <p><strong>✅ 2. 肺部感染应填入其他诊断，</strong>编码 <code>J15.1</code>（铜绿假单胞菌性肺炎）。<strong>入院病情代码 = 3</strong>——因为入院时没有肺部感染，是住院第5天新发生的（院内感染）。这个代码3将触发 DRG 的并发症标记。</p>
+        <p><strong>✅ 3. 肋骨骨折和肺挫伤应填入其他诊断。</strong>编码 <code>S22.3</code>（肋骨骨折）、<code>S27.3</code>（肺挫伤）。<strong>入院病情代码均 = 1</strong>——因为这些损伤入院时已存在。</p>
+        <p><strong>✅ 4. 离院方式 = 代码 4（非医嘱离院）</strong>。医生建议转院但家属坚决要求回家、签字自动出院 → 未达到出院标准但自行离院。</p>
       </div>
     </details>
   </div>
@@ -608,7 +669,7 @@
 
 <hr class="divider">
 
-<!-- ======== 七 ======== -->
+<!-- ======== 七、重难点 ======= -->
 <h2><span class="icon">💡</span> 七、重难点解析：首页填写的高频扣分项 TOP 5</h2>
 
 <table>
@@ -647,26 +708,27 @@
 
 <hr class="divider">
 
+<!-- ======== 八、重点回顾 ======= -->
 <h2><span class="icon">✅</span> 八、今日重点回顾</h2>
 
 <div class="key-grid">
-  <div class="key-item"><span class="key-num">1</span> 首页分四大块：基本→过程→诊疗→费用，编码员主战场在第三块</div>
-  <div class="key-item"><span class="key-num">2</span> 主诊断三最原则：危害最大、资源最多、时间最长</div>
-  <div class="key-item"><span class="key-num">3</span> 入院病情代码 1-4 各有严格界定，尤其 3（住院期间新发生）最敏感</div>
-  <div class="key-item"><span class="key-num">4</span> 离院方式 6 个代码：按"是否医嘱→去向"两级判断</div>
-  <div class="key-item"><span class="key-num">5</span> 离院时状态决定代码，非医嘱离院≠死亡，转科≠转院</div>
-  <div class="key-item"><span class="key-num">6</span> 主诊断→MDC，主手术→ADRG，其他诊断→CC/MCC→DRG权重</div>
-  <div class="key-item"><span class="key-num">7</span> QY 病例 = 主诊断和主手术跨 MDC 不匹配，结果=结算打折</div>
-  <div class="key-item"><span class="key-num">8</span> 术后并发症（入院病情=3）合理填入可合法提升DRG权重</div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>首页分四大块：</strong>基本→过程→诊疗→费用，编码员主战场在第三块</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>主诊断三最原则：</strong>危害最大、资源最多、时间最长</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>入院病情代码</strong> 1-4 各有严格界定，尤其 3（住院期间新发生）最敏感</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>离院方式</strong> 6 个代码：按"是否医嘱→去向"两级判断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>离院时状态</strong>决定代码，非医嘱离院≠死亡，转科≠转院</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>主诊断→MDC</strong>，主手术→ADRG，其他诊断→CC/MCC→DRG权重</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>QY 病例</strong> = 主诊断和主手术跨 MDC 不匹配，结果=结算打折</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>术后并发症</strong>（入院病情=3）合理填入可合法提升DRG权重</div></div>
 </div>
 
 <hr class="divider">
 
 <h2>📅 明日预习</h2>
-<div class="card">
+<div class="card info">
   <p><strong>Day 3 主题：ICD-10 编码基本规则——主导词、索引查找、核对卷一</strong></p>
-  <p>预习问题：</p>
-  <ul>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
     <li>主导词和修饰词有什么区别？"急性化脓性阑尾炎"的主导词是哪个？</li>
     <li>第三卷字母顺序索引的结构是怎样的？从主导词到编码要经过几级？</li>
     <li>核对卷一的时候，除了看编码本身，还要重点看哪些注释？</li>
@@ -674,8 +736,10 @@
   </ul>
 </div>
 
+<!-- ==================== FOOTER ==================== -->
 <div class="footer">
-  资料来源于「病案与编码」「病案编码案例库」知识库 &nbsp;|&nbsp; 计划制定于 2026年6月19日
+  <p>病案编码60天学习计划 · Day 2 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
 </div>
 
 </body>
