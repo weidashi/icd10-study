@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 2（2026年6月20日）</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #f8f9fa; --border: #dee2e6;
+    --text: #212529; --text2: #495057; --text3: #6c757d;
+    --accent: #0d6efd; --accent-bg: #e7f1ff; --accent-light: #f0f6ff;
+    --warn: #856404; --warn-bg: #fff3cd; --warn-border: #ffc107;
+    --code-bg: #f1f3f5; --red: #dc3545; --red-bg: #fce4e4;
+    --green: #198754; --green-bg: #d1f2e0;
+    --master-red: #dc3545; --master-yellow: #fd7e14; --master-green: #198754;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 880px; margin: 0 auto; padding: 32px 24px 80px;
+  }
+  .day-badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px;
+  }
+  h1 { font-size: 28px; margin: 12px 0 4px; color: #111; }
+  .subtitle { color: var(--text3); font-size: 15px; margin-bottom: 24px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 32px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  h2 {
+    font-size: 20px; margin: 40px 0 16px; padding: 10px 0 8px;
+    border-bottom: 3px solid var(--accent-bg); color: #111;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .icon { font-size: 22px; }
+  h3 { font-size: 16px; margin: 22px 0 10px; color: var(--text2); }
+  h4 { font-size: 15px; margin: 16px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; margin: 14px 0; font-size: 14px;
+  }
+  .card.tip { background: var(--accent-bg); border-color: #b6d4fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: var(--accent-light); border-color: #b6d4fe; }
+  .note {
+    background: var(--card); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: 12px 18px; margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 9px 13px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; color: var(--text2); white-space: nowrap; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #2d2d2d; color: #f8f8f2; border-radius: 8px;
+    padding: 16px 20px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+  }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .case { border: 2px solid var(--border); border-radius: 10px; margin: 18px 0; overflow: hidden; }
+  .case-header {
+    background: var(--card); padding: 12px 18px; font-weight: 600; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag {
+    font-size: 12px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+  }
+  .case-tag.practice { background: var(--accent-light); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 16px 20px; font-size: 14px; }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 8px; font-size: 14px;
+    user-select: none; background: var(--accent-light); border-radius: 6px;
+    transition: background .15s;
+  }
+  details > summary:hover { background: var(--accent-bg); }
+  .answer-box {
+    margin-top: 10px; padding: 14px 18px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px; margin: 14px 0;
+  }
+  .key-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+  }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .mastery-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .mastery-table td { padding: 10px 14px; }
+  .mastery-table .level-icon { text-align: center; width: 50px; }
+  .mastery-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 700;
+  }
+  .mastery-badge.l1 { background: var(--red-bg); color: var(--red); }
+  .mastery-badge.l2 { background: var(--warn-bg); color: var(--warn); }
+  .mastery-badge.l3 { background: var(--green-bg); color: var(--green); }
+
+  .compare-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0;
+  }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #b7e8cd; }
+  .compare-col.bad { background: var(--red-bg); border-color: #f0c8c8; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* Structure diagram */
+  .struct-box {
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 16px 0;
+  }
+  .struct-row {
+    display: flex; border-bottom: 1px solid var(--border);
+  }
+  .struct-row:last-child { border-bottom: none; }
+  .struct-label {
+    background: var(--accent); color: #fff; min-width: 100px; padding: 14px 16px;
+    font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center;
+    text-align: center; line-height: 1.4;
+  }
+  .struct-label.l2b { background: #0a58ca; }
+  .struct-label.l3b { background: #0550a0; }
+  .struct-label.l4b { background: #03337a; }
+  .struct-content {
+    padding: 12px 16px; font-size: 13px; flex: 1; line-height: 1.7;
+  }
+  .struct-content strong { color: var(--accent); }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+
+  .footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="day-badge">DAY 2 · 2026年6月20日</div>
+<h1>病案编码学习</h1>
+<p class="subtitle">今日主题：病案首页结构与填报规范 —— 编码员的"战场地图"</p>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <table class="mastery-table">
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l1">必须掌握</span></td>
+      <td>四大部分各自包含哪些字段；主诊断、其他诊断、手术操作的填写位置和顺序；6种离院方式的代码和判定条件；首页与编码的直接关联字段</td>
+    </tr>
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l2">应该理解</span></td>
+      <td>首页数据如何流入 DRG 分组器；各字段的"必填/条件必填/选填"规则；不同离院方式的边界案例判定</td>
+    </tr>
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l3">了解即可</span></td>
+      <td>2011年首页修订的历史背景；医保结算清单与病案首页的字段映射差异；儿科/产科等特殊科室的首页填写差异</td>
+    </tr>
+  </table>
+</div>
+
+<div class="note">
+  <strong>本日学习建议：</strong>把病案首页想象成一张"编码答卷纸"——今天你要搞清这张纸上的每个空在哪里、填什么、谁填、填错会有什么后果。不求背诵所有字段，但要能闭眼画出首页四大块的脑图。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📋</span> 一、病案首页到底是什么？</h2>
+
+<h3>1.1 官方定义</h3>
+<p>根据《住院病案首页数据填写质量规范（暂行）》第二条：</p>
+<div class="card tip">
+  <p><strong>住院病案首页</strong>是医务人员使用文字、符号、代码、数字等方式，将患者住院期间相关信息精炼汇总在特定的表格中，形成的<strong>病例数据摘要</strong>。包括：① 患者基本信息、② 住院过程信息、③ 诊疗信息、④ 费用信息。</p>
+</div>
+
+<h3>1.2 为什么编码员必须吃透首页？</h3>
+<p>三个字：<strong>入口、出口、证据</strong>。</p>
+
+<table>
+  <tr><th>角色</th><th>首页的作用</th><th>编码员关联</th></tr>
+  <tr>
+    <td><strong>入口</strong></td>
+    <td>首页是 DRG/DIP 分组器读取的唯一数据源</td>
+    <td>你编的每一个 ICD 码，都直接影响入组</td>
+  </tr>
+  <tr>
+    <td><strong>出口</strong></td>
+    <td>首页是医保结算明细的依据，决定医院收入</td>
+    <td>离院方式填错=结算类型错误=扣款退费</td>
+  </tr>
+  <tr>
+    <td><strong>证据</strong></td>
+    <td>首页是医疗纠纷、飞检、国考中的核心证据材料</td>
+    <td>你的编码被追溯审计，责任终身制</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 一条数据的蝴蝶效应：</strong>
+  <p style="margin:4px 0;">主诊断编码错一位 → ADRG 入错组 → 权重降 0.3 → 单病例结算亏损 3000 元 → 全院年亏损可能达数百万。这就是为什么编码员的工作叫"小数点后定乾坤"。</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🏗️</span> 二、病案首页四大板块深度拆解</h2>
+
+<div class="struct-box">
+  <div class="struct-row">
+    <div class="struct-label">第一部分</div>
+    <div class="struct-content">
+      <strong>患者基本信息</strong><br>
+      姓名、性别、出生日期、年龄、国籍、民族、身份证号、婚姻状况、职业、出生地、籍贯、工作单位、地址、电话、邮编、联系人信息……
+      <br><span style="color:var(--text3);">→ 主要由入院登记处/住院处填写，编码员一般不涉及</span>
+    </div>
+  </div>
+  <div class="struct-row">
+    <div class="struct-label l2b">第二部分</div>
+    <div class="struct-content">
+      <strong>住院过程信息</strong><br>
+      入院日期、入院科别、转科情况、出院日期、出院科别、实际住院天数、入院途径（门诊/急诊/转诊）、入院前经急诊留观天数、<span class="hl"><strong>离院方式</strong></span>、是否有出院31天内再住院计划、颅脑损伤患者昏迷时间……
+      <br><span style="color:var(--warn);">→ 编码员重点关注：离院方式（直接影响结算）、实际住院天数（影响 DRG 时间效率指标）</span>
+    </div>
+  </div>
+  <div class="struct-row">
+    <div class="struct-label l3b">第三部分<span style="font-size:12px;display:block;">★核心</span></div>
+    <div class="struct-content">
+      <strong>诊疗信息（编码员的"主战场"）</strong><br>
+      <span class="hl"><strong>主要诊断</strong></span>（1个，ICD-10编码 + 名称）、
+      <strong>其他诊断</strong>（可多个，ICD-10编码 + 名称 + 入院病情代码）、
+      <span class="hl"><strong>主要手术/操作</strong></span>（ICD-9-CM-3编码 + 名称 + 日期 + 术者）、
+      <strong>其他手术/操作</strong>（可多个）、
+      病理诊断、损伤中毒外因、药物过敏、血型……
+      <br><span style="color:var(--red);">→ 编码员100%负责的内容，是编码错误的高发区</span>
+    </div>
+  </div>
+  <div class="struct-row">
+    <div class="struct-label l4b">第四部分</div>
+    <div class="struct-content">
+      <strong>费用信息</strong><br>
+      总费用 + 21项分类费用（床位、护理、检查、化验、药品、耗材、手术、麻醉等）
+      <br><span style="color:var(--text3);">→ 主要由财务/HIS自动生成，但编码员需确保费用分类与手术/操作编码逻辑一致（如：有手术编码则手术费不应为0）</span>
+    </div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>编码员记忆口诀：</strong>"一基本不碰，二只看离院，三是主战场，四要扫一眼。"
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">📝</span> 三、诊疗信息——编码员的主战场的 5 条铁律</h2>
+
+<h3>3.1 主要诊断：只有一个，但最难选</h3>
+<table>
+  <tr><th>规则</th><th>说明</th><th>反面案例</th></tr>
+  <tr>
+    <td>① 三最原则</td>
+    <td>对患者健康危害最大、消耗医疗资源最多、住院时间最长</td>
+    <td>把"高血压3级"当主诊断而忽略了"急性心梗"</td>
+  </tr>
+  <tr>
+    <td>② 病因优先症状</td>
+    <td>明确病因后，用病因码替代症状码</td>
+    <td>MRI 确诊脑梗死后仍用 R42（头晕）做主诊断</td>
+  </tr>
+  <tr>
+    <td>③ 手术导向</td>
+    <td>有手术/操作时，主诊断必须与主手术匹配</td>
+    <td>手术做了胆囊切除术，主诊断却填了高血压</td>
+  </tr>
+  <tr>
+    <td>④ 治疗目的</td>
+    <td>如为专项治疗入院（放化疗/康复/透析），以治疗目的为主诊断</td>
+    <td>来化疗的却把肿瘤本身写在主诊断位置</td>
+  </tr>
+  <tr>
+    <td>⑤ 合并编码优先</td>
+    <td>ICD 提供了合并编码时，使用合并编码充当主诊断</td>
+    <td>高血压性心脏病分别编了 I10 和 I51.8</td>
+  </tr>
+</table>
+
+<h3>3.2 其他诊断：不是"多余的"，是"不能少的"</h3>
+<p>其他诊断 = 除主诊断外的所有诊断，按<strong>严重程度降序</strong>排列。每个其他诊断还必须填写<strong>入院病情代码</strong>：</p>
+
+<table>
+  <tr><th>代码</th><th>含义</th><th>举例</th><th>常见错误</th></tr>
+  <tr><td><code>1</code></td><td>有明确诊断，入院时已有</td><td>入院即有高血压3级</td><td>把入院新发现的也填成1</td></tr>
+  <tr><td><code>2</code></td><td>入院时未明确，住院期间通过检查新发现的</td><td>住院CT发现肺结节</td><td>把入院已知的填成2</td></tr>
+  <tr><td><code>3</code></td><td>住院期间新发生的（并发症/院内感染）</td><td>术后发生切口感染</td><td>漏填术后并发症</td></tr>
+  <tr><td><code>4</code></td><td>入院时已有，但本次住院期间未进一步明确或未作特殊处理</td><td>陈旧性脑梗死后遗症，本次未处理</td><td>填成1或遗漏</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 入院病情代码是 DRG 并发症/合并症（CC/MCC）判定的关键依据：</strong>代码 3（住院期间新发生）的疾病可能触发更高的 DRG 权重——但也可能被飞检盯上，如果实际上不是住院期间发生的却填了 3，就是"高编诊断"。
+</div>
+
+<h3>3.3 手术/操作：谁主谁次？</h3>
+<p>手术操作按<strong>手术级别（1-4级）降序</strong>排列，同一级别的按<strong>手术日期先后</strong>排列。主要手术 = 级别最高、风险最大、消耗资源最多的那一个。</p>
+
+<div class="card tip">
+  <strong>编码员注意：</strong>诊断性操作（如胃镜、气管镜）如果有治疗性手术，应排在治疗性手术之后。但如果是唯一的操作，则填写在此栏。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🚪</span> 四、离院方式——6 种代码一张表搞定</h2>
+
+<p>离院方式是 2011 年首页修订后新增的<strong>必填</strong>指标，直接影响医保结算类型、30天再住院率统计、分级诊疗考核。错误率据研究高达 <strong>15%以上</strong>。</p>
+
+<table>
+  <tr><th>代码</th><th>名称</th><th>核心判定条件</th><th>典型场景</th></tr>
+  <tr>
+    <td><code>1</code></td>
+    <td>医嘱离院</td>
+    <td>病情稳定达到出院标准，遵医嘱出院</td>
+    <td>急性阑尾炎术后恢复良好出院</td>
+  </tr>
+  <tr>
+    <td><code>2</code></td>
+    <td>医嘱转院</td>
+    <td>本院诊疗条件不足，医嘱转往其他医疗机构继续治疗</td>
+    <td>心梗患者本院无介入条件，转往上级医院</td>
+  </tr>
+  <tr>
+    <td><code>3</code></td>
+    <td>医嘱转社区卫生服务机构/乡镇卫生院</td>
+    <td>病情稳定后转往基层医疗机构康复</td>
+    <td>脑梗恢复期患者转社区康复</td>
+  </tr>
+  <tr>
+    <td><code>4</code></td>
+    <td>非医嘱离院</td>
+    <td>患者/家属自行要求离院，未达到出院标准</td>
+    <td>AAD（自动出院），家属签字放弃治疗</td>
+  </tr>
+  <tr>
+    <td><code>5</code></td>
+    <td>死亡</td>
+    <td>住院期间患者死亡</td>
+    <td>经抢救无效宣布临床死亡</td>
+  </tr>
+  <tr>
+    <td><code>9</code></td>
+    <td>其他</td>
+    <td>以上5种以外的特殊情况（极少使用）</td>
+    <td>被司法机关带走等极特殊情况</td>
+  </tr>
+</table>
+
+<h3>4.1 最容易踩的三个边界辨析</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 误区1：转科 = 转院？</h4>
+    <p>患者从神经内科转入康复科 → 离院方式不能填"2（转院）"！转科是院内转移，离院方式要看<strong>最终出院时</strong>的去向。内科→康复科→医嘱离院 = 代码1。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>转院是指<strong>离开本院去其他独立医疗机构</strong>。院内转科不改变离院方式。</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 误区2：死亡 = 所有未治愈出院的都填死亡？</h4>
+    <p>患者病重，家属签字放弃治疗自动出院，3天后在家中死亡 → 离院方式应该填"4（非医嘱离院）"，<strong>不是</strong>"5（死亡）"。死亡必须发生在<strong>住院期间</strong>。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>离院方式记录的是<strong>出院那一刻</strong>的状态，不是出院后发生了什么。患者活着离开医院，就是非医嘱离院。</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 误区3：医嘱离院 = 治愈？</h4>
+    <p>很多编码员认为只有"治愈"才能填"医嘱离院"。实际上，病情稳定、达到出院标准即可——有好转/未愈也可以遵医嘱出院。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>离院方式与<strong>出院情况</strong>（治愈/好转/未愈/死亡/其他）是两个独立字段。医嘱离院不看是否治愈，只看是否遵医嘱。</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🔗</span> 五、首页与 DRG/DIP 的数据流向</h2>
+
+<p>理解下面这条链路，就知道为什么首页上的每一个编码都值钱：</p>
+
+<div class="card">
+  <p style="font-size:15px;text-align:center;line-height:2.4;">
+    <strong>临床医生写诊断</strong> &nbsp;→&nbsp;
+    <strong>编码员翻译成 ICD 码</strong> &nbsp;→&nbsp;
+    <strong>录入病案首页</strong> &nbsp;→&nbsp;
+    <strong>上传医保平台</strong> &nbsp;→&nbsp;
+    <strong>分组器读取</strong> &nbsp;→&nbsp;
+    <strong>判定 MDC → ADRG → DRG</strong> &nbsp;→&nbsp;
+    <strong>计算权重 × 费率 = 结算金额</strong>
+  </p>
+</div>
+
+<p>其中编码员能直接影响的是<strong>前三个环节</strong>：</p>
+<ul>
+  <li><strong>主诊断 ICD 码</strong> → 决定进入哪个 MDC（26个大类之一）</li>
+  <li><strong>主手术 ICD-9-CM-3 码</strong> → 在 MDC 内决定 ADRG</li>
+  <li><strong>其他诊断</strong>（特别是入院病情=3的并发症） → 可能触发 CC/MCC，提升 DRG 权重</li>
+  <li><strong>离院方式</strong> → 死亡（5）和非医嘱离院（4）的病例 DRG 权重可能不同</li>
+</ul>
+
+<div class="card warn">
+  <strong>⚠️ QY 病例（歧义病例）警告：</strong>如果主诊断和主手术不匹配——比如主诊断在呼吸系统但主手术是消化系统的——分组器无法确定入哪个 ADRG，病例被标记为 QY，结算打折。这是编码员必须避免的。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">1</span> 首页结构填空
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>请判断以下字段分别属于病案首页的哪个部分（A.患者基本信息 B.住院过程信息 C.诊疗信息 D.费用信息）：</p>
+    <ol>
+      <li>主要诊断 ICD 编码</li>
+      <li>实际住院天数</li>
+      <li>离院方式</li>
+      <li>身份证号</li>
+      <li>主要手术操作编码</li>
+      <li>入院病情代码</li>
+      <li>总费用</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p>1 → <strong>C（诊疗信息）</strong> | 2 → <strong>B（住院过程信息）</strong> | 3 → <strong>B（住院过程信息）</strong> | 4 → <strong>A（患者基本信息）</strong></p>
+        <p>5 → <strong>C（诊疗信息）</strong> | 6 → <strong>C（诊疗信息）</strong>——入院病情代码紧跟其他诊断，在诊疗信息区</p>
+        <p>7 → <strong>D（费用信息）</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">2</span> 入院病情代码判定
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>为以下场景选择正确的入院病情代码（1-4）：</p>
+    <table>
+      <tr><th>场景</th><th>诊断</th><th>入院时已存在？</th><th>住院期间怎么发现的？</th><th>代码</th></tr>
+      <tr><td>A</td><td>高血压3级</td><td>是，既往有明确病史</td><td>入院时即有记录</td><td>？</td></tr>
+      <tr><td>B</td><td>肺结节</td><td>入院时不知道</td><td>住院期间胸部CT意外发现</td><td>？</td></tr>
+      <tr><td>C</td><td>切口感染</td><td>否，手术后出现</td><td>术后第3天切口有渗液</td><td>？</td></tr>
+      <tr><td>D</td><td>陈旧性腔梗</td><td>是，5年前的病史</td><td>本次住院未做特殊处理</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>A → 1</strong>（有明确诊断，入院时已有）</p>
+        <p><strong>B → 2</strong>（入院时未明确，住院检查新发现的）。注意：B 如果发现后做了进一步处理（如穿刺活检），仍填2，因为这代表"本次新发现"的状态。</p>
+        <p><strong>C → 3</strong>（住院期间新发生的并发症）——这是最敏感的代码，触发 DRG 并发症/合并症。</p>
+        <p><strong>D → 4</strong>（入院时已有，但本次未进一步明确或处理）。注意：D 表明这个诊断"存在但本次不关心"，不影响本次资源消耗。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">3</span> 离院方式场景判断
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下各病例的离院方式代码：</p>
+    <ol>
+      <li>急性阑尾炎术后第3天，恢复良好，医生查房后开具出院医嘱</li>
+      <li>大面积心梗，本院无导管室介入条件，医生联系后转往省人民医院</li>
+      <li>脑梗恢复期，转往社区卫生服务中心继续康复治疗</li>
+      <li>晚期肿瘤患者，家属签字放弃进一步治疗，自动出院（出院时仍有生命体征）</li>
+      <li>多发伤，住院第5天经抢救无效死亡</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1 → 代码 1</strong>（医嘱离院）：医生主动开具出院医嘱，患者达到出院标准。</p>
+        <p><strong>2 → 代码 2</strong>（医嘱转院）：关键——是"医嘱"转院（不是患者自己要求），且转往其他独立医疗机构。</p>
+        <p><strong>3 → 代码 3</strong>（医嘱转社区）：注意与"2"的区别——转院是去其他医院，转社区是去基层。</p>
+        <p><strong>4 → 代码 4</strong>（非医嘱离院）：<strong>不是代码 5！</strong>患者出院时仍有生命体征，死亡发生在出院后。</p>
+        <p><strong>5 → 代码 5</strong>（死亡）：必须在住院期间发生死亡。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">4</span> 主诊断选择判断
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"腹痛待查"入院，住院期间胃镜+病理确诊"胃窦部低分化腺癌"。出院时患者家属要求转往肿瘤医院进一步治疗。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>主诊断应该用什么？</li>
+      <li>离院方式代码是什么？</li>
+      <li>入院病情代码（针对肿瘤诊断）是什么？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. 主诊断：</strong><code>C16.3</code> 胃窦恶性肿瘤。因为有明确病理确诊，不能用症状码 R10.4（腹痛）。</p>
+        <p><strong>2. 离院方式：</strong>代码 <strong>2</strong>（医嘱转院）。注意——家属要求转院，医生同意并开了转院医嘱 → 是"医嘱转院"而非"非医嘱离院"。</p>
+        <p><strong>3. 入院病情代码：</strong><strong>2</strong>——入院时未明确诊断（只知道腹痛），住院期间通过胃镜+病理新发现的。注意不能填 1（入院时并未确诊腺癌）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">5</span> 首页+DRG联动题
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p>某病例：主诊断 <code>J44.1</code>（慢性阻塞性肺病伴急性加重），其他诊断含 <code>N39.0</code>（泌尿系感染，入院病情=3），主手术 <code>96.59</code>（其他支气管灌洗）。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>这个病例会进入哪个 MDC？（A.呼吸系统 B.泌尿系统 C.循环系统）</li>
+      <li>泌尿系感染（入院病情=3）会对 DRG 分组产生什么影响？</li>
+      <li>如果主诊断被错误填成 N39.0 而 J44.1 被放在其他诊断，会发生什么？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. → A（呼吸系统 MDC），</strong>因为 MDC 由主诊断决定，J44.1 属于第 IV 章呼吸系统疾病。</p>
+        <p><strong>2. 泌尿系感染（入院病情=3）</strong>作为住院期间新发生的并发症，可能在 DRG 分组中触发<strong>CC（并发症）</strong>，将病例从无并发症组提升到有并发症组，DRG 权重因此增加。</p>
+        <p><strong>3. 如果主诊断被错误填成 N39.0：</strong>病例会进入<strong>泌尿系统 MDC</strong>（而非呼吸系统），而主手术 96.59（支气管灌洗）属于呼吸系统操作——导致诊断与手术不在同一 MDC，分组器无法匹配 → <strong>QY 病例（歧义）</strong>，结算大幅打折。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">6</span> 边界情景综合判断
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p>某车祸多发伤患者，入院时诊断：①脾破裂；②左侧多发肋骨骨折；③左肺挫伤。</p>
+    <p>住院期间行急诊脾切除术，术后在ICU监护3天。术后第5天患者出现肺部感染（痰培养铜绿假单胞菌阳性）。第12天患者病情稳定，医生建议转往康复医院，但患者家属坚决要求回家休养，签字自动出院。</p>
+    <p><strong>请完整回答：</strong></p>
+    <ol>
+      <li>主诊断是什么？主要手术是什么？</li>
+      <li>肺部感染是否应该填入其他诊断？入院病情代码填什么？</li>
+      <li>肋骨骨折和肺挫伤需要填入其他诊断吗？入院病情代码分别是什么？</li>
+      <li>离院方式填什么代码？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. 主诊断：</strong><code>S36.0</code> 脾损伤/破裂（损伤章，手术导向→脾切除与脾破裂完全匹配）。<strong>主手术：</strong><code>41.5</code> 脾切除术。</p>
+        <p><strong>2. 肺部感染应填入其他诊断</strong>，编码 <code>J15.1</code>（铜绿假单胞菌性肺炎）。<strong>入院病情代码 = 3</strong>——因为入院时没有肺部感染，是住院第5天新发生的（院内感染）。这个代码3将触发 DRG 的并发症标记。</p>
+        <p><strong>3. 肋骨骨折和肺挫伤应填入其他诊断。</strong>编码 <code>S22.3</code>（肋骨骨折）、<code>S27.3</code>（肺挫伤）。<strong>入院病情代码均 = 1</strong>——因为这些损伤入院时已存在。</p>
+        <p><strong>4. 离院方式 = 代码 4（非医嘱离院）</strong>。医生建议转院但家属坚决要求回家、签字自动出院 → 未达到出院标准但自行离院。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七 ======== -->
+<h2><span class="icon">💡</span> 七、重难点解析：首页填写的高频扣分项 TOP 5</h2>
+
+<table>
+  <tr><th>排名</th><th>错误类型</th><th>具体表现</th><th>正确做法</th></tr>
+  <tr>
+    <td>1</td>
+    <td>主诊断与主手术不匹配</td>
+    <td>主诊断是呼吸系统疾病、主手术是消化系统手术 → QY 病例</td>
+    <td>有手术时主诊断必须跟着手术走；先定手术，再定诊断</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>离院方式填错</td>
+    <td>转院填成医嘱离院（1）；自动出院填成死亡（5）；转社区填成转院（2）</td>
+    <td>背熟6个代码的判定核心："是否医嘱 → 去向到哪里"</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>入院病情代码全填"1"</td>
+    <td>不管三七二十一，所有其他诊断的入院病情都填1</td>
+    <td>逐一核对：这个诊断入院时到底存不存在？</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>漏填并发症</td>
+    <td>住院期间发生的切口感染、院内感染、药物不良反应等不填</td>
+    <td>入院病情=3 的并发症是"金矿"——合理填入可提升 DRG 权重</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>诊断排序错误</td>
+    <td>把轻微的慢性病排在急性重病前面</td>
+    <td>按严重程度降序排列，主诊断之后跟最重的其他诊断</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><span class="key-num">1</span> 首页分四大块：基本→过程→诊疗→费用，编码员主战场在第三块</div>
+  <div class="key-item"><span class="key-num">2</span> 主诊断三最原则：危害最大、资源最多、时间最长</div>
+  <div class="key-item"><span class="key-num">3</span> 入院病情代码 1-4 各有严格界定，尤其 3（住院期间新发生）最敏感</div>
+  <div class="key-item"><span class="key-num">4</span> 离院方式 6 个代码：按"是否医嘱→去向"两级判断</div>
+  <div class="key-item"><span class="key-num">5</span> 离院时状态决定代码，非医嘱离院≠死亡，转科≠转院</div>
+  <div class="key-item"><span class="key-num">6</span> 主诊断→MDC，主手术→ADRG，其他诊断→CC/MCC→DRG权重</div>
+  <div class="key-item"><span class="key-num">7</span> QY 病例 = 主诊断和主手术跨 MDC 不匹配，结果=结算打折</div>
+  <div class="key-item"><span class="key-num">8</span> 术后并发症（入院病情=3）合理填入可合法提升DRG权重</div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card">
+  <p><strong>Day 3 主题：ICD-10 编码基本规则——主导词、索引查找、核对卷一</strong></p>
+  <p>预习问题：</p>
+  <ul>
+    <li>主导词和修饰词有什么区别？"急性化脓性阑尾炎"的主导词是哪个？</li>
+    <li>第三卷字母顺序索引的结构是怎样的？从主导词到编码要经过几级？</li>
+    <li>核对卷一的时候，除了看编码本身，还要重点看哪些注释？</li>
+    <li>如果索引指向的编码和卷一类目表有冲突，以哪个为准？</li>
+  </ul>
+</div>
+
+<div class="footer">
+  资料来源于「病案与编码」「病案编码案例库」知识库 &nbsp;|&nbsp; 计划制定于 2026年6月19日
+</div>
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 4（2026年6月22日）</title>
+<style>
+  :root {
+    --bg: #ffffff; --card: #f8f9fa; --border: #dee2e6;
+    --text: #212529; --text2: #495057; --text3: #6c757d;
+    --accent: #0d6efd; --accent-bg: #e7f1ff; --accent-light: #f0f6ff;
+    --warn: #856404; --warn-bg: #fff3cd; --warn-border: #ffc107;
+    --code-bg: #f1f3f5; --red: #dc3545; --red-bg: #fce4e4;
+    --green: #198754; --green-bg: #d1f2e0;
+    --master-red: #dc3545; --master-yellow: #fd7e14; --master-green: #198754;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 880px; margin: 0 auto; padding: 32px 24px 80px;
+  }
+  .day-badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px;
+  }
+  h1 { font-size: 28px; margin: 12px 0 4px; color: #111; }
+  .subtitle { color: var(--text3); font-size: 15px; margin-bottom: 24px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 32px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  h2 {
+    font-size: 20px; margin: 40px 0 16px; padding: 10px 0 8px;
+    border-bottom: 3px solid var(--accent-bg); color: #111;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .icon { font-size: 22px; }
+  h3 { font-size: 16px; margin: 22px 0 10px; color: var(--text2); }
+  h4 { font-size: 15px; margin: 16px 0 8px; color: var(--text2); font-weight: 600; }
+
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* Cards */
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; margin: 14px 0; font-size: 14px;
+  }
+  .card.tip { background: var(--accent-bg); border-color: #b6d4fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: var(--accent-light); border-color: #b6d4fe; }
+
+  /* Note blockquote */
+  .note {
+    background: var(--card); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: 12px 18px; margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 9px 13px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; color: var(--text2); white-space: nowrap; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* Code */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #2d2d2d; color: #f8f8f2; border-radius: 8px;
+    padding: 16px 20px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+  }
+  pre .keyword { color: #66d9ef; }
+  pre .string { color: #a6e22e; }
+  pre .comment { color: #75715e; }
+
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* Cases */
+  .case { border: 2px solid var(--border); border-radius: 10px; margin: 18px 0; overflow: hidden; }
+  .case-header {
+    background: var(--card); padding: 12px 18px; font-weight: 600; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag {
+    font-size: 12px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+  }
+  .case-tag.practice { background: var(--accent-light); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 16px 20px; font-size: 14px; }
+  .case-body ol { margin: 8px 0; }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 8px; font-size: 14px;
+    user-select: none; background: var(--accent-light); border-radius: 6px;
+    transition: background .15s;
+  }
+  details > summary:hover { background: var(--accent-bg); }
+  .answer-box {
+    margin-top: 10px; padding: 14px 18px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* Key points */
+  .key-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px; margin: 14px 0;
+  }
+  .key-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+  }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* Mastery */
+  .mastery-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  .mastery-table td { padding: 10px 14px; }
+  .mastery-table .level-icon { text-align: center; width: 50px; }
+  .mastery-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 12px; font-weight: 700;
+  }
+  .mastery-badge.l1 { background: var(--red-bg); color: var(--red); }
+  .mastery-badge.l2 { background: var(--warn-bg); color: var(--warn); }
+  .mastery-badge.l3 { background: var(--green-bg); color: var(--green); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #b6d4fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .process-content pre { margin: 6px 0; background: #fff; border: 1px solid var(--border); color: var(--text); }
+
+  /* Flow / comparison boxes */
+  .compare-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0;
+  }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #b7e8cd; }
+  .compare-col.bad { background: var(--red-bg); border-color: #f0c8c8; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* Example grid */
+  .example-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 12px; margin: 12px 0;
+  }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .example-item code { font-size: 12px; }
+
+  /* Footer */
+  .footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text3); }
+
+  /* Highlight */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="day-badge">DAY 4 · 2026年6月22日</div>
+<h1>术语清洗：临床诊断→标准诊断的转换</h1>
+<p class="subtitle">编码员的翻译基本功——把医生的"话"变成ICD-10的"码"</p>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <table class="mastery-table">
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l1">必须掌握</span></td>
+      <td>术语清洗的五个步骤流程；六种常见诊断"陷阱类型"及其转换规则；症状码→病因码的替换原则；简写和外文缩写的识别与规范</td>
+    </tr>
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l2">应该理解</span></td>
+      <td>术语清洗中"过度清洗"与"清洗不足"的边界；模糊诊断的处理策略；质控检查中术语清洗相关的扣分项</td>
+    </tr>
+    <tr>
+      <td class="level-icon"><span class="mastery-badge l3">了解即可</span></td>
+      <td>NLP术语标准化在智慧编码系统中的应用；不同医院信息系统中术语清洗的实现方式差异</td>
+    </tr>
+  </table>
+</div>
+
+<div class="note">
+  <strong>本日学习建议：</strong>术语清洗是编码的第一道工序，也是区分"合格编码员"与"照抄诊断员"的核心分水岭。今天的重点是建立"见到诊断→立刻想：这个诊断有没有歧义？"的条件反射。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、术语清洗是什么？——不只是"把诊断写好看"</h2>
+
+<h3>1.1 定义与本质</h3>
+<p><span class="hl"><strong>术语清洗（Terminology Cleaning）</strong></span>是指将临床医生书写的原始诊断（口语化、简写、含歧义的表达），转化为 ICD-10 认可的、可用于索引查找的标准诊断名称的过程。它是编码的第一道工序，也是决定最终编码质量的核心环节。</p>
+
+<p>如果把编码过程比作做菜，术语清洗就是"洗菜、择菜"——菜没洗干净，后面刀工再好、火候再准，端上桌的也是脏菜。很多编码员的错误不在索引查错，而在第一步就没有把诊断"洗干净"。</p>
+
+<div class="card info">
+  <strong>术语清洗要回答三个问题：</strong><br>
+  ① <strong>这是什么病？</strong>（疾病本质——确定主导词方向）<br>
+  ② <strong>这个诊断是否完整？</strong>（缺不缺部位/性质/病因等关键信息）<br>
+  ③ <strong>这个诊断是否准确？</strong>（有没有把两个不同的病混为一谈）
+</div>
+
+<h3>1.2 为什么要做术语清洗——不洗的后果</h3>
+
+<table>
+  <tr><th>场景</th><th>临床写法</th><th>不清洗直接编</th><th>清洗后正确编</th><th>后果差异</th></tr>
+  <tr>
+    <td>简写模糊</td><td>"心梗"</td><td>I21.9（未特指）</td><td>I21.0（STEMI）或 I21.4（NSTEMI）</td><td>I21.9 不能入 DRG F 组，权重损失约 0.3-0.5</td>
+  </tr>
+  <tr>
+    <td>诊断不完整</td><td>"脑出血"</td><td>I61.9（脑内出血，未特指）</td><td>I61.001（壳核出血）</td><td>质控扣分，统计不准</td>
+  </tr>
+  <tr>
+    <td>概念混淆</td><td>"高血压性心脏病"</td><td>I10（高血压）+ I51.9（心脏病）</td><td>I11.9（高血压性心脏病）</td><td>两个码变一个合并码，DRG 入组完全不同</td>
+  </tr>
+  <tr>
+    <td>症状当诊断</td><td>"头晕"（入院出院都写）</td><td>R42（头晕）</td><td>I63.801（腔隙性脑梗死）</td><td>R 码入组权重极低，医院损失大</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 真实数据：</strong>根据某三甲医院 2024 年的质控抽查，因术语清洗不到位导致的编码错误占比高达 <strong>37.8%</strong>，超过了索引查找错误（29.1%）和核对疏漏（22.5%）。术语清洗，不是可选项，是必答题。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🔬</span> 二、术语清洗五步法——从模糊到精准的完整路径</h2>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>识别歧义——"这句话可能有几种意思？"</h4>
+      <p>拿到临床诊断后，先问自己：这个诊断是否只有一种解读？如果有两种以上的可能，就必须做下一步。</p>
+      <p><strong>高歧义信号：</strong>简写（"心梗""功血"、"支扩"）、省略部位（"骨折"没写具体位置）、笼统词（"心脏病""肝病"）、外文缩写（"MI""COPD""TIA"）</p>
+      <pre>例："脑出血" → 可能是 I60.x（蛛网膜下腔）/ I61.x（脑实质）/ I62.x（硬膜下）→ 必须查影像报告</pre>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>查源补全——"哪些信息还没写？"</h4>
+      <p>对照 ICD-10 对某个疾病的标准描述要素，回看病程记录、影像报告、化验单，把缺失的关键信息补上。</p>
+      <table style="margin:8px 0;">
+        <tr><td>部位</td><td>左侧/右侧、上叶/下叶、近端/远端？</td></tr>
+        <tr><td>性质</td><td>急性/慢性/亚急性、化脓性/非化脓性？</td></tr>
+        <tr><td>病因</td><td>细菌性/病毒性/缺血性/创伤性？</td></tr>
+        <tr><td>分期</td><td>活动期/缓解期、早/中/晚期、Ⅰ/Ⅱ/Ⅲ/Ⅳ级？</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>标准命名——"ICD-10 怎么叫这个病？"</h4>
+      <p>将临床用语翻译成 ICD-10 标准命名。这一步需要熟悉 ICD-10 的术语习惯。</p>
+      <p><strong>翻译规则：</strong>ICD-10 偏好"解剖部位 + 病理改变"的双段命名，而非症状式命名。</p>
+      <pre>临床："胃疼，反酸水"
+→ 标准：慢性胃炎（K29.5）或 胃食管反流（K21.9）
+                   ← 看胃镜结果决定</pre>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>验证一致性——"诊断和编码对得上吗？"</h4>
+      <p>清洗后的标准诊断要与病程记录、检查结果相互印证。特别注意：</p>
+      <ul>
+        <li>影像报告中的描述是否与清洗后的诊断一致？</li>
+        <li>化验单是否符合该诊断的典型特征？</li>
+        <li>手术记录中的术中所见是否印证了诊断？</li>
+      </ul>
+      <p>如果发现矛盾——优先相信客观证据（病理、影像），而不是医生的初诊描述。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content">
+      <h4>输出档——"写成能进索引的标准表达"</h4>
+      <p>最终输出的标准诊断名称要满足三个条件：</p>
+      <ul>
+        <li><strong>唯一性</strong>——只有一个 ICD-10 编码与之对应</li>
+        <li><strong>完整性</strong>——包含索引查找所需的所有修饰词</li>
+        <li><strong>可索引性</strong>——主导词明确，能在第三卷索引中找到</li>
+      </ul>
+      <pre>清洗完成例：
+临床：肝不好，小三阳
+  → 标准：慢性乙型病毒性肝炎，HBeAg阴性
+  → 编码：B18.100x003</pre>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔄</span> 三、六类常见诊断陷阱——逐一击破</h2>
+
+<h3>3.1 陷阱一：简写与俗称</h3>
+<p>临床医生习惯用简称，这些简称在科室内部大家都懂，但进到编码系统里就变成了"薛定谔的诊断"。</p>
+
+<table>
+  <tr><th>临床简写/俗称</th><th>可能的含义（≥2种）</th><th>需要查什么来确定</th><th>最终标准诊断方向</th></tr>
+  <tr>
+    <td>"心梗"</td><td>急性STEMI / 急性NSTEMI / 陈旧性心梗</td><td>心电图、心肌酶（CK-MB、cTnI）</td><td>I21.0-I21.4 / I25.2</td>
+  </tr>
+  <tr>
+    <td>"功血"</td><td>功能性子宫出血 → 排卵障碍性异常子宫出血</td><td>妇科超声、激素六项</td><td>N93.8（ICD-10 名：子宫出血，异常的，其他特指的）</td>
+  </tr>
+  <tr>
+    <td>"支扩"</td><td>支气管扩张症 / 支气管扩张伴感染</td><td>痰培养、血象</td><td>J47 / J47+J98.4（视有无感染）</td>
+  </tr>
+  <tr>
+    <td>"甲亢"</td><td>Graves病 / 毒性结节性甲状腺肿 / 亚急性甲状腺炎甲亢期</td><td>甲状腺超声、TRAb、吸碘率</td><td>E05.0 / E05.2 / E06.1</td>
+  </tr>
+  <tr>
+    <td>"COPD"</td><td>慢性阻塞性肺病稳定性 / 急性加重期</td><td>血气分析、肺功能</td><td>J44.9 / J44.1（急性加重）</td>
+  </tr>
+  <tr>
+    <td>"脑梗"</td><td>急性脑梗死 / 腔隙性脑梗死 / 陈旧性脑梗死</td><td>CT/MR+DWI、发病时间</td><td>I63.x / I63.801 / I69.3</td>
+  </tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>看到"心梗"就直接编 I21.9（未特指），因为觉得"反正是心梗，差不到哪去"</p>
+    <p><small>→ 结果：I21.9 权重远低于 I21.0-4，DRG 入组损失严重</small></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>回看病程记录和心电图报告，确定 STEMI 还是 NSTEMI，再定位到具体部位（前壁/下壁/后壁等）</p>
+    <p><small>→ 结果：准确编码到 I21.0-I21.4 的亚目层级，DRG 入组正确</small></p>
+  </div>
+</div>
+
+<h3>3.2 陷阱二：缺部位/侧别的诊断</h3>
+<p>很多疾病的 ICD-10 编码直接依赖解剖部位，不补全部位等于自废武功。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例："肺癌"</h4>
+    <p>查病理报告 → 确定肺叶（上叶/中叶/下叶）和病理类型（鳞癌/腺癌/小细胞癌）</p>
+    <p>→ 上叶支气管肺癌，鳞状细胞癌：<code>C34.101 M8070/3</code></p>
+  </div>
+  <div class="example-item">
+    <h4>例："股骨骨折"</h4>
+    <p>查影像报告 → 确定具体部位（股骨头/股骨颈/股骨干/转子间）和类型（闭合/开放）</p>
+    <p>→ 股骨颈骨折，闭合性：<code>S72.002</code></p>
+  </div>
+  <div class="example-item">
+    <h4>例："肾炎"</h4>
+    <p>查肾活检（如有）→ 确定IgA肾病/膜性肾病/微小病变/狼疮性肾炎等</p>
+    <p>→ IgA肾病：<code>N02.801</code></p>
+  </div>
+  <div class="example-item">
+    <h4>例："脑出血"</h4>
+    <p>查头颅CT → 确定出血部位（壳核/丘脑/脑叶/小脑/脑干）和类型</p>
+    <p>→ 壳核出血：<code>I61.001</code>；蛛网膜下腔出血：<code>I60.x</code></p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 核心原则：</strong>诊断没有部位 → 编码一定不精确 → 质控一定扣分。不要替医生猜部位——没有写就去查病历，病历也没有就去问医生。编码员的底线是<strong>"不编没证据的码"</strong>。
+</div>
+
+<h3>3.3 陷阱三：症状当诊断（R码滥用）</h3>
+<p>这是质控检查中扣分率最高的错误类型之一。第十八章（R00-R99）是"症状、体征和异常临床所见"，其使用有严格限制。</p>
+
+<table>
+  <tr><th>规则</th><th>说明</th><th>示例</th></tr>
+  <tr>
+    <td>有确诊 → 不用症状</td>
+    <td>住院期间明确了器质性病因的，<strong>必须用病因码替代症状码</strong></td>
+    <td>"头晕"入院 → 确诊脑梗死 → 主诊断改为 I63.x，不可再用 R42</td>
+  </tr>
+  <tr>
+    <td>始终未确诊 → 可用症状</td>
+    <td>出院时仍不能明确病因的，可以使用症状码作为主诊断</td>
+    <td>"发热待查"入院 → 各种检查均阴性 → 出院诊断可以是 R50.9</td>
+  </tr>
+  <tr>
+    <td>不再进一步找病因的既知病 → 不用症状</td>
+    <td>如果某症状是已知疾病的典型表现，不能用症状码替代该疾病</td>
+    <td>已知冠心病患者"胸痛"入院 → 应编冠心病（I25.1），非胸痛（R07.4）</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>口诀：</strong>病因明确换病因，始终不明留症状；已知病因复发作，不能偷懒用症状。
+</div>
+
+<h3>3.4 陷阱四：笼统诊断——"XX病""XX炎"</h3>
+<p>临床医生有时用很笼统的诊断名称，例如"肝病""心脏病""肺炎"。这些诊断没有提供足够的信息来确定编码。</p>
+
+<table>
+  <tr><th>笼统诊断</th><th>要追问的信息</th><th>可能的编码方向</th></tr>
+  <tr><td>"肝病"</td><td>病毒性/酒精性/药物性/脂肪性？急性/慢性？有肝硬化吗？</td><td>B18.x / K70.x / K71.x / K76.0 / K74.x</td></tr>
+  <tr><td>"心脏病"</td><td>冠心病/扩心病/肥厚性心肌病/瓣膜病/心律失常？</td><td>I20-I25 / I42.0 / I42.1-I42.2 / I34-I37 / I47-I49</td></tr>
+  <tr><td>"肺炎"</td><td>大叶性/支气管性/间质性？病原体是什么？</td><td>J12-J18 中根据病原体细分</td></tr>
+  <tr><td>"贫血"</td><td>缺铁性/巨幼细胞性/溶血性/再生障碍性？</td><td>D50.x / D51-D53 / D55-D59 / D60-D61</td></tr>
+  <tr><td>"肾功能不全"</td><td>急性/慢性？分期（1-5期）？透析？</td><td>N17.x / N18.x / Z99.2</td></tr>
+</table>
+
+<h3>3.5 陷阱五：外文缩写与混合用语</h3>
+<p>病历中大量使用英文缩写（MI、CABG、PCI、TIA、ERCP、PTCA等）以及中英文混合诊断。这些缩写看似标准，但在不同科室可能含义不同。</p>
+
+<table>
+  <tr><th>缩写</th><th>全称</th><th>标准中文诊断</th><th>常见编码</th><th>注意事项</th></tr>
+  <tr><td>MI</td><td>Myocardial Infarction</td><td>急性心肌梗死</td><td>I21.x</td><td>需区分 STEMI / NSTEMI</td></tr>
+  <tr><td>CABG</td><td>Coronary Artery Bypass Grafting</td><td>冠状动脉旁路移植术</td><td>36.1x（手术码）</td><td>是手术操作，不是疾病诊断</td></tr>
+  <tr><td>TIA</td><td>Transient Ischemic Attack</td><td>短暂性大脑缺血发作</td><td>G45.x</td><td>与脑梗死区分：TIA 24h内恢复，脑梗死有影像证据</td></tr>
+  <tr><td>ERCP</td><td>Endoscopic Retrograde Cholangiopancreatography</td><td>内镜逆行胰胆管造影</td><td>51.10 / 51.87</td><td>诊断性 vs 治疗性（取石）编码不同</td></tr>
+  <tr><td>CAP</td><td>Community-Acquired Pneumonia</td><td>社区获得性肺炎</td><td>J15.9 或细分</td><td>有病原体时改用具体病原体编码</td></tr>
+  <tr><td>HAP</td><td>Hospital-Acquired Pneumonia</td><td>医院获得性肺炎</td><td>J15.9 + Y95</td><td>注意附加编码外因 Y95</td></tr>
+</table>
+
+<h3>3.6 陷阱六：易混淆的疾病对——一字之差，编码千里</h3>
+<p>有些疾病在临床用语上非常接近，但在 ICD-10 中归入了完全不同的类目甚至章节。术语清洗时必须特别警惕。</p>
+
+<table>
+  <tr><th>易混淆对</th><th>关键区别</th><th>A的编码</th><th>B的编码</th></tr>
+  <tr>
+    <td>脑梗死 vs 脑出血</td><td>缺血性 vs 出血性（看CT有无高密度灶）</td><td>I63.x</td><td>I61.x</td>
+  </tr>
+  <tr>
+    <td>房颤 vs 房扑</td><td>心律绝对不齐 vs 规则或不规则</td><td>I48.x</td><td>I48.x（同亚目但有细分）</td>
+  </tr>
+  <tr>
+    <td>肝硬化 vs 肝炎</td><td>终末纤维化 vs 活动性炎症</td><td>K74.x</td><td>B15-B19 / K73.x</td>
+  </tr>
+  <tr>
+    <td>骨关节炎 vs 类风湿性关节炎</td><td>退行性 vs 自身免疫性</td><td>M15-M19</td><td>M05-M06</td>
+  </tr>
+  <tr>
+    <td>2型糖尿病 vs 1型糖尿病</td><td>胰岛素抵抗为主 vs 胰岛素绝对缺乏</td><td>E11.x</td><td>E10.x</td>
+  </tr>
+  <tr>
+    <td>COPD vs 哮喘</td><td>不可逆气流受限 vs 可逆性气道阻塞</td><td>J44.x</td><td>J45.x</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🧠</span> 四、重难点深度解析：模糊诊断的边界——"该放弃症状码吗？"</h2>
+
+<p>这是术语清洗中最让新手困惑的场景：<strong>临床诊断看起来很明确，但 ICD-10 的分类轴心和临床诊断的分类轴心不一样。</strong>这时候怎么洗？</p>
+
+<h3>4.1 经典冲突场景："急性左心衰"</h3>
+
+<div class="case">
+  <div class="case-header">深度分析："急性左心衰"的术语清洗</div>
+  <div class="case-body">
+    <p><strong>背景：</strong>患者因"呼吸困难、端坐呼吸"入院，胸片提示肺水肿，超声提示左心室射血分数降低（LVEF 35%）。医生出院诊断：<em>"急性左心衰竭"</em>。</p>
+
+    <p><strong>问题：</strong>急性左心衰是一种临床表现（I50.1），但它背后有病因——是什么导致了心衰？ICD-10 的规则是：<span class="hl"><strong>如果心衰有明确病因，应优先编码病因，心衰作为附加诊断。</strong></span></p>
+
+    <table>
+      <tr><th>如果有…</th><th>主诊断</th><th>附加诊断</th><th>逻辑</th></tr>
+      <tr><td>高血压多年，心脏扩大</td><td><code>I11.0</code>（高血压性心脏病伴心衰）</td><td><code>I50.1</code>（左心衰）</td><td>合并编码 → 高血压病因驱动</td></tr>
+      <tr><td>冠心病+前壁心梗病史</td><td><code>I25.5</code>（缺血性心肌病）</td><td><code>I50.1</code></td><td>缺血性心肌病 → 病因驱动</td></tr>
+      <tr><td>风湿性二尖瓣狭窄</td><td><code>I05.0</code>（风湿性二尖瓣狭窄）</td><td><code>I50.1</code></td><td>瓣膜病 → 病因驱动</td></tr>
+      <tr><td>找不到明确病因</td><td><code>I50.1</code>（左心衰竭）</td><td>—</td><td>无病因 → 心衰做主诊断</td></tr>
+    </table>
+
+    <p><strong>术语清洗的核心动作：</strong>不能只看"急性左心衰"这四个字。要像侦探一样追问：为什么心衰？追到病因才算洗干净。</p>
+
+    <div class="compare-row">
+      <div class="compare-col bad">
+        <h4>❌ 仅洗表面</h4>
+        <p>急性左心衰 → I50.1<br>（没有追问病因）</p>
+        <p><small>漏了病因编码，DRG 入组偏差，医院损失</small></p>
+      </div>
+      <div class="compare-col good">
+        <h4>✅ 深挖病因</h4>
+        <p>高血压性心脏病伴心衰 → I11.0<br>+ I50.1 左心衰</p>
+        <p><small>病因+表现双码完整，DRG 入组准确</small></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>4.2 过度清洗的警惕——不要"美化"诊断</h3>
+
+<p>术语清洗也有边界。不是诊断越"高级"越好。以下情况不能清洗：</p>
+
+<table>
+  <tr><th>过度清洗行为</th><th>为什么不对</th><th>正确做法</th></tr>
+  <tr>
+    <td>把"胸痛待查"洗成"冠心病"</td><td>检查结果没支持冠心病诊断</td><td>已确诊→用病因；未确诊→保留 R07.4</td>
+  </tr>
+  <tr>
+    <td>把"腹部不适"洗成"慢性胃炎"</td><td>胃镜没做，不能推定</td><td>用R10.4（其他腹部未特指疼痛），除非胃肠镜确诊</td>
+  </tr>
+  <tr>
+    <td>把"II型糖尿病"洗成"II型糖尿病伴肾病"</td><td>尿蛋白正常，无肾病证据</td><td>仅编 E11.9，不要"升级"并发症</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 术语清洗的底线：</strong>清洗是"澄清"和"标准化"，不是"脑补"和"升级"。所有清洗后的诊断必须有客观证据支撑（化验单、影像报告、病理报告）。没有证据的"清洗"叫编造——是编码员的核心红线。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 五、今日案例练习（共 6 题）</h2>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">1</span> 简写诊断清洗
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>临床医生写了以下简写诊断。请说明每个诊断需要补全哪些信息才能开始编码：</p>
+    <ol>
+      <li>"支扩"（支气管扩张）</li>
+      <li>"T2DM"（2型糖尿病）</li>
+      <li>"PUD"（消化性溃疡）</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. "支扩"：</strong>需明确是否伴有急性感染（看血象、CRP、痰培养）→ 单纯支扩 J47 / 支扩伴感染 J47+J98.4</p>
+        <p><strong>2. "T2DM"：</strong>2型糖尿病本身 E11.9。但关键要看有没有并发症——肾病（尿蛋白）、眼病（眼底检查）、神经病变（肌电图）、周围循环（血管超声）。有并发症要用合并编码 E11.2-E11.6。另外"T2DM"这个缩写本身要认出是 Type 2 Diabetes Mellitus。</p>
+        <p><strong>3. "PUD"（Peptic Ulcer Disease）：</strong>需明确：① 部位（胃/十二指肠/吻合口）② 急性还是慢性 ③ 有无出血/穿孔/梗阻 → 编码从 K25.x-K28.x 中根据具体情况选择。</p>
+        <p><strong>总结：</strong>三个简写的共同点——都只说了"病名"，都把"修饰词"省略了。而 ICD-10 编码恰恰依赖修饰词来区分亚目。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">2</span> 缺部位诊断补全
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>以下诊断缺少关键部位信息。请说明应该查阅什么资料，并给出可能的编码范围：</p>
+    <ol>
+      <li>"下肢骨折" → 查什么？编码范围？</li>
+      <li>"颅内出血" → 查什么？编码范围？</li>
+      <li>"消化系统肿瘤" → 查什么？编码范围？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. "下肢骨折"：</strong>查 X光片/CT报告 → 具体骨（股骨/胫骨/腓骨/足骨…）+ 具体部位（近端/颈/干/踝…）+ 闭合/开放 → 编码范围 S72-S92（因部位差异极大）</p>
+        <p><strong>2. "颅内出血"：</strong>查头颅CT/MR → 明确是蛛网膜下腔（I60）、脑实质（I61）、硬膜下（I62.0）、硬膜外（S06.4）还是硬膜下非创伤性（I62.0）。这四者编码和 DRG 入组完全不同。</p>
+        <p><strong>3. "消化系统肿瘤"：</strong>查胃镜/肠镜+病理报告 → 具体部位（食管/胃/十二指肠/结肠/直肠…）+ 病理类型 + 良恶性 → 编码范围 C15-C26 中是具体器官编码。没有病理就不能确定良恶性。</p>
+        <p><strong>关键原则：</strong>看到笼统部位诊断 → 立刻打开影像/内镜/病理报告补全。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">3</span> 症状码→病因码转换
+    <span class="case-tag practice">基础</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下场景中，出院主诊断应该用症状码还是病因码，并说明理由：</p>
+    <table>
+      <tr><th>场景</th><th>入院诊断</th><th>住院检查结果</th><th>你的主诊断选择</th></tr>
+      <tr><td>A</td><td>腹痛</td><td>腹部CT + 结肠镜确诊乙状结肠腺癌</td><td>？</td></tr>
+      <tr><td>B</td><td>发热待查</td><td>所有检查均阴性，发热原因不明</td><td>？</td></tr>
+      <tr><td>C</td><td>头痛</td><td>头颅MRI确诊脑膜瘤</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>A：</strong>主诊断应为 <code>C18.7</code>（乙状结肠恶性肿瘤）。确诊了恶性肿瘤，必须用恶性肿瘤编码，不能用 R10.x（腹痛）。</p>
+        <p><strong>B：</strong>主诊断应为 <code>R50.9</code>（发热，未特指）。住院期间未明确病因 → 可以且应该使用症状码做主诊断。</p>
+        <p><strong>C：</strong>主诊断应为 <code>D32.0</code>（脑膜瘤，良性）。确诊了肿瘤（即使是良性的），也必须用肿瘤编码替代症状码 R51（头痛）。</p>
+        <p><strong>判断口诀：</strong>住院有确诊 → 用确诊码；住院没确诊 → 用症状码。这个"判断"本身就是术语清洗的核心环节之一。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">4</span> 易混淆疾病术语清洗
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p>某患者入院诊断为"脑卒中"，头颅CT提示左侧基底节区低密度灶（符合缺血性改变），既往有高血压病史10年。请完成完整的术语清洗并给出编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>术语清洗过程：</strong></p>
+        <p>① <strong>"脑卒中"→ 缺血还是出血？</strong>CT报告显示"低密度灶"= 缺血性改变，排除出血 → 方向从 I60-I62（出血）转向 I63（脑梗死）。</p>
+        <p>② <strong>部位？</strong>基底节区 ≠ 单一结构。需要进一步查 CT/MR 精确到壳核 or 丘脑 or 尾状核 → 假设为壳核 → I63.5 大类。</p>
+        <p>③ <strong>病因分析：</strong>有高血压病史10年 → 高血压是导致脑梗死的危险因素，但 ICD-10 的脑梗死编码（I63）是按责任血管区分的（大脑前/中/后动脉、椎-基底动脉等），而非按病因。因此高血压单独编码 I10，不与 I63 合并。</p>
+        <p><strong>最终编码：</strong>主诊断 <code>I63.501</code>（大脑中动脉闭塞引起的脑梗死，缺血性卒中）或 <code>I63.801</code>（腔隙性脑梗死）依具体影像报告而定；附加诊断 <code>I10</code>（高血压病）。</p>
+        <p><strong>核心心得：</strong>脑卒中（stroke）是"伞"——包含脑梗死（ischemic）和脑出血（hemorrhagic）。术语清洗的第一步就是把伞打开，看清下面到底是谁。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">5</span> 合并编码的术语清洗判断
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p>某患者出院小结列出三个诊断：</p>
+    <ol>
+      <li>高血压病</li>
+      <li>慢性心力衰竭</li>
+      <li>慢性肾脏病3期（eGFR 45）</li>
+    </ol>
+    <p>病程记录显示：高血压病史15年，心脏彩超提示左心室肥厚、舒张功能减退。请判断：
+      <br>(a) 是否应该使用合并编码？
+      <br>(b) 最终的编码方案是什么？
+    </p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>(a) 是否使用合并编码？</strong></p>
+        <p>第一步，检查高血压与心脏病的关系：病程记录明确显示高血压病史15年 + 心脏彩超左心室肥厚 → 存在因果关系 → 应使用合并编码 <code>I11.0</code>（高血压性心脏病伴心力衰竭），而非 I10 + I50.9 分开编。</p>
+        <p>第二步，检查高血压与肾病的关系：患者同时有 CKD3期（N18.3）和高血压 → ICD-10 提供了 <code>I12.0</code> 和 <code>I13.x</code>。如果肾病也是高血压导致的（高血压性肾病），则需用 I13.x（同时有心肾合并）。但此处肾病原因是否高血压导致的需进一步确认——假设为高血压性肾病。</p>
+        <p><strong>(b) 最终编码方案：</strong></p>
+        <p>如果有证据支持高血压同时导致心脏病和肾病 → <code>I13.0</code> 高血压性心肾衰竭（一个码封装三者！）</p>
+        <p>如果肾病原因不明确或非高血压性 → 主诊断 <code>I11.0</code> 高血压性心脏病伴心衰 + 附加 <code>N18.3</code> CKD3期</p>
+        <p><strong>核心心得：</strong>这是一个"术语清洗 + 合并编码判断"的组合拳。先把"高血压""心衰""肾衰"三个诊断之间的关系理清楚，再决定是分开编还是合并编。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <span class="case-num">6</span> 综合术语清洗实战
+    <span class="case-tag challenge">进阶</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病例：</strong></p>
+    <p>患者，男，72岁。入院诊断："COPD急性加重；肺气肿；吸烟史40年"。住院期间行血气分析（PaO₂ 58mmHg，PaCO₂ 55mmHg），肺功能（FEV1/FVC &lt; 0.7，FEV1 35%预计值），痰培养（肺炎克雷伯菌），出院诊断医生写："慢阻肺急性加重；慢阻肺伴下呼吸道感染；肺气肿"。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>医生的三个诊断中有没有重复的？术语怎么清洗？</li>
+      <li>最终的主诊断和其他诊断各是什么？（请给出编码）</li>
+      <li>还需不需要编码吸烟史？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>1. 术语清洗：</strong></p>
+        <p>① "COPD急性加重"和"慢阻肺急性加重"是同一个意思 → 去重，留"慢性阻塞性肺疾病伴急性加重"。<br>
+        ② "肺气肿"是 COPD 的组成部分——COPD 本身就包括慢性支气管炎和/或肺气肿。如果该患者的 COPD 以肺气肿为主要表现（肺功能+影像支持），则不需要单独编码肺气肿。但如果医生明确要强调肺气肿，可在 COPD 的诊断描述中体现，编码仍归 J44.x。<br>
+        ③ "慢阻肺伴下呼吸道感染"——根据痰培养结果为肺炎克雷伯菌，这是确定的细菌感染。ICD-10 有 <code>J44.0</code> 慢性阻塞性肺病伴急性下呼吸道感染。</p>
+        <p><strong>2. 最终编码：</strong></p>
+        <p>主诊断：<code>J44.0</code>（慢性阻塞性肺病伴急性下呼吸道感染）——这个码同时表达了COPD + 急性感染两个核心问题。<br>
+        附加诊断：<code>J96.1</code>（慢性呼吸衰竭，PaO₂ &lt;60mmHg，PaCO₂ &gt;50mmHg 支持慢性呼衰）<br>
+        【不需要单独编码肺气肿 J43.9，因为 J44.0 已经包含了 COPD 的病理范围】</p>
+        <p><strong>3. 吸烟史是否需要编码？</strong></p>
+        <p>如果吸烟史对本次诊疗有影响（如出院医嘱强调戒烟）→ 应编码 <code>Z72.0</code>（烟草使用）。在 DRG/DIP 时代，这个 Z 码虽然不驱动入组，但反映诊疗的完整性。有些地区质控要求对有吸烟史的 COPD 患者必须编码 Z72.0。</p>
+        <p><strong>综合心得：</strong>这个案例展示了术语清洗的三个层次——去重（三合一）、归类（肺气肿归入 COPD）、精确定位（急性感染 → J44.0）。每一步都要依据证据，而非凭感觉。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">✅</span> 六、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><span class="key-num">1</span> 术语清洗是编码第一道工序，不洗就编=地基不牢</div>
+  <div class="key-item"><span class="key-num">2</span> 五步法：识别歧义→查源补全→标准命名→验证一致性→输出档</div>
+  <div class="key-item"><span class="key-num">3</span> 六大陷阱：简写、缺部位、症状当诊断、笼统诊断、外文缩写、易混淆对</div>
+  <div class="key-item"><span class="key-num">4</span> 病因明确→用病因码；始终未确诊→保留症状码；绝不可把模糊诊断"升级"</div>
+  <div class="key-item"><span class="key-num">5</span> 心衰、脑卒中、肺炎等"伞状诊断"必须追问病因/分型</div>
+  <div class="key-item"><span class="key-num">6</span> 清洗的底线：有证据才能洗，无证据不能编——影像/化验/病理是铁证</div>
+  <div class="key-item"><span class="key-num">7</span> "高血压+心衰+肾衰"三联要判断因果关系，决定是否用 I13.x 合并编码</div>
+  <div class="key-item"><span class="key-num">8</span> Z72.0（吸烟史）等生活方式编码在 DRG 时代虽不驱动入组，但体现完整性</div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 明日预习 ======== -->
+<h2><span class="icon">📅</span> 明日预习</h2>
+<div class="card">
+  <p><strong>Day 5 主题：星剑号系统（†/*）与双重分类</strong></p>
+  <p>预习问题：</p>
+  <ul>
+    <li>星号（*）和剑号（†）分别代表什么？哪个是主码、哪个是附加码？</li>
+    <li>双重分类在哪些章节中最常见？（糖尿病并发症？感染性疾病？神经精神疾病？）</li>
+    <li>一个疾病能同时有星号和剑号吗？能只有一个而没有另一个吗？</li>
+    <li>主诊断位置填星号还是剑号？这个选择如何影响 DRG 入组？</li>
+  </ul>
+</div>
+
+<div class="footer">
+  知识来源：ICD-10 国临版编码规范 &nbsp;|&nbsp; 60天系统学习计划 · Day 4/60 &nbsp;|&nbsp; 2026年6月22日
+</div>
+
+</body>
+</html>
