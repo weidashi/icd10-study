@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 5（2026年6月23日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 5 · 2026年6月23日</div>
+  <h1>🔗 病案编码学习</h1>
+  <p class="subtitle">今日主题：星剑号系统（&dagger;/*）与双重分类 —— 一个疾病，两个编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:8.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 5 / 60 天（8.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>剑号（&dagger;）= 病因码、主诊断 → 死因统计用；星号（*）= 临床表现码、附加诊断 → 发病率统计用</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>双重分类必须成对使用——绝不单独出现剑号或星号</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>DRG/DIP 入组以剑号（&dagger;）驱动，星号不影响分组但必须填报</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>糖尿病并发症是星剑号最高频场景：E10-E14.3&dagger; + H36.0*/H28.0*/N08.3* 等</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>哪些章常见星剑号：I章（循环）、E章（内分泌）、G章（神经）、A-B章（感染）、J章（呼吸）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>索引中星剑号符号的读法：第三卷提示"†"和"*"时，说明必须启用双重分类</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>临床表现有多个时，星号可以有多个，但剑号只有一个是主诊断的病因码</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>WHO-FIC 中星剑号系统的设计初衷：兼顾死因统计（病因导向）与发病率统计（表现导向）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-11 中用"后组配"（post-coordination）替代星剑号的新机制</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>星剑号是 ICD-10 最具特色的编码机制之一，也是区分"初级编码员"和"专业编码员"的试金石。今天务必把糖尿病并发症的编码路径背下来——这是考核最高频出现的星剑号场景。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、星剑号的双轨逻辑——为什么一个病要两个码？</h2>
+
+<h3>1.1 根源：死因统计 vs 发病率统计的冲突</h3>
+<p>假设一位患者死于 2 型糖尿病引发的终末期肾病。从<strong>死因统计</strong>的角度看，需要统计到糖尿病（E11），因为这是根本死因；但从<strong>发病率统计</strong>的角度看，需要记录终末期肾病（N18.5），因为肾脏病发病率数据必须包含这个病人。一个诊断无法同时满足两种统计口径，于是 ICD-10 设计了星剑号双重分类——用一个病因码（剑号 &dagger;）满足死因统计，用一个临床表现码（星号 *）满足发病率统计。</p>
+
+<div class="card tip">
+  <strong>核心定义：</strong><br>
+  &dagger; <strong>剑号（Dagger Code）</strong>：代表疾病的<strong>根本病因</strong>，是主要编码。在<strong>死因统计</strong>时，只有剑号计入统计。<br>
+  * <strong>星号（Asterisk Code）</strong>：代表疾病的<strong>临床表现</strong>，是附加编码。在<strong>发病率统计</strong>时，星号单独计入相应系统章节的统计。
+</div>
+
+<h3>1.2 三层含义——每个编码员必须理解的底层逻辑</h3>
+
+<table>
+  <tr><th>维度</th><th>剑号 &dagger;</th><th>星号 *</th></tr>
+  <tr>
+    <td><strong>代表什么</strong></td>
+    <td>病因/根本疾病（underlying condition）</td>
+    <td>临床表现/并发症（manifestation）</td>
+  </tr>
+  <tr>
+    <td><strong>编码位置</strong></td>
+    <td>病因所在章（如糖尿病在 E 章）</td>
+    <td>临床表现所在章（如肾病在 N 章，视网膜病变在 H 章）</td>
+  </tr>
+  <tr>
+    <td><strong>在病案首页上的角色</strong></td>
+    <td><strong>主诊断</strong>（或主要诊断之一）</td>
+    <td><strong>附加诊断</strong></td>
+  </tr>
+  <tr>
+    <td><strong>DRG/DIP 入组</strong></td>
+    <td><span style="color:var(--red);font-weight:700;">以剑号驱动入组</span></td>
+    <td>不影响入组，但质控检查必看</td>
+  </tr>
+  <tr>
+    <td><strong>死因统计</strong></td>
+    <td>计入根本死因统计</td>
+    <td>不计入死因统计</td>
+  </tr>
+  <tr>
+    <td><strong>发病率统计</strong></td>
+    <td>不计入相关章的发病率</td>
+    <td>单独计入临床表现所在章的发病率</td>
+  </tr>
+  <tr>
+    <td><strong>是否可以单独使用</strong></td>
+    <td style="background:var(--red-bg);"><strong>否</strong>——必须和星号成对出现</td>
+    <td style="background:var(--red-bg);"><strong>否</strong>——必须和剑号成对出现</td>
+  </tr>
+</table>
+
+<h3>1.3 一条铁律，三个后果</h3>
+<div class="card warn">
+  <p><strong>铁律：剑号和星号必须成对使用，绝对不允许单一出现。</strong></p>
+  <p style="margin-top:10px;">这条铁律有三个实际后果：</p>
+  <ol>
+    <li><strong>质控扣分：</strong>如果病案首页只填了 E11.3&dagger; 而漏掉 H36.0*，质控系统会标记为"编码不完整"。</li>
+    <li><strong>统计数据失真：</strong>漏掉星号，肾病或视网膜病变的发病率统计数据就少了一条——这会影响卫生政策决策。</li>
+    <li><strong>DRG 入组以剑号为准：</strong>如果编反了（把星号当主码），患者会被错误地分到"眼科疾病"组而不是"内分泌疾病"组，权重全错。</li>
+  </ol>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🔍</span> 二、星剑号的查找方法——从索引到核对的全路径</h2>
+
+<h3>2.1 第一步：识别——什么样的诊断"暗示"了星剑号？</h3>
+<p>不是所有诊断都需要星剑号。进入星剑号系统的信号有三个：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>信号一：诊断名称中包含"…性…"或"…引起的…"</h4>
+      <p>如"<strong>糖尿病性</strong>视网膜病变"、"<strong>高血压性</strong>心脏病"、"<strong>梅毒性</strong>主动脉瘤"——前面的疾病是病因，后面的是临床表现。这是最常见的星剑号信号。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>信号二：第三卷索引中出现 &dagger; 或 * 符号</h4>
+      <p>在第三卷字母索引中，如果某个条目旁边标注了 &dagger; 或 *，说明 ICD-10 要求对该诊断使用双重分类。</p>
+      <pre>视网膜病变
+  ——见于糖尿病 → E10-E14 伴有第四位数.3&dagger; H36.0*</pre>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>信号三：第一卷核对时发现星剑号标注</h4>
+      <p>当你按索引路径回到第一卷时，某些类目下会标注星号编码（如 H36.0*）。此时必须回头找到对应的剑号病因，补充完整编码对。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.2 第二步：查找——完整的索引路径演练</h3>
+<p>以"2 型糖尿病性视网膜病变（左眼 IV 期，玻璃体积血）"为例：</p>
+
+<div class="flow-chart">
+  <h4 style="margin-bottom:16px;color:var(--accent);">🔍 索引查找路径（以临床表现入手）</h4>
+  <div class="flow-row">
+    <div class="flow-box">主导词：视网膜病变</div>
+    <span style="font-size:20px;">→</span>
+    <div class="flow-box">—见于糖尿病</div>
+    <span style="font-size:20px;">→</span>
+    <div class="flow-box">E10-E14 &dagger;<br>第四位数.3</div>
+  </div>
+  <div class="flow-row" style="margin-top:8px;">
+    <div class="flow-box" style="border-color:var(--red);background:var(--red-bg);">H36.0*<br>星号码</div>
+  </div>
+  <p style="font-size:13px;color:var(--text3);margin-top:12px;">提示：从"临床表现"入手查索引是最常用的方法——先查到"视网膜病变→见于…糖尿病"，得到 H36.0*（星号）和 E10-E14.3&dagger;（剑号范围），再确定具体类型。</p>
+</div>
+
+<h3>2.3 第三步：核对与细化——国临版扩展码的选择</h3>
+<p>索引给出的 E10-E14.3&dagger; 只是方向，回到第一卷后需要确定：① 糖尿病类型（E10 1型 / E11 2型 / E12 营养不良相关 / E13 其他 / E14 未特指）；② 去国临版中 E11.3 下找到最匹配临床表现的扩展码。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：2型糖尿病 + 视网膜病变 I 期</h4>
+    <p>临床诊断：2型糖尿病性背景性小动脉瘤视网膜病</p>
+    <p>剑号：<code>E11.300x014&dagger;</code></p>
+    <p>星号：<code>H36.0*</code></p>
+    <p style="font-size:12px;color:var(--text3);">国临版扩展码 · 轻度非增生期</p>
+  </div>
+  <div class="example-item">
+    <h4>例：2型糖尿病 + 视网膜病变 IV 期</h4>
+    <p>临床诊断：2型糖尿病性增殖性视网膜前出血性视网膜病</p>
+    <p>剑号：<code>E11.300x033&dagger;</code></p>
+    <p>星号：<code>H36.0*</code></p>
+    <p style="font-size:12px;color:var(--text3);">国临版扩展码 · 增生早期伴出血</p>
+  </div>
+  <div class="example-item">
+    <h4>例：2型糖尿病 + 视网膜病变 VI 期</h4>
+    <p>临床诊断：2型糖尿病性牵拉性视网膜脱离</p>
+    <p>剑号：<code>E11.300x053&dagger;</code></p>
+    <p>星号：<code>H36.0*</code></p>
+    <p style="font-size:12px;color:var(--text3);">国临版扩展码 · 增生晚期</p>
+  </div>
+  <div class="example-item">
+    <h4>例：2型糖尿病 + 白内障</h4>
+    <p>临床诊断：2型糖尿病性白内障</p>
+    <p>剑号：<code>E11.300x003&dagger;</code></p>
+    <p>星号：<code>H28.0*</code></p>
+    <p style="font-size:12px;color:var(--text3);">注意：星号换成 H28.0*</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">📊</span> 三、星剑号高频场景——哪几类疾病最常触发双重分类？</h2>
+
+<h3>3.1 五大高频场景全景表</h3>
+
+<table>
+  <tr><th>场景</th><th>典型病因（&dagger; 剑号）</th><th>典型临床表现（* 星号）</th><th>关键规则</th></tr>
+  <tr>
+    <td><strong>1. 糖尿病并发症</strong><br><span style="font-size:12px;color:var(--red);">⭐ 最高频</span></td>
+    <td>E10-E14 伴第四位数 .3（眼部）、.2（肾）、.4（神经）、.5（循环）、.6（其他特指）、.7（多个）</td>
+    <td>H36.0* 视网膜病<br>H28.0* 白内障<br>H22.1* 虹膜炎<br>N08.3* 肾小球病<br>G63.2* 多发神经病<br>G99.0* 自主神经病<br>I79.2* 周围血管病</td>
+    <td>第4位数决定并发症类型，然后对应该类型的星号码。一个剑号可以有多个不同器官的星号。</td>
+  </tr>
+  <tr>
+    <td><strong>2. 感染性疾病</strong></td>
+    <td>A00-B99 各种病原体</td>
+    <td>G01* 细菌性脑膜炎<br>G02* 其他传染病性脑膜炎<br>G05.0* 细菌性脑炎<br>I39* 感染性心内膜炎<br>J17* 传染病性肺炎<br>K77.0* 传染病性肝炎<br>M01* 感染性关节炎</td>
+    <td>感染是病因（剑号），器官炎症是表现（星号）。结核性强直性脊柱炎：A18.0&dagger; + M49.0*</td>
+  </tr>
+  <tr>
+    <td><strong>3. 肿瘤</strong></td>
+    <td>C00-D48 肿瘤本身</td>
+    <td>G13.1* 副肿瘤性神经肌病<br>G53.3* 副肿瘤性神经病<br>G63.1* 副肿瘤性周围神经病<br>G73.2* Eaton-Lambert综合征</td>
+    <td>副肿瘤综合征（paraneoplastic syndrome）是远隔效应，非直接侵犯。肿瘤编码为剑号。</td>
+  </tr>
+  <tr>
+    <td><strong>4. 血液疾病</strong></td>
+    <td>D50-D89 血液病</td>
+    <td>H36.8* 其他视网膜病变<br>M36.2* 血友病性关节炎<br>M36.3* 其他血液病性关节病</td>
+    <td>血友病性关节炎：D66&dagger; + M36.2*</td>
+  </tr>
+  <tr>
+    <td><strong>5. 代谢性疾病</strong></td>
+    <td>E70-E90 代谢障碍</td>
+    <td>G13.2* 全身性萎缩性共济失调<br>G99.2* 脊髓病（见于维生素B12缺乏等）</td>
+    <td>维生素B12缺乏性脊髓病：E53.8&dagger; + G32.0*</td>
+  </tr>
+</table>
+
+<h3>3.2 糖尿病并发症星剑号速查表（必背）</h3>
+<p>在编码考试和实际工作中，糖尿病并发症的星剑号编码占双重分类场景的 <span class="hl">70% 以上</span>。下表必须熟练：</p>
+
+<table>
+  <tr><th>并发症部位</th><th>剑号（以 E11 2型为例）</th><th>星号</th><th>DRG 入组方向</th></tr>
+  <tr>
+    <td>眼部 — 视网膜病变</td>
+    <td><code>E11.300x0xx&dagger;</code><span style="font-size:11px;color:var(--text3);"><br>根据分期的扩展码不同</span></td>
+    <td><code>H36.0*</code></td>
+    <td>内分泌疾病组</td>
+  </tr>
+  <tr>
+    <td>眼部 — 白内障</td>
+    <td><code>E11.300x003&dagger;</code></td>
+    <td><code>H28.0*</code></td>
+    <td>内分泌疾病组</td>
+  </tr>
+  <tr>
+    <td>肾脏</td>
+    <td><code>E11.200x...</code> 或 <code>E11.2&dagger;</code></td>
+    <td><code>N08.3*</code></td>
+    <td>内分泌 + 肾脏MDC</td>
+  </tr>
+  <tr>
+    <td>神经系统 — 周围神经</td>
+    <td><code>E11.400x...</code> 或 <code>E11.4&dagger;</code></td>
+    <td><code>G63.2*</code></td>
+    <td>内分泌疾病组</td>
+  </tr>
+  <tr>
+    <td>神经系统 — 自主神经</td>
+    <td><code>E11.400x...</code></td>
+    <td><code>G99.0*</code></td>
+    <td>内分泌疾病组</td>
+  </tr>
+  <tr>
+    <td>周围血管</td>
+    <td><code>E11.500x...</code> 或 <code>E11.5&dagger;</code></td>
+    <td><code>I79.2*</code></td>
+    <td>内分泌 + 循环系统MDC</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 特别注意：</strong>如果糖尿病患者因非糖尿病原因住院（如车祸骨折），且糖尿病只是既往史，应编 Z86.3（糖尿病个人史），<strong>而不是</strong> E11.x&dagger; + 星号码。只有糖尿病当前是"现患"且与本次住院有关时才启用星剑号。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">⚡</span> 四、重难点深度解析：星剑号的主次关系——为什么"主诊断一定是剑号"？</h2>
+
+<p>这是初学者最容易出错的概念：既然星号是"临床表现"——比如说眼睛的病变——那为什么不是眼科的主诊断？这个困惑背后有一个重要的逻辑需要理清。</p>
+
+<h3>4.1 核心问题：主次关系的判断标准是什么？</h3>
+<p>ICD-10 对星剑号的主次关系有明确约定：<strong>剑号永远为主，星号永远为辅</strong>——这不由编码员的临床判断决定，而是 ICD-10 的硬性规则。原因有三：</p>
+
+<div class="card">
+  <p><strong>① 死因统计优先级：</strong>WHO 的根本死因统计规则要求追踪到"起始病因"。糖尿病导致视网膜病变致死/致残——记录糖尿病（剑号）才能正确反映死因链。</p>
+  <p><strong>② DRG 入组一致性：</strong>如果把星号（H36.0*）作为主诊断，患者会被分到"眼科疾病与功能障碍"MDC，但实际上患者住院是因为内分泌系统问题。这会导致：DRG 权重完全错误 → 医院收入受损 → 数据上报异常。</p>
+  <p><strong>③ 编码体系的设计意图：</strong>星号编码所在章（如 H36.0* 在 VII 章）中的"*"标记，本身就是告诉编码员——"这个码不能单独存在，请回到病因章找主码"。</p>
+</div>
+
+<h3>4.2 常见错误深度剖析：把星号当主诊断的三种典型场景</h3>
+
+<table>
+  <tr><th>场景</th><th>❌ 错误做法</th><th>✅ 正确做法</th><th>原因</th></tr>
+  <tr>
+    <td>患者因视物模糊就诊<br>确诊糖尿病性视网膜病变</td>
+    <td>主诊断编 <code>H36.0*</code><br><span style="font-size:12px;color:var(--text3);">"眼睛的问题就是眼科主诊断"</span></td>
+    <td>主诊断编 <code>E11.300x033&dagger;</code><br>附加诊断编 <code>H36.0*</code></td>
+    <td>眼睛病变的病因是糖尿病——必须把病因放在第一位。无论哪一科收治，剑号永远为主。</td>
+  </tr>
+  <tr>
+    <td>肾病科收治糖尿病肾病</td>
+    <td>主诊断编 <code>N08.3*</code><br><span style="font-size:12px;color:var(--text3);">"肾病科当然主诊肾的问题"</span></td>
+    <td>主诊断编 <code>E11.2&dagger;</code><br>附加诊断编 <code>N08.3*</code></td>
+    <td><strong>收治科室与主诊断选择无关。</strong>星剑号规则不因科室而改变。这是质控检查的高频扣分点！</td>
+  </tr>
+  <tr>
+    <td>只编了星号，漏掉剑号</td>
+    <td>病历里只有 <code>H36.0*</code><br>没有对应的 E11</td>
+    <td>两个编码必须同时存在</td>
+    <td>星号不能单独出现，系统会标记为"不完整编码"</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 记忆公式：</strong><br>
+  无论哪个科收治、无论临床表现多么突出 → 剑号（病因）永远是主诊断，星号（表现）永远是附加诊断。<br>
+  这是个硬性规则，没有例外。
+</div>
+
+<h3>4.3 一个特殊场景：非糖尿病场景的星剑号</h3>
+<p>除了糖尿病，以下场景也常被忽略但必须使用星剑号：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 只编了一个码</h4>
+    <p>结核性心包炎 → 只编 A18.8（结核）</p>
+    <p>梅毒性主动脉瘤 → 只编 A52.0（神经梅毒）</p>
+    <p>血友病性关节炎 → 只编 D66（血友病）</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 星剑号成对编码</h4>
+    <p>结核性心包炎 → <code>A18.8&dagger;</code> + <code>I32.0*</code></p>
+    <p>梅毒性主动脉瘤 → <code>A52.0&dagger;</code> + <code>I79.0*</code></p>
+    <p>血友病性关节炎 → <code>D66&dagger;</code> + <code>M36.2*</code></p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 五、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 星剑号识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下诊断<strong>是否需要使用星剑号双重分类</strong>，如果需要，指出剑号和星号分别是什么：</p>
+    <ol>
+      <li>2 型糖尿病性白内障</li>
+      <li>单纯性肥胖</li>
+      <li>高血压性心脏病</li>
+      <li>糖尿病性多发神经病变</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. 需要 ✅</strong> —— 剑号 <code>E11.300x003&dagger;</code>（2型糖尿病，"糖尿病性"说明病因是糖尿病），星号 <code>H28.0*</code>（白内障是临床表现）</p>
+        <p><strong>2. 不需要 ❌</strong> —— 单纯性肥胖（E66）没有特定的器官临床表现需要星号编码。只有一种情况例外：如果肥胖是其他内分泌疾病的临床表现，则原发内分泌疾病可能是剑号。</p>
+        <p><strong>3. 不需要 ❌</strong> —— 这个很特殊！高血压性心脏病（I11.x）使用的是<strong>合并编码</strong>而非星剑号。ICD-10 将高血压性心脏病作为心脏病分类下独立的合并条目，不采用星剑号机制。</p>
+        <p><strong>4. 需要 ✅</strong> —— 剑号 <code>E11.4&dagger;</code>（2型糖尿病伴神经并发症），星号 <code>G63.2*</code>（糖尿病性多发神经病变）</p>
+        <p><strong>💡 核心技巧：</strong>"糖尿病性"三个字是星剑号的最强信号！但"高血压性"不一定是星剑号——心脏和肾用合并编码（I11-I13），脑血管用普通编码（I60-I69），需具体问题具体分析。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 主导词选择与索引路径</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者出院诊断："2 型糖尿病性视网膜病变（左眼 IV 期，玻璃体积血）"。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>主导词应该选什么？（至少给出两种不同的选择路径）</li>
+      <li>说明从索引到核对的完整路径</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 路径一（推荐，从临床表现入手）：</strong></p>
+        <p>主导词：<strong>视网膜病变</strong> → 第三卷索引查找 → "—见于糖尿病" → 指向 E10-E14 伴第四位数 .3&dagger; + H36.0*</p>
+        <p>回到第一卷：确认糖尿病类型为 E11（2 型）→ E11.3 为"伴有眼的并发症"</p>
+        <p>去国临版 E11.3 下查找：IV 期对应扩展码 E11.300x033（2 型糖尿病性增殖性视网膜前出血性视网膜病）</p>
+        <p><strong>✅ 最终编码：</strong><code>E11.300x033&dagger;</code> + <code>H36.0*</code></p>
+
+        <p><strong>✅ 路径二（从病因入手）：</strong></p>
+        <p>主导词：<strong>糖尿病</strong> → 第三卷索引查找 → "—伴有...眼部并发症" → 指向 E11.3&dagger; 及其他相关亚目 → 再查临床表现"视网膜病变→见于糖尿病"获取 H36.0*</p>
+
+        <p><strong>💡 建议：</strong>实际工作中推荐路径一（从临床表现入手），因为临床表现通常更具体，能更快定位到精确的国临版扩展码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 多并发症编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者出院同时有 2 型糖尿病性视网膜病变（III 期）和 2 型糖尿病性白内障。</p>
+    <p><strong>问题：</strong>需要编几个码？分别是什么？哪个是主诊断？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 需要编 3 个码：</strong>（一个病种、两种并发症 → 两个剑号 + 两个星号，但剑号可以使用"多个并发症"的合并代码）</p>
+        <p><strong>实际常用方案：</strong></p>
+        <p>① 如果病历将所有眼部并发症合并为一个诊断表述，可用 <code>E11.300x0xx&dagger;</code>（取最主要的临床表现）+ 对应星号</p>
+        <p>② 如果两种并发症分别诊治较重，分别编码：</p>
+        <p>主诊断：<code>E11.300x022&dagger;</code>（2型糖尿病性增殖前期视网膜内微血管异常性视网膜病，III期）</p>
+        <p>附加1：<code>H36.0*</code>（糖尿病性视网膜病变）</p>
+        <p>附加2：<code>E11.300x003&dagger;</code>（2型糖尿病性白内障）</p>
+        <p>附加3：<code>H28.0*</code>（糖尿病性白内障）</p>
+        <p><strong>💡 注意：</strong>如果两种并发症属于不同的 ICD-10 第4位数（如 .3 眼部 + .4 神经），应使用 E11.7（伴多个并发症）作为合并剑号，或分别列出各条剑号+星号对。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 主次关系判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"双眼视力急剧下降 3 天"入住眼科，诊断为"2型糖尿病性视网膜病变（右眼VI期，牵拉性网脱；左眼IV期）"。病程记录显示 HbA1c 11.2%，入院后由内分泌科会诊调整降糖方案，眼科行右眼玻璃体切割术。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>主诊断应该选什么？为什么在眼科收治的情况下主诊断仍然是糖尿病？</li>
+      <li>给出完整的诊断编码方案</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1. 主诊断：</strong>虽然眼科收治、眼科做了手术，但主诊断仍然是糖尿病——具体是 <code>E11.300x053&dagger;</code>（2型糖尿病性牵拉性视网膜脱离）。原因：</p>
+        <ul>
+          <li>ICD-10 硬性规则：剑号永远是主诊断，与收治科室无关。</li>
+          <li>DRG 入组：如果主诊断放 H36.0*，会错误分入眼科 MDC（低权重），而糖尿病内分泌 MDC 才是正确的。</li>
+          <li>内分泌科会诊和降糖治疗也说明：糖尿病是本次住院的根本问题。</li>
+        </ul>
+        <p><strong>✅ 2. 完整编码方案：</strong></p>
+        <p><strong>主诊断：</strong><code>E11.300x053&dagger;</code> 2型糖尿病性牵拉性视网膜脱离（右眼VI期，取最重的临床表现做主要剑号）</p>
+        <p><strong>其他诊断：</strong></p>
+        <p>① <code>H36.0*</code> 糖尿病性视网膜病变（星号，临床表现）</p>
+        <p>② <code>E11.300x033&dagger;</code> 2型糖尿病性增殖性视网膜前出血性视网膜病（左眼IV期的剑号）</p>
+        <p>③ <code>H36.0*</code> 糖尿病性视网膜病变（左眼IV期的星号——如同一患者同一星号只填一次）</p>
+        <p><strong>手术操作：</strong>玻璃体切割术（ICD-9-CM-3 编码，后续学习）</p>
+        <p><strong>💡 核心教训：</strong>哪怕你是眼科编码员、眼科收治，剑号规则不会变。"谁收治谁做主诊断"这个直觉在星剑号面前是错的。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 感染性疾病的星剑号</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者诊断为"结核性心包炎"，胸水涂片抗酸染色阳性。病程记录显示既往有肺结核史（已治愈 3 年）。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>是否需要星剑号编码？如果需要，给出编码方案。</li>
+      <li>既往肺结核史需要怎么处理？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1. 需要星剑号：</strong></p>
+        <p>"结核性"意味着结核是病因，心包炎是临床表现。</p>
+        <p>剑号：<code>A18.8&dagger;</code>（其他器官的结核，此处指结核性心包炎）</p>
+        <p>星号：<code>I32.0*</code>（分类于他处疾病中的心包炎：结核性心包炎）</p>
+        <p><strong>索引路径：</strong>心包炎 → "—结核性" → A18.8&dagger; + I32.0*</p>
+
+        <p><strong>✅ 2. 既往肺结核史：</strong></p>
+        <p>已治愈 3 年的肺结核 → 编 <code>Z86.1</code>（传染病个人史：结核）。这是附加诊断，与当前心包炎不冲突。</p>
+
+        <p><strong>💡 注意区分：</strong>如果心包炎是由活动性肺结核直接扩散而来，则主诊断应改为 A15-A16（肺结核）而非 A18.8（肺外结核）。这里的关键是看胸水和心包积液中的结核菌是来自既往肺病灶还是当前活动。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 综合编码判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>分析以下 3 个诊断场景，各需要几个编码？哪些是 &dagger;？哪些是 *？有没有不需要星剑号的情况？</p>
+    <table>
+      <tr><th>场景</th><th>诊断</th><th>你的编码方案</th></tr>
+      <tr><td>A</td><td>2型糖尿病伴肾病，慢性肾衰竭（尿毒症期），糖尿病性周围神经病变</td><td>？</td></tr>
+      <tr><td>B</td><td>高血压病3级 + 冠心病（稳定型心绞痛）——两种病是并存关系，非"高血压导致"</td><td>？</td></tr>
+      <tr><td>C</td><td>梅毒性主动脉瘤伴主动脉瓣关闭不全</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：糖尿病 + 肾病 + 神经病变</strong></p>
+        <p><strong>需要 5 个码：</strong></p>
+        <p>主诊断：<code>E11.2&dagger;</code>（2型糖尿病伴肾并发症）——剑号主码</p>
+        <p>附加1：<code>N08.3*</code>（糖尿病性肾小球病）——肾病星号</p>
+        <p>附加2：<code>N18.5</code>（慢性肾衰竭尿毒症期）——慢性肾衰竭是独立编码，不属于星剑号</p>
+        <p>附加3：<code>E11.4&dagger;</code>（2型糖尿病伴神经并发症）——神经病的剑号</p>
+        <p>附加4：<code>G63.2*</code>（糖尿病性多发神经病）——神经病星号</p>
+        <p><strong>注意：</strong>N18.5 慢性肾衰竭本身不是星号——它是独立的诊断编码。糖尿病肾病（N08.3*）是星号。两者不冲突，都要填。</p>
+
+        <p><strong>✅ B：高血压 + 冠心病（并存关系）</strong></p>
+        <p><strong>不需要星剑号！</strong></p>
+        <p>主诊断：<code>I10</code>（原发性高血压，3级）</p>
+        <p>附加：<code>I25.1</code>（冠心病，稳定型心绞痛）</p>
+        <p><strong>判断逻辑：</strong>病历明确说了"并存关系，非高血压导致"。没有因果关系 → 没有"高血压性"的前提 → 不触发星剑号。如果因果关系成立（高血压性心脏病），则应编码 I11.x（合并编码，不用星剑号）。</p>
+
+        <p><strong>✅ C：梅毒性主动脉瘤</strong></p>
+        <p><strong>需要 2 个码（星剑号）：</strong></p>
+        <p>主诊断：<code>A52.0&dagger;</code>（心血管梅毒—梅毒性主动脉瘤）</p>
+        <p>附加：<code>I79.0*</code>（分类于他处疾病中的主动脉瘤：梅毒性）</p>
+        <p>主动脉瓣关闭不全如果是梅毒直接导致的 → 可再附加 <code>I39.1*</code>（分类于他处疾病中的主动脉瓣疾患：梅毒性）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 六、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-num">1</div><div><strong>星剑号双轨逻辑：</strong>&dagger; 为死因统计（病因），* 为发病率统计（表现）</div></div>
+  <div class="key-item"><div class="key-num">2</div><div><strong>铁律：&dagger; 和 * 必须成对使用，</strong>绝对不能单独出现。漏一个就是编码不完整</div></div>
+  <div class="key-item"><div class="key-num">3</div><div><strong>主次关系：</strong>剑号永远是主诊断，星号永远是附加诊断。与收治科室无关</div></div>
+  <div class="key-item"><div class="key-num">4</div><div><strong>DRG 以剑号驱动入组</strong>，把星号当主诊断 = 入错组 = 亏钱</div></div>
+  <div class="key-item"><div class="key-num">5</div><div><strong>糖尿病是星剑号最高频场景：</strong>E10-E14.2-6&dagger; + 器官星号</div></div>
+  <div class="key-item"><div class="key-num">6</div><div><strong>"糖尿病性" = 星剑号信号</strong>，但"高血压性心脏病"用合并编码（I11）而非星剑号</div></div>
+  <div class="key-item"><div class="key-num">7</div><div><strong>从临床表现查索引（推荐）：</strong>视网膜病变→见于糖尿病→得 &dagger; 和 *</div></div>
+  <div class="key-item"><div class="key-num">8</div><div><strong>国临版扩展：</strong>在 E11.3 下选最匹配临床表现的 6 位码（如 E11.300x033）</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 6 主题：附加编码与形态学编码（M编码）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>什么是形态学编码（M编码）？ICD-O 和 ICD-10 的 M 编码是什么关系？</li>
+    <li>为什么肿瘤除了部位编码（C/D）还要形态学编码（M）？</li>
+    <li>动态编码（/0 /1 /2 /3 /6 /9）分别代表什么？原位癌、恶性、良性怎么区分？</li>
+    <li>附加编码除了形态学编码，还有哪些常见类型？（外因编码 V01-Y98、耐药编码 U82-U85 等）</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 5 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
