@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 6（2026年6月24日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* Dynamic code tag */
+  .dyn-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 12px; font-weight: 700; margin: 0 2px;
+    font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+  }
+  .dyn-0 { background: #dbeafe; color: #2563eb; }
+  .dyn-1 { background: #fef3c7; color: #b45309; }
+  .dyn-2 { background: #fce7f3; color: #be185d; }
+  .dyn-3 { background: #fee2e2; color: #dc2626; }
+  .dyn-6 { background: #ede9fe; color: #7c3aed; }
+  .dyn-9 { background: #e0e7ff; color: #4338ca; }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 6 · 2026年6月24日</div>
+  <h1>附加编码与形态学编码（M编码）</h1>
+  <p class="subtitle">掌握"额外信息"如何嵌入编码体系——形态学动态码、外因码、星剑号的规则与陷阱</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:10%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 6 / 60 天（10%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码考试必考，日常高频使用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>形态学编码M的五位数字结构 + 动态编码 /0 /1 /2 /3 /6 /9 的含义</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>C00-D48 肿瘤编码"先形态学、后部位"的查找步骤（不可颠倒）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>附加编码的四类场景：形态学M码、外因V01-Y98、星剑号双重分类、R码—确诊转换</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>外因编码 V01-Y98 不能单独做主诊断，必须配合第十九章中毒/损伤编码</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免日常编码的隐性错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>形态学编码与部位编码的对应关系——良/恶性不匹配会触发质控报错</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>常见形态学陷阱：M8140/3 vs M8380/3、M8010/2 vs M8010/3 的混淆场景</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>外因编码中"意外"与"故意自害"与"意图不确定"的区分逻辑</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-O-3（国际肿瘤疾病分类第三版）与ICD-10形态学编码的对应关系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>WHO肿瘤分类版本更新（2013版→2020版）对形态学编码的影响</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>Day 6 是连接"基础编码规则"与"肿瘤编码实战"的桥梁课。形态学动态码（/0~/9）看似简单，但"良恶性不匹配"是中国病案质控中<strong>排名前十的高频错误</strong>。今天务必把 "先形态学→后部位" 的查找顺序刻进肌肉记忆。
+</div>
+
+<!-- ======== 一、什么是附加编码 ======== -->
+<hr class="divider">
+<h2><span class="icon">📋</span> 一、附加编码概述——为什么一个诊断需要编多个码？</h2>
+
+<h3>1.1 主编码 vs 附加编码的定义</h3>
+<p>在 ICD-10 的编码体系中，"一个诊断一个码"是最基本的情况，但 大约<strong>30%-40%</strong> 的住院病案需要编多个码才能完整描述一个疾病或事件。这些"辅助性"的编码统称为<strong>附加编码</strong>（Supplementary Codes）。</p>
+
+<div class="card tip">
+  <strong>核心定义：</strong>附加编码是对主编码的<strong>补充说明</strong>，提供主编码无法表达的额外信息维度——例如疾病的<strong>组织学类型</strong>（形态学）、<strong>外部原因</strong>（损伤机制）、<strong>临床表现</strong>（星号码）等。
+</div>
+
+<h3>1.2 附加编码的四大类型——一张表说清楚</h3>
+
+<table>
+  <tr><th style="width:15%;">类型</th><th style="width:18%;">码位范围</th><th style="width:18%;">何时触发</th><th>一句话规则</th></tr>
+  <tr>
+    <td><strong>形态学编码（M码）</strong></td>
+    <td><code>M8000/0 ~ M9989/3</code></td>
+    <td>凡使用 C00-D48（肿瘤章）的任何编码</td>
+    <td>肿瘤编码的"必选项"——C/D 码必须配 M 码，否则病案首页不完整</td>
+  </tr>
+  <tr>
+    <td><strong>外因编码</strong></td>
+    <td><code>V01-Y98</code></td>
+    <td>凡使用 S00-T98（损伤中毒章）编码时</td>
+    <td>说明"怎么伤的"——永远附加，<strong>绝不能做主诊断</strong></td>
+  </tr>
+  <tr>
+    <td><strong>星剑号双重分类</strong></td>
+    <td>散在于各章（带 † 和 * 标记）</td>
+    <td>疾病同时涉及病因+突出临床表现</td>
+    <td>剑号 (†) 主码 + 星号 (*) 附加码，两个都必须填</td>
+  </tr>
+  <tr>
+    <td><strong>其他附加信息</strong></td>
+    <td>如 Z 章、R 章转换</td>
+    <td>放化疗史（Z51）、治疗后状态（Z48）、器官切除后（Z90）等</td>
+    <td>提供"背景信息"，影响 DRG 分组的并发症/合并症计算</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 附加编码的核心铁律：</strong>附加编码永远不能单独做主诊断——它们没有独立的疾病意义，只是对主诊断的"注解"。如果把外因码 V01-Y98 填在主诊断位置，质控直接判错，DRG 无法入组。
+</div>
+
+<h3>1.3 什么时候需要多码？决策树</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>这个诊断码是 C 或 D 开头吗？</h4>
+      <p>是 → 必须加形态学 M 码（附加） | 否 → 继续判断</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>这个诊断码是 S 或 T 开头吗？</h4>
+      <p>是 → 必须查外因，编 V/W/X/Y 码（附加） | 否 → 继续判断</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第一卷中该码旁边有 † 或 * 标记吗？</h4>
+      <p>是 → 必须同时编对应的星号/剑号码 | 否 → 单码即可</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>诊断是否涉及"治疗后状态""个人史""筛查"等背景信息？</h4>
+      <p>是 → 考虑加 Z 章编码（附加） | 否 → 编码完成</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、形态学编码（M码） ======== -->
+<h2><span class="icon">🔬</span> 二、形态学编码（M编码）——肿瘤的"组织学身份证"</h2>
+
+<h3>2.1 M 编码的结构拆解</h3>
+<p>M 编码（Morphology Code）源自 ICD-O（国际肿瘤疾病分类），一套完整的 M 编码由<strong>两部分</strong>组成：</p>
+
+<pre>M 8 1 4 0  /  3
+│ └─┬──┘    │  │
+│   四位数字   │  动态码（肿瘤行为）
+│  表示组织学  │
+│  类型       │
+首字母M      分隔符
+(Morphology的
+ 缩写)</pre>
+
+<p><strong>四位数字</strong>（M8000 - M9989）：表示肿瘤的<strong>组织学类型</strong>——即显微镜下看到的是什么细胞。例如 M8140 = 腺癌，M8070 = 鳞状细胞癌，M8720 = 恶性黑色素瘤。</p>
+<p><strong>动态码</strong>（/后一位数字）：表示肿瘤的<strong>生物学行为</strong>——良性还是恶性？原发还是转移？这是区分"C码"（恶性）还是"D码"（良性/原位）的决定性依据。</p>
+
+<h3>2.2 六种动态码——肿瘤行为的"红绿灯"</h3>
+
+<table>
+  <tr><th>动态码</th><th>含义</th><th>对应的 ICD-10 部位码范围</th><th>临床含义</th><th>标签</th></tr>
+  <tr>
+    <td><code>/0</code></td><td><strong>良性</strong></td><td>D10-D36</td><td>不会转移，生长慢，边界清楚</td>
+    <td><span class="dyn-tag dyn-0">良性</span></td>
+  </tr>
+  <tr>
+    <td><code>/1</code></td><td><strong>良性或恶性未肯定</strong>（交界性/动态未定）</td><td>D37-D48</td><td>病理报告写了"不能确定良恶性"，需随访</td>
+    <td><span class="dyn-tag dyn-1">未肯定</span></td>
+  </tr>
+  <tr>
+    <td><code>/2</code></td><td><strong>原位癌</strong>（上皮内瘤变Ⅲ级）</td><td>D00-D09</td><td>癌细胞限于上皮层内，未突破基底膜——<strong>可治愈</strong></td>
+    <td><span class="dyn-tag dyn-2">原位</span></td>
+  </tr>
+  <tr>
+    <td><code>/3</code></td><td><strong>恶性，原发部位</strong></td><td>C00-C76, C80-C97</td><td>有侵袭和转移能力，"癌症"的最常用动态码</td>
+    <td><span class="dyn-tag dyn-3">恶性原发</span></td>
+  </tr>
+  <tr>
+    <td><code>/6</code></td><td><strong>恶性，转移部位</strong>（继发恶性肿瘤）</td><td>C77-C79</td><td>从其他部位转移过来的——编码时部位选转移所在器官</td>
+    <td><span class="dyn-tag dyn-6">转移</span></td>
+  </tr>
+  <tr>
+    <td><code>/9</code></td><td><strong>恶性，原发或转移未肯定</strong></td><td>C80（未特指部位恶性肿瘤）</td><td>病理明确是恶性，但分不清原发还是转移</td>
+    <td><span class="dyn-tag dyn-9">恶性未定</span></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 最常见的形态学报错：良恶性不匹配！</strong><br>
+  例如：部位编码填了 <code>C34.9</code>（肺恶性肿瘤），但形态学写了 <code>M8140/0</code>（良性腺瘤）→ 质控系统直接报错，<strong>动态码必须与部位码的性质（C=恶性 / D=良性或原位）一致</strong>。
+</div>
+
+<h3>2.3 肿瘤编码的黄金法则："先形态学，后部位"</h3>
+<p>很多新手习惯先看"肿瘤长在哪"再查编码，但 ICD-10 的肿瘤编码有严格的先后顺序：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误顺序</h4>
+    <p>1. 先查部位（"肺肿瘤"）→ 翻到 C34.x</p>
+    <p>2. 再查形态学 → 发现病理是"小细胞癌"</p>
+    <p>3. 强行把 M8041/3 配到 C34.9</p>
+    <p style="margin-top:8px;color:var(--red);"><strong>问题：</strong>跳过了索引中的重要指引信息，可能错过特定的合并条目</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确顺序</h4>
+    <p>1. 查形态学主导词 → "癌→小细胞 (M8041/3)"</p>
+    <p>2. 看索引指引 → "另见 肿瘤，恶性"</p>
+    <p>3. 查肿瘤表→按部位定位 C34.9</p>
+    <p>4. 返回第一卷核对"不包括"注释</p>
+    <p style="margin-top:8px;color:var(--green);"><strong>优势：</strong>形态学编码决定了肿瘤表查哪个栏（良性栏/恶性栏/原位栏），确保不会查错栏</p>
+  </div>
+</div>
+
+<div class="process-box">
+  <p style="font-weight:700;margin-bottom:12px;">📌 肿瘤编码四步法（标准流程）：</p>
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>根据病理报告确定形态学编码</h4>
+      <p>主导词一般为"癌""腺癌""肉瘤""黑色素瘤"等 → 查到 Mxxxx/x</p>
+      <p style="color:var(--red);"><strong>关键：</strong>以术后石蜡病理为主要依据，术中冰冻病理准确率约70%，仅作参考</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>根据形态学编码的动态码，选择肿瘤表的正确栏</h4>
+      <p>/0 → 良性栏 | /1 → 动态未定栏 | /2 → 原位栏 | /3 → 恶性原发栏 | /6 → 继发栏</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>在对应栏中按解剖部位查找部位编码</h4>
+      <p>"肿瘤表"中按器官/组织名称查 → 得到 C 或 D 的部位码</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>返回第一卷核对"包括""不包括"注释</h4>
+      <p>确认部位编码与形态学编码在分类体系中无冲突</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.4 常用形态学编码速查表</h3>
+
+<table>
+  <tr><th>组织学类型</th><th>形态学编码</th><th>常见部位</th><th>记忆口诀</th></tr>
+  <tr>
+    <td>癌，NOS（未特指）</td><td><code>M8010/3</code></td><td>各部位</td><td>"8010，癌症基码"</td>
+  </tr>
+  <tr>
+    <td>原位癌（上皮内瘤变Ⅲ级）</td><td><code>M8010/2</code></td><td>宫颈、结肠、胃</td><td>"同样8010，/2=未突破基底膜"</td>
+  </tr>
+  <tr style="background:var(--warn-bg);">
+    <td>腺癌，NOS</td><td><code>M8140/3</code></td><td>肺、胃、结直肠、胰腺</td><td>"8140=腺癌，但注意！子宫内膜样癌是8380"</td>
+  </tr>
+  <tr>
+    <td>鳞状细胞癌</td><td><code>M8070/3</code></td><td>肺、食管、宫颈、皮肤</td><td>"8070=鳞癌"</td>
+  </tr>
+  <tr style="background:var(--warn-bg);">
+    <td><strong>子宫内膜样腺癌</strong></td><td><code>M8380/3</code></td><td>子宫内膜 (C54.1)</td><td>"⚠️ 不是 M8140/3！高频错误！"</td>
+  </tr>
+  <tr>
+    <td>小细胞癌</td><td><code>M8041/3</code></td><td>肺（最常见）</td><td>"8041=小细胞，8042=大细胞"</td>
+  </tr>
+  <tr>
+    <td>浸润性导管癌</td><td><code>M8500/3</code></td><td>乳腺</td><td>"8500=乳腺最常见的癌"</td>
+  </tr>
+  <tr>
+    <td>肝细胞癌</td><td><code>M8170/3</code></td><td>肝 (C22.0)</td><td>"8170=肝癌"</td>
+  </tr>
+  <tr>
+    <td>恶性黑色素瘤</td><td><code>M8720/3</code></td><td>皮肤</td><td>"8720=黑色素瘤"</td>
+  </tr>
+  <tr>
+    <td>良性肿瘤，NOS</td><td><code>M8000/0</code></td><td>各部位</td><td>"8000/0=良性占位待查"</td>
+  </tr>
+  <tr>
+    <td>转移性肿瘤</td><td><code>M8000/6</code></td><td>肝、肺、骨、脑（继发）</td><td>"8000/6=来路不明的转移"</td>
+  </tr>
+  <tr>
+    <td>乳头状瘤病</td><td><code>M8060/0</code></td><td>皮肤、阴道、膀胱</td><td>"8060=乳头状，良性"</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 三、形态学编码高频陷阱 ======== -->
+<h2><span class="icon">💣</span> 三、形态学编码的高频陷阱——避坑指南</h2>
+
+<h3>陷阱1：M8140/3 不是万能"腺癌"码</h3>
+<p>M8140/3 是"腺癌，NOS（未特指）"的通用编码，但某些特殊部位的腺癌有<strong>专属形态学编码</strong>，不能套用 M8140/3：</p>
+
+<table>
+  <tr><th>临床诊断</th><th>❌ 错误 M 码</th><th>✅ 正确 M 码</th><th>解释</th></tr>
+  <tr>
+    <td>子宫内膜样腺癌</td><td><code>M8140/3</code></td><td><code>M8380/3</code></td><td>子宫内膜样腺癌是 I 型子宫内膜癌的特定亚型，ICD-O 给了独立编码</td>
+  </tr>
+  <tr>
+    <td>甲状腺乳头状癌</td><td><code>M8140/3</code></td><td><code>M8260/3</code></td><td>乳头状癌是甲状腺癌的最常见类型，有专属编码</td>
+  </tr>
+  <tr>
+    <td>胃印戒细胞癌</td><td><code>M8140/3</code></td><td><code>M8490/3</code></td><td>印戒细胞癌是弥漫型胃癌的特殊组织学类型</td>
+  </tr>
+  <tr>
+    <td>肝细胞癌</td><td><code>M8140/3</code></td><td><code>M8170/3</code></td><td>肝细胞癌不是"腺癌"，是独立的形态学类型</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 避坑原则：</strong>病理报告写了具体的组织学类型（如"乳头状""印戒细胞""透明细胞""黏液性"）→ 一定要在索引中查这个具体类型，而不是默认填 M8140/3。
+</div>
+
+<h3>陷阱2：原位癌（/2）与恶性（/3）的界限——异型增生怎么编？</h3>
+
+<p>消化道病理报告中常见"异型增生（Dysplasia）"和"上皮内瘤变（Intraepithelial Neoplasia, IEN）"这两个术语。它们与编码的对应关系如下：</p>
+
+<table>
+  <tr><th>病理术语</th><th>对应动态码</th><th>部位编码</th><th>说明</th></tr>
+  <tr>
+    <td>轻度异型增生 / 低级别上皮内瘤变</td><td>不够原位癌标准</td><td>不能编 D00-D09</td><td>不属于原位癌，通常归入良性或炎症范畴</td>
+  </tr>
+  <tr>
+    <td><strong>重度异型增生 / 高级别上皮内瘤变</strong></td>
+    <td><code>M8010/2</code></td><td>D00-D09（原位癌）</td><td><strong>等同于原位癌</strong>——这是中国病理界的共识</td>
+  </tr>
+  <tr>
+    <td>黏膜内癌（浸润限于黏膜层）</td><td><code>M8010/3</code></td><td>C 码（恶性）</td><td>已突破基底膜但限于黏膜层，按恶性编码</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键记忆点：</strong>病理写"重度异型增生"或"高级别上皮内瘤变"→ 部位码编 D 开头（原位癌），形态学 M8010/2。这个规则在消化道肿瘤（食管、胃、结肠）中特别常见，编码员必须掌握。
+</div>
+
+<h3>陷阱3：没有病理报告时，M 码怎么填？</h3>
+<p>某些情况下患者未做病理检查（如晚期患者仅做姑息治疗、放化疗患者），但 ICD-10 规则要求 <strong>C00-D48 类目必须填写形态学编码</strong>。此时：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>因为没做病理检查，所以<strong>不填 M 码</strong></p>
+    <p style="color:var(--red);margin-top:6px;">后果：病案首页不完整，质控扣分</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>使用通用形态学编码：</p>
+    <p><code>M8000/3</code> 恶性肿瘤（无法获取组织学类型时）</p>
+    <p><code>M8010/3</code> 癌，NOS（临床可判断为癌但无病理分型）</p>
+    <p><code>M8000/1</code> 动态未定肿瘤（良恶性无法判断时）</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 四、外因编码 V01-Y98 ======== -->
+<h2><span class="icon">🚑</span> 四、外因编码（第二十章 V01-Y98）——损伤中毒的"来历说明"</h2>
+
+<h3>4.1 外因编码的核心规则</h3>
+<p>ICD-10 第十九章（S00-T98）描述的是<strong>损伤本身</strong>（"什么伤"），而第二十章（V01-Y98）描述的是<strong>损伤的外在原因</strong>（"怎么伤的"）。二者是<strong>强制配对关系</strong>：</p>
+
+<pre>主诊断：S06.9 颅内损伤（损伤本身）
+附加码：V03.1 行人被小汽车碰撞（外因）
+
+主诊断：T58 一氧化碳中毒（中毒本身）
+附加码：X47.- 气体和蒸气的意外中毒（外因）</pre>
+
+<div class="card warn">
+  <strong>⚠️ 外因编码三大铁律：</strong>
+  <ol style="margin-top:8px;">
+    <li><strong>永远附加</strong>——外因码绝不能填在"主要诊断"栏，只能填在"其他诊断"或"外因"栏</li>
+    <li><strong>有损伤就有外因</strong>——只要用了 S-T 码，就<strong>必须</strong>查外因编码</li>
+    <li><strong>意图是关键</strong>——意外（Accident）、故意自害（Suicide）、加害（Assault）、意图不确定，编码完全不同</li>
+  </ol>
+</div>
+
+<h3>4.2 外因编码的分类结构</h3>
+
+<table>
+  <tr><th>码位范围</th><th>类别</th><th>典型场景</th></tr>
+  <tr><td><code>V01-V99</code></td><td>运输事故</td><td>行人被汽车撞（V03）、骑自行车摔伤（V18）、汽车乘员事故（V43）</td></tr>
+  <tr><td><code>W00-W99</code></td><td>跌倒、坠落</td><td>地面滑倒（W01）、楼梯跌倒（W10）、床上跌落（W06）</td></tr>
+  <tr><td><code>X00-X09</code></td><td>暴露于火焰/热</td><td>火灾烧伤、烫伤</td></tr>
+  <tr><td><code>X40-X49</code></td><td>有毒物质的意外中毒</td><td>煤气中毒（X47）、农药中毒（X48）、药物中毒（X41-X44）</td></tr>
+  <tr><td><code>X60-X84</code></td><td>故意自害</td><td>自缢、服毒自杀、跳楼——编码与"意外"完全不同</td></tr>
+  <tr><td><code>X85-Y09</code></td><td>加害（他伤）</td><td>被他人殴打、刺伤、枪伤</td></tr>
+  <tr><td><code>Y10-Y34</code></td><td>意图不确定的事件</td><td>无法判断是意外还是自害/加害</td></tr>
+</table>
+
+<h3>4.3 外因编码真实案例解析</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>案例A：煤气中毒</h4>
+    <p><strong>临床场景：</strong>患者在家中因煤气泄漏中毒昏迷</p>
+    <p><strong>主诊断：</strong><code>T58</code> 一氧化碳中毒</p>
+    <p><strong>外因码：</strong><code>X47.-</code> 气体和蒸气的意外中毒及暴露</p>
+    <p><strong>索引路径：</strong>意外中毒→煤气→X47</p>
+    <p><strong>注意：</strong>如果是故意自害= X67；意图不确定= Y17</p>
+  </div>
+  <div class="example-item">
+    <h4>案例B：跌倒致股骨颈骨折</h4>
+    <p><strong>临床场景：</strong>80岁患者家中平地行走跌倒</p>
+    <p><strong>主诊断：</strong><code>S72.0</code> 股骨颈骨折</p>
+    <p><strong>外因码：</strong><code>W01.-</code> 在同一平面上滑倒、绊倒</p>
+    <p><strong>索引路径：</strong>跌倒→平地滑倒→W01</p>
+    <p><strong>注意：</strong>床上跌落= W06，楼梯跌倒= W10</p>
+  </div>
+  <div class="example-item">
+    <h4>案例C：手术材料并发症</h4>
+    <p><strong>临床场景：</strong>腹股沟疝修补术后，补片引起疼痛需取出</p>
+    <p><strong>主诊断：</strong><code>T85.6</code> 不可吸收性手术材料引起的机械性并发症</p>
+    <p><strong>外因码：</strong><code>Y83.2</code> 吻合、分流或移植手术作为异常反应的原因</p>
+    <p><strong>注意：</strong>这是"手术后并发症"的特殊外因类型</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、星剑号系统的附加编码角色 ======== -->
+<h2><span class="icon">⭐</span> 五、星剑号系统——病因+表现的双码模式</h2>
+
+<p>这部分在 Day 5 已详细讲解，此处仅做快速回顾——从"附加编码"的角度理解星剑号：</p>
+
+<table>
+  <tr><th>角色</th><th>标记</th><th>编码位置</th><th>驱动 DRG？</th></tr>
+  <tr>
+    <td><strong>剑号 (†)</strong>：病因码，<strong>主诊断</strong></td>
+    <td>† / Dagger</td>
+    <td>主要诊断栏</td>
+    <td>✅ 是</td>
+  </tr>
+  <tr>
+    <td><strong>星号 (*)</strong>：临床表现码，<strong>附加诊断</strong></td>
+    <td>* / Asterisk</td>
+    <td>其他诊断栏</td>
+    <td>❌ 否（仅作信息补充）</td>
+  </tr>
+</table>
+
+<div class="card info">
+  <strong>📌 星剑号 vs M 编码的区别：</strong><br>
+  - 星剑号 = 一种<strong>编码体系</strong>（病因+表现两个诊断码），两个码都是 ICD-10 标准码<br>
+  - M 编码 = 一种<strong>编码格式</strong>（Mxxxx/x），用于描述组织学特征，是肿瘤码 C/D 的"属性"
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点深度解析 ======== -->
+<h2><span class="icon">🔬</span> 六、重难点深度解析：形态学编码决定了你查肿瘤表的哪个"栏"</h2>
+
+<p>这个知识点看似简单，却是<strong>编码考试和日常工作中最容易翻车的地方</strong>。让我们用一个完整案例走通全流程。</p>
+
+<h3>实战案例：结肠息肉镜下有"重度异型增生"</h3>
+
+<div class="card">
+  <p><strong>场景：</strong>患者行肠镜检查，发现乙状结肠一2cm息肉，予以镜下切除。术后病理回报：<em>"管状腺瘤伴重度异型增生（高级别上皮内瘤变），切缘阴性"</em>。</p>
+  <p><strong>问题：</strong>这个息肉的诊断编码应该是什么？</p>
+</div>
+
+<h4>编码全流程推导：</h4>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>确定形态学编码——病理报告说了什么？</h4>
+      <p>"重度异型增生" = "高级别上皮内瘤变" = <strong>等同于原位癌</strong></p>
+      <p>索引：癌 → 上皮内 (M8010/2) → 另见 肿瘤，原位</p>
+      <p>✅ 形态学编码：<code>M8010/2</code>（原位癌）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>选择肿瘤表的"正确栏"——/2 决定了查哪个栏</h4>
+      <p>M8010/<strong>/2</strong> → 动态码为<strong>原位癌</strong> → 必须查肿瘤表的<strong>"原位"栏</strong></p>
+      <p style="color:var(--red);"><strong>易错点：</strong>如果不先确定形态学就直接查"结肠→恶性"，你会翻到 C18.x（结肠恶性肿瘤），这就错了！</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>在"原位"栏中查找乙状结肠</h4>
+      <p>肿瘤表原位栏 → 结肠 → 乙状结肠 → <code>D01.0</code></p>
+      <p>✅ 部位编码：<code>D01.0</code>（结肠原位癌，乙状结肠）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>核对卷一 → 形态学+部位的一致性</h4>
+      <p>D01.0（结肠原位癌）+ M8010/2（原位癌） → 良恶性一致 ✅</p>
+      <p><strong>完整编码：</strong>D01.0（主诊断）+ M8010/2（形态学附加码）</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 如果跳过"先形态学"这一步会怎样？</strong><br>
+  <p>编码员若先查部位"乙状结肠肿瘤 → C18.7（乙状结肠恶性肿瘤）"，然后配上病理"重度异型增生 → M8010/2（原位癌）"，结果：<strong>C18.7（恶性）+ M8010/2（原位）= 良恶性不匹配 —— 质控直接报错！</strong></p>
+  <p style="margin-top:8px;">这就是为什么"先形态学、后部位"不是建议，是<strong>铁律</strong>。</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 动态码识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请将以下形态学编码与对应的临床含义连线，并判断每个码对应的 ICD-10 部位码应该在 C 章还是 D 章：</p>
+    <table>
+      <tr><th>形态学编码</th><th>你的判断</th></tr>
+      <tr><td>M8140/3</td><td>？</td></tr>
+      <tr><td>M8000/0</td><td>？</td></tr>
+      <tr><td>M8010/2</td><td>？</td></tr>
+      <tr><td>M8000/6</td><td>？</td></tr>
+      <tr><td>M8000/1</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>M8140/3：</strong>恶性原发（腺癌）→ 部位码在 C 章（C00-C76）</p>
+        <p><strong>M8000/0：</strong>良性肿瘤 → 部位码在 D 章（D10-D36）</p>
+        <p><strong>M8010/2：</strong>原位癌 → 部位码在 D 章（D00-D09）</p>
+        <p><strong>M8000/6：</strong>恶性肿瘤转移 → 部位码在 C 章（C77-C79，继发恶性肿瘤）</p>
+        <p><strong>M8000/1：</strong>动态未定（良恶性未肯定）→ 部位码在 D 章（D37-D48）</p>
+        <p><strong>💡 记忆口诀：</strong>C 章 = /3 或 /6； D 章 = /0、/1 或 /2。"恶C良D，三六C来零一二D"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 形态学编码应用</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者出院诊断"左肺上叶鳞状细胞癌"，术后病理明确为鳞状细胞癌，未提及具体亚型。请给出完整的诊断编码（含形态学）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码推导：</strong></p>
+        <p><strong>第一步 · 形态学：</strong>查索引 → 癌 → 鳞状细胞 (M8070/3) → 另见 肿瘤，恶性</p>
+        <p><strong>第二步 · 部位：</strong>肿瘤表"恶性原发"栏 → 肺 → 上叶 → C34.1</p>
+        <p><strong>第三步 · 核对卷一：</strong>C34.1 肺上叶恶性肿瘤，不包括 C33（气管恶性肿瘤）——无误</p>
+        <p><strong>✅ 最终编码：</strong>主诊断 <code>C34.1</code>（左肺上叶恶性肿瘤）+ 形态学 <code>M8070/3</code>（鳞状细胞癌）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 外因编码规则</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下说法是否正确，错误的请修正：</p>
+    <ol>
+      <li>"外因编码 V01-Y98 可以作为主要诊断编码"</li>
+      <li>"如果患者在家中被热水烫伤，只需要编 T22.1（上肢烧伤），不需要外因码"</li>
+      <li>"煤气中毒只需要编 T58，不需要编外因码"</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. ❌ 错误。</strong>外因编码 V01-Y98 <strong>绝对不能</strong>做主诊断。它们是附加编码，只能填在"其他诊断"或"外因"栏。填在主诊断位置 → 质控直接判错。</p>
+        <p><strong>2. ❌ 错误。</strong>只要主诊断用了 S-T 码（包括 T22.1），就<strong>必须</strong>附加外因码。烫伤 → 应加 X11.-（接触热自来水）或 X12.-（接触其他热液体）。</p>
+        <p><strong>3. ❌ 错误。</strong>煤气中毒 = T58（中毒本身） + 外因码。如果是家中意外 → X47.-（气体意外中毒）；如果是故意自害 → X67.-。不加外因码 → 损伤编码不完整。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 形态学陷阱</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者因子宫内膜癌入院手术，术后病理报告：<em>"子宫内膜样腺癌，FIGO Ⅰ级，浸润深度＜1/2肌层"</em>。</p>
+    <p>编码员小王查"腺癌 → M8140/3"，然后查部位"子宫 → 内膜 C54.1"，给出编码：<strong>C54.1 + M8140/3</strong>。</p>
+    <p><strong>问题：</strong>这个编码对吗？如果不对，错在哪里？正确编码应该是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>❌ 小王的编码有误！</strong></p>
+        <p><strong>错误原因：</strong>"子宫内膜样腺癌"不是普通的"腺癌"——它有专属的形态学编码：<code>M8380/3</code>（子宫内膜样腺癌），而不是 M8140/3（腺癌，NOS）。这是编码审核中<strong>排名靠前的高频错误</strong>。</p>
+        <p><strong>✅ 正确推导：</strong></p>
+        <p>查索引：腺癌 → 子宫内膜样 (M8380/3) → 特指部位 → 见 肿瘤，恶性</p>
+        <p>肿瘤表恶性栏：肿瘤 → 子宫 → 内膜 → C54.1</p>
+        <p><strong>✅ 正确编码：</strong><code>C54.1</code>（子宫内膜恶性肿瘤）+ <code>M8380/3</code>（子宫内膜样腺癌）</p>
+        <p><strong>💡 教训：</strong>病理报告写了"子宫内膜样""乳头状""印戒细胞""透明细胞"等<strong>具体亚型</strong>时，一定要在索引中查这个具体亚型，不能偷懒默认用 M8140/3。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 原位 vs 恶性判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>下面是三个不同的病理报告场景，请分别给出正确的部位编码 + 形态学编码：</p>
+    <table>
+      <tr><th>场景</th><th>部位</th><th>病理报告</th></tr>
+      <tr><td>A</td><td>胃窦</td><td>"管状腺癌，浸润至黏膜下层"</td></tr>
+      <tr><td>B</td><td>胃窦</td><td>"管状腺瘤伴高级别上皮内瘤变（重度异型增生）"</td></tr>
+      <tr><td>C</td><td>胃窦</td><td>"管状腺癌，侵犯浆膜层，淋巴结见癌转移"</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：</strong><code>C16.3</code>（胃窦恶性肿瘤）+ <code>M8140/3</code>（管状腺癌，恶性原发）</p>
+        <p>→ "浸润至黏膜下层"= 已突破基底膜，是恶性（/3）</p>
+        <p><strong>✅ B：</strong><code>D00.2</code>（胃原位癌）+ <code>M8010/2</code>（原位癌，上皮内瘤变）</p>
+        <p>→ "高级别上皮内瘤变"= 等同于原位癌，部位码在 D 章！</p>
+        <p><strong>✅ C：</strong><code>C16.3</code>（胃窦恶性肿瘤）+ <code>M8140/3</code>（管状腺癌，恶性原发）</p>
+        <p>→ 有淋巴结转移说明肯定是恶性，但形态学动态码仍是 /3（原发部位），不是 /6。转移信息通过 C77.- 附加编码体现</p>
+        <p><strong>💡 核心规则：</strong>原发灶的形态学永远是 /3，不会因为发生了转移就变成 /6。/6 只用于<strong>继发（转移）灶的形态学</strong>。</p>
+      </div>
+    </answers>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 综合附加编码应用</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者从楼梯摔下，致右踝关节骨折。入院后行内固定术，术后发生切口感染，培养为金黄色葡萄球菌。出院诊断包括：</p>
+    <ol>
+      <li>右踝关节骨折（闭合性）</li>
+      <li>术后切口感染</li>
+    </ol>
+    <p><strong>问题：</strong>请给出完整编码（主诊断 + 所有附加编码），并说明每个码的类型。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p><strong>主诊断：</strong><code>S82.8</code> 踝关节骨折（闭合性）——损伤本身</p>
+        <p><strong>附加码①：</strong><code>W10.-</code> 楼梯上跌倒——外因编码（V01-Y98），说明怎么伤的</p>
+        <p><strong>附加码②：</strong><code>T81.4</code> 操作后伤口感染——手术并发症编码</p>
+        <p><strong>附加码③：</strong><code>B95.6</code> 金黄色葡萄球菌作为其他章疾病的原因——病原体附加编码</p>
+        <p><strong>附加码④：</strong><code>Y83.1</code> 外科手术作为异常反应的原因——外因编码（用于术后并发症）</p>
+        <p><strong>💡 总结：</strong>一份病案中，4个附加码分别提供了"受伤原因""并发症性质""病原体""操作外因"四层信息。编码员必须养成"看到损伤就查外因，看到术后并发症就查 Y83/Y88，看到感染就查 B95-B98"的肌肉记忆。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>附加编码不能</strong>做主诊断——永远是主编码的"注解"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>M 编码 = 四位组织学码 + 动态码</strong>：/0良 /1未定 /2原位 /3恶原 /6转移 /9恶不肯定</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肿瘤编码铁序：</strong>先形态学 → 选对肿瘤表栏 → 再查部位，不可颠倒</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>C/D 必须有 M 码：</strong>哪怕没做病理，也要用 M8000/3 或 M8010/3</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>M8140/3 ≠ 万能腺癌：</strong>子宫内膜样=M8380，乳头状=M8260，印戒=M8490</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>重度异型增生 = 原位癌</strong>（M8010/2），部位码用 D 章</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>S-T 损伤中毒码</strong>必须配 V01-Y98 外因码，不配就缺码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>动态码决定 C/D 归属：</strong>C章=/3或/6，D章=/0、/1或/2</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>原发灶形态学永远用 /3：</strong>/6 只用于继发（转移）灶的描述</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 7 主题：Z 编码专题——个人史、治疗后状态、筛查</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>Z 编码在什么情况下可以作为主诊断？什么情况下只能是附加诊断？</li>
+    <li>Z51（放化疗）和 Z48（术后状态）各有什么填报规则？</li>
+    <li>Z85-Z87（个人史）和 Z90-Z99（器官缺失/依赖状态）有什么本质区别？</li>
+    <li>Z11-Z13（筛查）编码时需要注意什么？</li>
+    <li>为什么 Z 编码在 DRG 分组中经常导致 QY（歧义）病例？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 6 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 & 国家临床版2.0 肿瘤形态学编码</p>
+</div>
+
+</body>
+</html>
