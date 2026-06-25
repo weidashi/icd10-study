@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 7（2026年6月25日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 14px 0; }
+  .z-card {
+    background: var(--card); border-radius: var(--radius); padding: 16px 18px;
+    box-shadow: var(--shadow); border: 1px solid var(--border); border-top: 3px solid var(--accent);
+    transition: transform .15s;
+  }
+  .z-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .z-card h4 { margin: 0 0 8px; font-size: 15px; color: var(--accent); }
+  .z-card .z-range { font-size: 12px; color: var(--text3); margin-bottom: 6px; font-family: monospace; }
+  .z-card p { font-size: 13px; margin: 4px 0; }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 7 · 2026年6月25日</div>
+  <h1>&#128218; 病案编码学习</h1>
+  <p class="subtitle">今日主题：Z 编码专题 —— 个人史、治疗后状态、筛查与随访</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:11.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 7 / 60 天（11.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">&#127919;</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      &#128308; L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z51 放化疗编码规则：Z51.0（放疗）vs Z51.1（化疗）vs Z51.2（其他化疗）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z53 操作未执行的使用条件：原计划操作+未执行+无其他治疗</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z85-Z87 肿瘤/疾病个人史 vs 疾病现状的区分（关键高频错点）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z 编码做主诊断的判定规则（三步判断法）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z37 分娩结局编码与产科章的配合使用</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      &#128993; L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z48 术后随诊 vs 术后并发症的编码区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z02-Z03 检查/观察 vs 确诊后编码的转换时机</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z35 高危妊娠监督与产科章其他并发症的并列编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>When to use Z vs 器官/系统章——Z 码的边界感</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      &#128994; L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>Z41-Z42 预防性手术（乳房切除、结肠切除等）的指征编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>Z55-Z65 社会心理因素编码（就学困难、失业等）的适用范围</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>Z 编码在疾病负担研究和公共卫生统计中的用途</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>&#128161; 本日学习建议：</strong>Z 编码是第二十一章（Z00-Z99），看似"配角"但高频出现在病案首页。核心掌握<strong>（1）什么场景用 Z 做主诊断</strong>和<strong>（2）个人史 vs 现患病的区分</strong>——这是质控检查最容易扣分的地方。Z51（放化疗）和 Z53（操作未执行）是考核重点。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">&#128218;</span> 一、Z 编码概述——不只是"健康状况因素"</h2>
+
+<h3>1.1 Z 编码的章节定位</h3>
+<p>Z 编码属于 ICD-10 第二十一章（Z00-Z99），完整名称为"<strong>影响健康状态和与保健机构接触的因素</strong>"（Factors influencing health status and contact with health services）。这一章与其他 20 个"疾病章"有本质区别——Z 编码<strong>不描述疾病本身</strong>，而是描述一个人"为什么与医疗系统接触"或"有什么潜在的健康影响因素"。</p>
+
+<div class="card tip">
+  <strong>&#128204; 关键词：</strong>Z 编码 = 描述<strong>就诊目的/潜在风险</strong>的编码，不是诊断疾病的编码。但它在病案首页和医保清单中扮演着不可替代的角色——尤其是当就诊目的不是治疗某个具体疾病时（如放化疗、复查、筛查）。
+</div>
+
+<h3>1.2 Z 编码的八大类型——全景分类图</h3>
+<p>根据周蒙等人的系统分类，Z00-Z99 可分为以下八大功能类型，各自对应不同的临床场景：</p>
+
+<div class="grid-3">
+  <div class="z-card">
+    <h4>&#128270; ① 检查与调查类</h4>
+    <div class="z-range">Z00-Z13</div>
+    <p>健康检查（Z00）、筛查（Z11-Z13）、接触后的观察（Z03-Z04）、随访检查（Z08-Z09）</p>
+    <p style="color:var(--accent);font-size:12px;">典型：Z00.0 一般健康查体、Z11.4 HIV 筛查</p>
+  </div>
+  <div class="z-card">
+    <h4>&#9888;&#65039; ② 潜在健康危害</h4>
+    <div class="z-range">Z20-Z22, Z55-Z65, Z80-Z99</div>
+    <p>传染病暴露（Z20）、家族史（Z80-Z84）、个人史（Z85-Z92）、过敏史（Z88）、社会心理因素（Z55-Z65）</p>
+    <p style="color:var(--accent);font-size:12px;">典型：Z86.7 循环系统疾个人史、Z92.0 青霉素过敏史</p>
+  </div>
+  <div class="z-card">
+    <h4>&#128137; ③ 免疫与预防</h4>
+    <div class="z-range">Z23-Z29</div>
+    <p>疫苗接种（Z23-Z27）、免疫未进行（Z28）</p>
+    <p style="color:var(--accent);font-size:12px;">注意：免疫未进行 Z28 ≠ 操作未执行 Z53</p>
+  </div>
+  <div class="z-card">
+    <h4>&#128118; ④ 生殖相关</h4>
+    <div class="z-range">Z30-Z39</div>
+    <p>避孕管理（Z30）、妊娠监督（Z34-Z35）、分娩结局（Z37）</p>
+    <p style="color:var(--accent);font-size:12px;">&#9888;&#65039; 高危：Z35 高危妊娠监督、Z37 必须与产科章 O 码配合</p>
+  </div>
+  <div class="z-card">
+    <h4>&#128298; ⑤ 预防性手术</h4>
+    <div class="z-range">Z40-Z42</div>
+    <p>BRCA 基因携带者预防性乳房切除术（Z40.0）、有家族风险的预防性手术</p>
+    <p style="color:var(--accent);font-size:12px;">主诊断用 Z40，手术码编切除操作</p>
+  </div>
+  <div class="z-card">
+    <h4>&#127973; ⑥ 后续医疗</h4>
+    <div class="z-range">Z43-Z54</div>
+    <p>人工造口维护（Z43）、术后随诊（Z48）、放化疗（Z51）、操作未执行（Z53）、康复（Z50）</p>
+    <p style="color:var(--accent);font-size:12px;">&#9888;&#65039; 高频：Z51.1化疗、Z51.0放疗、Z53操作未执行</p>
+  </div>
+  <div class="z-card">
+    <h4>&#128296; ⑦ 人工装置状态</h4>
+    <div class="z-range">Z95-Z97</div>
+    <p>心脏起搏器状态（Z95.0）、冠脉支架（Z95.5）、人工关节（Z96.6）</p>
+    <p style="color:var(--accent);font-size:12px;">描述"体内有…"状态，不是描述疾病</p>
+  </div>
+  <div class="z-card">
+    <h4>&#128101; ⑧ 其他状态</h4>
+    <div class="z-range">Z70-Z76</div>
+    <p>咨询（Z70-Z71）、重复处方（Z76.0）、器官捐献状态（Z52）</p>
+    <p style="color:var(--accent);font-size:12px;">用途较广，但较少做主诊断</p>
+  </div>
+</div>
+
+<h3>1.3 Z 编码能不能做主诊断？——"三步判断法"</h3>
+<p>这是 Z 编码学习中最核心的灵魂拷问。答案是：<strong>部分场景可以，但不是所有 Z 码都能。</strong></p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>问：就诊目的是什么？</h4>
+      <p>如果就诊目的是<strong>治疗某个具体疾病</strong>（如急性心梗、肺炎）→ 用疾病码做主诊断，Z 码做附加诊断。<br>
+      如果就诊目的<strong>不是治疗疾病</strong>（如化疗、复查、筛查、取支架）→ 进入第二步。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>问：诊疗资源是否主要消耗于"就诊目的"？</h4>
+      <p>如果本次住院的主要医疗资源消耗（床位、药品、操作）围绕的是一个<strong>非疾病目的</strong>——如化疗、放疗、术后拆线、换造口 → Z 码可以做主诊断。<br>
+      如果虽然入院目的是 Z 类目的，但住院期间发现了新疾病且进行了<strong>大量</strong>诊疗 → 以新发现的疾病做主诊断。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>问：特殊规则有无限制？</h4>
+      <p>Z37（分娩结局）→ 只能做附加诊断，不能做主诊断（必须配合 O80-O84）。<br>
+      Z53（操作未执行）→ 通常做附加诊断；只有当患者<strong>完全未接受任何治疗即出院</strong>时，才考虑做主诊断。<br>
+      Z35（高危妊娠监督）→ 如果住院就是为了监督而没有任何产科并发症，可以作主诊断。</p>
+    </div>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>&#9989; Z 可做主诊断的典型场景</h4>
+    <p>· 肿瘤患者因化疗入院 → <code>Z51.1</code>（化疗）<br>
+    · 术后取出内固定物 → <code>Z47.0</code>（去除骨折内固定）<br>
+    · 健康者体检 → <code>Z00.0</code>（一般健康查体）<br>
+    · 高危妊娠监督（无并发症）→ <code>Z35.x</code></p>
+  </div>
+  <div class="compare-col bad">
+    <h4>&#10060; Z 不可做主诊断的典型场景</h4>
+    <p>· 患者有肿瘤<strong>病史</strong>但因肺炎入院 → 主诊断 J18.x，不能用 Z85.x<br>
+    · 糖尿病患者住院调血糖 → 主诊断 E11.x，不能用"个人史"<br>
+    · Z37 分娩结局 → 永远只做附加诊断，不能做主诊断</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">&#128640;</span> 二、核心 Z 编码深度解析（一）：Z51 放化疗编码</h2>
+
+<h3>2.1 Z51 类目——为什么它是最重要的 Z 码？</h3>
+<p><strong>Z51.1（肿瘤化学治疗疗程）</strong>是全国病案首页中出现频率最高的 Z 编码之一，直接决定 DRG 是否入"RE1 恶性增生性疾病的化学治疗"组——入组后的权重和费用标准与普通住院完全不同。<strong>写漏 Z51.1 等于整份病案首页少了一半资源消耗。</strong></p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>适用场景</th><th>关键区别</th></tr>
+  <tr>
+    <td><code>Z51.0</code></td>
+    <td>放射治疗疗程</td>
+    <td>患者为接受<strong>放疗</strong>而入院</td>
+    <td>放疗是"疗程"概念，一次住院可能包含多次照射</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>Z51.1</code></td>
+    <td>肿瘤化学治疗疗程</td>
+    <td>患者为接受<strong>化疗</strong>（静脉用药）而入院</td>
+    <td>&#9888;&#65039; <strong>注意区分</strong>：化疗 ≠ 靶向治疗（口服）≠ 内分泌治疗</td>
+  </tr>
+  <tr>
+    <td><code>Z51.2</code></td>
+    <td>其他化学治疗</td>
+    <td>非肿瘤的化学治疗，如免疫抑制剂的维持治疗</td>
+    <td>不是肿瘤化疗！是"其他目的"的化学治疗</td>
+  </tr>
+  <tr>
+    <td><code>Z51.8</code></td>
+    <td>其他特指的医疗照顾</td>
+    <td>靶向药物、免疫治疗、内分泌治疗等</td>
+    <td>门诊口服靶向药住院监测 → 用 Z51.8，不用 Z51.1</td>
+  </tr>
+  <tr>
+    <td><code>Z51.9</code></td>
+    <td>未特指的医疗照顾</td>
+    <td>无法归类的医疗照顾</td>
+    <td>尽量不用，优先查具体类目</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; 高频错误：</strong>将口服靶向药/内分泌治疗（如来曲唑、吉非替尼）编成 Z51.1（化疗）→ 这是错的。ICD-10 中 Z51.1 专指<strong>静脉/动脉注入的细胞毒类药物化疗</strong>。口服靶向药应编 <code>Z51.806</code>（靶向治疗）或 <code>Z51.8</code>（其他特指的医疗照顾）。错编会导致 DRG 入组偏差。
+</div>
+
+<h3>2.2 Z51.1 + 肿瘤码：同次住院"确诊+化疗"怎么编？</h3>
+<p>这是一个非常经典的编码场景：患者入院时肿瘤尚未确诊，住院期间行穿刺活检确诊后，<strong>同次住院即开始化疗</strong>。此时：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">&#10102;</div>
+    <div class="process-content">
+      <h4>主诊断 = Z51.1（化疗）</h4>
+      <p>因为住院的主要资源消耗是<strong>化疗疗程</strong>。如果确诊后只做了活检+开始化疗，化疗是本次的核心诊疗活动。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">&#10103;</div>
+    <div class="process-content">
+      <h4>其他诊断第1位 = 肿瘤码（如 C56 卵巢恶性肿瘤）</h4>
+      <p>肿瘤诊断写在其他诊断中，并附上形态学编码 M 码。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">&#10104;</div>
+    <div class="process-content">
+      <h4>操作码 = 化疗药物静脉输注（如 99.2500）+ 活检操作</h4>
+      <p>化疗操作编码和诊断性操作（如穿刺活检）都编上。</p>
+    </div>
+  </div>
+</div>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>&#128204; 案例：确诊+化疗同次住院</h4>
+    <p><strong>入院目的：</strong>明确盆腔占位性质<br>
+    <strong>诊疗经过：</strong>穿刺活检 → 病理：卵巢高级别浆液性癌 → TC 方案化疗第 1 周期<br>
+    <strong>主诊断：</strong><code>Z51.101</code> 肿瘤化学治疗疗程<br>
+    <strong>其他诊断：</strong><code>C56.x</code> 卵巢恶性肿瘤 + M 码<br>
+    <strong>操作：</strong>99.2500（化疗注射）+ 54.2400（穿刺活检）</p>
+    <p style="color:var(--red);font-size:13px;"><strong>&#9888;&#65039; 如果化疗不写 Z51.1，首页资源消耗信息缺失，DRG 入组错误。</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>&#128204; 案例：仅确诊、本次不化疗</h4>
+    <p><strong>入院目的：</strong>明确盆腔占位性质<br>
+    <strong>诊疗经过：</strong>穿刺活检 → 病理：卵巢高级别浆液性癌 →<strong>未开始化疗，转肿瘤科安排后续治疗</strong><br>
+    <strong>主诊断：</strong><code>C56.x</code> 卵巢恶性肿瘤<br>
+    <strong>其他诊断：</strong>无特别<br><br>
+    <strong>&#9989; 区别：</strong>本次未做化疗 → 不用 Z51.1，以肿瘤本身做主诊断。</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">&#128680;</span> 三、核心 Z 编码深度解析（二）：Z53 操作未执行</h2>
+
+<h3>3.1 Z53 的本质——纠正一个最常见的误解</h3>
+<p>很多编码员看到"患者拒绝手术"就给 Z53；看到"自动出院"也给 Z53。这是对 Z53 使用条件的<strong>严重误读</strong>。</p>
+
+<div class="card tip">
+  <p><strong>Z53 的官方定义：</strong>"Persons encountering health services for specific procedures, not carried out"——<strong>患者专门为接受某项操作而就诊，但操作未进行</strong>。</p>
+  <p style="margin-top:8px;"><strong>核心约束（两个必要条件缺一不可）：</strong></p>
+  <p>① 患者入院目的<strong>就是为了做某个操作</strong>（如疝修补术、冠脉支架植入）<br>
+  ② 该操作因某种原因<strong>未执行</strong></p>
+</div>
+
+<h3>3.2 Z53 的适用条件（医保结算清单规范 vs ICD-10 工具书）</h3>
+
+<p>目前在实际工作中存在<strong>两套理解</strong>，编码员需要清楚自己所在机构的规范要求：</p>
+
+<table>
+  <tr><th>规范来源</th><th>Z53 适用范围</th><th>关键区别</th></tr>
+  <tr>
+    <td><strong>ICD-10 工具书</strong></td>
+    <td>仅为某个<strong>操作</strong>（procedure）未执行而编码</td>
+    <td>仅为操作，不含内科治疗</td>
+  </tr>
+  <tr>
+    <td><strong>医保结算清单填写规范（第15条）</strong></td>
+    <td>"原诊疗计划未执行"——包括<strong>操作和内科治疗</strong></td>
+    <td>范围更广，包含了"药物治疗计划未执行"</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>&#128161; 实践建议：</strong>在医保清单填报场景下，遵循《医保结算清单填写规范》，将 Z53 理解为"原诊疗计划未执行"。在纯粹的 ICD-10 分类场景下，遵循工具书定义（仅操作）。两种理解在实际工作中各有依据，当前阶段建议<strong>参照所在医院和当地医保局的统一口径</strong>。
+</div>
+
+<h3>3.3 Z53 各亚目详解 + 正反案例</h3>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>含义</th><th>典型场景</th></tr>
+  <tr>
+    <td><code>Z53.0</code></td>
+    <td>由于禁忌证而未进行操作</td>
+    <td>患者有医学上的禁忌，手术/操作被取消</td>
+    <td>腹股沟疝入院拟手术，检查发现室性早搏→手术取消</td>
+  </tr>
+  <tr>
+    <td><code>Z53.1</code></td>
+    <td>由于信仰或群体压力而决定不进行操作</td>
+    <td>宗教信仰原因或家庭/社会压力导致拒绝</td>
+    <td>耶和华见证人信徒拒绝输血相关操作；家属集体劝说患者放弃手术</td>
+  </tr>
+  <tr>
+    <td><code>Z53.2</code></td>
+    <td>由于其他和未特指原因，病人决定不进行操作</td>
+    <td>患者本人主观拒绝（非医学原因）</td>
+    <td>患者因害怕疼痛而拒绝手术</td>
+  </tr>
+  <tr>
+    <td><code>Z53.8</code></td>
+    <td>由于其他原因而未进行操作</td>
+    <td><strong>客观的、非患者主观的原因</strong></td>
+    <td>医生外出/设备故障/手术间被占用等导致取消</td>
+  </tr>
+  <tr>
+    <td><code>Z53.9</code></td>
+    <td>由于未特指原因而未进行操作</td>
+    <td>原因不明</td>
+    <td>尽量不选此码，优先查明原因选更具体的亚目</td>
+  </tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>&#9989; 正确使用 Z53</h4>
+    <p><strong>场景：</strong>患者因腹股沟疝入院拟行疝修补术，术前 ECG 发现频发室早，麻醉科评估后取消手术。患者未接受其他治疗即出院。<br><br>
+    <strong>主诊断：</strong><code>K40.9</code>（腹股沟疝）<br>
+    <strong>其他诊断：</strong><code>Z53.0</code>（因禁忌证未操作）<code>+</code> <code>I49.3</code>（室性早搏）<br><br>
+    <strong>&#9989; 逻辑：</strong>入院目的 = 手术，操作未执行 → Z53。禁忌证（室早）写在其他诊断。拟诊疗的疾病（疝）仍是主诊断。</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>&#10060; 错误使用 Z53</h4>
+    <p><strong>场景：</strong>患者因肺炎入院，住院期间医生建议顺便做个结肠镜——患者拒绝。肺炎治疗后出院。<br><br>
+    <strong>&#10060; 不能编 Z53！</strong><br><br>
+    <strong>原因：</strong>入院目的是肺炎治疗（不是结肠镜）。结肠镜是建议性附加操作，不是本次入院的"原诊疗计划"。Z53 只适用于入院目的即为某个操作但未执行的情况。<br><br>
+    <strong>&#10060; 场景：</strong>患者急性心梗入院，治疗期间医生建议冠脉支架但患者拒绝 → 不能编 Z53，因为入院目的是心梗治疗</p>
+  </div>
+</div>
+
+<h3>3.4 Z53 做主诊断的极端情况</h3>
+<p>一般情况下 Z53 做<strong>其他诊断</strong>（附加编码）。但以下<strong>极端情况</strong>可以做主诊断：</p>
+<ul>
+  <li>患者入院<strong>目的就是做某个操作</strong>，操作因故未执行，且<strong>住院期间完全没有接受任何其他治疗</strong>即出院</li>
+  <li>拟诊疗的"疾病"本质上不是活动性疾病（如疝、取内固定、整形）且住院时间极短、费用极低</li>
+  <li>此时主诊断可编 Z53.x，拟诊疗的疾病写在其他诊断</li>
+</ul>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; 关键记忆点：</strong>Z53 做主诊断的"四同时"条件——①入院目的=操作 ②操作未执行 ③无其他治疗 ④住院时间短、费用低。这四个条件<strong>同时满足</strong>时，Z53 可做主诊断，否则只能是附加编码。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">&#128204;</span> 四、核心 Z 编码深度解析（三）：个人史 Z85-Z92</h2>
+
+<h3>4.1 "个人史" vs "现患病"——区分是编码员的日课</h3>
+<p><strong>肿瘤个人史（Z85.x）</strong>和<strong>疾病个人史（Z86-Z87）</strong>是编码错误的重灾区。核心判断标准只有一个：<strong>这个疾病现在还存在、还在治疗吗？</strong></p>
+
+<table>
+  <tr><th>临床描述</th><th>关键判断依据</th><th>应编什么</th><th>原因</th></tr>
+  <tr>
+    <td>"胃癌术后2年"</td>
+    <td>复查影像阴性，无复发证据，未进行抗肿瘤治疗</td>
+    <td><code>Z85.0</code>（消化器官恶性肿瘤个人史）</td>
+    <td>肿瘤已切除，无活动性病变</td>
+  </tr>
+  <tr>
+    <td>"胃癌术后2年"</td>
+    <td>复查发现肝转移灶</td>
+    <td><code>C16.9</code> 胃癌 + <code>C78.7</code> 肝继发恶性肿瘤</td>
+    <td>&#9888;&#65039; 肿瘤复发/转移 = 现患，不用个人史码！</td>
+  </tr>
+  <tr>
+    <td>"既往心肌梗死"</td>
+    <td>1年前心梗，目前心功能正常，仅常规服药预防</td>
+    <td><code>Z86.7</code>（循环系统疾病个人史）</td>
+    <td>后遗症期，非活动性病变</td>
+  </tr>
+  <tr>
+    <td>"陈旧性脑梗死"</td>
+    <td>2年前脑梗，目前仍有偏瘫后遗症</td>
+    <td><code>I69.3</code>（脑梗死后遗症）</td>
+    <td>&#9888;&#65039; 有后遗症 → 用后遗症编码，不用个人史！</td>
+  </tr>
+  <tr>
+    <td>"既往乙肝"</td>
+    <td>HBsAg 阳性但 HBV-DNA 阴性，ALT 正常</td>
+    <td><code>Z22.5</code>（病毒性肝炎携带者）或 <code>Z86.1</code>（传染病个人史）</td>
+    <td>取决于临床判断是携带者还是已清除</td>
+  </tr>
+</table>
+
+<h3>4.2 Z85 肿瘤个人史的子码速查</h3>
+<pre>Z85.0  消化器官恶性肿瘤个人史       (胃癌/结肠癌/肝癌术后)
+Z85.1  气管支气管和肺恶性肿瘤个人史   (肺癌术后)
+Z85.2  其他呼吸和胸腔内器官的…       (胸膜间皮瘤等)
+Z85.3  乳房恶性肿瘤个人史             (乳腺癌术后)
+Z85.4  生殖器官恶性肿瘤个人史         (宫颈癌/卵巢癌/前列腺癌术后)
+Z85.5  泌尿器官恶性肿瘤个人史         (肾癌/膀胱癌术后)
+Z85.6  白血病个人史
+Z85.7  淋巴造血组织恶性肿瘤个人史     (淋巴瘤/骨髓瘤)
+Z85.8  其他部位恶性肿瘤个人史
+Z85.9  未特指部位恶性肿瘤个人史</pre>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; 关键陷阱——"有后遗症 ≠ 个人史"：</strong>这是最高频的编码错误。规则：<strong>如果肿瘤"已治愈"但有后遗症（如喉切除后气管造口、肠造口状态），主诊断编后遗症状态（如 Z93.0 气管造口状态），附加编 Z85.x 个人史。</strong>不能忽略后遗症、只编个人史。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">&#128198;</span> 五、其他重要 Z 编码速览</h2>
+
+<h3>5.1 Z48 术后随诊 —— 什么时候用 Z48 vs 用并发症码？</h3>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>使用条件</th></tr>
+  <tr><td><code>Z48.0</code></td><td>手术后伤口换药和拆线</td><td>入院目的就是换药/拆线，伤口无感染、无裂开</td></tr>
+  <tr><td><code>Z48.8</code></td><td>其他特指的手术后随诊医疗</td><td>术后定期复查（非急症），如术后影像复查、功能评估</td></tr>
+  <tr><td><code>Z48.9</code></td><td>未特指的手术后随诊医疗</td><td>泛指的术后复查</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>&#9989; 用 Z48——正常随诊</h4>
+    <p>· 胆囊切除术后换药 → <code>Z48.0</code><br>
+    · 骨折术后复查 X 线 → <code>Z48.8</code><br>
+    · 冠脉支架术后常规随访 → <code>Z48.8</code></p>
+    <p><strong>特征：</strong>伤口正常愈合，无并发症</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>&#10060; 不用 Z48——并发症</h4>
+    <p>· 术后伤口感染流脓 → <code>T81.4</code>（操作后伤口感染）<br>
+    · 术后出血再手术 → 用出血部位码 + <code>T81.0</code><br>
+    · 术后吻合口漏 → <code>T81.8</code><br>
+    · 术后肠梗阻 → <code>K91.3</code>（操作后肠梗阻）</p>
+    <p><strong>关键判断：</strong>是否发生了"不正常"的并发症</p>
+  </div>
+</div>
+
+<h3>5.2 Z37 分娩结局 —— 产科病案不可缺少的附加码</h3>
+<p>Z37 是 ICD-10 第 XV 章（妊娠、分娩和产褥期，O00-O99）的"固定搭配"。原则：<strong>凡是有分娩（活产或死产）的病案，必须编 Z37 作为附加诊断。</strong></p>
+
+<table>
+  <tr><th>编码</th><th>名称</th></tr>
+  <tr><td><code>Z37.0</code></td><td>单一活产</td></tr>
+  <tr><td><code>Z37.1</code></td><td>单一死产</td></tr>
+  <tr><td><code>Z37.2</code></td><td>双胎，均为活产</td></tr>
+  <tr><td><code>Z37.3</code></td><td>双胎，一活产一死产</td></tr>
+  <tr><td><code>Z37.4</code></td><td>双胎，均为死产</td></tr>
+  <tr><td><code>Z37.5</code></td><td>其他多胎，均为活产</td></tr>
+  <tr><td><code>Z37.6</code></td><td>其他多胎，部分活产</td></tr>
+  <tr><td><code>Z37.7</code></td><td>其他多胎，均为死产</td></tr>
+  <tr><td><code>Z37.9</code></td><td>未特指的分娩结局</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; Z37 永远不做主诊断：</strong>主诊断必须是 O80-O84 中的分娩方式码（如 O80.0 头位顺产、O82.1 剖宫产分娩），Z37 只能作为<strong>附加诊断</strong>出现在"其他诊断"栏目中。Z37 的作用是告知这个产妇生产的<strong>结果</strong>（生了几个、活产还是死产），而不是描述"为什么住院"。
+</div>
+
+<h3>5.3 Z35 高危妊娠监督</h3>
+<p>Z35 用于标记因存在高危因素而住院<strong>监督监测</strong>的孕妇——而不是因产科并发症住院治疗的孕妇。</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>&#9989; Z35 的适用场景（监督）</h4>
+    <p>· 有不孕史者的妊娠监督 → <code>Z35.0</code><br>
+    · 有流产史者的妊娠监督 → <code>Z35.1</code><br>
+    · 高龄初产妇的妊娠监督 → <code>Z35.5</code><br>
+    · 妊娠监督期间，<strong>未发生并发症</strong></p>
+    <p><strong>主诊断：</strong>Z35.x<br><strong>附加诊断：</strong>Z34.x（正常妊娠监督）</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>&#10060; Z35 不适用（已有并发症）</h4>
+    <p>· 妊娠期糖尿病 → <code>O24.4</code><br>
+    · 妊娠期高血压 → <code>O13</code><br>
+    · 前置胎盘伴出血 → <code>O44.1</code><br><br>
+    <strong>主诊断 = 具体的并发症码</strong>，Z35 可以不编或作为附加诊断。</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六、重点回顾预览（提前展示） ======== -->
+<h2><span class="icon">&#128172;</span> 六、重难点解析：Z 编码的"诊断层级冲突"——当 Z 遇上了 C/I/J</h2>
+
+<h3>场景还原：最让编码员抓狂的三选一</h3>
+
+<p>患者，男，62 岁，因"咳嗽咳痰 3 天"入院。胸部 CT 提示右下肺炎。病史：5 年前行胃癌根治术，术后定期复查无复发。</p>
+
+<p>编码员拿到这份病历，面临三个选择：</p>
+
+<table>
+  <tr><th>选择</th><th>主诊断</th><th>分析</th><th>结论</th></tr>
+  <tr>
+    <td>A</td><td><code>C16.9</code> 胃癌</td>
+    <td>患者"有肿瘤史"= 肿瘤还在吗？</td>
+    <td>&#10060; 错！术后5年无复发，肿瘤不是现患病</td>
+  </tr>
+  <tr>
+    <td>B</td><td><code>Z85.0</code> 消化器官恶性肿瘤个人史</td>
+    <td>住院是因为"个人史"吗？</td>
+    <td>&#10060; 错！住院目的是治疗肺炎，不是因为"有肿瘤历史"</td>
+  </tr>
+  <tr style="background:var(--green-bg);">
+    <td>C</td><td><code>J18.9</code> 肺炎 + <code>Z85.0</code>（其他诊断）</td>
+    <td>以本次诊疗的目的决定主诊断</td>
+    <td>&#9989; 正解！</td>
+  </tr>
+</table>
+
+<p><strong>核心原则（再次强调）：</strong>Z 码（个人史/状态码）描述的是患者的"背景"，<strong>不是本次诊疗的目的</strong>。只有当"就诊目的"本身就是管理这个状态（如化疗 Z51.1、术后随诊 Z48.x）时，Z 码才能做主诊断。本次患者是来治肺炎的，即使他有一万个既往史，主诊断仍然是肺炎。</p>
+
+<div class="note">
+  <strong>&#128161; 一句话总结 Z 做主诊断的边界：</strong><br>
+  <strong>Z 做主诊断</strong> = 这次住院<strong>就是冲着这个 Z 描述的事来的</strong>（化疗、放疗、复查、拆线、监督）。<br>
+  <strong>Z 做附加诊断</strong> = 这次住院冲的是疾病 A，但患者<strong>身上还带</strong>着 Z 描述的事（个人史、装置状态、过敏史）。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">&#9999;&#65039;</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · Z51 放化疗场景</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"右肺腺癌"，本次入院行第 3 周期"培美曲塞+顺铂"方案静脉化疗。化疗过程顺利，无特殊不适。出院时一般状况良好。</p>
+    <p><strong>问题：</strong>主诊断应编什么？肺癌编码要不要写？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 主诊断：</strong><code>Z51.101</code>（肿瘤化学治疗疗程）</p>
+        <p><strong>&#9989; 其他诊断：</strong><code>C34.9</code>（右肺恶性肿瘤）+ 形态学 M 码（肺腺癌 M8140/3）</p>
+        <p><strong>&#9989; 操作码：</strong><code>99.2500</code>（化疗药物静脉输注）</p>
+        <p><strong>&#128161; 推理：</strong>本次住院的核心目的和资源消耗都是化疗疗程。Z51.1 做主诊断最能反映本次诊疗的本质。肿瘤编码 <strong>必须写</strong>——这是化疗的原因，没有肿瘤何来化疗？但它只是"其他诊断"，因为本次不是来"治疗肺癌本身"（如手术切除），而是做维持性化疗。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · Z53 操作未执行</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"左侧腹股沟斜疝"入院，拟行腹腔镜疝修补术。术前检查心电图提示"频发室性期前收缩"，麻醉科会诊后认为手术风险较高，决定暂缓手术，先控制心律失常后再择期手术。患者住院2天，仅口服了β受体阻滞剂控制早搏后出院，疝修补术未做。</p>
+    <p><strong>问题：</strong>（1）主诊断是什么？（2）Z53 要不要编？如果要，编哪个亚目？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 主诊断：</strong><code>K40.9</code>（腹股沟疝，未特指）——入院目的就是治疝，即使手术没做，拟诊疗的疾病仍是主诊断。</p>
+        <p><strong>&#9989; 其他诊断：</strong><code>Z53.0</code>（由于禁忌证而未进行操作）+ <code>I49.3</code>（室性早搏）</p>
+        <p><strong>&#128161; 推理过程：</strong></p>
+        <p>① 入院目的 = 疝手术（明确的操作） &#10003;<br>
+        ② 手术未执行 &#10003;<br>
+        ③ 患者服用 β 受体阻滞剂是针对<strong>导致手术取消的疾病（早搏）</strong>的治疗，但<strong>不是针对疝的治疗</strong>。<br>
+        注意：这里的关键判断——虽然有口服药治疗，但治疗的是"禁忌证"本身，不是入院要治的疝。根据医保清单规范，当针对导致原计划未执行的疾病做了诊疗时，应以<strong>该禁忌疾病</strong>做主诊断。但这里口服β阻滞剂属于轻微干预，疝仍是主诊。<br>
+        ④ Z53 子目选 Z53.0——因为取消原因是医学禁忌（早搏）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 个人史 vs 现患</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下四个临床描述，针对"胃癌"该用什么编码？</p>
+    <table>
+      <tr><th>场景</th><th>描述</th><th>你的编码选择</th></tr>
+      <tr><td>A</td><td>胃癌术后3年，胃镜+CT复查均未见复发</td><td>？</td></tr>
+      <tr><td>B</td><td>胃癌术后2年，CT 发现肝内多发病灶，考虑肝转移</td><td>？</td></tr>
+      <tr><td>C</td><td>胃癌根治术后，目前正在接受 FOLFOX 方案第6周期化疗</td><td>？</td></tr>
+      <tr><td>D</td><td>胃癌姑息切除术后，现因进食困难行空肠造口置管</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; A：</strong><code>Z85.0</code>（消化器官恶性肿瘤个人史）——肿瘤已切除，无复发证据。</p>
+        <p><strong>&#9989; B：</strong><code>C16.9</code>（胃癌）+ <code>C78.7</code>（肝继发恶性肿瘤）——肿瘤<strong>正在</strong>复发转移，是现患，不能用 Z85！</p>
+        <p><strong>&#9989; C：</strong>主诊断 <code>Z51.101</code>（化疗），其他诊断 <code>C16.9</code>（胃癌）——虽然肿瘤还存在，但本次住院目的是化疗。</p>
+        <p><strong>&#9989; D：</strong>主诊断 <code>C16.9</code>（胃癌）——肿瘤仍在且导致了需要手术处理的进食困难。造口是对胃癌的治疗干预，不是简单的"术后随诊"。附加 <code>Z93.1</code>（空肠造口状态）。</p>
+        <p><strong>&#128161; 关键规律：</strong>肿瘤活不活跃看两点——① 有没有复发/转移证据？② 有没有正在进行的抗肿瘤治疗？二者占其一，不用 Z85。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · Z48 vs 并发症</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"阑尾切除术后第7天"回院就诊，医生病历记录："伤口红肿，有少量脓性分泌物"。行伤口清创换药处理。</p>
+    <p><strong>问题：</strong>能用 Z48.0（手术后伤口换药和拆线）做主诊断吗？为什么？如果不行，应该用什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#10060; 不能用 Z48.0！</strong></p>
+        <p><strong>&#9989; 正确编码：</strong>主诊断 <code>T81.4</code>（操作后伤口感染，不可归类在他处者）</p>
+        <p><strong>&#128161; 推理：</strong>Z48.0（手术后伤口换药和拆线）是针对<strong>正常愈合伤口</strong>的常规护理——伤口没有感染、没有裂开、没有渗液。本例伤口"红肿 + 脓性分泌物"是明确的<strong>并发症</strong>——操作后伤口感染。</p>
+        <p><strong>规则：</strong>只要伤口有异常（感染/裂开/出血/窦道形成），就跳过 Z48，用<strong>并发症码</strong>（T81.x 或对应器官系统的操作后并发症）。这是 Z48 使用中最容易栽的坑——"看着像是来换药的，其实是来处理并发症的"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · Z37 分娩结局</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>产妇因"头盆不称"行子宫下段剖宫产术，分娩一活男婴，Apgar 评分 9 分。</p>
+    <p><strong>问题：</strong>（1）主诊断用什么？（2）Z37 应该编在哪个位置？哪个子目？（3）能不能把 Z37.0 做主诊断？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; （1）主诊断：</strong><code>O82.1</code>（经剖宫产术分娩）</p>
+        <p><strong>&#9989; （2）Z37.0：</strong>附加诊断（写在"其他诊断"中），子目 Z37.0（单一活产）</p>
+        <p><strong>&#9989; （3）绝对不能：</strong>Z37 在任何情况下都不能做主诊断。它描述的是分娩的<strong>结果</strong>，不是入院的原因。产妇入院的原因是"头盆不称需要剖宫产"，这是一个产科问题，归属于 O 码。</p>
+        <p><strong>&#128161; 完整编码思路：</strong><br>
+        主诊断 → 分娩方式（O80-O84）<br>
+        其他诊断 → 产科并发症（如有）+ Z37.x 分娩结局<br>
+        操作码 → 剖宫产术编码<br><br>
+        如果有妊娠并发症（如妊娠期高血压 O13），写在 O82.1 之后的其他诊断中。Z37 始终排在产科诊断后面。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 综合多 Z 码场景</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，女，58 岁，因"左侧乳腺癌术后随诊"入院。10 年前行左乳癌改良根治术，术后化疗 6 周期，之后每年复查。本次住院行乳腺 MRI + 胸部 CT + 骨扫描，均未见复发转移。患者既往有青霉素过敏史，体内有 PICC 置管。</p>
+    <p><strong>问题：</strong>请给出本次住院的完整诊断编码列表（主诊断+所有应编的其他诊断）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 主诊断：</strong><code>Z08.0</code>（恶性肿瘤治疗后的随诊检查）——正确！因为 Z48 是<strong>术后</strong>随诊，而本患者是乳腺癌综合治疗后（手术+化疗后）的<strong>远期随诊复查</strong>，更适用 Z08。</p>
+        <p><strong>&#9989; 其他诊断：</strong></p>
+        <p>① <code>Z85.3</code>（乳房恶性肿瘤个人史）——乳腺癌已手术切除，无复发证据</p>
+        <p>② <code>Z92.0</code>（青霉素过敏个人史）——用药安全相关，必须列出</p>
+        <p>③ <code>Z96.6</code>（矫形外科关节植入物状态）或相应 PICC 编码——描述体内装置</p>
+        <p><strong>&#128161; 全面分析：</strong></p>
+        <p>· Z08（恶性肿瘤治疗后的随诊检查） vs Z48（术后随诊）：Z48 偏向近期手术后的随诊（拆线、换药、功能锻炼），Z08 偏向远期肿瘤治疗后的定期监测。10 年后的复查更适用 Z08。<br>
+        · Z85.3 个人史：无复发证据 &#10003;<br>
+        · Z92.0 过敏史：虽然不是此次入院原因，但影响诊疗决策（用药选择），必须编码。<br>
+        · 装置状态：PICC 是体内装置，列在状态编码中。</p>
+        <p><strong>&#9888;&#65039; 本题反思：</strong>一个患者的病案首页可能同时出现 3-5 个 Z 码，分别描述不同的"状态"和"历史"。它们都是<strong>附加编码</strong>——主诊断只有一个，就是反映本次就诊目的的那个码。</p>
+      </div>
+    </answer-box>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">&#9989;</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z 码不是疾病码：</strong>描述就诊目的/潜在风险因素，大部分做附加诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z51.1（化疗）</strong>做主诊断的场景：患者本次住院的核心就是做化疗</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z53 使用前提：</strong>入院目的=操作 + 操作未执行 + 原诊疗计划明确</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>个人史 Z85 vs 现患：</strong>有复发/转移证据 → 现患 C 码；无证据 → Z85</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z37 永不做主诊断：</strong>主诊断用 O80-O84 分娩方式，Z37 是附加</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z48 术后随诊：</strong>仅限正常愈合/无并发症。有感染→用 T81.4 等并发症码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三步判断 Z 做主诊：</strong>就诊目的→资源消耗→特殊规则</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>有后遗症≠个人史：</strong>陈旧脑梗有偏瘫→用 I69.x 后遗症码，不用 Z86.7</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>&#128197; 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 8 主题：病案编码相关法规与质控标准</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>《病案首页填写规范》对编码有哪些具体要求？</li>
+    <li>病案质控的"三级审核"是指哪三级？</li>
+    <li>医保飞检中最常查的编码问题有哪些？</li>
+    <li>《医疗保障基金结算清单填写规范》与 ICD-10 工具书的冲突如何处理？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 7 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
