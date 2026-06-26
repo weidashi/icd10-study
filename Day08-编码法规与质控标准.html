@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 8（2026年6月26日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .law-ref {
+    background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px;
+    padding: 12px 18px; margin: 10px 0; font-size: 13px;
+  }
+  .law-ref .law-title { font-weight: 700; color: var(--accent); }
+  .law-ref .law-detail { color: var(--text2); margin-top: 4px; }
+  .qc-checklist {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0;
+  }
+  .qc-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px; font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .qc-icon { font-size: 18px; flex-shrink: 0; }
+  .defect-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 600; margin-left: 6px;
+  }
+  .defect-badge.high { background: var(--red-bg); color: var(--red); }
+  .defect-badge.mid { background: var(--warn-bg); color: var(--warn); }
+  .defect-badge.low { background: var(--green-bg); color: var(--green); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+    .qc-checklist { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 8 · 2026年6月26日</div>
+  <h1>📋 病案编码学习</h1>
+  <p class="subtitle">今日主题：病案编码相关法规与质控标准 —— 做"合规"的编码员</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:13.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 8 / 60 天（13.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（实操必须，质控高频扣分项）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>《病历书写基本规范》六大原则：客观、真实、准确、及时、完整、规范</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>病案首页五大质控维度：基本信息、诊断信息、手术操作、费用信息、离院方式</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码缺陷三级分类（重大/一般/轻微缺陷）及对应扣分标准</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>医保飞检中病案编码的五大检查方向</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（质控思维与规则适用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>病案首页与医保结算清单的核心差异（五不一填法）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>编码质控的三级审核流程：自审→科审→院审</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>编码员在医疗纠纷、医保飞检中的角色与法律责任边界</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>《医疗机构病历管理规定》全文框架与修订历程</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DRG/DIP支付改革政策文件体系的时间线与演变</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>今天是连接编码技术（前7天）和实践落地的"桥梁课"。法规和质控标准不是死记硬背——<strong>关键是理解每个标准背后的管理逻辑</strong>：为什么这么规定？出问题会怎样影响医保付费？
+</div>
+
+<!-- ======== 一、法规体系 ======== -->
+<hr class="divider">
+<h2><span class="icon">⚖️</span> 一、病案编码的法律法规体系——不只是规范，更是底线</h2>
+
+<h3>1.1 核心法规金字塔</h3>
+<p>病案编码工作并非孤立的技术操作，而是嵌入在完整法律法规体系中的一环。编码员不仅要对编码规则负责，更要对病历的法律效力负责。以下是与编码工作最直接相关的核心法规：</p>
+
+<table>
+  <tr><th>层级</th><th>法规/文件</th><th>发布机构</th><th>编码员必须知道什么</th></tr>
+  <tr>
+    <td><strong>法律</strong></td>
+    <td>《中华人民共和国执业医师法》《基本医疗卫生与健康促进法》</td>
+    <td>全国人大</td>
+    <td>病历是法律文书，伪造、篡改、销毁病历承担法律责任</td>
+  </tr>
+  <tr>
+    <td><strong>行政法规</strong></td>
+    <td>《医疗机构管理条例》《医疗纠纷预防和处理条例》</td>
+    <td>国务院</td>
+    <td>医疗机构有义务保证病历的真实性和完整性，编码错误可能构成"填写不实"</td>
+  </tr>
+  <tr>
+    <td><strong>部门规章</strong></td>
+    <td>《病历书写基本规范》（2010）《医疗机构病历管理规定》（2013）</td>
+    <td>原卫生部/卫健委</td>
+    <td>第三条：<strong>病历书写应当客观、真实、准确、及时、完整、规范</strong>——这六个词是编码工作的总纲</td>
+  </tr>
+  <tr>
+    <td><strong>行业规范</strong></td>
+    <td>《住院病案首页数据填写质量规范》（2016）《国临版 ICD-10 编码库》</td>
+    <td>卫健委</td>
+    <td>具体规定了每一栏怎么填、编码到哪一级、不可为空</td>
+  </tr>
+  <tr>
+    <td><strong>医保支付</strong></td>
+    <td>DRG/DIP 付费技术规范、医保结算清单填写规范</td>
+    <td>国家医保局</td>
+    <td>编码直接决定入组——编码错误=入组错误=医院收入损失</td>
+  </tr>
+</table>
+
+<h3>1.2 "客观、真实、准确、及时、完整、规范"——六个字的编码含义</h3>
+<p>这六个字是《病历书写基本规范》第三条的核心。对编码员来说，每个字的含义是具体的：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>客观</h4>
+    <p>编码必须以病历文本为依据，不能"我认为这个应该编XX"就自行添加。看不懂的病历，<strong>发质控单</strong>请医生补充，而不是自行脑补。</p>
+  </div>
+  <div class="example-item">
+    <h4>真实</h4>
+    <p>编码反映患者的真实诊疗情况。不能为了DRG入组"好看"而虚增诊断、高套编码。<strong>这是医保飞检的核心红线。</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>准确</h4>
+    <p>主导词要选对、索引要查到、卷一要核对。"大体差不多"就是错。编码准确率是质控核心指标。</p>
+  </div>
+  <div class="example-item">
+    <h4>及时</h4>
+    <p>出院后3个工作日内完成编码。迟报影响DRG上传、统计报表和医保结算。</p>
+  </div>
+  <div class="example-item">
+    <h4>完整</h4>
+    <p>所有诊断都要编码（特别是合并症/并发症），不能挑着编。漏掉的每个诊断都可能导致DRG权重下降。</p>
+  </div>
+  <div class="example-item">
+    <h4>规范</h4>
+    <p>编码格式要规范——国临版必须编到最细级，不能用类目级编码填报首页；剑号星号格式要正确。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 编码员的法律责任边界：</strong>编码员对编码的<strong>准确性</strong>负责，不对诊断的<strong>正确性</strong>负责。如果医生写了一个明显矛盾的诊断，编码员应发质控单质疑——但无权自行修改诊断内容。一旦擅自修改，编码员要对由此产生的医疗纠纷、医保拒付承担法律责任。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、病案首页质控标准 ======== -->
+<h2><span class="icon">✅</span> 二、病案首页质控——五大维度与三级审核</h2>
+
+<h3>2.1 什么是"病案首页质控"？</h3>
+<p>病案首页是整个住院病案最重要内容的浓缩。首页数据是医院管理的基础——通过分析首页数据能够体现医院的诊疗技术水平，关系到：卫生统计分析、医院病种分析、科研数据检索、医院等级评审、临床路径管理、单病种管理、DRG/DIP分组、医院服务质量评价、医保付费、绩效考核等。</p>
+
+<div class="card warn">
+  <p>如果编码不当把一个外伤疾患当作非创伤性疾病或后遗症作为主要诊断，再或者一个重症ICU超长住院患者因为编码不当被当作低风险死亡处理——DRG的权重上不去，相应的点数也得不到，医保付费时将直接造成医院的巨大经济损失。</p>
+</div>
+
+<h3>2.2 首页质控五大维度</h3>
+
+<table>
+  <tr><th>维度</th><th>检查内容</th><th>常见缺陷 <span class="defect-badge high">高频</span></th><th>质控要求</th></tr>
+  <tr>
+    <td><strong>基本信息</strong></td>
+    <td>姓名、性别、年龄、身份证号、住址、联系方式等</td>
+    <td>身份证号缺失或错误；联系人信息空白；出生日期与年龄矛盾</td>
+    <td>必填项 100% 填写，逻辑校验通过</td>
+  </tr>
+  <tr>
+    <td><strong>诊断信息</strong> <span class="keyword-tag">核心</span></td>
+    <td>主要诊断、其他诊断、入院病情、离院方式</td>
+    <td>主诊断选择错误；漏填重要合并症；编码层级不足（只编到三字符）</td>
+    <td>编码准确率 ≥95%；主要诊断选择正确率 ≥98%</td>
+  </tr>
+  <tr>
+    <td><strong>手术操作</strong> <span class="keyword-tag">核心</span></td>
+    <td>主要手术、其他手术、手术日期、切口愈合等级</td>
+    <td>漏填重要操作（如冠脉造影+支架只写了支架）；手术与诊断不匹配</td>
+    <td>手术操作与诊断关联校验；切口愈合等级对应手术类型</td>
+  </tr>
+  <tr>
+    <td><strong>费用信息</strong></td>
+    <td>总费用、分类费用、付费方式</td>
+    <td>费用分区错误或漏填；付费方式与实际不一致</td>
+    <td>总费用必须等于各分类费用之和</td>
+  </tr>
+  <tr>
+    <td><strong>离院方式</strong> <span class="keyword-tag">高危</span></td>
+    <td>离院方式代码、是否有31天内再住院计划等</td>
+    <td>离院方式与死亡/转院/自动出院事实不符；颅脑损伤患者昏迷时间漏填</td>
+    <td>离院方式1-7代码选择必须与病程记录、出院小结一致</td>
+  </tr>
+</table>
+
+<h3>2.3 编码缺陷三级分类</h3>
+<p>根据国家卫健委和国家医保局的相关质控规范，编码缺陷按严重程度分为三级：</p>
+
+<table>
+  <tr><th>缺陷等级</th><th>定义</th><th>典型示例</th><th>质控动作</th></tr>
+  <tr>
+    <td><span class="defect-badge high">重大缺陷</span></td>
+    <td>导致 DRG 入组错误、医保拒付、或影响医疗统计和绩效评价的编码错误</td>
+    <td>主诊断选择错误导致入错 MDC；肿瘤动态码（M编码）写错导致良性/恶性分类错误；漏填关键并发症</td>
+    <td>立即召回修改；列为根因分析对象；记录编码员个人质控档案</td>
+  </tr>
+  <tr>
+    <td><span class="defect-badge mid">一般缺陷</span></td>
+    <td>编码层级不够（只编到三字符而未到亚目/扩展码）；术语清洗不到位但核心逻辑正确</td>
+    <td>肺结核编 A16.2 而未细分到 A16.200（继发性肺结核）级别；用 R42（头晕）但已明确病因</td>
+    <td>限期修改；当月质控通报</td>
+  </tr>
+  <tr>
+    <td><span class="defect-badge low">轻微缺陷</span></td>
+    <td>不影响 DRG 入组和统计的核心逻辑，但格式或附码不规范</td>
+    <td>星剑号格式不是双码填报而只填了一个；外因编码漏填但非必须</td>
+    <td>培训纠正；记录改进</td>
+  </tr>
+</table>
+
+<h3>2.4 三级编码审核流程</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>自审（编码员自查）</h4>
+      <p>编码完成后，编码员对照病案首页逐项自查。重点检查：主诊断是否正确？有无漏编？编码层级是否到位？"不包括"注释是否已核对？</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>科审（科室交叉审核/组长审核）</h4>
+      <p>由科室组长或指定高年资编码员对全部或抽样病案进行交叉审核。重点关注疑难编码（肿瘤、多诊断、产科章等）和重大缺陷病例。对编码分歧进行记录并组织讨论。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>院审（院级质控/病案管理委员会）</h4>
+      <p>院级定期抽查（通常每月10%-20%的病案），结合DRG入组数据反查编码质量。发现问题后形成质控通报，纳入科室绩效考核。对典型错误编写案例集供全科学习。</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、医保飞行检查 ======== -->
+<h2><span class="icon">🚁</span> 三、医保飞行检查——编码员的"高压线"</h2>
+
+<h3>3.1 什么是飞行检查？</h3>
+<p>医保飞行检查（简称"飞检"）是国家医保局及地方医保部门为了确保医保基金安全和合规使用，采取的"不预先通知、直奔现场"的突击检查方式。它是医保基金监管最具威慑力的手段之一。</p>
+
+<div class="card warn">
+  <strong>2025年医保飞检核心方向：</strong>国家医保局明确将<strong>编码真实性</strong>列为飞检五大检查方向之首——高套编码、虚构诊断、串换收费是绝对红线。飞检结果直接影响医院的医保总额预付、信用评级和定点资格。
+</div>
+
+<h3>3.2 飞检中与病案编码相关的五大检查方向</h3>
+
+<table>
+  <tr><th>方向</th><th>检查重点</th><th>具体表现</th><th>风险等级</th></tr>
+  <tr>
+    <td><strong>高套编码</strong></td>
+    <td>编码与实际诊疗不一致，将轻症编成重症编码</td>
+    <td>单纯性高血压编成高血压性心脏病 I11.x；普通肺炎编成重症肺炎 J18.9→J15.x</td>
+    <td><span class="defect-badge high">极度高危</span></td>
+  </tr>
+  <tr>
+    <td><strong>虚构诊断</strong></td>
+    <td>将未治疗的诊断写入首页以提高DRG分值</td>
+    <td>患者入院仅做简单检查，但首页填了"冠心病""糖尿病"等多个诊断</td>
+    <td><span class="defect-badge high">极度高危</span></td>
+  </tr>
+  <tr>
+    <td><strong>分解住院</strong></td>
+    <td>将一次住院拆成两次，重复获取DRG定额支付</td>
+    <td>入院第1-5天主要治疗，第6天出院；第7天再入院继续治疗同病</td>
+    <td><span class="defect-badge high">极度高危</span></td>
+  </tr>
+  <tr>
+    <td><strong>串换收费</strong></td>
+    <td>将自费项目串换成医保报销项目、低收费串换成高收费</td>
+    <td>葡萄糖测定（酶法）串换成酶电极法；电脑血糖监测串换为血生化葡萄糖测定</td>
+    <td><span class="defect-badge high">极度高危</span></td>
+  </tr>
+  <tr>
+    <td><strong>违规加码</strong></td>
+    <td>为达到DRG某组别的高分值而添加与实际病情不符的编码</td>
+    <td>无明确器官衰竭表现但添加了"多器官功能衰竭"编码</td>
+    <td><span class="defect-badge high">极度高危</span></td>
+  </tr>
+</table>
+
+<h3>3.3 飞检中的编码员自我保护</h3>
+
+<div class="note">
+  <strong>🛡️ 编码员自我保护三原则：</strong><br>
+  <strong>① 编码必须以病历文本为依据——</strong>病历里写了什么，就编什么。病历没写的内容，不能脑补。<br>
+  <strong>② 遇到模糊诊断，发质控单留痕——</strong>不要口头和医生沟通了事。质控单是编码员"已尽责"的法律证据。如果医生回复"维持原诊断"，编码员按回复执行，责任转移给医生。<br>
+  <strong>③ 拒绝任何"口头的""非正式的"编码修改要求——</strong>如果有人要求你"把编码改高一点好入组"，请要求对方书面说明理由并签字。口头要求无法追责。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、双轨衔接 ======== -->
+<h2><span class="icon">🔄</span> 四、病案首页 vs 医保结算清单——"同源不同命"的双轨系统</h2>
+
+<h3>4.1 为什么需要两套数据？</h3>
+<p>很多编码员困惑：既然医保结算清单是在病案首页基础上生成的，为什么不能"一键转换"？答案在于二者<strong>服务的对象和目标不同</strong>。</p>
+
+<table>
+  <tr><th>对比维度</th><th>病案首页</th><th>医保结算清单</th></tr>
+  <tr>
+    <td><strong>主管部门</strong></td>
+    <td>卫健委（医政医管局）</td>
+    <td>国家医保局</td>
+  </tr>
+  <tr>
+    <td><strong>核心用途</strong></td>
+    <td>医疗质量评价、绩效考核（"国考"）、等级医院评审、科研统计</td>
+    <td>医保付费（DRG/DIP 分组）、医保基金监管、费用结算</td>
+  </tr>
+  <tr>
+    <td><strong>诊断填报逻辑</strong></td>
+    <td><strong>"三最"原则</strong>——对健康危害最大、消耗医疗资源最多、住院时间最长的疾病</td>
+    <td><strong>"资源消耗"原则</strong>——导致本次住院医疗资源消耗最多的疾病</td>
+  </tr>
+  <tr>
+    <td><strong>诊断数量</strong></td>
+    <td>至少填1个主诊断，其他诊断有则必填（不设上限）</td>
+    <td>主诊断1个 + 其他诊断最多20个</td>
+  </tr>
+  <tr>
+    <td><strong>手术操作</strong></td>
+    <td>所有手术操作均需填报</td>
+    <td>仅填报与本次住院费用相关的操作</td>
+  </tr>
+  <tr>
+    <td><strong>编码版本</strong></td>
+    <td>国临版 ICD-10</td>
+    <td>医保版 ICD-10</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键冲突场景：</strong>同一个患者同一份病历，病案首页和医保清单的<strong>主要诊断可能不同</strong>！<br>
+  例：患者因上呼吸道感染（J06.9）入院，住院期间突发性脑卒中（I63.9）需要大量治疗。<br>
+  → 病案首页主诊断 = <code>I63.9</code>（三最原则——健康危害最大）<br>
+  → 医保清单主诊断 = <code>I63.9</code>（资源消耗原则——资源消耗最多）<br>
+  本例二者恰好一致，但如果患者入院时脑卒中已稳定，住院主要处理上呼吸道感染，则可能不一致。
+</div>
+
+<h3>4.2 "五不一填"衔接法</h3>
+<p>实践中实现首页和清单的有效衔接，可采用"五不一填"法：</p>
+
+<table>
+  <tr><th>规则</th><th>操作</th><th>原理</th></tr>
+  <tr>
+    <td><strong>不重复生成</strong></td>
+    <td>清单不能是首页的简单"复制粘贴"——两者填报逻辑不同，需要二次加工</td>
+    <td>服务对象不同，填报标准自然不同</td>
+  </tr>
+  <tr>
+    <td><strong>不遗漏关键</strong></td>
+    <td>首页所有诊断都要出现在清单中（除非清单限制数量无法容纳）</td>
+    <td>遗漏意味着损失DRG分值</td>
+  </tr>
+  <tr>
+    <td><strong>不自相矛盾</strong></td>
+    <td>同一病例在首页和清单上的相同字段不能冲突——特别是离院方式、入院病情</td>
+    <td>矛盾数据在飞检中会被标记为"异常数据"</td>
+  </tr>
+  <tr>
+    <td><strong>不虚假填报</strong></td>
+    <td>首页没有的诊断不能出现在清单上；没有做的手术不能编</td>
+    <td>这是飞检查处的重灾区</td>
+  </tr>
+  <tr>
+    <td><strong>不滞后报送</strong></td>
+    <td>清单数据必须在规定时间内上传至医保平台（通常出院后5个工作日内）</td>
+    <td>超时提交的系统会自动拒绝或标记异常</td>
+  </tr>
+  <tr>
+    <td><strong>一填</strong></td>
+    <td>填好<strong>入院病情</strong>代码（1有/2无/3情况不明/4无此情况），这是首页与清单最关键的衔接字段</td>
+    <td>入院病情直接决定合并症/并发症能否被DRG计入权重</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 五、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 五、重难点深度解析——入院病情代码：被严重低估的"隐形炸弹"</h2>
+
+<h3>5.1 入院病情代码为什么重要？</h3>
+<p>入院病情（Admission Condition）是病案首页中一个看似不起眼却极为关键的字段，用1-4四个数字代码表示。它直接决定了：</p>
+<ul>
+  <li>其他诊断（合并症/并发症）是否<strong>能被DRG系统计入</strong>，影响DRG分组和权重</li>
+  <li>医院在国考中的<strong>低风险死亡率、并发症发生率</strong>等核心指标</li>
+  <li>医保飞检中<strong>"医院获得性问题"的识别</strong>——入院时不存在、住院期间新发生的诊断</li>
+</ul>
+
+<h3>5.2 四个代码的精确含义</h3>
+
+<table>
+  <tr><th>代码</th><th>含义</th><th>适用场景</th><th>对DRG的影响</th></tr>
+  <tr>
+    <td><strong>1</strong></td>
+    <td><strong>有</strong>：入院时已经明确</td>
+    <td>患者来院时已知且有记录的基础病（如长期高血压、糖尿病）或确诊入院诊断</td>
+    <td>✅ 计入合并症/并发症权重</td>
+  </tr>
+  <tr>
+    <td><strong>2</strong></td>
+    <td><strong>临床未确定</strong>：入院时已存在但住院期间才确诊</td>
+    <td>入院时怀疑某种疾病，住院期间通过检查确诊。如因"腹痛待查"入院，住院期间确诊胃癌</td>
+    <td>✅ 计入合并症/并发症权重</td>
+  </tr>
+  <tr>
+    <td><strong>3</strong></td>
+    <td><strong>情况不明</strong>：无法确定入院时是否存在</td>
+    <td>住院期间新发现的慢性疾病，无法判断是入院前已有还是入院后新得（如轻度高血压、陈旧性病变）</td>
+    <td>⚠️ 部分版本不计入，注意查看本地细则</td>
+  </tr>
+  <tr>
+    <td><strong>4</strong></td>
+    <td><strong>无</strong>：入院时不存在，住院期间新发生</td>
+    <td><strong>医院获得性</strong>问题：术后感染、院内坠床骨折、药物不良反应等</td>
+    <td>❌ 不计入；且会影响"低风险死亡率"和"并发症发生率"指标</td>
+  </tr>
+</table>
+
+<h3>5.3 入院病情填写的最常见错误</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p><strong>① "全部填1"：</strong>很多编码员图省事，把所有"其他诊断"的入院病情都填为"1有"。这会导致：如果患者住院期间确实发生了院内感染等新问题，填写"1"会被飞检判定为"虚假填报"。</p>
+    <p style="margin-top:8px;"><strong>② 术后并发症填"1"：</strong>如手术后发生了切口感染（T81.4），却填了入院病情"1有"——这逻辑上自相矛盾（入院时还没有做手术，怎么就有术后感染了？）。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p><strong>① 逐条诊断判断入院病情：</strong>每一条"其他诊断"都要单独问自己：这个病入院时存在吗？已知？未知但存在？不存在？</p>
+    <p style="margin-top:8px;"><strong>② 术后并发症填"4"：</strong>T80-T88 操作并发症（如手术后感染、术后出血、操作后气胸等）的入院病情必须是"4无"——因为手术之前不可能有"手术后并发症"。</p>
+    <p style="margin-top:8px;"><strong>③ 慢病填"1"或"2"：</strong>高血压、糖尿病等慢病，如果入院时已记录在病史中填"1"；如果入院时未提及但住院期间检查发现了填"2"。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 致命陷阱——"入院病情4"与"低风险死亡率"：</strong>国考中的"低风险组死亡率"指标，核心逻辑是——低风险DRG组内的死亡病例，必须排查是否存在"入院病情4"导致的并发症。如果一个低风险组死亡病例的首页上有很多"入院病情4"的院内并发症，该医院就会被判定为"可能存在医疗质量问题"，直接影响国考排名和等级评审结果。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 法规适用判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>一位编码员收到一份出院病历，临床诊断写的是"心梗"，无其他说明。编码员自行判断为"急性广泛前壁心梗"并编为 I21.0。请问：这种做法违反了哪些基本原则？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 违反了至少两个核心原则：</strong></p>
+        <p><strong>① "客观"原则：</strong>编码必须以病历文本为依据。"心梗"这个诊断没有具体定位信息（前壁/下壁/后壁），无法从病历文本中得出"广泛前壁"的结论。编码员的自行推断构成了"无依据编码"。</p>
+        <p><strong>② "真实"原则：</strong>I21.0 代表急性广泛前壁心肌梗死——如果实际只是下壁心梗或NSTEMI，这就是编码不真实。在飞检中，这属于"高套编码"风险。</p>
+        <p><strong>✅ 正确做法：</strong>发质控单请医生补充心梗的具体类型和定位（STEMI/NSTEMI？前壁/下壁/后壁？）。如果医生无法补充，则编 <code>I21.9</code> 急性心肌梗死（未特指）。宁可编得"粗"但准确，也不能编得"细"但错了。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 缺陷等级分类</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下编码缺陷各属于哪一级（重大/一般/轻微），并说明理由：<br>
+    A. 肺癌患者主诊断编为 C34.9（未特指部位），实际病理+影像明确为右上叶肺癌<br>
+    B. 甲状腺结节术后感染，T81.4 的入院病情填了"1有"<br>
+    C. 糖尿病性视网膜病变只编了 G30.0† 未编星号 F00.0*</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A — 一般缺陷：</strong>C34.9 vs C34.1（右上叶），虽然未编到最细层级，但均属于同一DRG组（肺癌组），不会导致入组错误。属于编码层级不足，应纠正。</p>
+        <p><strong>✅ B — 重大缺陷：</strong>术后感染的入院病情填"1有"逻辑自相矛盾。这个错误会被质控系统自动识别为"异常数据"，直接影响低风险死亡率和并发症发生率的计算。且飞检中属于"虚假填报"。</p>
+        <p><strong>✅ C — 一般缺陷（视情况）：</strong>如果主码 G30.0† 已经正确（DRG入组依赖剑号），漏填星号属于格式不规范。但如果该编码用于发病率统计且统计的是星号数据，则升级为重大缺陷。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 飞检风险识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下哪些场景在医保飞行检查中会被列为"高套编码"风险？请选择并说明理由：<br>
+    ① 高血压患者（I10.x），加编了"高血压性心脏病 I11.9"<br>
+    ② 手术后发生的切口感染，正常编码为 T81.4<br>
+    ③ 普通社区获得性肺炎（J15.9）编成了"重症肺炎 J18.9"<br>
+    ④ 做了冠脉造影+支架植入，两个操作都编码</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 高风险：① 和 ③</strong></p>
+        <p><strong>① 高套编码：</strong>单纯性高血压（I10）和高血压性心脏病（I11）是完全不同的诊断——I11 要求有心脏结构改变（如左心室肥厚）或心衰的临床证据。如果病历中没有相关记录却编了 I11，飞检中极易被查出。</p>
+        <p><strong>③ 高套编码：</strong>J18.9 肺炎（未特指）和 J15.x 细菌性肺炎不是 DRG 权重差异的重点。但如果病历中没有任何"重症"标准的记录（如呼吸衰竭、休克、ICU等）却编了重症相关编码，就是明显的高套。</p>
+        <p><strong>② 正常操作：</strong>术后感染编 T81.4 是正确的，只要入院病情填"4"即可。</p>
+        <p><strong>④ 正常操作：</strong>冠脉造影+支架植入是关联操作，两个都编码是符合规范的，不属于高套。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 入院病情判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者：男，68岁，因"胸闷3天"入院。入院记录记载有"高血压病史10年"、"2型糖尿病史5年"。住院第3天行冠脉造影提示"三支血管病变"，确诊为"冠心病"。住院第5天出现发热、咳嗽，痰培养提示肺炎克雷伯菌，诊断"医院获得性肺炎"。</p>
+    <p><strong>问题：</strong>请为以下四条其他诊断分别填写正确的入院病情代码（1/2/3/4），并说明理由：<br>
+    ① 高血压（I10）<br>
+    ② 2型糖尿病（E11.9）<br>
+    ③ 冠心病（I25.1）<br>
+    ④ 医院获得性肺炎（J15.0）</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 高血压 → 入院病情 "1 有"</strong><br>
+        → 入院记录明确记载"高血压病史10年"，入院时已明确存在。</p>
+        <p><strong>✅ ② 2型糖尿病 → 入院病情 "1 有"</strong><br>
+        → 入院记录明确记载"2型糖尿病史5年"，入院时已明确存在。</p>
+        <p><strong>✅ ③ 冠心病 → 入院病情 "2 临床未确定"</strong><br>
+        → 入院时因"胸闷"就诊，冠心病是入院时已怀疑（存在但未确诊）的疾病，住院第3天通过冠脉造影确诊。不是入院后才新发生的——患者入院前就已经有冠脉病变了。</p>
+        <p><strong>✅ ④ 医院获得性肺炎 → 入院病情 "4 无"</strong><br>
+        → 入院时不存在（入院记录无发热、咳嗽），住院第5天才出现的。这属于典型的院内获得性问题。注意：这个"4"会直接影响该病例的并发症计算和医院的质控指标。</p>
+        <p><strong>💡 关键区别：</strong>③和④的核心判断是——"入院时这个病客观上是否存在？"冠心病是入院时客观存在的（只是没确诊）；而肺炎是入院后新发生的。不能因为"都是住院期间才诊断出来的"就把③也填成"4"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 首页与清单的冲突处理</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者主要诊断为"脑梗死 I63.9"，住院期间做了"颈动脉内膜剥脱术 38.1200"。同时患有多年"原发性高血压 I10"和"2型糖尿病 E11.9"。</p>
+    <p><strong>问题：</strong><br>
+    ① 这份病历的病案首页和医保结算清单的主诊断是否可能不同？为什么？<br>
+    ② 颈动脉内膜剥脱术在首页和清单的填报有什么区别？<br>
+    ③ 如果高血压和糖尿病在住院期间仅口服药物维持、没有额外消耗医疗资源，在清单中还需要列出吗？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 主诊断可能相同，也可能不同：</strong><br>
+        → 本例中脑梗死既是健康危害最大的疾病，也是资源消耗最多的疾病——所以首页和清单的主诊断大概率都是 I63.9。<br>
+        → 但如果脑梗死仅做了保守治疗（抗血小板），而住院期间因为糖尿病酮症酸中毒大量消耗了医疗资源——此时清单的主诊断可能要选 E11.1（糖尿病酮症），与首页不同。</p>
+        <p><strong>✅ ② 填报差异：</strong><br>
+        → 病案首页：颈动脉内膜剥脱术 38.1200 必须填报（所有手术操作都要填）。<br>
+        → 医保结算清单：如果该手术的费用已在住院费用中体现，则填报；如果该手术本身不产生额外医保结算费用（如二次手术），则根据规则决定是否填报。</p>
+        <p><strong>✅ ③ 高血压和糖尿病：</strong><br>
+        → 病案首页：必须填报——因为首页要求所有诊断有则必填。<br>
+        → 医保清单：如果仅口服药物维持，资源消耗可忽略不计，填报与否取决于当地医保细则。有些地区要求即使不消耗额外资源也要列出（因为DRG系统会判断是否为合并症），有些地区则允许不填报以简化清单。关键原则：<strong>不能为了降低DRG权重而故意不填报真实存在的诊断</strong>——这属于飞检中的"隐瞒诊断"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 飞检场景模拟</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>假设你是某医院编码员，医保飞检组到院检查时发现了以下情况：某慢阻肺（COPD）患者出院编码中，主诊断为 J44.1（慢性阻塞性肺病伴急性加重），其他诊断中有"I10 原发性高血压"。飞检组查看病历后发现住院期间没有针对高血压的任何检查和用药记录。</p>
+    <p><strong>问题：</strong><br>
+    ① 飞检组追问你这个高血压编码的依据是什么，你该怎么回答？<br>
+    ② 这个编码可能被定性为什么性质的缺陷？<br>
+    ③ 如果你发现医生在出院小结中写了高血压但病程记录中没有相关处置，你的正确操作流程是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 编码依据：</strong><br>
+        → 编码员应回答：高血压编码的依据是<strong>入院记录中的"既往史"或出院小结中医生列出的诊断</strong>。如果病历中确实记载了高血压病史，即使住院期间没有特殊治疗，编码仍然是合理的——因为ICD-10编码反映的是<strong>患者的疾病状态</strong>，而非<strong>治疗行为</strong>。<br>
+        → 但如果入院记录和出院小结都没有提到高血压，首页却编了 I10，这就没有任何依据——属于"无依据编码"。</p>
+        <p><strong>✅ ② 缺陷定性：</strong><br>
+        → 如果病历有记录但无治疗 → <strong>不属于缺陷</strong>。合并症编码不以"是否治疗"为前提。<br>
+        → 如果病历完全无记录 → <strong>重大缺陷</strong>，属于"虚假填报"或"无依据编码"。在飞检中可能被追回已拨付的DRG费用。<br>
+        → 但更隐蔽的风险是：即使病历有记录，如果高血压编码导致DRG入组发生了改变（从单纯COPD组进入COPD伴合并症组，权重更高），飞检组可能质疑"这个高血压是否真的影响了本次住院的资源消耗"。此时需要能够说明——即使没有额外检查，常规监测血压也消耗了护理资源。</p>
+        <p><strong>✅ ③ 正确操作流程：</strong><br>
+        → <strong>第一步：</strong>发质控单给医生，说明"首页诊断中有高血压，但病程记录中未见相关处置和血压监测记录，是否需要补充病程记录？如果确认高血压诊断，请在质控单上签字确认"。<br>
+        → <strong>第二步：</strong>保留质控单和医生的回复作为证据——这是编码员"已尽责"的法律证据。<br>
+        → <strong>第三步：</strong>如果医生回复"取消高血压诊断"，则在首页中删除该诊断并重新编码。<br>
+        → <strong>无论医生如何决定，编码员都不要自行添加或删除诊断。</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>六大原则</strong>：客观、真实、准确、及时、完整、规范——是编码工作的总纲领</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码以病历为据</strong>，不能自行推断或脑补；拿不准就发质控单</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>首页质控五大维度：</strong>基本信息、诊断、手术操作、费用、离院方式</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三级审核流程：</strong>自审→科审→院审，环环相扣</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码缺陷三级：</strong>重大（入组错误）→一般（层级不足）→轻微（格式不规范）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>飞检五方向：</strong>高套编码、虚构诊断、分解住院、串换收费、违规加码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>入院病情代码（1-4）</strong>直接决定合并症能否计入DRG权重</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>术后并发症入院病情必须填"4"</strong>，填"1"是逻辑错误</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>首页 vs 清单</strong>：服务不同目标、可能不同主诊断，但不可相互矛盾</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 9 主题：编码工具书使用——ICD-10 三卷本实战</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>第三卷索引的"见"（see）和"另见"（see also）有什么区别？如何使用？</li>
+    <li>NEC（不可归类于他处）和 NOS（未特指）各是什么含义？什么时候用？</li>
+    <li>如何在三卷本中快速定位"糖尿病肾病"并核对所有层级的注释？</li>
+    <li>遇到一个完全陌生的临床诊断，从三卷本中查找编码的标准流程是怎样的？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 8 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 法规参考：《病历书写基本规范》（2010）</p>
+</div>
+
+</body>
+</html>
