@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 11（2026年6月29日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #14b8a6 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 11 · 2026年6月29日</div>
+  <h1>🦠 病案编码学习</h1>
+  <p class="subtitle">今日主题：A-B章 传染病与寄生虫病（A00-B99）——特殊组合章的第一个"坑"</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:18.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 11 / 60 天（18.33%）· 第二阶段：ICD-10 分章精讲开始</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>A15 vs A16 的区分轴心：细菌学/组织学证实与否</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>病毒性肝炎（B15-B19）急慢性+病因+肝昏迷三维编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>HIV致病分类规则：B20-B24并发症不允许再分别编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>B95-B98病原体码只能做附加编码，不能做主诊断</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>未明确慢性者假定为急性/活动性</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>本章"不包括"与其他章的交集：Z22携带者、O98妊娠感染、P35-P39围生期感染</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>感染（infection）vs 传染病（communicable disease）在ICD-10中的语义差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>败血症A41 vs 菌血症A49.9 vs 感染性休克R57.2的编码边界</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z21（无症状HIV）vs R75（未确诊HIV阳性）vs B20-B24（确诊HIV病）的区分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-11 第1章从"传染病"改名为"感染性疾病或寄生虫病"的语义变化</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>耐药结核U84.3附加编码的使用场景</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>第1章是<strong>特殊组合章</strong>——不以解剖部位为轴心，而是以<strong>病因</strong>为轴心。这意味着编码时需要先判断"这个病该不该放这一章"，而不是看到感染就往A00-B99里塞。今天最重要的是建立"本章边界感"。
+</div>
+
+<!-- ======== 一、本章总论 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、A-B章总论——特殊组合章的"边界感"</h2>
+
+<h3>1.1 什么是"特殊组合章"？</h3>
+<p>在ICD-10的22个章节中，大多数章节按<strong>解剖部位</strong>（如循环系统I、呼吸系统J）或<strong>疾病性质</strong>（如肿瘤C/D、损伤S/T）分类。但第1章（A00-B99）是一个<strong>特殊组合章</strong>——它以<strong>病因</strong>为核心轴心，将"有传染性或可传播性"的疾病汇集在一起，不论其侵犯的是哪个解剖部位。</p>
+
+<div class="card tip">
+  <strong>infection ≠ 传染病：</strong>ICD-10 英文原文中第1章标题为 "Certain infectious and parasitic diseases"，其中 infection 不仅指可传播的传染病，还包括局限性和不可传播的感染。中文翻译为"传染病"容易误导编码员——并不是所有感染都归入本章。
+</div>
+
+<h3>1.2 本章的核心"不包括"——哪些感染不在这里？</h3>
+<p>本章有五大类明确<strong>不包括</strong>的内容，这些是最容易"编错章"的情况：</p>
+
+<table>
+  <tr><th>不包括类别</th><th>应编码至</th><th>典型示例</th><th>编码员的检查点</th></tr>
+  <tr>
+    <td><strong>病原携带者/可疑携带者</strong></td>
+    <td><code>Z22.-</code></td>
+    <td>乙肝表面抗原携带者 → Z22.5（注意：Z22.5已被删除，属ICD-10更新）</td>
+    <td>无临床症状、仅有实验室阳性 → 不是本章</td>
+  </tr>
+  <tr>
+    <td><strong>非传染性病因的局部感染</strong></td>
+    <td>各解剖章节</td>
+    <td>细菌性肺炎 → J15（呼吸系统）、急性肾盂肾炎 → N10（泌尿系统）</td>
+    <td>局限在一个器官/系统的感染 → 归入该器官章节</td>
+  </tr>
+  <tr>
+    <td><strong>妊娠分娩产褥期感染</strong></td>
+    <td><code>O98.-</code> / <code>O23.-</code></td>
+    <td>妊娠期泌尿生殖道感染 → O23；非泌尿生殖道感染 → O98.3</td>
+    <td>患者是孕妇 → 第15章优先</td>
+  </tr>
+  <tr>
+    <td><strong>围生期感染</strong></td>
+    <td><code>P35-P39</code></td>
+    <td>先天性梅毒 → A50（例外：按病因入本章）、新生儿腹泻 → P78.3</td>
+    <td>子宫内或分娩时获得 → 第16章</td>
+  </tr>
+  <tr>
+    <td><strong>流感和急性呼吸道感染</strong></td>
+    <td><code>J00-J22</code></td>
+    <td>流感 → J09-J11、急性上呼吸道感染 → J06</td>
+    <td>呼吸系统首选第10章</td>
+  </tr>
+</table>
+
+<h3>1.3 编码规则：默认急性</h3>
+<div class="card warn">
+  <p><strong>⚠️ 关键规则：</strong>临床未明确传染病或寄生虫病是慢性者，<strong>假定分类为活动性或急性</strong>。这是本章独有的编码假定规则。例如：出院诊断为"乙型病毒性肝炎"但未标明急慢性，默认分类为 <code>B18.1</code>（慢性乙型肝炎）——此为ICD-10更新后的规定。</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、结核病编码 ======== -->
+<h2><span class="icon">🫁</span> 二、结核病编码（A15-A19）——最易出错的分类轴心</h2>
+
+<h3>2.1 分类结构</h3>
+<p>呼吸系统结核的核心分类轴心不是<strong>解剖部位</strong>，而是<strong>实验室对结核杆菌检查的证实情况</strong>。这是A15与A16的根本区分依据，也是编码员最容易忽略的"暗线"。</p>
+
+<table>
+  <tr><th>类目</th><th>编码名称</th><th>分类依据</th><th>"不包括"</th></tr>
+  <tr>
+    <td><code>A15</code></td>
+    <td>经细菌学和组织学证实的呼吸道结核</td>
+    <td><strong>痰涂片(+)、痰培养(+)、病理活检(+)、GeneXpert(+)</strong></td>
+    <td rowspan="4">先天性结核(P37.0)<br>HIV造成的结核(B20.0)<br>结核性硅沉着病(J65)<br>与结核有关的肺尘埃沉着病(J65)</td>
+  </tr>
+  <tr>
+    <td><code>A16</code></td>
+    <td>未经细菌学或组织学证实的呼吸道结核</td>
+    <td>涂片(-)、培养(-)、或<strong>未提及检查结果</strong></td>
+  </tr>
+  <tr>
+    <td><code>A17†</code></td>
+    <td>神经系统的结核</td>
+    <td>解剖部位 + 临床表现（星剑号编码）</td>
+  </tr>
+  <tr>
+    <td><code>A18</code></td>
+    <td>其他器官的结核</td>
+    <td>按解剖部位细分（骨结核、肾结核……）</td>
+  </tr>
+  <tr>
+    <td><code>A19</code></td>
+    <td>粟粒性结核</td>
+    <td>急性(A19.0单部位/A19.1多部位/A19.2) vs 慢性(A19.8)</td>
+  </tr>
+</table>
+
+<h3>2.2 A15 vs A16——编码员必须看化验单</h3>
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>临床诊断写"继发性肺结核"，编码员<strong>不看化验结果</strong>就直接查索引：结核→肺→A16.2（未提及证实情况）</p>
+    <p style="margin-top:8px;"><strong>结果：</strong>漏掉A15，DRG入组可能不同</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p><strong>第一步：</strong>看病程记录/化验报告，确认是否有痰涂片、痰培养、病理活检等结果</p>
+    <p><strong>第二步：</strong>若细菌学或组织学证实 → A15；无检查结果或检查阴性 → A16</p>
+  </div>
+</div>
+
+<h3>2.3 A15类目下的细化编码</h3>
+<table>
+  <tr><th>亚目</th><th>编码名称</th><th>适用场景</th><th>关键检查点</th></tr>
+  <tr><td><code>A15.0</code></td><td>肺结核，经痰液镜检证实</td><td>痰涂片抗酸杆菌(+)</td><td>最常见的确诊形式，无论是否同时痰培养</td></tr>
+  <tr><td><code>A15.1</code></td><td>肺结核，仅经痰培养证实</td><td>痰涂片(-)，痰培养(+)</td><td>诊断记录必须明确"仅培养阳性"</td></tr>
+  <tr><td><code>A15.2</code></td><td>肺结核，经组织学证实</td><td>经支气管镜/胸腔镜活检病理(+)</td><td>需有病理报告支撑</td></tr>
+  <tr><td><code>A15.3</code></td><td>肺结核，经（未特指）方法证实</td><td>有阳性证据但方法未说明</td><td>已证实但具体方法不清楚时使用</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>🗂️ 主导词：</strong>结核 → 肺 →（看证实情况分类）。粟粒性结核需区分急慢性：临床未明确时<strong>假定为急性</strong>；急性粟粒性结核还要区分单个部位(A19.0)或多部位(A19.1)。
+</div>
+
+<h3>2.4 结核病的"不包括"——三个特殊的交叉编码场景</h3>
+<ul>
+  <li><strong>先天性结核 → P37.0：</strong>新生儿在母体内获得，不在本章</li>
+  <li><strong>HIV造成的结核 → B20.0：</strong>这是ICD-10更新内容！当HIV与结核同时存在时，结核归类于B20.0而非A15-A19</li>
+  <li><strong>结核性硅沉着病 → J65：</strong>归入呼吸系统章节</li>
+  <li><strong>耐药结核 → 附加编码 U84.3：</strong>耐药肺结核可附加U84.3编码，说明对抗结核药物耐药</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ======== 三、病毒性肝炎编码 ======== -->
+<h2><span class="icon">🫁</span> 三、病毒性肝炎编码（B15-B19）——三维坐标下的编码迷宫</h2>
+
+<h3>3.1 三大分类轴心</h3>
+<p>病毒性肝炎的编码是一个三维坐标系统：<strong>病程（急性/慢性）× 病原体（甲/乙/丙/丁/戊）× 临床表现（伴/不伴肝昏迷）</strong>。尤其是乙型肝炎，还多一个δ因子（丁肝）的维度。</p>
+
+<table>
+  <tr><th>病原</th><th>急性编码</th><th>慢性编码</th><th>核心区分</th></tr>
+  <tr>
+    <td><strong>甲肝 (HAV)</strong></td>
+    <td><code>B15.0</code>(伴肝昏迷) / <code>B15.9</code>(不伴)</td>
+    <td>—（不转为慢性）</td>
+    <td>甲肝不会慢性化，只有急性</td>
+  </tr>
+  <tr>
+    <td><strong>乙肝 (HBV)</strong></td>
+    <td><code>B16.0</code>(+δ+昏迷) / <code>B16.1</code>(+δ-昏迷) / <code>B16.2</code>(-δ+昏迷) / <code>B16.9</code>(-δ-昏迷)</td>
+    <td><code>B18.0</code>(伴δ) / <code>B18.1</code>(不伴δ)</td>
+    <td>δ因子（丁肝）合并感染或重叠感染</td>
+  </tr>
+  <tr>
+    <td><strong>丙肝 (HCV)</strong></td>
+    <td><code>B17.1</code></td>
+    <td><code>B18.2</code></td>
+    <td>丙肝无δ因子维度</td>
+  </tr>
+  <tr>
+    <td><strong>丁肝 (HDV)</strong></td>
+    <td>归类于乙肝伴δ因子的相关编码中</td>
+    <td>同左</td>
+    <td>丁肝=乙肝伴有δ因子，编码在乙肝中</td>
+  </tr>
+  <tr>
+    <td><strong>戊肝 (HEV)</strong></td>
+    <td><code>B17.2</code></td>
+    <td>—（一般不自慢性化）</td>
+    <td>孕妇感染戊肝高危</td>
+  </tr>
+  <tr>
+    <td><strong>未特指</strong></td>
+    <td><code>B17.9</code></td>
+    <td><code>B18.9</code>（慢性迁延性肝炎）</td>
+    <td><strong>B19</strong>（未特指病毒性肝炎）一般不做填报诊断</td>
+  </tr>
+</table>
+
+<h3>3.2 乙肝编码的δ因子迷宫——一张速查表搞定</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>判断病程：急性 or 慢性？</h4>
+      <p>看 ALT、HBsAg、HBV-DNA、IgM抗HBc等指标。急性：病程<6个月，IgM抗HBc(+)；慢性：HBsAg持续>6个月。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>判断δ因子（丁肝）</h4>
+      <p>合并感染（co-infection）：HBV+HDV同时感染 → 急性乙肝+B16.0/B16.1；重叠感染（super-infection）：慢性HBV基础上感染HDV → B17.0（急性）或 B18.0（慢性）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>判断肝昏迷</h4>
+      <p>伴肝昏迷 = 重型肝炎/肝衰竭。B15.0/B16.0/B16.2/B19.0 都表示伴有肝昏迷。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>选择最终编码</h4>
+      <p>按以上三维坐标，从速查表中选出唯一正确的编码。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.3 ICD-10更新：乙肝的重大变更</h3>
+<div class="card warn">
+  <p><strong>⚠️ ICD-10更新要点：</strong></p>
+  <ul>
+    <li>Z22.5（病毒性肝炎病原携带者）<strong>已被删除</strong>。慢性乙肝携带者现编B18.1</li>
+    <li>未特指急慢性的乙型肝炎，原默认B16.9（急性），<strong>更新后默认B18.1</strong>（慢性）</li>
+    <li>妊娠期病毒性肝炎需区分妊娠期(O98.4)还是非妊娠期(B15-B19)</li>
+  </ul>
+</div>
+
+<h3>3.4 "既往乙肝"这个坑</h3>
+<p>临床医生常写"既往乙肝"或"乙肝病史"，编码员不能直接编码。必须查看化验结果：</p>
+<table>
+  <tr><th>化验结果</th><th>可能编码</th><th>含义</th></tr>
+  <tr><td>HBsAg(+) 且 HBV-DNA(+)、ALT持续升高</td><td><code>B18.1</code></td><td>慢性活动性乙型肝炎</td></tr>
+  <tr><td>HBsAg(+) 但 HBV-DNA(-)、ALT正常</td><td><code>B18.1</code></td><td>慢性乙肝携带者（原Z22.5已删除）</td></tr>
+  <tr><td>HBsAg(-) 且 抗HBs(+)</td><td><code>Z86.1</code></td><td>病毒性肝炎个人史（已痊愈）</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四、HIV编码 ======== -->
+<h2><span class="icon">🩸</span> 四、HIV/AIDS 编码（B20-B24, Z21, R75）——四个临界状态</h2>
+
+<h3>4.1 HIV编码的四个状态级别</h3>
+<p>HIV的编码不是"有就是B20"，而是根据确诊状态和并发症，精确区分四个级别：</p>
+
+<table>
+  <tr><th>编码</th><th>状态</th><th>判断依据</th><th>特殊规则</th></tr>
+  <tr>
+    <td><code>B20-B24</code></td>
+    <td><strong>确诊HIV病</strong>（有并发症）</td>
+    <td>经指定医疗机构确诊，且出现并发症</td>
+    <td><strong>并发症不允许再分别编码</strong>（B20-B22 内部规则）</td>
+  </tr>
+  <tr>
+    <td><code>Z21</code></td>
+    <td><strong>无症状HIV感染</strong></td>
+    <td>确诊HIV但无任何临床症状</td>
+    <td>不能用作主诊断时填B20-B24</td>
+  </tr>
+  <tr>
+    <td><code>R75</code></td>
+    <td><strong>HIV实验室证据</strong></td>
+    <td>入院检查HIV抗体阳性，但<strong>未经指定医疗机构确诊</strong></td>
+    <td>非确诊状态，仅筛查阳性</td>
+  </tr>
+  <tr>
+    <td><code>Z20.6</code></td>
+    <td><strong>接触和暴露于HIV</strong></td>
+    <td>有HIV暴露史但不确定感染</td>
+    <td>如职业暴露后观察</td>
+  </tr>
+</table>
+
+<h3>4.2 HIV并发症的三级嵌套规则（最容易绕晕的规则）</h3>
+
+<pre>B20-B24 并发症编码规则（三句话记牢）：
+
+① HIV病多个并发症存在于 B20-B22 同一类目下多个亚目时
+   → 编码于该类目的 .7
+
+② HIV病多个并发症存在于 B20-B22 中多个类目时
+   → 编码于 B22.7
+
+③ B20-B22中的其他码可作为附加诊断说明具体并发症</pre>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：HIV + 肺结核 + 卡波西肉瘤</h4>
+    <p>HIV病造成的结核 → B20.0</p>
+    <p>HIV病造成的卡波西肉瘤 → B21.0</p>
+    <p><strong>并发症跨B20和B21两个类目 → 主诊断编码 B22.7</strong></p>
+    <p>其他诊断附加 B20.0 和 B21.0 说明具体并发症</p>
+  </div>
+  <div class="example-item">
+    <h4>例：HIV + 卡波西肉瘤 + 淋巴瘤</h4>
+    <p>两者都属于B21类目下 → 主诊断编码 <strong>B21.7</strong></p>
+    <p>其他诊断附加 B21.0 和 B21.1</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ HIV病发生前已存在的疾病：</strong>不允许分类在HIV病（B20-B24），应按原疾病所在章节编码。例如：患者患高血压10年，后感染HIV → 高血压仍编I10，不能套入B20-B24。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、其他重点类目 ======== -->
+<h2><span class="icon">📋</span> 五、肠道感染、败血症与病原体附加码</h2>
+
+<h3>5.1 肠道传染病（A00-A09）——腹泻的分类迷宫</h3>
+<p>A00-A09覆盖了肠道感染的核心编码。但不同病因的腹泻归入不同类目——这需要编码员仔细阅读病历中关于病原体的信息：</p>
+
+<table>
+  <tr><th>病因</th><th>类目</th><th>"未指明具体病原"时的默认</th></tr>
+  <tr><td>细菌性</td><td>A00-A05</td><td>A04.9（未指明菌种）</td></tr>
+  <tr><td>原虫性</td><td>A06-A07</td><td>A07.9（未指明原虫）</td></tr>
+  <tr><td>病毒性</td><td>A08</td><td>A08.4（未指明病毒）</td></tr>
+  <tr><td>食物媒介（未指明感染）</td><td>A05</td><td>A05.9</td></tr>
+  <tr><td>其他传染性/未特指</td><td>A09</td><td>A09.0（感染性腹泻） / A09.9（新生儿腹泻）</td></tr>
+  <tr><td><strong>非传染性</strong></td><td><strong>K52.9</strong></td><td>不在本章！归消化系统</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 新生儿腹泻常见错误</h4>
+    <p>所有新生儿腹泻都编 A09.9</p>
+    <p style="margin-top:8px;">新生儿非感染性腹泻应编 <code>P78.3</code>（围生期疾病章）；幼儿非感染性腹泻编 <code>K52.9</code></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确区分逻辑</h4>
+    <p>① 有无感染性病因？有→A00-A09</p>
+    <p>② 是否围生期？是→P78.3</p>
+    <p>③ 非感染性→K52.9</p>
+  </div>
+</div>
+
+<h3>5.2 败血症、菌血症与脓毒症——三者的编码边界</h3>
+<p>这是临床上容易混用的三个概念，但ICD-10有明确区别：</p>
+
+<table>
+  <tr><th>概念</th><th>编码</th><th>临床定义</th><th>主导词</th></tr>
+  <tr>
+    <td><strong>菌血症 (Bacteremia)</strong></td>
+    <td><code>A49.9</code>（未指明菌种）</td>
+    <td>病原体短暂侵入血流，迅速被防御系统清除，无或仅有轻微全身反应</td>
+    <td>菌血症</td>
+  </tr>
+  <tr>
+    <td><strong>败血症 (Septicemia)</strong></td>
+    <td><code>A41.9</code>（未指明菌种）</td>
+    <td>病原体侵入血液引起临床综合征，病情重于菌血症</td>
+    <td>败血症</td>
+  </tr>
+  <tr>
+    <td><strong>脓毒症 (Sepsis)</strong></td>
+    <td><code>A41.9</code></td>
+    <td>感染致宿主反应失控→脏器功能障碍（SOFA≥2 或 qSOFA阳性）</td>
+    <td>毒血症→脓毒性→另见败血症</td>
+  </tr>
+  <tr>
+    <td><strong>感染性休克</strong></td>
+    <td><code>R57.2</code></td>
+    <td>脓毒症合并组织低灌注及器官功能障碍</td>
+    <td>休克→感染性</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键规则：</strong>脓毒血症与败血症的编码是同一编码（A41.9）。主导词路径：毒血症→脓毒性→另见败血症。明确菌种时编入更具体类目（如A41.0金黄色葡萄球菌败血症）。<strong>感染性休克（R57.2）通常作为附加编码</strong>，单独一个R码不能做主诊断。
+</div>
+
+<h3>5.3 B95-B98 病原体附加码——只能"陪跑"不能"主跑"</h3>
+<p>B95-B98是第1章最后的重要类目，用于标明分类于他处疾病的传染性病原体。这些码有一条铁律：</p>
+
+<div class="card">
+  <p style="font-size:16px;text-align:center;font-weight:700;color:var(--red);">B95-B98 <strong>绝对不能作为主要编码</strong>，只能作为附加编码。</p>
+</div>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：流感嗜血杆菌引起的急性鼻窦炎</h4>
+    <p>主诊断：<code>J01.9</code>（急性鼻窦炎）</p>
+    <p>附加编码：<code>B96.3</code>（流感嗜血杆菌）</p>
+    <p><strong>J01.9 在前，B96.3 在后</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>例：幽门螺旋杆菌感染</h4>
+    <p>注意：原 B96.8 已更新为 <code>B98.0</code></p>
+    <p>字典没有B98，属于ICD-10更新内容</p>
+  </div>
+</div>
+
+<h3>5.4 寄生虫病（B65-B83）</h3>
+<p>寄生虫病以"<strong>侵染</strong>"为主导词。编码轴心为虫的类型，部分编码细致到界门纲目科属种。未指明寄生虫病编B89。</p>
+
+<table>
+  <tr><th>寄生虫类型</th><th>类目</th><th>代表疾病</th></tr>
+  <tr><td>原虫病（Protozoal）</td><td>B50-B64</td><td>疟疾(B50-B54)、利什曼病(B55)</td></tr>
+  <tr><td>蠕虫病（Helminthiases）</td><td>B65-B83</td><td>血吸虫病(B65)、绦虫病(B68)、蛔虫病(B77)</td></tr>
+  <tr><td>虱病/螨病/其他</td><td>B85-B89</td><td>疥疮(B86)</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点深度解析：A15还是A16？——看不见的"证实线"</h2>
+
+<h3>场景还原：一个最常见的编码失误</h3>
+
+<p>临床医生出具"出院诊断：继发性肺结核"，病程记录中记载了"痰涂片抗酸染色阳性"和"GeneXpert MTB/RIF检出结核分枝杆菌"。编码员查索引得到A16.2，直接编码上报。这个编码错了。</p>
+
+<h3>错在哪里？</h3>
+<p>因为A15和A16的分界线是一道<strong>编码员必须穿透"诊断表面"去看化验单</strong>的线——只看临床诊断文字不足以判断。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>看诊断名称只能知道"是结核"</h4>
+      <p>继发性肺结核、浸润性肺结核、空洞型肺结核……这些诊断名告诉你病变部位和类型，但不告诉你"证实状态"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>看化验报告才能知道A15还是A16</h4>
+      <p>痰涂片(+)、痰培养(+)、病理活检(+)、GeneXpert(+) → A15</p>
+      <p>上述均(-)或未做→ A16</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>看索引才知道：默认走向是A16</h4>
+      <p>索引中"结核→肺"在不指定"经证实"修饰词时，给出的就是A16。所以不看化验报告直接用索引编码=永远编A16=大概率错！</p>
+    </div>
+  </div>
+</div>
+
+<h3>本案例的正确编码流程</h3>
+<pre>临床诊断：继发性肺结核
+化验报告：痰涂片抗酸染色(+) ，GeneXpert MTB/RIF(+)
+
+步骤1：确定主导词 → 结核
+步骤2：查索引 → 结核 → 肺 → "经显微镜下痰检查证实" → A15.0
+步骤3：核对卷一 → A15.0 "肺结核，经痰液镜检证实"
+            → 包括"伴有或不伴有痰培养"
+            → GeneXpert属分子生物学证实，也归入已证实类
+            → 不包括：HIV造成的结核(B20.0) —— 本例患者HIV(-)，确认无此交叉
+
+最终编码：A15.000 继发性肺结核（国临版扩展码）</pre>
+
+<div class="card warn">
+  <strong>⚠️ 这个错误有多严重？</strong>A15和A16在DRG分组中可能落入不同ADRG，<strong>直接影响医院收入</strong>。对于结核专科医院，A15 vs A16的编码准确率是质控检查的硬指标。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共6题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 结核证实状态判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者出院诊断为"空洞型肺结核"，病程记录：痰涂片抗酸染色(-)，痰培养：结核分枝杆菌生长(+)。</p>
+    <p><strong>问题：</strong>应编码A15还是A16？具体亚目是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：<code>A15.1</code></strong>（肺结核，仅经痰培养证实）</p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 痰涂片(-)排除了A15.0</p>
+        <p>② 痰培养(+) → 属于细菌学证实 → 归入A15（不是A16）</p>
+        <p>③ 仅经痰培养证实（涂片阴性+培养阳性）→ 精确匹配A15.1</p>
+        <p><strong>💡 核心要点：</strong>不是"涂片(+)才叫A15"，只要任何一种细菌学/组织学方法证实阳性，就是A15。涂片(-)培养(+)仍然编码A15.1而非A16。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 病毒性肝炎三维编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>35岁男性，因"乏力、纳差、尿黄1周"入院。检验结果：HBsAg(+)，抗HBc IgM(+)，HBeAg(+)，HBV-DNA 3.2×10⁷ IU/mL，HDV抗体(-)，ALT 1250 U/L，TBil 68 μmol/L。神志清楚，无肝性脑病表现。</p>
+    <p><strong>问题：</strong>请给出完整的编码和推理过程。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：<code>B16.9</code></strong>（急性乙型肝炎，不伴有δ因子，不伴有肝昏迷）</p>
+        <p><strong>推理过程：</strong></p>
+        <p>① <strong>病程判断：</strong>抗HBc IgM(+) → 急性感染（<6个月）→ 急性乙型肝炎，编码路径 B16</p>
+        <p>② <strong>δ因子判断：</strong>HDV抗体(-) → 不伴有δ因子 → 排除B16.0/B16.1</p>
+        <p>③ <strong>肝昏迷判断：</strong>神志清楚，无肝性脑病 → 不伴有肝昏迷 → 排除B16.2 → 编码B16.9</p>
+        <p><strong>💡 口诀：</strong>乙肝四步走——急慢性 → δ因子 → 肝昏迷 → 定编码</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · HIV状态区分</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下三个场景各应编什么码：</p>
+    <table>
+      <tr><th>场景</th><th>描述</th><th>你的编码</th></tr>
+      <tr><td>A</td><td>患者因肺炎入院，既往在外院确诊HIV，目前CD4 580 cells/μL，无任何HIV相关症状</td><td>？</td></tr>
+      <tr><td>B</td><td>体检发现HIV抗体阳性，转送至疾控中心确诊中，目前仅有初筛结果</td><td>？</td></tr>
+      <tr><td>C</td><td>因卡氏肺孢子虫肺炎入院，已确诊HIV，CD4 85 cells/μL</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：应编码 <code>Z21</code></strong>（无症状HIV感染状态）</p>
+        <p>理由：已确诊HIV但无临床症状（CD4正常、无症状）→ Z21。肺炎与HIV无关，另外编码肺炎。</p>
+        <p><strong>✅ B：应编码 <code>R75</code></strong>（HIV实验室证据）</p>
+        <p>理由：仅有实验室初筛阳性，<strong>未经指定医疗机构确诊</strong>→ R75，而非Z21或B20-B24。</p>
+        <p><strong>✅ C：应编码 <code>B20.6</code></strong>（HIV病造成的卡氏肺孢子虫肺炎）</p>
+        <p>理由：确诊HIV + 机会性感染（卡氏肺孢子虫肺炎）→ 肺炎纳入B20-B24，<strong>不允许再单独编码J17.3*</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 败血症+感染性休克综合判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>76岁女性，因高热、意识模糊入院。血培养回报：大肠埃希菌(E.coli)。患者出现SBP 85 mmHg、呼吸频率26次/min、SOFA评分增加3分。临床诊断：①大肠埃希菌败血症 ②感染性休克。</p>
+    <p><strong>问题：</strong>主诊断应编什么？需要几个编码？注射用抗生素已确认耐药？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：<code>A41.5</code></strong>（大肠埃希菌败血症）</p>
+        <p><strong>✅ 其他诊断：<code>R57.2</code></strong>（感染性休克）——作为附加编码</p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 血培养阳性 + 明确菌种(E.coli) → A41.5（非A41.9未特指）</p>
+        <p>② 感染性休克是败血症的严重并发症 → R57.2作为附加编码</p>
+        <p>③ 如果患者对多种抗生素耐药 → 可附加编码耐药相关码</p>
+        <p><strong>💡 编码顺序：</strong>A41.5（主诊断）→ R57.2（附加诊断，说明休克）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · HIV多并发症嵌套规则</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>确诊HIV患者，同时患有以下并发症：①卡波西肉瘤（皮肤） ②HIV脑病 ③口腔念珠菌病。既往有原发性高血压病史5年。</p>
+    <p><strong>问题：</strong>请给出完整的编码方案（主诊断+其他诊断）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p><strong>主诊断：<code>B22.7</code></strong>（HIV病造成的多处分类于他处的疾病）</p>
+        <p><strong>其他诊断：</strong></p>
+        <p>① <code>B21.0</code>（HIV病造成的卡波西肉瘤）</p>
+        <p>② <code>B22.0</code>（HIV病造成的脑病）</p>
+        <p>③ <code>B20.4</code>（HIV病造成的念珠菌病）</p>
+        <p>④ <code>I10</code>（原发性高血压）——HIV前已存在，不纳入B20-B24</p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 三个并发症分别属于B21、B22、B20三个不同类目 → 按嵌套规则编码B22.7</p>
+        <p>② 其他诊断附加B21.0、B22.0、B20.4说明具体并发症</p>
+        <p>③ 高血压为HIV前已存在的疾病 → 不使用B20-B24，仍编I10</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 交叉章节鉴别——感染放哪里？</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下诊断应归入第1章（A00-B99）还是其他章节：</p>
+    <table>
+      <tr><th>诊断</th><th>你的判断</th><th>编码</th></tr>
+      <tr><td>① 细菌性肺炎（肺炎链球菌）</td><td>第1章 / 其他章</td><td>？</td></tr>
+      <tr><td>② 妊娠28周合并泌尿系感染（大肠埃希菌）</td><td>第1章 / 其他章</td><td>？</td></tr>
+      <tr><td>③ 新生儿（日龄3天）败血症（大肠埃希菌）</td><td>第1章 / 其他章</td><td>？</td></tr>
+      <tr><td>④ 急性肾盂肾炎</td><td>第1章 / 其他章</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 其他章 → <code>J13</code></strong>（肺炎链球菌性肺炎）</p>
+        <p>理由：呼吸道感染的细菌性肺炎归入呼吸系统J00-J22，不在第1章</p>
+        <p><strong>✅ ② 其他章 → <code>O23.-</code></strong>（妊娠期泌尿生殖道感染）</p>
+        <p>理由：妊娠期感染 → 第15章O编码优先</p>
+        <p><strong>✅ ③ 其他章 → <code>P36.4</code></strong>（新生儿大肠埃希菌败血症）</p>
+        <p>理由：围生期感染（出生后7天内）→ 第16章P编码优先</p>
+        <p><strong>✅ ④ 其他章 → <code>N10</code></strong>（急性肾盂肾炎）</p>
+        <p>理由：局部器官感染（非全身播散性）→ 归入泌尿系统章节</p>
+        <p><strong>💡 核心口诀：</strong>局部感染看器官，妊娠围生期优先，只有<strong>全身性/播散性/可传播的感染</strong>才归第1章。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>第1章是特殊组合章：</strong>以病因为轴心，非解剖部位。需要判断"该不该放进这一章"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>A15 vs A16的分界线</strong>是"细菌学/组织学证实"——必须看化验报告</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>病毒性肝炎三维编码：</strong>病程(急/慢) × 病原体 × 肝昏迷，乙肝多加δ因子维度</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>HIV四个状态级别：</strong>B20-B24(确诊+并发症) → Z21(无症状) → R75(未确诊) → Z20.6(暴露)</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>未明确慢性→默认急性：</strong>传染病默认活动性/急性（本章特有规则）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>B95-B98绝对不做主诊断：</strong>病原体附加码只能陪跑</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>五大"不包括"：</strong>Z22携带者、O98妊娠感染、P35-P39围生期、J00-J22呼吸道、局部感染</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>败血症A41.9</strong> = 脓毒症A41.9，感染性休克R57.2作为附加编码</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 明日预习 ======== -->
+<h2><span class="icon">📅</span> 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 12 主题：C章 + D00-D48 肿瘤编码基础（良恶性区分、动态编码）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>C00-C97（恶性肿瘤）与D00-D09（原位癌）与D10-D36（良性肿瘤）的分界是什么？</li>
+    <li>动态编码 /0 ~ /9 各代表什么含义？形态学编码M码和部位编码的关系？</li>
+    <li>肿瘤编码为什么需要"先查形态学再查部位"？</li>
+    <li>常见的"肿瘤交叉场景"有哪些（如恶性肿瘤、原位癌、动态未定的肿瘤如何区分）？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 11 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码知识库 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
