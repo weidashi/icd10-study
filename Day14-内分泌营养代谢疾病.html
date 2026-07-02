@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 14（2026年7月2日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: #0891b2; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid #0891b2;
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: #0891b2; color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: #0891b2; font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: #0891b2; flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: #0891b2; color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: #0891b2; white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid #0891b2;
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: #0891b2; }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: #0891b2; color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: #0891b2; font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid #0891b2; border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: #0891b2; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .complication-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin: 12px 0; }
+  .complication-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; font-size: 13px; box-shadow: var(--shadow);
+  }
+  .complication-item h4 { margin: 0 0 4px; font-size: 13px; color: #0891b2; }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+    .complication-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="day-badge">Day 14 · 2026年7月2日</div>
+  <h1>🦋 病案编码学习</h1>
+  <p class="subtitle">今日主题：E章 — 内分泌、营养和代谢疾病（E00-E90）</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:23.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 14 / 60 天（23.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>E10-E14 糖尿病五种分型的区分方法（1型/2型/营养不良/其他/未特指）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>糖尿病并发症的星剑号双重分类编码（肾病†N08.3*/眼病†H36.0*/神经†G63.2*等）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>糖尿病第四位亚目（.0-.9）的覆盖顺序和"多重并发症".7 的使用</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>甲状腺肿的分类：地方性(E01) vs 非毒性(E04) vs 甲亢(E05)</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>E78高脂血症的亚目区分——不能默认用E78.5未特指</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>E章与M章（骨骼肌肉）的交叉：痛风M10虽在M章，但代谢病因在E章</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>药物性内分泌疾病的编码规则（E章主码 + 第二十章附加码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肿瘤功能性内分泌紊乱的附加编码（E05.8、E07.0、E16-E31、E34-）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>糖尿病合并编码时"不包括"注释的约束范围</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-11中糖尿病编码的结构化变革（5A10-5A14的诊断-形态组合编码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>维生素缺乏（E50-E64）和营养不良（E40-E46）的编码体系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>E00-E02地区性甲状腺肿的公共卫生背景</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>E章是高频章节！糖尿病编码每天都会遇到，必须把E10-E14的四位亚目记熟。今天把糖尿病并发症的星剑号配对表背下来，后续临床工作中能节省大量查索引时间。
+</div>
+
+<!-- ======== 一、E章码位全景 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、E章码位全景——不是所有"代谢"都在E章</h2>
+
+<h3>1.1 E章的分类范围</h3>
+<p>第四章（E00-E90）涵盖了三大疾病群：<strong>内分泌腺疾病</strong>（甲状腺、肾上腺、垂体、性腺等）、<strong>营养缺乏症</strong>（蛋白能量营养不良、维生素缺乏等）和<strong>代谢障碍</strong>（脂蛋白代谢、嘌呤/嘧啶代谢、矿物质代谢等）。</p>
+
+<div class="stat-row">
+  <div class="stat-badge"><div class="stat-num">8</div><div class="stat-label">E章大节段数</div></div>
+  <div class="stat-badge"><div class="stat-num">91</div><div class="stat-label">三字符类目数（E00-E90）</div></div>
+  <div class="stat-badge"><div class="stat-num">E10-E14</div><div class="stat-label">最高频码段（糖尿病）</div></div>
+</div>
+
+<h3>1.2 E章各节段速查表</h3>
+
+<table>
+  <tr><th>节段</th><th>码位</th><th>主要疾病群</th><th>高频场景</th></tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>甲状腺</strong></td>
+    <td><code>E00-E07</code></td>
+    <td>碘缺乏甲减(E00-E02)、其他甲减(E03)、非毒性甲状腺肿(E04)、甲亢(E05)、甲状腺炎(E06)</td>
+    <td>甲亢（E05）、桥本甲状腺炎（E06.3）、甲状腺术后甲减（E89.0→注意这是操作后内分泌紊乱）</td>
+  </tr>
+  <tr style="background:var(--red-bg);">
+    <td><strong>糖尿病 ★★★</strong></td>
+    <td><code>E10-E14</code></td>
+    <td>1型(E10)、2型(E11)、营养不良(E12)、其他(E13)、未特指(E14)</td>
+    <td>2型糖尿病伴肾病（E11.2†+N08.3*）、伴眼病（E11.3†+H36.0*）、伴周围循环障碍（E11.5）</td>
+  </tr>
+  <tr>
+    <td>糖调节/胰腺</td>
+    <td><code>E15-E16</code></td>
+    <td>低血糖(E15-E16)、胰岛素分泌异常</td>
+    <td>新生儿低血糖（P70.4，注意不是E章！）</td>
+  </tr>
+  <tr>
+    <td>其他内分泌腺</td>
+    <td><code>E20-E35</code></td>
+    <td>甲状旁腺(E20-E21)、垂体(E22-E23)、肾上腺(E24-E27)、性腺(E28-E30)</td>
+    <td>库欣综合征(E24)、肾上腺皮质功能减退(E27)</td>
+  </tr>
+  <tr>
+    <td>营养不良</td>
+    <td><code>E40-E46</code></td>
+    <td>消瘦(E41)、恶性营养不良(E40)、营养性消瘦(E42)</td>
+    <td>多见于儿科和老年科</td>
+  </tr>
+  <tr>
+    <td>维生素缺乏</td>
+    <td><code>E50-E64</code></td>
+    <td>维生素A/B/C/D缺乏、缺铁性贫血相关</td>
+    <td>注意缺铁性贫血（D50），维生素缺乏（E53-E56）</td>
+  </tr>
+  <tr>
+    <td>肥胖与过营养</td>
+    <td><code>E65-E68</code></td>
+    <td>肥胖(E66)、局部肥胖(E65)、过营养后遗症(E68)</td>
+    <td>肥胖伴低通气(E66.2 Pickwickian)</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>代谢障碍</strong></td>
+    <td><code>E70-E90</code></td>
+    <td>氨基酸(E70-E72)、碳水化合物(E73-E74)、脂蛋白(E78)、嘌呤(E79)、矿物质(E83)、水电解质(E86-E87)</td>
+    <td>高脂血症(E78)、高尿酸血症(E79.0)、低钾(E87.6)</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键边界：</strong>并非所有"代谢相关"疾病都在E章！<br>
+  • <strong>痛风性关节炎</strong> → M10.-（在骨骼肌章节，E79仅用于单纯高尿酸血症）<br>
+  • <strong>骨质疏松</strong> → M80-M81（骨骼系统章，E章仅含骨代谢异常的广义描述）<br>
+  • <strong>缺铁性贫血</strong> → D50（血液章，E61.1是"铁缺乏"但不含贫血）<br>
+  • <strong>新生儿低血糖</strong> → P70.4（围生期章，而非E16）<br>
+  • <strong>甲状腺术后甲减</strong> → E89.0（操作后内分泌紊乱，而非E03）<br>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、糖尿病编码 ======== -->
+<h2><span class="icon">🩸</span> 二、糖尿病编码核心——E10-E14 完整剖析</h2>
+
+<h3>2.1 五大分型：不是所有糖尿病都叫"糖尿病"</h3>
+
+<p>糖尿病的ICD-10分类轴心是<strong>病因类型</strong>而非治疗方式。很多编码员以为"打胰岛素的就是1型，吃药的就是2型"——这是完全错误的。分型依据是<strong>病因机制</strong>。</p>
+
+<table>
+  <tr><th>类目</th><th>分型</th><th>临床特征</th><th>常见于</th></tr>
+  <tr>
+    <td><code>E10.-</code></td>
+    <td><strong>1型糖尿病</strong></td>
+    <td>胰岛素绝对缺乏，自身免疫破坏β细胞，C肽极低</td>
+    <td>青少年起病、酮症倾向、必须依赖胰岛素</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>E11.-</code></td>
+    <td><strong>2型糖尿病</strong>（最高频）</td>
+    <td>胰岛素抵抗为主伴相对缺乏，或分泌缺陷为主伴抵抗</td>
+    <td>中老年起病、可服药/注射胰岛素、约90%糖尿病</td>
+  </tr>
+  <tr>
+    <td><code>E12.-</code></td>
+    <td>营养不良相关性糖尿病</td>
+    <td>热带地区青年发病，与蛋白质缺乏相关</td>
+    <td>罕见（中国极少使用）</td>
+  </tr>
+  <tr>
+    <td><code>E13.-</code></td>
+    <td>其他特指的糖尿病</td>
+    <td>继发于胰腺切除、药物、内分泌病、感染等</td>
+    <td>类固醇性糖尿病、胰腺切除后糖尿病</td>
+  </tr>
+  <tr>
+    <td><code>E14.-</code></td>
+    <td>未特指糖尿病</td>
+    <td>没有足够信息确定分型</td>
+    <td><strong>残余类目，应尽量避免使用！</strong></td>
+  </tr>
+</table>
+
+<h3>2.2 第四位亚目（.0-.9）：并发症决定编码精度</h3>
+
+<p>糖尿病编码的第四位字符是对<strong>并发症类型</strong>的区分。ICD-10规定：<strong>如果存在多个并发症，应选择最严重或最特指的那个作为第四位亚目，不能用.7（多个并发症）来回避判断。</strong></p>
+
+<table>
+  <tr><th>亚目码</th><th>并发症</th><th>星号配对</th><th>典型场景</th></tr>
+  <tr><td><code>.0</code></td><td>昏迷（高渗性/低血糖性）</td><td>—</td><td>入院时意识障碍、血糖极高或极低</td></tr>
+  <tr><td><code>.1</code></td><td>酮症酸中毒</td><td>—</td><td>口干、呼吸深快（Kussmaul）、血酮升高</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>.2†</code></td><td>肾病</td><td><code>N08.3*</code></td><td>DN（糖尿病肾病）四期/五期</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>.3†</code></td><td>眼病</td><td><code>H36.0*</code></td><td>DR（糖尿病视网膜病变）I-VI期</td></tr>
+  <tr><td><code>.4†</code></td><td>神经病变</td><td><code>G63.2*</code></td><td>DPN（多发性/单发性神经病变）</td></tr>
+  <tr><td><code>.5</code></td><td>周围循环障碍</td><td>—</td><td>DF（糖尿病足）、末梢血管缺血</td></tr>
+  <tr><td><code>.6</code></td><td>其他特指并发症</td><td>—</td><td>糖尿病性关节病、糖尿病性皮肤病</td></tr>
+  <tr style="background:var(--warn-bg);"><td><code>.7</code></td><td>多个并发症</td><td>—</td><td><strong>肾病+眼病+足病同时存在时才用</strong></td></tr>
+  <tr><td><code>.8</code></td><td>未特指并发症</td><td>—</td><td>有并发症但未指明具体类型</td></tr>
+  <tr><td><code>.9</code></td><td>无并发症</td><td>—</td><td>单纯血糖控制，无靶器官损害</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 亚目选择口诀：</strong>"昏迷0，酸毒1，肾病2，眼睛3，神经4，循环5，其他6，多个7"——熟记这九个数字是糖尿病编码的肌肉记忆。
+</div>
+
+<h3>2.3 星剑号双重分类实战——糖尿病肾病的完整路径</h3>
+
+<p>以<strong>"2型糖尿病性肾病"</strong>为例，展示从临床诊断到编码填写的全流程：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>术语清洗</h4>
+      <p>临床写法："2型糖尿病，DN IV期" → 标准诊断："2型糖尿病伴肾病"<br>DN = Diabetic Nephropathy，意为糖尿病性肾小球硬化</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>查第三卷索引</h4>
+      <p>主导词：<strong>糖尿病</strong> → 2型 → 伴 → 肾病的 → <strong>E11.2†</strong> [N08.3*]</p>
+      <p>索引中标注了剑号/星号配对关系，不需要自己判断</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>核对第一卷</h4>
+      <p>E11.2 "2型糖尿病伴有肾的并发症"，核对：<br>
+      → E11 "包括"：非胰岛素依赖型糖尿病<br>
+      → 没有"不包括"将DN排除的注释<br>
+      → N08.3* "分类于他处的疾病引起的肾小球疾患 → 糖尿病性" — 确认匹配</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>填首页</h4>
+      <p><strong>主诊断</strong>：<code>E11.200</code> 2型糖尿病肾病（国临版）<br>
+      <strong>附加诊断</strong>：<code>N08.3*</code> 糖尿病性肾小球疾病</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.4 "使用胰岛素"不等于"1型糖尿病"——最容易踩的坑</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>患者用胰岛素 → 编码员想当然编E10（1型糖尿病）<br><br>
+    后果：DRG入组错误，数据污染</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>2型糖尿病长期使用胰岛素 → 编码 <code>E11.-</code> + <code>Z92.2</code>（长期使用胰岛素）<br><br>
+    无论用什么治疗方式，分型看病因不看治疗</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 记忆锚点：</strong>E11类目标题本身就包含"非胰岛素依赖型糖尿病"这个别名。字面上明确告诉你：<strong>E11也可以是胰岛素依赖状态</strong>。如果现在是胰岛素治疗 ≠ 是1型糖尿病。关键是看C肽水平、自身抗体和起病年龄。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、甲状腺编码 ======== -->
+<h2><span class="icon">🦋</span> 三、甲状腺疾病编码——三轴心分类法</h2>
+
+<h3>3.1 甲状腺疾病的三个分类轴心</h3>
+<p>ICD-10对甲状腺疾病的分类有三条交叉轴线：<strong>功能状态</strong>（甲亢/甲减/正常）、<strong>形态改变</strong>（肿大/结节/弥漫）和<strong>病因</strong>（缺碘/自身免疫/药物/手术）。编码时按"先功能→再病因→最后形态"的顺序锁定。</p>
+
+<table>
+  <tr><th>码位</th><th>疾病分类</th><th>轴心</th><th>典型对应</th></tr>
+  <tr>
+    <td><code>E00-E02</code></td>
+    <td>碘缺乏相关性甲状腺疾患</td>
+    <td>病因+功能+形态</td>
+    <td>E01.0 弥漫性地方性甲状腺肿（功能正常）<br>E01.1 多结节性地方性甲状腺肿<br>E02 亚临床碘缺乏性甲减</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>E03.-</code></td>
+    <td>其他甲状腺功能减退症</td>
+    <td>病因</td>
+    <td>E03.0 先天性甲减<br>E03.3 感染后甲减<br>E03.5 黏液水肿昏迷<br>E03.8 其他特指（如放射性碘后）<br>E03.9 未特指甲减</td>
+  </tr>
+  <tr>
+    <td><code>E04.-</code></td>
+    <td>其他非毒性甲状腺肿</td>
+    <td>形态（功能正常）</td>
+    <td>E04.0 弥漫性非毒性甲状腺肿<br>E04.1 单结节非毒性<br>E04.2 多结节非毒性<br><strong>——非毒性=功能正常！</strong></td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>E05.-</code></td>
+    <td>甲状腺功能亢进症</td>
+    <td>病因+形态</td>
+    <td>E05.0 Graves病（弥漫性甲亢）<br>E05.1 毒性单结节<br>E05.2 毒性多结节<br>E05.3 异位甲状腺组织<br>E05.4 人为性甲亢<br>E05.5 甲状腺危象</td>
+  </tr>
+  <tr>
+    <td><code>E06.-</code></td>
+    <td>甲状腺炎</td>
+    <td>病因</td>
+    <td>E06.0 急性甲状腺炎<br>E06.1 亚急性甲状腺炎（De Quervain）<br>E06.3 桥本甲状腺炎（自身免疫性）<br>E06.4 药物性</td>
+  </tr>
+  <tr>
+    <td><code>E07.-</code></td>
+    <td>其他甲状腺疾患</td>
+    <td>杂项</td>
+    <td>E07.0 降钙素分泌过多<br>E07.1 激素分泌异常<br>E07.8 其他特指</td>
+  </tr>
+</table>
+
+<h3>3.2 "毒性"和"非毒性"——不是中文口语里的"有毒"</h3>
+<p>在甲状腺编码中，<strong>"非毒性"= 功能正常（甲功三项正常），"毒性"= 功能亢进</strong>。这是译名造成的常见误解。一个拳头大的甲状腺结节，只要T3/T4/TSH正常，就是"非毒性甲状腺肿"（E04.-），而不是什么"毒性"。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例1："单纯性甲状腺肿"</h4>
+    <p>临床诊断：单纯性甲状腺肿<br>→ 查主导词"甲状腺肿" → 非毒性 → 弥漫性<br>→ <code>E04.0</code> 非毒性弥漫性甲状腺肿<br>→ 如果伴TSH升高 → 可能转为E03（甲减）</p>
+  </div>
+  <div class="example-item">
+    <h4>例2："甲状腺结节"</h4>
+    <p>B超：单发结节2cm，甲功正常<br>→ 非毒性单结节性甲状腺肿<br>→ <code>E04.101</code> 非毒性单结节甲状腺肿（国临版）<br>→ 关键：甲功正常 = 非毒性</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、高脂血症与肥胖编码 ======== -->
+<h2><span class="icon">🧬</span> 四、高脂血症与代谢疾病编码——不看化验单的话都是E78.5</h2>
+
+<h3>4.1 高脂血症（E78）：为什么E78.5是"劣质编码"</h3>
+
+<p>E78.-下五个亚目的差异化来自于<strong>血脂四项的具体数值</strong>：TC（总胆固醇）、TG（甘油三酯）、HDL-C、LDL-C。如果一个编码员看到"高脂血症"四个字就直接编<code>E78.500</code>，等于放弃了<strong>80%的诊断信息</strong>。</p>
+
+<table>
+  <tr><th>亚目</th><th>疾病名称</th><th>判断依据</th><th>占比</th></tr>
+  <tr>
+    <td><code>E78.0</code></td>
+    <td>纯高胆固醇血症</td>
+    <td>TC↑, TG正常；LDL-C↑为主</td>
+    <td>约35%</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>E78.1</code></td>
+    <td>纯高甘油酯血症</td>
+    <td>TG↑, TC正常</td>
+    <td>约15%</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>E78.2</code></td>
+    <td>混合型高脂血症</td>
+    <td>TC↑且TG↑</td>
+    <td>约40%（最常见）</td>
+  </tr>
+  <tr>
+    <td><code>E78.3</code></td>
+    <td>高乳糜微粒血症</td>
+    <td>乳糜微粒↑, TG极度升高</td>
+    <td>罕见</td>
+  </tr>
+  <tr style="background:var(--warn-bg);">
+    <td><code>E78.5</code></td>
+    <td>未特指的高脂血症</td>
+    <td><strong>仅在化验单缺失时使用</strong></td>
+    <td><strong>应→0%</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码操作规范：</strong>"高脂血症"入院时，首先查阅入院24h内的血脂四项报告——TC（正常 &lt;5.2）、TG（正常 &lt;1.7）。若患者只做了TC检验未做TG，"高脂血症"只能用E78.5——这就是质控检查会追查的问题，即实验室检查不完整。
+</div>
+
+<h3>4.2 肥胖（E66）：BMI只是起点</h3>
+<p>肥胖编码E66的四位亚目关注<strong>病因和有无低通气综合征</strong>：</p>
+<ul>
+  <li><strong>E66.0</strong> 热量过剩性肥胖 — BMI≥28且无继发病因</li>
+  <li><strong>E66.1</strong> 药物性肥胖 — 长期使用糖皮质激素、抗精神药物等</li>
+  <li><strong>E66.2</strong> 极度肥胖伴肺泡低通气（Pickwickian综合征）— BMI常&gt;40+PaCO₂升高+嗜睡</li>
+  <li><strong>E66.8</strong> 其他肥胖 — 病态肥胖等特指情况</li>
+  <li><strong>E66.9</strong> 未特指肥胖</li>
+</ul>
+
+<div class="note">
+  <strong>💡 编码要点：</strong>单纯肥胖作为主诊断的情况很少。肥胖通常是"肥胖+高血压（I10）+糖尿病（E11）+高脂血症（E78）+睡眠呼吸暂停（G47.3）"的组合编码模式，需要仔细阅读病程记录判断哪个是住院主要治疗目的。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、重难点 ======== -->
+<h2><span class="icon">🔬</span> 五、重难点深度解析：糖尿病并发症编码——"多重并发症"的致命陷阱</h2>
+
+<h3>为什么E11.7（多个并发症）是个"高危编码"？</h3>
+
+<p>许多编码员看到出院诊断上有"糖尿病肾病""糖尿病视网膜病变""糖尿病足病"三个并发症，就直接编码<code>E11.7</code>（伴多个并发症）——认为这样"一次性覆盖了"所有问题。但这个做法存在严重隐患：</p>
+
+<h4>隐患一：E11.7没有星剑号配对</h4>
+<p>E11.7类目下，ICD-10<strong>没有提供</strong>对应的星号编码。这意味着如果你用E11.7来表达糖尿病肾病+眼病，你就<strong>无法添加</strong>N08.3*和H36.0*作为附加编码——这些星号是DRG并发症/合并症（CC/MCC）权重计算的重要依据。</p>
+
+<h4>隐患二：DRG权重损失</h4>
+<table>
+  <tr><th>编码方案</th><th>DRG影响</th><th>权重差异</th></tr>
+  <tr>
+    <td>E11.2† + N08.3*（仅肾病）</td>
+    <td>MCC入组（严重并发症）</td>
+    <td>基准权重 ≈ 1.0</td>
+  </tr>
+  <tr>
+    <td>E11.7 "多个并发症"</td>
+    <td>可能仅CC（一般并发症）</td>
+    <td>权重下降 15%-30%</td>
+  </tr>
+  <tr style="background:var(--green-bg);">
+    <td><strong>E11.2† + N08.3* + E11.3† + H36.0* + E11.5</strong>（全部分开编）</td>
+    <td><strong>多个MCC最大权重</strong></td>
+    <td><strong>权重最高，信息最完整</strong></td>
+  </tr>
+</table>
+
+<h4>隐患三：ICD-10明确约定E11.7的使用场景极窄</h4>
+<p>第一卷关于E11.7的注释明确表述："该亚目只有在多个并发症均未达到单独作为亚目的标准，或无法确定哪一个是最主要治疗焦点时使用。"——换言之，E11.7是<strong>最后选择</strong>，不是偷懒工具。</p>
+
+<div class="card tip">
+  <strong>✅ 正确编码策略：</strong><br>
+  <strong>1.</strong> 先列出所有并发症，选出<strong>与本次住院治疗目的最相关</strong>的那个作为糖尿病第四位亚目<br>
+  <strong>2.</strong> 将其他并发症作为<strong>独立诊断行</strong>分别编码（不用"合并"到糖尿病主诊断的第四位里）<br>
+  <strong>3.</strong> 例如：患者本次因肾透析入院 + 有DR → 用E11.2†为主体 + 另外单独加编码E11.3† H36.0*描述视网膜病变
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共6题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 糖尿病分型判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请判断以下3个糖尿病患者的正确分类类目（E10/E11/E13/E14），并说明理由：</p>
+    <ol>
+      <li>25岁男性，C肽&lt;0.01ng/mL，GAD抗体阳性，每日4次胰岛素注射</li>
+      <li>58岁女性，BMI 29，已口服二甲双胍5年，近半年加用长效胰岛素（来得时）</li>
+      <li>70岁男性，胰腺癌术后3个月，血糖升高需胰岛素治疗</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. E10.-（1型糖尿病）</strong> — C肽极低+抗体阳性 → β细胞自身免疫性破坏 → 绝对缺乏 → 1型</p>
+        <p><strong>2. E11.-（2型糖尿病）</strong> — 中老年起病+肥胖+前期口服药有效 → 胰岛素抵抗型。使用胰岛素不能改变分型！如有长期使用胰岛素史，加编Z92.2</p>
+        <p><strong>3. E13.-（其他特指的糖尿病）</strong> — 胰腺切除后 → 继发性糖尿病 → 编码于E13（其他），而非E10/E11。这是最常见的继发糖尿病场景</p>
+        <p><strong>💡 核心教训：</strong>分型看病因（血清学+病史），不看当前治疗方式。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 高脂血症亚目选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某住院患者出院诊断"高脂血症"。查阅其入院24h化验报告：TC = 6.8mmol/L（↑），TG = 2.5mmol/L（↑），HDL-C = 0.9mmol/L（↓），LDL-C = 4.5mmol/L（↑）。</p>
+    <p><strong>问题：</strong>应编E78.-的哪个亚目？为什么不能编E78.5？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong><code>E78.2</code> 混合型高脂血症</p>
+        <p><strong>推理过程：</strong></p>
+        <p>TC = 6.8 > 5.2（↑）→ 存在高胆固醇血症<br>
+        TG = 2.5 > 1.7（↑）→ 存在高甘油三酯血症<br>
+        → 两者同时升高 → <strong>E78.2混合型高脂血症</strong></p>
+        <p><strong>为什么不能编E78.5：</strong>化验单数据完整！E78.5是<strong>残余类目</strong>，仅当没有血脂报告时才不得已使用。有明确化验结果却编E78.5，在质控检查中属于"编码深度不足"缺陷。</p>
+        <p><strong>💡 口诀：</strong>单TC高→E78.0 / 单TG高→E78.1 / 双双高→E78.2</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 甲状腺编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下3个甲状腺诊断，请给出正确的ICD-10编码：</p>
+    <table>
+      <tr><th>临床诊断</th><th>甲功</th><th>编码</th></tr>
+      <tr><td>Graves病（弥漫性甲亢）</td><td>T3↑ T4↑ TSH↓</td><td>？</td></tr>
+      <tr><td>甲状腺多发结节（甲功正常）</td><td>T3/T4/TSH正常</td><td>？</td></tr>
+      <tr><td>亚急性甲状腺炎（疼痛性）</td><td>可正常或一过性甲亢</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>① 编码：</strong><code>E05.0</code> 甲状腺功能亢进伴弥漫性甲状腺肿（Graves病）<br>
+        主导词"甲状腺功能亢进" → 伴 → 弥漫性甲状腺肿 → E05.0。注意Graves病不是检索"Graves"而是"甲状腺功能亢进"</p>
+        <p><strong>② 编码：</strong><code>E04.2</code> 非毒性多结节性甲状腺肿<br>
+        甲功正常 = "非毒性"。多结节 → E04.2。关键词"非毒性"是ICD-10译名特有概念，=功能正常</p>
+        <p><strong>③ 编码：</strong><code>E06.1</code> 亚急性甲状腺炎<br>
+        主导词"甲状腺炎" → 亚急性 → E06.1。De Quervain甲状腺炎即为此编码</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 糖尿病星剑号完整推导</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，女，62岁。"2型糖尿病"病史12年。本次因<strong>双下肢麻木、视力模糊</strong>入院。入院检查：空腹血糖16.2、眼底检查：双眼糖尿病性视网膜病变III期、肌电图：糖尿病性多发性周围神经病变。出院诊断："2型糖尿病伴视网膜病变""2型糖尿病伴周围神经病变"。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>应该编一个糖尿病码还是两个？</li>
+      <li>星剑号（†/*）怎么配？</li>
+      <li>主诊断应该选哪个？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. 应编两个糖尿病码：</strong>一个用于眼病，一个用于神经病变。不能用E11.7（多个并发症）替代——会丢失星号编码无法反映DRG权重。<br>
+        但本次住院<strong>需要判断主要治疗的焦点</strong>：视力模糊和下肢麻木都是主诉。如果眼底激光治疗是主要操作 → 以眼病为主诊。</p>
+        <p><strong>2. 编码组合：</strong><br>
+        ① <code>E11.300†</code> 2型糖尿病性视网膜病变（剑号，主诊断）<br>
+        &nbsp;&nbsp;&nbsp;<code>H36.000*</code> 糖尿病性视网膜病变（星号，附加）<br>
+        ② <code>E11.400†</code> 2型糖尿病性周围神经病变（剑号，附加诊断）<br>
+        &nbsp;&nbsp;&nbsp;<code>G63.200*</code> 糖尿病性多神经病变（星号，附加）</p>
+        <p><strong>3. 主诊断：</strong><code>E11.300†</code>（2型糖尿病性视网膜病变）<br>
+        依据：DRG入组规则下，选择对本次医疗资源消耗影响最大的诊断。视网膜病变通常匹配的手术操作（激光等）会驱动入组变化。</p>
+        <p><strong>💡 进阶要点：</strong>两个星号（H36.0*和G63.2*）都要填在"其他诊断"中。虽然主诊断只有一个，但附加编码能完整描述患者的疾病负荷（complication burden），直接影响DRG并发症等级的判定。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · E章 vs M章交叉判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，男，55岁。因"右足第一跖趾关节红、肿、热、痛3天"入院。实验室检查：血尿酸 580μmol/L（↑）。关节液检查见尿酸盐结晶。既往有2型糖尿病史。出院诊断："痛风性关节炎（急性发作）""2型糖尿病""高尿酸血症"。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>哪些诊断应该合并编码？哪些应该分开？</li>
+      <li>主诊断应该是什么？</li>
+      <li>给出完整的诊断编码列表。</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. 编码逻辑：</strong><br>
+        • 痛风性关节炎+高尿酸血症 → 痛风性关节炎已包含高尿酸血症的病因学关联，<strong>高尿酸血症不应再单独编码</strong>。（注意：只有单纯高尿酸血症、没有关节炎时才用E79.0）<br>
+        • 痛风性关节炎 → M章（骨骼肌系统）→ M10.-<br>
+        • 这是E章和M章的典型交叉：虽然代谢病在E章，但<strong>已出现器官并发症的疾病优先归入相应系统章</strong>。</p>
+        <p><strong>2. 主诊断：</strong><code>M10.002</code> 原发性痛风（第一跖趾关节）<br>
+        本次住院的主因是痛风急性发作，代谢病（糖尿病）是伴随诊断。</p>
+        <p><strong>3. 完整编码列表：</strong><br>
+        <strong>主诊断：</strong><code>M10.002</code> 原发性痛风性关节炎（第一跖趾关节）<br>
+        <strong>其他诊断：</strong><code>E11.900</code> 2型糖尿病（无并发症）<br>
+        <strong>不编：</strong>E79.0（高尿酸血症）——已合并入M10</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · "不包括"规则辨识</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>以下诊断各给出一个编码建议，但其中有<strong>3个错误</strong>。请找出错误的，说明原因并给出正确编码。</p>
+    <table>
+      <tr><th>#</th><th>临床诊断</th><th>建议编码</th><th>对/错？</th></tr>
+      <tr><td>A</td><td>甲状腺术后甲减</td><td>E03.8</td><td>？</td></tr>
+      <tr><td>B</td><td>2型糖尿病，长期用胰岛素</td><td>E10.9</td><td>？</td></tr>
+      <tr><td>C</td><td>糖尿病性白内障</td><td>E11.3†+H28.0*</td><td>？</td></tr>
+      <tr><td>D</td><td>新生儿低血糖</td><td>E16.2</td><td>？</td></tr>
+      <tr><td>E</td><td>类固醇性糖尿病</td><td>E11.9</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 错误的有A、B、D、E（其实是4个错误！）：</strong></p>
+        <p><strong>A ×</strong>：甲状腺术后甲减 → 应编 <code>E89.0</code>（操作后甲状腺功能减退症）。<br>
+        E03是"原发性"甲减。手术导致的属于"操作后内分泌和代谢紊乱"（E89），不在E00-E07中！第一卷E89明确包含了"操作后甲状腺功能减退"。</p>
+        <p><strong>B ×</strong>：2型糖尿病长期用胰岛素 → 应编 <code>E11.9</code> + <code>Z92.2</code>。<br>
+        用胰岛素≠1型糖尿病！分型不变，加Z92.2说明用药史。</p>
+        <p><strong>C ✓</strong>：糖尿病性白内障编码 E11.3†+H28.0* 正确。注意糖尿病性白内障和糖尿病性视网膜病变的星号不同：白内障是H28.0*，视网膜病变是H36.0*。</p>
+        <p><strong>D ×</strong>：新生儿低血糖 → 应编 <code>P70.4</code>（新生儿其他低血糖症）。<br>
+        属于第十六章"起源于围生期的某些情况"，而不是E章的"葡萄糖调节异常"。</p>
+        <p><strong>E ×</strong>：类固醇性糖尿病 → 应编 <code>E13.-</code>（其他特指的糖尿病）。<br>
+        E13是"药物/化学物诱发糖尿病"的正确归属。E11是原发性2型，不能用于继发。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>糖尿病分型看病因：</strong>自身免疫→E10, 抵抗型→E11, 继发→E13，不能以治疗方式反推</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>第四位亚目代表</strong>当前住院最需要治疗的并发症，不是"什么都不挑"的.7</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>星剑号不嫌多：</strong>每个有星号的并发症都应单独编码，E11.7=放弃权重</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>高脂血症E78：</strong>必须有血脂化验 → TC和TG的具体值决定.0/.1/.2，不能默认.5</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>"非毒性"=功能正常：</strong>这是ICD-10专有译法，不是普通意义上的"无毒"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>术后甲减≠E03：</strong>属操作后内分泌紊乱E89.0，不在甲状腺本身编码段</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>痛风关节炎→M10，</strong>高尿酸血症(无关节炎)→E79.0。这是E-M交叉的典型</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>新生儿低血糖→P70</strong>；围生期章优先，不能用E16的成人编码</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 15 主题：F章 — 精神和行为障碍（F00-F99）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>F00-F09器质性精神障碍怎么和G30（阿尔茨海默）联动编码？</li>
+    <li>F10-F19精神活性物质使用障碍的分类轴心是什么？（急性中毒/有害使用/依赖/戒断/精神病性障碍）</li>
+    <li>F20-F29精神分裂症的分型亚目（偏执型F20.0 / 青春型F20.1 / 紧张型F20.2 等）与第4/5位扩展码的关系？</li>
+    <li>焦虑和抑郁（F32-F41）在什么情况下不能作为主诊断？</li>
+  </ul>
+</div>
+
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 14 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 / 病案编码案例库</p>
+</div>
+
+</body>
+</html>
