@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 15（2026年7月3日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Decision Tree ===== */
+  .decision-tree {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .decision-node {
+    display: inline-block; padding: 8px 20px; border: 2px solid var(--accent);
+    border-radius: 8px; background: #fff; font-weight: 600;
+    font-size: 13px; margin: 4px;
+  }
+  .decision-node.leaf { border-color: var(--green); background: var(--green-bg); }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 15 · 2026年7月3日</div>
+  <h1>🧠 病案编码学习</h1>
+  <p class="subtitle">今日主题：F 章 —— 精神和行为障碍（F00-F99）</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 15 / 60 天（25%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>F章十大板块的码位范围和分类逻辑（F00-F99）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>器质性 vs 非器质性精神障碍的判定标准与编码路径</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>精神活性物质所致障碍编码体系（F10-F19）的核心逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>F章双重分类规则：何时附加病因编码</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>F00-F09当病因明确时，附加编码标明根本疾病的规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>F51（非器质性）vs G47（器质性）睡眠障碍的区分标准</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>双相障碍F31.x亚目的"当前发作状态"判断逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>"尊重临床诊断"原则的适用边界与编码员职责</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-11 第六章（6A00-6E8Z）对精神障碍分类的重新架构</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DSM-5 与 ICD-10 诊断标准的对应关系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>精神专科医院疾病谱构成与高发病种编码特征</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>F章与其他疾病章有一个根本区别——大多数精神障碍<strong>无法通过实验室检查确诊</strong>，编码时必须尊重临床医师的诊断。掌握「器质性优先」原则，以及物质使用障碍的"依赖/戒断/精神病性障碍"三级递进关系，是本章编码的核心。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 一、F章全景架构 ======== -->
+<h2><span class="icon">🗺️</span> 一、F章整体架构：十大板块一览</h2>
+
+<p>F章（F00-F99）收录<strong>精神和行为障碍</strong>（Mental and Behavioural Disorders），是与 ICD-10 其他疾病章性质最不同的一章。因为绝大多数精神障碍<strong>缺乏理化检验金标准</strong>，诊断依据是临床表现、病程和行为观察，这决定了本章编码需遵循一套独特的规则。</p>
+
+<div class="card tip">
+  <strong>📌 F章核心特征：</strong><br>
+  ① <strong>病因优先：</strong>当精神症状由器质性脑病、躯体疾病或精神活性物质直接导致时，先编病因码<strong>再</strong>编精神症状码<br>
+  ② <strong>尊重临床诊断：</strong>编码员不能以"缺乏实验室证据"为由否定临床诊断<br>
+  ③ <strong>使用附加编码：</strong>F00-F09 器质性精神障碍需附加编码标明根本病因
+</div>
+
+<h3>1.1 十大板块速查表</h3>
+
+<table>
+  <tr><th>板块</th><th>码位</th><th>内容</th><th>典型疾病</th><th>编码特征</th></tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>一</strong></td>
+    <td><code>F00-F09</code></td>
+    <td>器质性（包括症状性）精神障碍</td>
+    <td>阿尔茨海默病性痴呆、血管性痴呆、谵妄</td>
+    <td>★ 需附加病因编码</td>
+  </tr>
+  <tr>
+    <td><strong>二</strong></td>
+    <td><code>F10-F19</code></td>
+    <td>精神活性物质所致精神障碍</td>
+    <td>酒精依赖、阿片类戒断、大麻中毒</td>
+    <td>按物质类别分块编码</td>
+  </tr>
+  <tr>
+    <td><strong>三</strong></td>
+    <td><code>F20-F29</code></td>
+    <td>精神分裂症、分裂型障碍和妄想性障碍</td>
+    <td>精神分裂症（F20）、妄想障碍（F22）</td>
+    <td>按病程分亚型</td>
+  </tr>
+  <tr>
+    <td><strong>四</strong></td>
+    <td><code>F30-F39</code></td>
+    <td>心境[情感]障碍</td>
+    <td>躁狂（F30）、双相（F31）、抑郁（F32-F33）</td>
+    <td>按"当前发作状态"编码</td>
+  </tr>
+  <tr>
+    <td><strong>五</strong></td>
+    <td><code>F40-F48</code></td>
+    <td>神经症性、应激相关及躯体形式障碍</td>
+    <td>焦虑（F41）、恐惧（F40）、强迫（F42）、应激（F43）、分离（F44）</td>
+    <td>症状群编码，不含器质性</td>
+  </tr>
+  <tr>
+    <td><strong>六</strong></td>
+    <td><code>F50-F59</code></td>
+    <td>与生理紊乱和躯体因素有关的行为综合征</td>
+    <td>进食障碍（F50）、睡眠障碍（F51）、性功能障碍（F52）</td>
+    <td>强调"非器质性"前提</td>
+  </tr>
+  <tr>
+    <td><strong>七</strong></td>
+    <td><code>F60-F69</code></td>
+    <td>成人人格和行为障碍</td>
+    <td>偏执型人格（F60.0）、习惯与冲动障碍（F63）</td>
+    <td>持久性特征编码</td>
+  </tr>
+  <tr>
+    <td><strong>八</strong></td>
+    <td><code>F70-F79</code></td>
+    <td>精神发育迟滞</td>
+    <td>轻度/中度/重度/极重度（F70-F73）</td>
+    <td>按IQ分级</td>
+  </tr>
+  <tr>
+    <td><strong>九</strong></td>
+    <td><code>F80-F89</code></td>
+    <td>心理发育障碍</td>
+    <td>语言障碍（F80）、特定学习障碍（F81）、孤独症（F84）</td>
+    <td>发生于儿童期</td>
+  </tr>
+  <tr>
+    <td><strong>十</strong></td>
+    <td><code>F90-F98</code></td>
+    <td>起病于童年与少年期的行为与情绪障碍</td>
+    <td>多动障碍（F90）、品行障碍（F91）</td>
+    <td>起病年龄有要求</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 记忆技巧：</strong>F章板块可以按"器质→物质→功能→心境→神经→行为→人格→智力→发育→儿童"这十个关键词串联记忆。前两个板块（F00-F19）是"有明确病因的"，后八个板块（F20-F98）是"功能性/发育性的"。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、F00-F09 器质性精神障碍 ======== -->
+<h2><span class="icon">🧬</span> 二、F00-F09：器质性精神障碍——病因先行的编码逻辑</h2>
+
+<h3>2.1 什么是"器质性"精神障碍？</h3>
+<p>器质性精神障碍（Organic Mental Disorders）是指由<strong>大脑疾病、脑损伤或躯体疾病</strong>直接导致的精神症状。关键特征：能找到明确的生物学病因——脑萎缩、脑血管病变、颅内感染、躯体疾病（如甲状腺功能异常）等。</p>
+
+<p>ICD-10 将器质性精神障碍分为两大亚群：</p>
+<ul>
+  <li><strong>F00-F03：</strong>以认知功能损害为主的痴呆类（阿尔茨海默病性、血管性、其他疾病所致）</li>
+  <li><strong>F04-F09：</strong>其他器质性精神障碍（谵妄、器质性幻觉症、器质性心境障碍、脑损伤后人格改变等）</li>
+</ul>
+
+<h3>2.2 核心编码规则：附加病因编码</h3>
+<div class="card warn">
+  <strong>⚠️ F00-F09 编码铁律：</strong>只要病因明确，<strong>必须附加编码标明根本疾病</strong>。这是F章双重分类最常见的使用场景。
+</div>
+
+<table>
+  <tr><th>临床表现编码（F章）</th><th>附加病因编码</th><th>场景说明</th></tr>
+  <tr>
+    <td><code>F01.9</code> 血管性痴呆，未特指</td>
+    <td><code>I67.9</code> 脑血管病，未特指</td>
+    <td>多发性脑梗死导致的进行性认知衰退</td>
+  </tr>
+  <tr>
+    <td><code>F00.0*</code> 早发性阿尔茨海默病性痴呆</td>
+    <td><code>G30.0†</code> 早发性阿尔茨海默病</td>
+    <td>这是经典的星剑号配对——G30†为主码</td>
+  </tr>
+  <tr>
+    <td><code>F05.0</code> 谵妄，非附加于痴呆</td>
+    <td><code>J15.9</code> 未特指的细菌性肺炎</td>
+    <td>老年肺炎患者因感染诱发谵妄</td>
+  </tr>
+  <tr>
+    <td><code>F06.3</code> 器质性心境障碍</td>
+    <td><code>E05.9</code> 甲亢，未特指</td>
+    <td>甲亢患者出现明显的抑郁/躁狂症状</td>
+  </tr>
+  <tr>
+    <td><code>F07.2</code> 脑震荡后综合征</td>
+    <td><code>S06.0</code> 脑震荡</td>
+    <td>脑外伤后持续存在的头痛、情绪不稳</td>
+  </tr>
+</table>
+
+<h3>2.3 阿尔茨海默病痴呆的编码——星剑号的陷阱</h3>
+<p>这是F章最需要小心的编码之一。阿尔茨海默病性痴呆在 ICD-10 中有两种编码体系：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>只编 <code>F00.1*</code>（晚发性阿尔茨海默病性痴呆），漏掉 G30.1†</p>
+    <p><strong>后果：</strong>DRG 入组驱动编码丢失，入组错误</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>主诊断：<code>G30.1†</code> 晚发性阿尔茨海默病<br>附加诊断：<code>F00.1*</code> 晚发性阿尔茨海默病性痴呆</p>
+    <p><strong>依据：</strong>G30†是剑号（病因），F00.*是星号（临床表现）</p>
+  </div>
+</div>
+
+<pre>索引路径：
+主导词：痴呆
+  └ 阿尔茨海默病内
+    └ 早发性 → G30.0† + F00.0*
+    └ 晚发性 → G30.1† + F00.1*
+
+核对卷一：
+G30.0† 早发性阿尔茨海默病 → 使用剑号编码
+F00.0* 早发性阿尔茨海默病性痴呆 → 使用星号编码
+主诊断 = G30.0†（剑号优先原则）</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 三、F10-F19 物质使用障碍 ======== -->
+<h2><span class="icon">🍺</span> 三、F10-F19：精神活性物质——按"物质+状态"二维编码</h2>
+
+<h3>3.1 十种物质，一个编码框架</h3>
+<p>F10-F19 采用<strong>"物质类别 × 临床状态"</strong>的交叉编码结构。十种物质共享同一个亚目编码体系：</p>
+
+<table>
+  <tr><th>编码</th><th>物质类别</th><th>编码</th><th>物质类别</th></tr>
+  <tr><td><code>F10.-</code></td><td>酒精（Alcohol）</td><td><code>F15.-</code></td><td>其他兴奋剂（咖啡因等）</td></tr>
+  <tr><td><code>F11.-</code></td><td>阿片类（Opioids）</td><td><code>F16.-</code></td><td>致幻剂（Hallucinogens）</td></tr>
+  <tr><td><code>F12.-</code></td><td>大麻类（Cannabinoids）</td><td><code>F17.-</code></td><td>烟草（Tobacco）</td></tr>
+  <tr><td><code>F13.-</code></td><td>镇静剂或安眠药（Sedatives）</td><td><code>F18.-</code></td><td>挥发性溶剂</td></tr>
+  <tr><td><code>F14.-</code></td><td>可卡因（Cocaine）</td><td><code>F19.-</code></td><td>多种药物及其他</td></tr>
+</table>
+
+<h3>3.2 统一亚目编码：第四位表达"临床状态"</h3>
+<p>所有十种物质共享相同的第四位编码，表示临床使用状态：</p>
+
+<table>
+  <tr><th>亚目</th><th>临床状态</th><th>说明</th><th>示例（以酒精为例）</th></tr>
+  <tr style="background:var(--red-bg);">
+    <td><code>.0</code></td><td>急性中毒</td><td>摄入后短期的直接效应</td><td><code>F10.0</code> 酒精急性中毒</td>
+  </tr>
+  <tr style="background:var(--warn-bg);">
+    <td><code>.1</code></td><td>有害性使用</td><td>对健康造成损害但尚未达到依赖程度</td><td><code>F10.1</code> 酒精有害性使用</td>
+  </tr>
+  <tr style="background:var(--red-bg);">
+    <td><code>.2</code></td><td>依赖综合征</td><td>强烈的渴求+耐受+戒断反应</td><td><code>F10.2</code> 酒精依赖综合征</td>
+  </tr>
+  <tr style="background:var(--warn-bg);">
+    <td><code>.3</code></td><td>戒断状态</td><td>停用后的反跳反应（震颤谵妄等）</td><td><code>F10.3</code> 酒精戒断状态</td>
+  </tr>
+  <tr>
+    <td><code>.4</code></td><td>伴有谵妄的戒断状态</td><td>戒断+严重意识障碍（震颤谵妄）</td><td><code>F10.4</code> 震颤谵妄</td>
+  </tr>
+  <tr>
+    <td><code>.5</code></td><td>精神病性障碍</td><td>幻觉/妄想等精神症状</td><td><code>F10.5</code> 酒精所致精神病性障碍</td>
+  </tr>
+  <tr>
+    <td><code>.6</code></td><td>遗忘综合征</td><td>Wernicke-Korsakoff综合征等</td><td><code>F10.6</code> 酒精所致遗忘综合征</td>
+  </tr>
+  <tr>
+    <td><code>.7</code></td><td>残留性和迟发性精神病性障碍</td><td>长期戒断后仍残留的精神症状</td><td><code>F10.7</code> 酒精所致残留性精神障碍</td>
+  </tr>
+</table>
+
+<h3>3.3 三个关联亚目的临床判断逻辑</h3>
+<div class="flow-chart">
+  <p style="margin-bottom:14px;font-weight:700;font-size:15px;">酒精使用障碍：F10.1 → F10.2 → F10.3 的递进关系</p>
+  <div class="flow-row">
+    <div class="flow-box">有害性使用 F10.1<br><small>已造成健康损害</small></div>
+    <span style="font-size:22px;color:var(--accent);">→</span>
+    <div class="flow-box">依赖综合征 F10.2<br><small>渴求+耐受+失控</small></div>
+    <span style="font-size:22px;color:var(--accent);">→</span>
+    <div class="flow-box warn-step">戒断状态 F10.3<br><small>停用后出现症状</small></div>
+    <span style="font-size:22px;color:var(--red);">→</span>
+    <div class="flow-box warn-step">伴谵妄戒断 F10.4<br><small>震颤谵妄</small></div>
+  </div>
+  <p style="margin-top:14px;font-size:13px;color:var(--text2);">注：依赖已达成 → 不再编有害性使用（.1）；戒断是依赖已经确立的前提下的状态</p>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 极易出错：</strong>患者因"戒断状态"（如震颤谵妄）入院时，主诊断应是 <code>F10.3</code> 戒断状态 或 <code>F10.4</code> 伴谵妄的戒断，<strong>不是</strong> <code>F10.2</code> 依赖综合征。依赖已经在病史中了，本次住院的实际问题是戒断。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、功能性精神障碍编码 ======== -->
+<h2><span class="icon">🧩</span> 四、F20-F48：功能性精神障碍——"症状群+当前状态"编码</h2>
+
+<h3>4.1 F20-F29 精神分裂症谱系</h3>
+<p>精神分裂症（Schizophrenia, F20）是本章最重要的类目之一。其亚目按<strong>疾病类型+病程</strong>编码：</p>
+
+<table>
+  <tr><th>编码</th><th>类型</th><th>核心特征</th></tr>
+  <tr><td><code>F20.0</code></td><td>偏执型</td><td>以妄想和幻觉为主，情感和意志损害相对较轻</td></tr>
+  <tr><td><code>F20.1</code></td><td>青春型（瓦解型）</td><td>起病早，情感平淡、思维散漫，行为幼稚</td></tr>
+  <tr><td><code>F20.2</code></td><td>紧张型</td><td>木僵、缄默、违拗或紧张性兴奋</td></tr>
+  <tr><td><code>F20.3</code></td><td>未分化型</td><td>符合精神分裂症标准但不满足以上任一类型</td></tr>
+  <tr><td><code>F20.5</code></td><td>残留型</td><td>阴性症状明显但无显著阳性症状</td></tr>
+  <tr><td><code>F20.6</code></td><td>单纯型</td><td>隐匿起病，阴性症状为主，从无阳性症状</td></tr>
+</table>
+
+<p><strong>主导词查找路径：</strong></p>
+<pre>主导词：精神分裂症
+  └ 偏执型 → F20.0
+  └ 紧张型 → F20.2
+  └ 残留型 → F20.5</pre>
+
+<h3>4.2 F30-F39 心境障碍：当前状态比终身诊断更重要</h3>
+<p>心境障碍（Mood/Affective Disorders）编码的核心原则是<strong>"当前发作状态优先"</strong>，而非终身诊断。这在双相障碍编码中尤为突出：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例1：双相障碍，目前为躁狂发作</h4>
+    <p><code>F31.1</code> 双相障碍，目前为不伴精神病性症状的躁狂发作</p>
+    <p>→ 即使患者病史以抑郁为主，<strong>本次以躁狂状态入院</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>例2：双相障碍，目前为重度抑郁发作</h4>
+    <p><code>F31.4</code> 双相障碍，目前为重度抑郁发作不伴精神病性症状</p>
+    <p>→ 抑郁严重程度决定亚目，不一定是"双相抑郁"</p>
+  </div>
+  <div class="example-item">
+    <h4>例3：复发性抑郁障碍，目前为中度发作</h4>
+    <p><code>F33.1</code> 复发性抑郁障碍，目前为中度发作</p>
+    <p>→ 单次抑郁用F32，两次及以上用F33</p>
+  </div>
+  <div class="example-item">
+    <h4>例4：躁狂发作，目前为缓解期</h4>
+    <p><code>F30.8</code>/<code>F31.7</code> 视具体情况而定</p>
+    <p>→ 缓解期编码与急性发作期完全不同的亚目</p>
+  </div>
+</div>
+
+<h3>4.3 F43 应激障碍——编码混淆重灾区</h3>
+<p>应激相关障碍（F43）是综合医院最容易遇到的F章编码，因为住院患者本身就处于应激状态，且常与躯体疾病同时出现。以下三个编码极易混淆：</p>
+
+<table>
+  <tr><th>编码</th><th>诊断</th><th>特征</th><th>与躯体病的关联</th></tr>
+  <tr>
+    <td><code>F43.0</code></td><td>急性应激反应</td><td>应激事件后数分钟至数小时内出现，<strong>48小时内缓解</strong></td>
+    <td>如车祸外伤后出现的一过性情绪崩溃</td>
+  </tr>
+  <tr>
+    <td><code>F43.1</code></td><td>创伤后应激障碍（PTSD）</td><td>延迟出现且持续存在（>1月），闪回、噩梦、警觉性增高</td>
+    <td>重大创伤事件（如ICU住院后）数月后仍反复闪回</td>
+  </tr>
+  <tr>
+    <td><code>F43.2</code></td><td>适应障碍</td><td>对明确的生活改变产生的<strong>情绪/行为反应</strong>，功能障碍</td>
+    <td>确诊癌症后持续的焦虑和失眠，社会功能受损</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 五、睡眠障碍编码 ======== -->
+<h2><span class="icon">😴</span> 五、睡眠障碍编码：F51 vs G47 的核心分水岭</h2>
+
+<p>这是F章在临床实践中<strong>频率最高</strong>的编码区分问题。ICD-10 将睡眠障碍分别置于神经病学（G47）与精神科（F51）两个章节，判断依据是：<strong>是否存在明确的器质性病因。</strong></p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ G47 器质性睡眠障碍</h4>
+    <p><strong>病因明确：</strong></p>
+    <ul>
+      <li><code>G47.0</code> 入睡和维持睡眠障碍（器质性失眠）</li>
+      <li><code>G47.1</code> 过度睡眠（器质性嗜睡）</li>
+      <li><code>G47.2</code> 睡眠-觉醒节律障碍</li>
+      <li><code>G47.3</code> 睡眠呼吸暂停</li>
+      <li><code>G47.4</code> 发作性睡病和猝倒症</li>
+    </ul>
+    <p><strong>伴随疾病：</strong>神经系统病变、呼吸系统疾病、内分泌疾病等</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ F51 非器质性睡眠障碍</h4>
+    <p><strong>无明确器质性原因：</strong></p>
+    <ul>
+      <li><code>F51.0</code> 非器质性失眠症</li>
+      <li><code>F51.1</code> 非器质性嗜睡症</li>
+      <li><code>F51.2</code> 非器质性睡眠-觉醒节律障碍</li>
+      <li><code>F51.3</code> 睡行症（梦游）</li>
+      <li><code>F51.4</code> 睡惊症（夜惊）</li>
+      <li><code>F51.5</code> 梦魇</li>
+    </ul>
+    <p><strong>病因：</strong>心理社会因素、情绪障碍等</p>
+  </div>
+</div>
+
+<div class="decision-tree">
+  <p style="font-weight:700;font-size:15px;margin-bottom:14px;">睡眠障碍编码决策树</p>
+  <div class="flow-row">
+    <div class="decision-node">睡眠障碍就诊</div>
+  </div>
+  <div style="margin:8px 0;font-size:13px;color:var(--text2);">↓ 是否存在明确器质性病因？</div>
+  <div class="flow-row">
+    <div class="decision-node leaf">是 → G47<br><small>（如睡眠呼吸暂停、发作性睡病、脑器质性失眠）</small></div>
+    <div style="margin:0 8px;font-weight:700;">|</div>
+    <div class="decision-node leaf">否 → F51<br><small>（如心因性失眠、夜惊、梦魇、睡行症）</small></div>
+  </div>
+  <p style="margin-top:12px;font-size:13px;color:var(--text3);">来自知识库论文"非器质性睡眠障碍的ICD疾病分类编码"（梁彩琼、李黎，2021）的核心观点：<strong>编码人员需认真查阅病案信息</strong>，不能仅凭临床诊断名称判断归属，必须核对是否有器质性病因记录。</p>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见误区：</strong>失眠患者做了睡眠监测排除呼吸暂停后，医嘱开的仍是"失眠"——此时已有 G47 和 F51 两种可能。关键看有没有在病程记录中记录明确的<strong>心理社会因素</strong>或<strong>器质性排除证据</strong>。当医师诊断与编码分类定义冲突时，以临床医师诊断为主（F章"尊重临床诊断"原则）。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点深度解析：F章双重分类——什么时候加、加什么</h2>
+
+<h3>6.1 F章双重分类的三条核心规则</h3>
+
+<p>F章的双重分类（Dual Classification）是最容易被忽视的考点。与星剑号系统（†/*）不同，F章的双重分类更加灵活，遵循以下三条规则：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>适用场景：F00-F09（器质性精神障碍）</h4>
+      <p>当某人患器质性精神障碍（F00-F09），且根本病因已知 → <strong>必须附加编码标明病因</strong>。这是强制性要求，不是可选操作。</p>
+      <p>参考知识库原文："双重分类不是对明确的类目而言，是针对没有给出病因编码的类目指导。"</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>双码关系：病因码 + 精神障碍码</h4>
+      <p>病因码（如 G30†、I67.9、E05.9）是"为什么发生精神障碍"的原因；F章的精神障碍码（F00-F09）是"精神障碍的表现形式"。两者<strong>不是星剑号配对</strong>——星剑号（†/*）有特定的索引标示，而F章的双重分类是一般性的附加编码。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>典型场景速查</h4>
+      <p>脑动脉硬化性痴呆 → F01.9（痴呆）+ I67.2（脑动脉粥样硬化）<br>甲状腺功能亢进致精神障碍 → F06.8 + E05.9<br>慢性酒精中毒性脑病 → F10.6 + G31.2（酒精中毒性神经变性）</p>
+    </div>
+  </div>
+</div>
+
+<h3>6.2 典型错误案例分析：脑动脉硬化性痴呆</h3>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">📌</div>
+    <span>重难点案例：脑动脉硬化性痴呆的双重编码</span>
+  </div>
+  <div class="case-body">
+    <p><strong>场景：</strong>72岁男性，有多年高血压/高脂血症史，因进行性记忆衰退、定向力障碍入院。头颅CT示多发性腔隙性脑梗死、脑白质疏松。临床诊断"脑动脉硬化性痴呆"。</p>
+
+    <p><strong>编码推导：</strong></p>
+    <table>
+      <tr><th>步骤</th><th>操作</th><th>结果</th></tr>
+      <tr><td>① 主导词</td><td>痴呆 → 血管性 → F01.9</td><td><code>F01.9</code> 血管性痴呆，未特指</td></tr>
+      <tr><td>② 病因确认</td><td>CT明确显示多发性腔隙性脑梗死</td><td>须附加脑血管病编码</td></tr>
+      <tr><td>③ 病因编码</td><td>脑动脉硬化→I67.2；多发性腔梗→I63.801</td><td>视病程记录选择</td></tr>
+      <tr><td>④ 核对卷一</td><td>F01.9"血管性痴呆"类目下说明"包括"动脉硬化性痴呆</td><td>✅ 确认匹配</td></tr>
+    </table>
+
+    <div class="compare-row">
+      <div class="compare-col bad">
+        <h4>❌ 错误编码</h4>
+        <p>只编 <code>F01.9</code>，不加病因码</p>
+        <p><strong>后果：</strong>统计报告只知道"有痴呆"，不知道"为什么痴呆"——无法做病因相关的流行病学分析</p>
+      </div>
+      <div class="compare-col good">
+        <h4>✅ 正确编码</h4>
+        <p>主诊断：<code>I67.2</code> 脑动脉粥样硬化<br>其他诊断：<code>F01.9</code> 血管性痴呆，未特指</p>
+        <p><strong>说明：</strong>病因码在前（主诊断），精神障碍码在后</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · F章板块归属判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下每个诊断找到正确的F章板块编码范围：</p>
+    <ol>
+      <li>酒精依赖综合征</li>
+      <li>偏执型精神分裂症</li>
+      <li>重度抑郁发作，无精神病性症状</li>
+      <li>阿尔茨海默病性痴呆（晚发性）</li>
+      <li>非器质性失眠症</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 酒精依赖综合征 → <code>F10.2</code>，属于 <strong>F10-F19</strong>（精神活性物质所致）板块</p>
+        <p><strong>2.</strong> 偏执型精神分裂症 → <code>F20.0</code>，属于 <strong>F20-F29</strong>（精神分裂症谱系）板块</p>
+        <p><strong>3.</strong> 重度抑郁发作 → <code>F32.2</code>，属于 <strong>F30-F39</strong>（心境障碍）板块</p>
+        <p><strong>4.</strong> 晚发性阿尔茨海默病性痴呆 → <code>G30.1†</code> + <code>F00.1*</code>，属于 <strong>F00-F09</strong>（器质性精神障碍）板块，且需星剑号双码</p>
+        <p><strong>5.</strong> 非器质性失眠症 → <code>F51.0</code>，属于 <strong>F50-F59</strong>（生理紊乱行为综合征）板块</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 物质使用障碍亚目识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下酒精相关临床状态应编入哪个亚目：</p>
+    <table>
+      <tr><th>临床描述</th><th>你的编码</th><th>判断依据</th></tr>
+      <tr><td>A. 患者因大量饮酒后意识模糊、言语含糊入院，血酒精浓度显著升高</td><td>？</td><td>？</td></tr>
+      <tr><td>B. 患者有10年饮酒史，停酒6小时后出现手抖、出汗、心慌</td><td>？</td><td>？</td></tr>
+      <tr><td>C. 患者长期饮酒，近半年每天早上必须喝酒才能"正常"，戒断后出现明显幻视</td><td>？</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：</strong><code>F10.0</code> 酒精急性中毒</p>
+        <p><strong>推理：</strong>近期大量摄入后出现的急性神经功能损害，血酒精浓度高——这是典型的急性中毒表现，不是戒断（时间线不对）。</p>
+        <p><strong>✅ B：</strong><code>F10.3</code> 酒精戒断状态</p>
+        <p><strong>推理：</strong>长期饮酒后停用，6小时后出现自主神经症状（手抖、出汗）——典型的戒断反应时间窗口（6-12小时内出现）。注意：这需要<strong>依赖综合征已经成立</strong>的前提。</p>
+        <p><strong>✅ C：</strong><code>F10.5</code> 酒精所致精神病性障碍</p>
+        <p><strong>推理：</strong>患者有明确依赖史（"早上必须喝酒才能正常"），戒断后出现幻视（精神病性症状）。如果幻视伴随意识障碍和定向力损害，可能是 F10.4（伴谵妄的戒断状态，震颤谵妄）；如果幻视是孤立的、意识清晰的精神病性表现，编 F10.5。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 器质性 vs 非器质性判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下情况应归入 F00-F09（器质性）还是 F20-F69（非器质性/功能性）：</p>
+    <ol>
+      <li>甲亢患者出现明显的情绪不稳、易激惹、焦虑——临床会诊考虑"甲亢所致精神障碍"</li>
+      <li>一名大学生期末考试前3天出现失眠、注意力不集中、心慌——无器质性疾病史</li>
+      <li>脑外伤后6个月，患者家属反映其"性情大变"：易怒、冲动、判断力下降——CT示额叶脑软化灶</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1.</strong> <strong>器质性 → 归F06+F00-F09</strong>。甲亢（E05.9）导致的精神障碍—病因明确，应编 <code>F06.3</code>（器质性心境障碍）+ <code>E05.9</code>（病因码）。</p>
+        <p><strong>✅ 2.</strong> <strong>非器质性 → 归F40-F48</strong>。无器质性疾病基础，考试应激引发的焦虑症状，应编 <code>F41.9</code>（焦虑障碍，未特指）或 <code>F43.2</code>（适应障碍），视具体临床表现和持续时间而定。</p>
+        <p><strong>✅ 3.</strong> <strong>器质性 → 归F00-F09</strong>。CT明确的额叶脑软化灶是结构性病因，"性情大变"是额叶综合征的典型表现，应编 <code>F07.0</code>（器质性人格障碍）+ <code>S06.9</code> 后遗症编码 或 <code>G93.8</code> 其他特指的脑疾患。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 星剑号双码推导</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某68岁女性，因"进行性记忆力下降3年，近期反复走失"入院。神经心理评估：MMSE 16/30，临床考虑"阿尔茨海默病性痴呆（晚发性）"。头颅MRI提示弥漫性脑萎缩，排除血管性病因。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>应编几个码？分别是什么？哪个是主诊断？</li>
+      <li>主导词的查找路径是什么？</li>
+      <li>为什么不能用"痴呆"作为唯一的主导词直接得到答案？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 应编两个码：</strong></p>
+        <p>主诊断：<code>G30.1†</code> 晚发性阿尔茨海默病（剑号，病因码）——DRG入组以此驱动</p>
+        <p>附加诊断：<code>F00.1*</code> 晚发性阿尔茨海默病性痴呆（星号，临床表现）</p>
+
+        <p><strong>✅ 主导词查找路径：</strong></p>
+        <pre style="background:#fff;color:#333;box-shadow:none;padding:10px;margin:6px 0;">主导词：痴呆
+  └ 在（由于）
+      └ 阿尔茨海默病
+          └ 早发性 → G30.0† + F00.0*
+          └ 晚发性 → G30.1† + F00.1*</pre>
+
+        <p><strong>✅ 为什么不能用"痴呆"直接编F01.9？</strong></p>
+        <p>因为 F01.9 是"血管性痴呆"，血管性痴呆与阿尔茨海默病性痴呆是<strong>完全不同的两种疾病</strong>，编码不同。而且阿尔茨海默病性痴呆有星剑号标示（†/*），必须在索引中按特定层级"痴呆→在（由于）→阿尔茨海默病→早/晚发"来查找，不能只查到"痴呆"就停。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 睡眠障碍编码选择</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>比较以下两个案例，为什么睡眠障碍编码不同：</p>
+    <table>
+      <tr><th></th><th>案例 A</th><th>案例 B</th></tr>
+      <tr><td>患者</td><td>55岁男性，BMI 32</td><td>32岁女性，无躯体疾病史</td></tr>
+      <tr><td>主诉</td><td>白天嗜睡、夜间鼾声响亮、晨起头痛</td><td>入睡困难、早醒、日间疲乏（3个月）</td></tr>
+      <tr><td>检查</td><td>多导睡眠监测：AHI=35次/小时</td><td>多导睡眠监测正常，HAMA评分20分</td></tr>
+      <tr><td>诊断</td><td>阻塞性睡眠呼吸暂停综合征</td><td>非器质性失眠症</td></tr>
+      <tr><td>编码</td><td><code>G47.3</code></td><td><code>F51.0</code></td></tr>
+    </table>
+    <p><strong>问题：</strong>为什么案例A编G47.3而案例B编F51.0？两者在编码逻辑上的根本区别是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 根本区别：是否存在器质性病因的客观证据。</strong></p>
+        <p><strong>案例A（G47.3）：</strong></p>
+        <ul>
+          <li>多导睡眠监测（PSG）发现了确凿的病理生理学异常——AHI（呼吸暂停-低通气指数）=35次/小时（≥30为重度OSA）</li>
+          <li>BMI 32提示肥胖是重要危险因素，但根本的病理机制是<strong>上气道塌陷导致间歇性缺氧</strong>——这是一个器质性疾病</li>
+          <li>因此编入神经系统/G47（器质性）而非F51（非器质性）</li>
+        </ul>
+        <p><strong>案例B（F51.0）：</strong></p>
+        <ul>
+          <li>多导睡眠监测正常——<strong>排除了器质性睡眠障碍</strong></li>
+          <li>HAMA评分升高提示存在明显的焦虑症状，失眠是心因性的</li>
+          <li>无明确的器质性病因，因此编入F51（非器质性）</li>
+        </ul>
+        <p><strong>💡 核心口诀：</strong>有器质性病因→G47；排除了器质性→F51。决定性的不是诊断名称（都有"睡眠"），而是<strong>病因属性</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · F章双重分类综合应用</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>综合案例：</strong>65岁男性，既往高血压20年、糖尿病10年、长期饮酒史30年。本次因"行为异常3天"入院：患者表现为凭空闻声（幻听）、被害妄想（认为有人要害他），同时存在时间和空间定向力障碍。体检：血压180/100mmHg，双手可见轻微震颤。头颅CT示：双侧基底节区及半卵圆中心多发腔隙性梗死灶，脑白质疏松。EEG示弥漫性慢波。血氨正常，排除肝性脑病。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>患者的精神症状最可能的病因是什么？应该归入F章的哪一个板块？</li>
+      <li>需要编几个编码？各自是什么？</li>
+      <li>如果有多个病因可能（脑血管病+酒精），你认为哪一个是主要病因？编码逻辑上怎么处理？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1. 精神症状最可能的病因：</strong></p>
+        <p>CT明确的多发性腔隙性脑梗死，而且精神状态表现为急性起病，结合EEG弥漫性慢波改变，符合<strong>脑血管病所致精神病性障碍</strong>。应归入 <strong>F00-F09（器质性精神障碍）</strong>。</p>
+
+        <p><strong>✅ 2. 完整编码：</strong></p>
+        <table>
+          <tr><th>编码</th><th>含义</th><th>角色</th></tr>
+          <tr><td><code>F06.2</code></td><td>器质性妄想性[精神分裂症样]障碍</td><td>精神症状描述</td></tr>
+          <tr><td><code>I67.8</code></td><td>其他特指的脑血管疾病（脑白质疏松等）</td><td>附加：病因编码</td></tr>
+          <tr><td><code>I63.801</code></td><td>腔隙性脑梗死</td><td>附加：具体的脑血管病变</td></tr>
+          <tr><td><code>F10.2</code></td><td>酒精依赖综合征</td><td>附加：酒精相关病史（如需要）</td></tr>
+        </table>
+        <p><strong>主诊断：</strong><code>F06.2</code> + <code>I67.8</code>（病因优先，器质性精神障碍需附加病因码）</p>
+
+        <p><strong>✅ 3. 多病因的处理逻辑：</strong></p>
+        <p>脑血管病和长期饮酒都是潜在病因，但：</p>
+        <ul>
+          <li>CT发现的急性多发腔梗+EEG弥漫性慢波，<strong>时间上与精神症状高度吻合</strong>（急性起病3天）</li>
+          <li>酒精因素（30年饮酒史）是慢性背景，不是本次3天内发生急性精神症状的<strong>直接诱因</strong></li>
+          <li>血氨正常排除了肝性脑病，但酒精性震颤谵妄（通常72-96小时出现）不能完全排除</li>
+        </ul>
+        <p><strong>编码策略：</strong>以脑血管病所致器质性精神障碍为主（F06.2+I67.8），酒精依赖（F10.2）作为慢性病附加编码另列。如果病程记录中精神科会诊认为酒精是更主要原因，则应优先编F10.5（酒精所致精神病性障碍）。这就是F章"尊重临床诊断"原则的体现——编码员不能代替精神科医师做病因判断。</p>
+      </div>
+    </answers>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>F章十大板块</strong>按"器质→物质→功能→心境→神经→行为→人格→智力→发育→儿童"串联</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>F00-F09</strong>器质性精神障碍<strong>必须附加病因编码</strong>——这是双重分类最常用场景</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>阿尔茨海默病性痴呆</strong>是星剑号（†/*）：主码G30†，附加F00.*</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>F10-F19</strong>十种物质<strong>共享同一亚目结构</strong>：.0中毒 .1有害使用 .2依赖 .3戒断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>心境障碍编码</strong>以<strong>当前发作状态</strong>为亚目依据，不按终身诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>睡眠障碍分水岭：</strong>有器质性病因→G47，排除器质性→F51</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>尊重临床诊断原则：</strong>编码员不能以"缺乏实验室证据"为由否定精神科诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>F43应激障碍</strong>的三种编码（急性/PTSD/适应）以<strong>病程+事件关系</strong>区分</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 16 主题：G 章 —— 神经系统疾病（G00-G99）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>G章与F章有什么交叉？（G30阿尔茨海默病 vs F00痴呆）——星剑号在本章有什么特殊规则？</li>
+    <li>G40癫痫的亚目按什么轴心分类？"部分性"vs"全面性"怎么影响编码？</li>
+    <li>G20帕金森病与继发性帕金森综合征（G21）的区别是什么？编码路径有何不同？</li>
+    <li>G43偏头痛与G44其他头痛的区分标准是什么？有什么临床提示？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 15 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码知识库 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
