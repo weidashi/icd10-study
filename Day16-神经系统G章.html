@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 16（2026年7月4日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* Decision tree */
+  .decision-tree {
+    background: var(--card); border-radius: var(--radius); padding: 20px 24px;
+    margin: 16px 0; box-shadow: var(--shadow); border: 1px solid var(--border);
+    font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px;
+    line-height: 1.9; white-space: pre; overflow-x: auto;
+    color: var(--text2);
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 16 · 2026年7月4日</div>
+  <h1>🧠 病案编码学习</h1>
+  <p class="subtitle">今日主题：G 章 神经系统疾病（G00-G99）—— 中枢到周围的全链条编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:26.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 16 / 60 天（26.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>G章十一大板块码位范围及各自的核心疾病</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>G20帕金森 vs G21继发性帕金森综合征区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>G40癫痫分型编码：全身性G40.3 vs 局灶性G40.2</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>G45短暂性脑缺血发作(TIA)的特征识别——不能与I63混淆</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>G81偏瘫的定位逻辑：偏瘫≠病因，需区分是后遗症还是活动期疾病</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>阿尔茨海默病G30† + F00* 星剑号双重分类的填报逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>G47器质性睡眠障碍 vs F51非器质性睡眠障碍的鉴别红线</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>G62酒精性多神经病 vs G63.1* (E52†) 的营养不良性周围神经病</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>吉兰-巴雷综合征 G61.0 的诊断三要素与鉴别诊断编码</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>G10-G14 遗传性共济失调与脊髓性肌萎缩的罕见病编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>G97-G99 操作后神经系统并发症的质控边界</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>G章是ICD-10中"不包括"规则最密集的章节之一——与F章（精神）、I章（脑血管病）、M章（肌病）的交叉边界极多。今天重点掌握 <strong>G/F章分水岭</strong>（器质性vs非器质性）和 <strong>G/I章分水岭</strong>（TIA vs 脑梗死），这两个边界在考试和实际工作中都是最高频出错区。
+</div>
+
+<!-- ======== 一、G章全景速览 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、G章十一大板块全景速览</h2>
+
+<p>G章（神经系统疾病）涵盖从中枢神经系统到周围神经、从变性病到发作性疾病的全部谱系。与临床教材的"神经系统疾病"概念不同，ICD-10将<strong>脑血管疾病</strong>归入I章（I60-I69），将<strong>精神行为障碍</strong>中器质性部分归入F章（F00-F09）。因此编码员必须时刻注意"不包括"注释。</p>
+
+<table>
+  <tr><th>板块</th><th>码位</th><th>代表性疾病</th><th>编码特征</th></tr>
+  <tr>
+    <td>① 炎症性疾病</td><td><code>G00-G09</code></td>
+    <td>细菌性脑膜炎 G00、病毒性脑膜炎 G02.0*、脑炎 G04、颅内脓肿 G06</td>
+    <td>感染性脑膜炎大部分为星号码（病原体编码为剑号，如A39.0†+G01*）</td>
+  </tr>
+  <tr>
+    <td>② 系统性萎缩</td><td><code>G10-G14</code></td>
+    <td>亨廷顿病 G10、遗传性共济失调 G11、脊髓性肌萎缩 G12、ALS G12.2</td>
+    <td>全部为原发性神经退行性疾病，无星号编码</td>
+  </tr>
+  <tr>
+    <td>③ 锥体外系和运动障碍</td><td><code>G20-G26</code></td>
+    <td>帕金森病 G20、继发性帕金森 G21、肌张力障碍 G24</td>
+    <td>G20 vs G21的区分是核心考点</td>
+  </tr>
+  <tr>
+    <td>④ 其他变性病</td><td><code>G30-G32</code></td>
+    <td>阿尔茨海默病 G30†、额颞叶痴呆 G31.0</td>
+    <td><strong>星剑号系统核心阵地</strong>：G30† + F00*-F03*</td>
+  </tr>
+  <tr>
+    <td>⑤ 脱髓鞘疾病</td><td><code>G35-G37</code></td>
+    <td>多发性硬化 G35、视神经脊髓炎 G36.0、急性播散性脑脊髓炎 G04.0</td>
+    <td>G37亚目区分不同脱髓鞘类型</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td>⑥ 发作性和阵发性疾病 ★</td><td><code>G40-G47</code></td>
+    <td>癫痫 G40、偏头痛 G43、TIA G45、睡眠障碍 G47</td>
+    <td><strong>高频考点区</strong>，癫痫分型 + TIA鉴别最重要</td>
+  </tr>
+  <tr>
+    <td>⑦ 神经/神经根/神经丛</td><td><code>G50-G59</code></td>
+    <td>三叉神经痛 G50.0、面神经炎 G51.0、腕管综合征 G56.0</td>
+    <td>以解剖定位为核心轴心</td>
+  </tr>
+  <tr>
+    <td>⑧ 多神经病和周围神经</td><td><code>G60-G64</code></td>
+    <td>遗传性神经病 G60、吉兰-巴雷综合征 G61.0、糖尿病性神经病变 G63.2*</td>
+    <td>G63全部为星号，表示分类于他处的疾病引起的</td>
+  </tr>
+  <tr>
+    <td>⑨ 肌神经接头和肌肉</td><td><code>G70-G73</code></td>
+    <td>重症肌无力 G70.0、肌营养不良 G71.0</td>
+    <td>G73* 为分类于他处的肌病</td>
+  </tr>
+  <tr>
+    <td>⑩ 脑瘫和瘫痪综合征</td><td><code>G80-G83</code></td>
+    <td>脑性瘫痪 G80、偏瘫 G81、截瘫 G82</td>
+    <td><strong>不包括</strong>中风后遗症（I69）</td>
+  </tr>
+  <tr>
+    <td>⑪ 其他神经系统疾病</td><td><code>G90-G99</code></td>
+    <td>自主神经病变 G90、脑积水 G91、操作后并发症 G97</td>
+    <td>混合收纳各种未归类的神经系统问题</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>💡 记忆口诀：</strong>"炎萎锥变脱，阵发神多肌，瘫痪其他收" —— 11个字对应11个板块：炎(G00)→萎(G10)→锥(G20)→变(G30)→脱(G35)→阵(G40)→神(G50)→多(G60)→肌(G70)→瘫痪(G80)→其他(G90)。
+</div>
+
+<!-- ======== 二、G/I章分水岭 ======== -->
+<hr class="divider">
+<h2><span class="icon">⚡</span> 二、G章 vs I章生死线：TIA vs 脑梗死 —— 一字之差，天壤之别</h2>
+
+<p>这是G章编码中<strong>出错率最高</strong>的分水岭。TIA（短暂性脑缺血发作）编码在G45，脑梗死编码在I63。但临床上医生经常混写"TIA"和"腔隙性脑梗死"，编码员若不核对影像报告，就会直接入错组。</p>
+
+<h3>2.1 TIA和脑梗死的编码对照</h3>
+
+<table>
+  <tr><th>临床诊断</th><th>影像学依据</th><th>症状持续时间</th><th>编码</th><th>所属章</th></tr>
+  <tr>
+    <td>TIA（短暂性脑缺血发作）</td>
+    <td>MRI-DWI <strong>无</strong>急性梗死灶</td>
+    <td>通常 &lt; 24小时，且不留后遗症</td>
+    <td><code>G45.9</code></td>
+    <td>G章</td>
+  </tr>
+  <tr>
+    <td>椎基底动脉TIA</td>
+    <td>同上</td>
+    <td>同上</td>
+    <td><code>G45.0</code></td>
+    <td>G章</td>
+  </tr>
+  <tr>
+    <td>颈内动脉TIA</td>
+    <td>同上</td>
+    <td>同上</td>
+    <td><code>G45.1</code></td>
+    <td>G章</td>
+  </tr>
+  <tr>
+    <td>腔隙性脑梗死</td>
+    <td>MRI-DWI <strong>有</strong>急性梗死灶</td>
+    <td>可能持续 &gt; 24小时或有后遗症</td>
+    <td><code>I63.801</code></td>
+    <td>I章</td>
+  </tr>
+  <tr>
+    <td>脑梗死（未特指）</td>
+    <td>CT/MRI证实梗死灶</td>
+    <td>持续存在</td>
+    <td><code>I63.9</code></td>
+    <td>I章</td>
+  </tr>
+</table>
+
+<h3>2.2 关键鉴别流程</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>看影像报告——DWI是金标准</h4>
+      <p>MRI-DWI高信号 = 急性梗死灶 → I63；DWI阴性 = 无梗死 → G45</p>
+      <p>CT在超早期（&lt;6小时）可能无法显示梗死灶，此时不能仅凭CT阴性就编G45</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>问症状持续时间</h4>
+      <p>症状在<strong>24小时内完全消失</strong>且无影像学梗死证据 → G45</p>
+      <p>症状持续 &gt; 24小时或有后遗症 → 几乎不是TIA，考虑I63</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>核对颅内血管筛查结果</h4>
+      <p>MRA/CTA提示大动脉狭窄（颈内动脉/大脑中动脉≥50%）→ 即使DWI阴性也高度关注</p>
+      <p>心源性栓塞证据（房颤+突发神经症状）→ 查超声心动，可能影响TIA的亚分类</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.3 四个最高频误编场景</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误：医生写"TIA"，编码员直接编G45</h4>
+    <p>真相：影像报告显示DWI高信号（急性腔隙性梗死）→ 应编<code>I63.801</code>，而非G45</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确：必须核影像</h4>
+    <p>无论诊断怎么写，DWI有高信号就是脑梗死。编码以<strong>客观检查结果</strong>为准，不以临床印象为准</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误：医生写"脑梗死"，编码员直接编I63</h4>
+    <p>真相：医生有时会把症状持续&lt;1小时的TIA也写成"脑梗死"，但DWI阴性 → 应编<code>G45</code></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确：必须看症状时长和DWI</h4>
+    <p>症状已完全恢复 + DWI阴性 → 不论医生写什么，编码都应该是G45</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 实战铁律：</strong>TIA和脑梗死的编码区分，不能单凭临床诊断文字决定。必须同时核对三样东西——①症状持续时间、②MRI-DWI是否阳性、③是否有神经功能缺损后遗症。三缺一，编码就有风险。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、癫痫编码 ======== -->
+<h2><span class="icon">⚡</span> 三、癫痫编码（G40-G41）—— 分型不清就是隐性错误</h2>
+
+<h3>3.1 为什么分型如此重要？</h3>
+<p>癫痫是G章中最复杂的亚目分支之一。ICD-10将癫痫按照<strong>发作类型</strong>（全身性/局灶性/未分类）和<strong>是否伴有癫痫持续状态</strong>两条轴心进行分类。编码员如果只关注"癫痫"这个笼统诊断而忽略亚型，不仅直接影响DRG入组精度，还会导致临床统计失真。</p>
+
+<h3>3.2 G40癫痫分类全表</h3>
+
+<table>
+  <tr><th>亚目</th><th>名称</th><th>核心特征</th><th>典型场景</th></tr>
+  <tr>
+    <td><code>G40.0</code></td>
+    <td>局灶性（部分性）特发性癫痫</td>
+    <td>起源于一侧大脑半球，无意识丧失</td>
+    <td>儿童良性中央-颞区棘波癫痫（BECT）</td>
+  </tr>
+  <tr>
+    <td><code>G40.1</code></td>
+    <td>局灶性症状性癫痫</td>
+    <td>由已知脑部病变引起的部分性发作</td>
+    <td>脑卒中后癫痫、脑外伤后癫痫</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>G40.2</code></td>
+    <td>局灶性症状性癫痫 + 复杂部分性发作</td>
+    <td>部分性发作伴意识障碍（常来自颞叶）</td>
+    <td><strong>最高频编码</strong>：成人癫痫大部分为此型</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>G40.3</code></td>
+    <td>全身性特发性癫痫 ★</td>
+    <td>双侧大脑同时受累，意识丧失</td>
+    <td>失神发作、青少年肌阵挛癫痫</td>
+  </tr>
+  <tr>
+    <td><code>G40.4</code></td>
+    <td>其他全身性癫痫</td>
+    <td>婴儿痉挛、Lennox-Gastaut等特殊综合征</td>
+    <td>难治性儿童癫痫</td>
+  </tr>
+  <tr>
+    <td><code>G40.5</code></td>
+    <td>特殊癫痫综合征</td>
+    <td>反射性癫痫、阅读性癫痫等</td>
+    <td>低频特殊类型</td>
+  </tr>
+  <tr>
+    <td><code>G40.6</code></td>
+    <td>癫痫大发作（未特指）</td>
+    <td>传统用语，对应全身强直-阵挛发作</td>
+    <td><strong>不建议单独使用</strong>——尽量细分子G40.3</td>
+  </tr>
+  <tr>
+    <td><code>G40.7</code></td>
+    <td>癫痫小发作（未特指）</td>
+    <td>传统用语，对应失神发作</td>
+    <td><strong>不建议单独使用</strong></td>
+  </tr>
+  <tr>
+    <td><code>G40.8</code></td>
+    <td>其他癫痫</td>
+    <td>未归类于以上亚目的癫痫</td>
+    <td>混合型癫痫</td>
+  </tr>
+  <tr>
+    <td><code>G40.9</code></td>
+    <td>未特指的癫痫</td>
+    <td>无具体分型信息</td>
+    <td><strong>仅作为最后选择</strong></td>
+  </tr>
+</table>
+
+<h3>3.3 G41 癫痫持续状态——独立编码</h3>
+<p>癫痫持续状态（Status Epilepticus）在ICD-10中被单独列为G41类目，<strong>不能混在G40中</strong>。这是一个关键区别：</p>
+
+<table>
+  <tr><th>亚目</th><th>名称</th><th>判定标准</th></tr>
+  <tr><td><code>G41.0</code></td><td>癫痫大发作持续状态</td><td>强直-阵挛发作 &gt; 5分钟，或连续发作间期意识未恢复</td></tr>
+  <tr><td><code>G41.1</code></td><td>癫痫小发作持续状态</td><td>失神状态持续 &gt; 15分钟</td></tr>
+  <tr><td><code>G41.2</code></td><td>复杂部分性癫痫持续状态</td><td>局灶性发作伴意识障碍持续状态</td></tr>
+  <tr><td><code>G41.8</code></td><td>其他癫痫持续状态</td><td>肌阵挛持续状态等</td></tr>
+  <tr><td><code>G41.9</code></td><td>未特指的癫痫持续状态</td><td>无进一步信息</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键区别：</strong>
+  <ul>
+    <li>患者因<strong>一次癫痫发作</strong>入院，非持续状态 → 编<code>G40.x</code></li>
+    <li>患者因<strong>癫痫持续状态</strong>入院（发作 &gt; 5分钟或连续发作间不清醒）→ 编<code>G41.x</code></li>
+    <li><strong>不能同时编G40和G41</strong>——持续状态本身就意味着这是特殊类型的发作，优先使用G41</li>
+  </ul>
+</div>
+
+<h3>3.4 常见错误：G40.3 vs G40.2 混淆</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 看到"癫痫"就编G40.9</h4>
+    <p>这是最懒惰的编码方式。即使医生未写明分型、病历中未记载脑电图结果，也应向临床医生<strong>追问发作类型</strong></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 四步判别法</h4>
+    <p>①看脑电图：双侧同步棘慢波 → 全身性(G40.3)<br>②看意识：发作时意识清楚 → 局灶性(G40.0/1/2)<br>③看影像：有无脑器质病灶 → 症状性(G40.1/2)<br>④看时长：&gt;5分钟连续发作 → G41</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、帕金森 G20 vs 继发性帕金森综合征 G21 ======== -->
+<h2><span class="icon">🔄</span> 四、帕金森的编码迷宫：G20 vs G21 vs G31.8†</h2>
+
+<p>帕金森综合征是编码考试的高频陷阱——同一组症状，因病因不同而编码完全不同。</p>
+
+<h3>4.1 三个帕金森编码的鉴别表</h3>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>病因</th><th>典型场景</th><th>L-DOPA反应</th></tr>
+  <tr>
+    <td><code>G20</code></td>
+    <td>帕金森病（原发性）</td>
+    <td>黑质多巴胺能神经元不明原因退行性变</td>
+    <td>60岁以上起病，不对称起病，静止性震颤</td>
+    <td>✅ 反应良好</td>
+  </tr>
+  <tr>
+    <td><code>G21.0</code></td>
+    <td>恶性综合征（抗精神病药致）</td>
+    <td>抗精神病药物阻断多巴胺受体</td>
+    <td>使用氟哌啶醇/氯丙嗪后出现的锥体外系症状</td>
+    <td>❌ 反应差</td>
+  </tr>
+  <tr>
+    <td><code>G21.1</code></td>
+    <td>其他药物性帕金森</td>
+    <td>利血平、胃复安（甲氧氯普胺）、钙通道阻滞剂等</td>
+    <td>有明确药物使用史，停药后可逆</td>
+    <td>❌ 反应差</td>
+  </tr>
+  <tr>
+    <td><code>G21.2</code></td>
+    <td>继发性帕金森（创伤性）</td>
+    <td>头部外伤后</td>
+    <td>拳击手脑病（拳击手帕金森）</td>
+    <td>❌ 可变的</td>
+  </tr>
+  <tr>
+    <td><code>G21.3</code></td>
+    <td>脑炎后帕金森</td>
+    <td>病毒性脑炎后（如昏睡性脑炎）</td>
+    <td>1917-1928年大流行的"昏睡病"后遗症</td>
+    <td>❌ 可变的</td>
+  </tr>
+  <tr>
+    <td><code>G21.4</code></td>
+    <td>血管性帕金森综合征</td>
+    <td>多发腔隙性脑梗死累及基底节</td>
+    <td>下肢受累为主（"下半身帕金森"），常伴锥体束征</td>
+    <td>❌ 反应差</td>
+  </tr>
+  <tr style="background:var(--red-bg);">
+    <td><code>G31.8†</code> + <code>F02.3*</code> ★</td>
+    <td>路易体痴呆（DLB）★</td>
+    <td>α-突触核蛋白沉积</td>
+    <td>帕金森症状<strong>+ 波动性认知障碍 + 视幻觉</strong>——三核心症状</td>
+    <td>反应中等</td>
+  </tr>
+</table>
+
+<h3>4.2 编码决策逻辑</h3>
+
+<div class="decision-tree">患者有帕金森症状（震颤+强直+运动迟缓）
+  │
+  ├─ 是否使用过抗精神病药？
+  │    YES → G21.0（恶性综合征）或 G21.1（其他药物性）
+  │
+  ├─ 是否有明确的血管病因（多发性脑梗死）？
+  │    YES → G21.4（血管性帕金森综合征）
+  │
+  ├─ 是否伴有波动性认知障碍 + 视幻觉？
+  │    YES → G31.8† + F02.3*（路易体痴呆）
+  │
+  ├─ 是否不对称起病 + L-DOPA反应良好 + 无已知继发病因？
+  │    YES → G20（原发性帕金森病）
+  │
+  └─ 其他明确原因（创伤、脑炎后、中毒等）
+       → G21.2/G21.3/G21.8/G21.9</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键认知：</strong>G21.4（血管性帕金森综合征）在临床中远比想象中常见——很多脑小血管病患者同时有步态障碍和锥体外系症状。如果编码员不仔细看病历中的影像报告（有无多发腔梗），就很容易误编成G20。而<strong>G20与G21.4的DRG入组路径完全不同</strong>。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、阿尔茨海默病与G/F交叉 ======== -->
+<h2><span class="icon">🔗</span> 五、阿尔茨海默病编码：G30† 主体 + F00*~F03* 表现——星剑号联动</h2>
+
+<h3>5.1 为什么AD需要两个码？</h3>
+<p>阿尔茨海默病不仅是G章的核心疾病，更是整个ICD-10双重分类系统的<strong>经典教学案例</strong>。AD的神经病理改变（β-淀粉样蛋白沉积、神经原纤维缠结）属于G30（神经系统变性病），由此导致的认知功能损害属于F00-F03（器质性精神障碍）。在ICD-10中，<strong>G30为剑号（†）编码</strong>，F00-F03为对应的<strong>星号（*）编码</strong>。</p>
+
+<h3>5.2 完整的AD星剑号对应表</h3>
+
+<table>
+  <tr><th>剑号（病因）</th><th>星号（临床表现）</th><th>临床特征</th><th>发病年龄</th></tr>
+  <tr>
+    <td><code>G30.0†</code></td>
+    <td><code>F00.0*</code></td>
+    <td>早发性AD痴呆</td>
+    <td>&lt; 65岁</td>
+  </tr>
+  <tr>
+    <td><code>G30.1†</code></td>
+    <td><code>F00.1*</code></td>
+    <td>晚发性AD痴呆</td>
+    <td>&ge; 65岁</td>
+  </tr>
+  <tr>
+    <td><code>G30.8†</code></td>
+    <td><code>F00.2*</code></td>
+    <td>非典型或混合型AD痴呆</td>
+    <td>不限</td>
+  </tr>
+  <tr>
+    <td><code>G30.9†</code></td>
+    <td><code>F00.9*</code></td>
+    <td>未特指的AD痴呆</td>
+    <td>不限</td>
+  </tr>
+</table>
+
+<h3>5.3 编码流程</h3>
+
+<pre>主诊断（首页第1行）：G30.0† 早发性阿尔茨海默病 —— 剑号码，驱动DRG入组
+其他诊断（首页第2行）：F00.0* 早发性阿尔茨海默病性痴呆 —— 星号码，记录临床表型
+
+注意：两个码都必须填报，且G30.0†必须放在主诊断位置</pre>
+
+<h3>5.4 与F01/F03的鉴别——最重要的一组"不包括"规则</h3>
+
+<table>
+  <tr><th>编码</th><th>疾病</th><th>核心特征</th><th>与AD的关系</th></tr>
+  <tr>
+    <td><code>F01.x</code></td>
+    <td>血管性痴呆</td>
+    <td>阶梯样恶化 + 局灶神经体征 + 影像有脑血管病证据</td>
+    <td>与G30的"不包括"互斥——<strong>血管性痴呆不能用G30编码</strong></td>
+  </tr>
+  <tr>
+    <td><code>F02.0*</code></td>
+    <td>皮克病性痴呆</td>
+    <td>额颞叶萎缩，早期人格改变&gt;记忆减退</td>
+    <td>G31.0† + F02.0*，不同于AD的双码路径</td>
+  </tr>
+  <tr>
+    <td><code>F02.3*</code></td>
+    <td>帕金森病性痴呆</td>
+    <td>帕金森运动症状出现后 &gt; 1年出现痴呆</td>
+    <td>G20† + F02.3* 或 G31.8† + F02.3*（DLB）</td>
+  </tr>
+  <tr>
+    <td><code>F03</code></td>
+    <td>未特指的痴呆</td>
+    <td>无法确定病因的痴呆综合征</td>
+    <td><strong>不得与G30联用</strong>——如果病因明确为AD，必须用F00*而非F03</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 六、多发性硬化、偏瘫与吉兰-巴雷 ======== -->
+<h2><span class="icon">🧬</span> 六、三大重要疾病编码详细拆解</h2>
+
+<h3>6.1 多发性硬化（G35）——脱髓鞘的"旗舰病"</h3>
+
+<p>多发性硬化（MS）是G35的唯一疾病，没有亚目细分。但它与多个类似疾病有精细的鉴别编码：</p>
+
+<table>
+  <tr><th>临床表现</th><th>编码</th><th>鉴别要点</th></tr>
+  <tr>
+    <td>复发-缓解型MS（最常见类型）</td>
+    <td><code>G35</code></td>
+    <td>时间多发 + 空间多发（McDonald标准）</td>
+  </tr>
+  <tr>
+    <td>视神经脊髓炎谱系疾病（NMOSD）</td>
+    <td><code>G36.0</code></td>
+    <td>AQP4抗体阳性 + 长节段脊髓炎 &ge;3椎体</td>
+  </tr>
+  <tr>
+    <td>急性播散性脑脊髓炎（ADEM）</td>
+    <td><code>G04.0</code></td>
+    <td>单相病程，感染/疫苗接种后，多见于儿童</td>
+  </tr>
+  <tr>
+    <td>同心圆性硬化（Baló病）</td>
+    <td><code>G37.5</code></td>
+    <td>MRI特征性层状同心圆病灶</td>
+  </tr>
+  <tr>
+    <td>进行性多灶性白质脑病（PML）</td>
+    <td><code>A81.2</code></td>
+    <td><strong>注意</strong>——PML是JC病毒感染，归入A章而非G章</td>
+  </tr>
+</table>
+
+<h3>6.2 偏瘫（G81）——最容易"偷懒"的编码</h3>
+
+<p>偏瘫编码G81.x是编码员最常看到的神经科诊断之一，但它的使用有严格限制：</p>
+
+<div class="card warn">
+  <strong>⚠️ G81偏瘫的"不包括"清单（卷一核心注释）：</strong>
+  <ul>
+    <li>先天性脑瘫（G80）——从出生就有的，不能用G81</li>
+    <li>脑梗死所致偏瘫，急性期 → <strong>I63 + G81</strong>（偏瘫作为附加码）</li>
+    <li>脑出血所致偏瘫，急性期 → <strong>I61 + G81</strong></li>
+    <li>中风后遗症期（发病 &gt; 1年，病情稳定）→ <strong>I69.x</strong>，不使用G81</li>
+    <li>暂时性肢体无力（如TIA后）→ <strong>G45</strong>，不用G81</li>
+  </ul>
+</div>
+
+<p>核心逻辑：G81偏瘫是<strong>症状层面的编码</strong>，描述的是"哪里瘫"而不是"为什么瘫"。如果导致偏瘫的病因已知且处于活动期，应<strong>同时编码病因+偏瘫</strong>；如果属于后遗症期，则用I69的中风后遗症编码替代。</p>
+
+<h3>6.3 吉兰-巴雷综合征（G61.0）——快速进展的周围神经病</h3>
+
+<p>吉兰-巴雷综合征（GBS）是编码员容易混淆的疾病——它在临床上常表现为"四肢无力"，容易被误编入G82（截瘫/四肢瘫）或G70（重症肌无力）。</p>
+
+<table>
+  <tr><th>特征</th><th>吉兰-巴雷 G61.0</th><th>重症肌无力 G70.0</th><th>脊髓病变 G82</th></tr>
+  <tr>
+    <td>起病方式</td>
+    <td>急性/亚急性（数天-4周）</td>
+    <td>波动性（晨轻暮重）</td>
+    <td>急性或慢性</td>
+  </tr>
+  <tr>
+    <td>受累分布</td>
+    <td>对称性，从下肢向上发展</td>
+    <td>眼肌 &gt; 延髓肌 &gt; 四肢</td>
+    <td>水平面以下</td>
+  </tr>
+  <tr>
+    <td>腱反射</td>
+    <td>减弱或消失</td>
+    <td>正常</td>
+    <td>亢进或减弱（取决于节段）</td>
+  </tr>
+  <tr>
+    <td>关键检查</td>
+    <td>脑脊液蛋白-细胞分离 + 神经传导速度减慢</td>
+    <td>AChR抗体 + 重复电刺激递减</td>
+    <td>脊柱MRI</td>
+  </tr>
+  <tr>
+    <td>前驱事件</td>
+    <td>常有（感染/疫苗/手术）</td>
+    <td>无</td>
+    <td>无特征性</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 编码要点：</strong>GBS如果继发于特定感染（如空肠弯曲菌肠炎），应<strong>同时编码</strong>：感染病原体编码（作为其他诊断）+ G61.0（主诊断）。但注意不要使用A04.5（细菌性肠炎）作为主诊断——因为本次住院的核心问题是GBS，不是肠炎。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 七、重难点深度解析：G47 vs F51 —— 睡眠障碍的器质性/非器质性分水岭</h2>
+
+<p>睡眠障碍编码是编码考试和质控检查的"终极杀手题"。为什么难？因为同一个"失眠"诊断，在ICD-10中根据<strong>有无器质性病因</strong>分别归入G47和F51两个不同的章。</p>
+
+<h3>7.1 两条路径的完整对比</h3>
+
+<table>
+  <tr><th>维度</th><th>G47 器质性睡眠障碍</th><th>F51 非器质性睡眠障碍</th></tr>
+  <tr>
+    <td><strong>归属</strong></td>
+    <td>G章（神经系统疾病）</td>
+    <td>F章（精神和行为障碍）</td>
+  </tr>
+  <tr>
+    <td><strong>核心特征</strong></td>
+    <td>由明确的器质性病因（神经系统/躯体疾病）引起</td>
+    <td>心理社会因素为主，无已知器质性病因</td>
+  </tr>
+  <tr>
+    <td><strong>典型场景</strong></td>
+    <td>发作性睡病G47.4、睡眠呼吸暂停G47.3、周期性肢体运动障碍G47.6</td>
+    <td>非器质性失眠F51.0、梦魇F51.5、睡行症（梦游）F51.3</td>
+  </tr>
+  <tr>
+    <td><strong>DRG入组</strong></td>
+    <td>B类（神经系统疾病）</td>
+    <td>C类（精神疾病）——<strong>入组完全不同</strong></td>
+  </tr>
+  <tr>
+    <td><strong>是否需要多导睡眠图</strong></td>
+    <td>是——PSG是诊断的金标准</td>
+    <td>否——以临床访谈和量表为主</td>
+  </tr>
+</table>
+
+<h3>7.2 G47各亚目的编码细则</h3>
+
+<table>
+  <tr><th>亚目</th><th>疾病</th><th>诊断要点</th><th>常见编码陷阱</th></tr>
+  <tr>
+    <td><code>G47.0</code></td>
+    <td>入睡和维持睡眠障碍（器质性失眠）</td>
+    <td>由帕金森病、脑卒中、慢性疼痛等器质性疾病直接导致的失眠</td>
+    <td>必须要有明确的原发病诊断支撑</td>
+  </tr>
+  <tr>
+    <td><code>G47.1</code></td>
+    <td>过度嗜睡（器质性）</td>
+    <td>发作性睡病除外——发作性睡病专门归入G47.4</td>
+    <td>甲状腺功能减退、肥胖低通气等导致的日间嗜睡</td>
+  </tr>
+  <tr>
+    <td><code>G47.2</code></td>
+    <td>睡眠-觉醒周期障碍</td>
+    <td>昼夜节律紊乱，如轮班工作睡眠障碍、睡眠时相延迟综合征</td>
+    <td>非器质性的昼夜节律障碍用F51.2</td>
+  </tr>
+  <tr>
+    <td><code>G47.3</code></td>
+    <td>睡眠呼吸暂停</td>
+    <td>阻塞性（OSA）或中枢性，PSG证实AHI &ge;5</td>
+    <td><strong>极高频编码</strong>——合并高血压、冠心病时需分别编码</td>
+  </tr>
+  <tr>
+    <td><code>G47.4</code></td>
+    <td>发作性睡病和猝倒症</td>
+    <td>四联征：日间嗜睡+猝倒+睡眠麻痹+入睡前幻觉</td>
+    <td>不要与G47.1的过度嗜睡混淆——有猝倒才归入G47.4</td>
+  </tr>
+</table>
+
+<h3>7.3 神器：G47/F51分水岭三步决策树</h3>
+
+<div class="decision-tree">患者以"失眠/睡眠障碍"就医
+  │
+  ├─【第一步】是否已做多导睡眠图（PSG）？
+  │    NO → 无客观证据支撑器质性诊断 → <strong>倾向 F51</strong>
+  │    YES → 进入第二步
+  │
+  ├─【第二步】是否有明确器质性病因？
+  │    ├─ 帕金森病、脑卒中、慢性疼痛 → G47.0
+  │    ├─ 睡眠呼吸暂停（AHI≥5）→ G47.3
+  │    ├─ 周期性肢体运动（PLMI≥15）→ G47.6
+  │    ├─ 有猝倒发作 → G47.4（发作性睡病）
+  │    └─ <strong>无上述器质性发现</strong> → 进入第三步
+  │
+  └─【第三步】心理社会因素是否为主要驱动？
+       ├─ 焦虑/抑郁导致的失眠 → F51.0（非器质性失眠）
+       ├─ 梦魇 → F51.5
+       ├─ 睡行症（梦游）→ F51.3
+       └─ 无法判定器质性/非器质性 → F51.9（未特指）
+          但需注意：此选严重影响DRG入组，应尽量明确归类</div>
+
+<div class="card warn">
+  <strong>⚠️ 终极陷阱：</strong>如果患者的失眠<strong>同时</strong>存在器质性病因（如帕金森病）和心理因素（如焦虑），编码员应遵循<strong>"病因为主"原则</strong>，将失眠编入G47.0（器质性），将焦虑编为其他诊断。不能因为合并焦虑就改用F51.0，因为"有器质性病因"这一条就足以使失眠脱离F章。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">✏️</span> 八、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · G章码位归属判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请判断以下疾病分别属于G章的哪个板块，并给出对应的码位范围：</p>
+    <ol>
+      <li>多发性硬化</li>
+      <li>亨廷顿病</li>
+      <li>吉兰-巴雷综合征</li>
+      <li>亨特综合征（Ramsay Hunt 综合征，膝状神经节带状疱疹）</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 多发性硬化 → G35-G37（脱髓鞘疾病），编码 <code>G35</code></p>
+        <p><strong>2.</strong> 亨廷顿病 → G10-G14（系统性萎缩），编码 <code>G10</code></p>
+        <p><strong>3.</strong> 吉兰-巴雷综合征 → G60-G64（多神经病和周围神经），编码 <code>G61.0</code></p>
+        <p><strong>4.</strong> 亨特综合征 → <strong>注意陷阱！</strong>虽然面神经麻痹是神经科表现，但病因是水痘-带状疱疹病毒（VZV）。ICD-10编码 <code>B02.2†</code>（带状疱疹累及其他神经系统）+ <code>G53.0*</code>（带状疱疹后膝状神经节炎）。G53为星号（*），表示分类于他处的疾病引起的神经病变。该病<strong>不属于G章板块⑦</strong>（G50-G59），而是通过带状疱疹编码表达病因。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 癫痫分型编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者因癫痫发作入院。脑电图显示双侧同步3Hz棘慢波，临床表现为短暂意识丧失（5-10秒），无抽搐，发作后立即清醒。</p>
+    <p><strong>问题：</strong>应选择哪个编码？请说明理由，并解释为什么不能用G40.3。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 正确答案：</strong><code>G40.3</code>（全身性特发性癫痫）—— 实际上是可以用G40.3的！</p>
+        <p><strong>推理过程：</strong></p>
+        <p>①脑电图双侧同步3Hz棘慢波 → 典型失神发作的EEG特征</p>
+        <p>②短暂意识丧失、无抽搐、立即清醒 → 失神发作（Absence Seizure），属于全身性发作</p>
+        <p>③失神发作是特发性全身性癫痫的一种类型，编码为 <code>G40.3</code></p>
+        <p><strong>💡 补充说明：</strong></p>
+        <p>如果EEG显示一侧脑区异常放电且意识保留 → G40.0/G40.1/G40.2</p>
+        <p>如果发作持续 &gt; 15分钟或连续发作间期意识未恢复 → G41.1（失神持续状态）</p>
+        <p>本题的关键在于：<strong>双侧同步放电 = 全身性 = 用G40.3，而非G40.2</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · TIA vs 脑梗死鉴别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者72岁男性，因"突发左侧肢体无力2小时"入院。急诊CT未发现脑出血。入院后MRI-DWI提示右侧放射冠区高信号（急性梗死灶）。神经内科医生在出院小结中写下诊断"TIA（短暂性脑缺血发作），腔隙性脑梗死"。</p>
+    <p><strong>问题：</strong>作为编码员，你应该如何处理这个诊断？主诊断应编什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步·判断：</strong></p>
+        <p>医生写的是"TIA"+"腔隙性脑梗死"，但MRI-DWI已证实存在急性梗死灶——<strong>这就不再是TIA</strong>。TIA的定义性特征之一就是DWI阴性。</p>
+        <p><strong>✅ 第二步·术语清洗：</strong></p>
+        <p>"TIA"应当被剔除——因为DWI阳性已经推翻了TIA的诊断。"腔隙性脑梗死"才是本患者的实质诊断。</p>
+        <p><strong>✅ 第三步·编码：</strong></p>
+        <p>主诊断：<code>I63.801</code>（腔隙性脑梗死）</p>
+        <p><strong>不能</strong>编码为G45.x（TIA系列）</p>
+        <p><strong>💡 核心教训：</strong>DWI有高信号 = 脑梗死 ≠ TIA。这是DRG入组的分水岭——I63和G45的权重差异可能超过2倍。医生即使写了TIA，编码员也必须以<strong>影像学客观证据</strong>为准。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 帕金森鉴别与星剑号</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者78岁男性，入院诊断为"帕金森病"。住院期间神经心理评估发现：MMSE 18分（认知功能明显下降），伴有视幻觉（报告"看到有小孩在病房里"），认知障碍出现时间与帕金森运动症状间隔约2年。进一步检查未提示血管性病因。</p>
+    <p><strong>问题：</strong>请给出完整的疾病编码（包括所有诊断和星剑号配对），并说明G20 vs G31.8†的判断依据。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断分析：</strong></p>
+        <p>关键是"1年规则"：帕金森症状<strong>先于</strong>痴呆出现 &gt; 1年 → 帕金森病性痴呆（PDD）</p>
+        <p>帕金森症状与痴呆<strong>同时或痴呆在先</strong>（差值 &lt; 1年）→ 路易体痴呆（DLB）</p>
+        <p>本题：帕金森运动症状在先，间隔约<strong>2年</strong>才出现认知障碍 → 满足"&gt;1年"条件 → PDD</p>
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>①主诊断：<code>G20†</code> 帕金森病（原发性）</p>
+        <p>②其他诊断：<code>F02.3*</code> 帕金森病性痴呆</p>
+        <p><strong>推理要点：</strong></p>
+        <p>①发病顺序是关键：帕金森→痴呆（差值&gt;1年）= PDD，用G20† + F02.3*</p>
+        <p>②痴呆+帕金森几乎同时出现（差值&lt;1年）= DLB，用G31.8† + F02.3*</p>
+        <p>③视幻觉在DLB中更核心，但PDD患者也可见——不能单凭视幻觉就判定为DLB</p>
+        <p>④本题核心决策依据是<strong>运动症状与认知症状的发作时间间隔 = 2年</strong></p>
+        <p><strong>💡 如果误编：</strong>编成G31.8†会导致与临床事实不一致，且DRG入组路径差异大。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 睡眠障碍 G47 vs F51 分水岭</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"严重失眠半年"入院。PSG检查显示：AHI = 28次/小时（重度阻塞性呼吸暂停），同时存在中度焦虑（HAMA 16分）。患者自述入睡困难、夜间多次醒来。</p>
+    <p><strong>问题：</strong>失眠应编入什么？给出完整的诊断编码列表，并解释每条编码的排序逻辑。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p>①主诊断：<code>G47.3</code>（睡眠呼吸暂停——OSA），AHI=28证实为重度</p>
+        <p>②其他诊断1：<code>F41.1</code>（广泛性焦虑障碍，中度）</p>
+        <p>③其他诊断2：<code>G47.0</code>（器质性失眠——由OSA直接导致）</p>
+        <p><strong>✅ 排序逻辑（"病因为主"原则）：</strong></p>
+        <p>① G47.3 做主诊断——因为OSA是本次住院发现的核心器质性病因，且AHI=28属于中度以上，有治疗干预必要</p>
+        <p>② 失眠是由于 OSA 导致的反复夜间低氧和觉醒引起的，满足"器质性病因→失眠"的因果关系 → <strong>用 G47.0 而非 F51.0</strong></p>
+        <p>③ 焦虑虽然存在，但它是次要因素——不能因为有焦虑就把失眠编入F51.0</p>
+        <p><strong>💡 决策逻辑链：</strong>PSG有客观异常（AHI↑） → 失眠由器质性因素引起 → G47.0 ✓（不是F51） → OSA是根本病因 → G47.3 做主诊断 ✓</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 多诊断冲突的综合编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者65岁，因"右侧肢体无力伴言语含糊3天"入院。住院期间记录以下发现：</p>
+    <ul>
+      <li>头颅MRI-DWI：左侧基底节区及放射冠多发急性腔隙性梗死</li>
+      <li>神经系统检查：右侧肢体肌力Ⅲ级，右侧病理征阳性，构音障碍</li>
+      <li>既往于2年前曾患"左侧基底节脑梗死"，遗留轻度左手不灵活（已稳定1年以上）</li>
+      <li>既往有高血压病史10年，口服降压药控制尚可</li>
+    </ul>
+    <p><strong>问题：</strong>请列出本次住院的完整编码（主诊断 + 所有其他诊断），并解释2年前的脑梗死后遗症如何处理。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p><strong>主诊断：</strong><code>I63.801</code>（腔隙性脑梗死——本次新发的急性梗死）</p>
+        <p><strong>其他诊断：</strong></p>
+        <p>② <code>G81.9</code>（偏瘫，右侧——急性梗死导致的新偏瘫）</p>
+        <p>③ <code>I69.301</code>（脑梗死后遗症，左侧肢体轻瘫——2年前的陈旧性后遗症）</p>
+        <p>④ <code>I10</code>（原发性高血压——慢性基础病）</p>
+        <p><strong>✅ 关键决策解析：</strong></p>
+        <p><strong>① 2年前的脑梗死后遗症（左手不灵活）：</strong></p>
+        <p>——发病已 &gt; 1年，病情已稳定 → 应使用<strong>I69.301</strong>（脑梗死后遗症，单侧上肢轻瘫）</p>
+        <p>——<strong>不能</strong>使用G81.x或I63.x——因为急性期已过，且病情已稳定</p>
+        <p>——如果本次入院只是后遗症存在而<strong>没有新发梗死</strong>，I69.301就是主诊断</p>
+        <p><strong>② 本次新发偏瘫（右侧肢体肌力Ⅲ级）：</strong></p>
+        <p>——由急性腔隙性脑梗死引起，属于活动期疾病 → <strong>同时编I63.801 + G81.9</strong></p>
+        <p>——注意区别：新发急性偏瘫（I63+G81）vs 陈旧后遗症（I69），<strong>时机是关键</strong></p>
+        <p><strong>③ 高血压：</strong></p>
+        <p>——作为脑梗死的危险因素，作为其他诊断<code>I10</code></p>
+        <p><strong>💡 高阶认知：</strong>同一患者身上同时存在"新发急性偏瘫"（I63+G81）和"陈旧性后遗症"（I69），这在神经内科中极为常见——<strong>二者不能混为一谈，必须分别编码</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 九、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-num">1</div><div><strong>G章11大板块：</strong>炎(G00)→萎(G10)→锥(G20)→变(G30)→脱(G35)→阵(G40)→神(G50)→多(G60)→肌(G70)→瘫(G80)→其他(G90)</div></div>
+  <div class="key-item"><div class="key-num">2</div><div><strong>TIA vs 脑梗死：</strong>DWI是金标准——有高信号=I63，无高信号=G45，不依赖临床诊断文字</div></div>
+  <div class="key-item"><div class="key-num">3</div><div><strong>癫痫编码：</strong>全身性G40.3 vs 局灶性G40.2以EEG双侧/单侧为区分；持续状态独立用G41</div></div>
+  <div class="key-item"><div class="key-num">4</div><div><strong>帕金森三码区分：</strong>G20原发性、G21继发性（药/创伤/脑炎/血管）、G31.8† DLB伴痴呆</div></div>
+  <div class="key-item"><div class="key-num">5</div><div><strong>AD星剑号：</strong>G30†（病因/主码）+ F00*（表现/附加），两个码都填，不能只用F00*</div></div>
+  <div class="key-item"><div class="key-num">6</div><div><strong>G47 vs F51睡眠障碍：</strong>有PSG客观异常 → G47（器质性）；纯心理因素 → F51（非器质性）</div></div>
+  <div class="key-item"><div class="key-num">7</div><div><strong>G81偏瘫≠病因：</strong>描述"哪里瘫"，急性期需同时编病因(I63/I61)+G81；后遗症用I69</div></div>
+  <div class="key-item"><div class="key-num">8</div><div><strong>G63全为星号：</strong>G63.*表示分类于他处的疾病引起的神经病变——如糖尿病性G63.2* (E10-E14†)</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 17 主题：H 章 眼和附器疾病 + 耳和乳突疾病（H00-H59 + H60-H95）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>白内障（H25-H26）的分型编码：老年性、外伤性、并发性的区别是什么？</li>
+    <li>青光眼（H40-H42）的星剑号关系：哪些青光眼是星号码（G章疾病所致）？</li>
+    <li>糖尿病性视网膜病变（H36.0* + E10-E14†）的双重分类如何填报？</li>
+    <li>中耳炎（H65-H67）分型：化脓性 vs 非化脓性，急性 vs 慢性的编码分别是什么？</li>
+    <li>听力损失（H90-H91）中传导性、感音神经性、混合性的四字符亚目划分依据是什么？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 16 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识库：病案与编码 / 病案编码案例库</p>
+</div>
+
+</body>
+</html>
