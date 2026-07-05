@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 17（2026年7月5日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .dual-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+    .dual-panel { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 17 · 2026年7月5日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：H章（H00-H95）—— 眼和附器疾病 + 耳和乳突疾病</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:28.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 17 / 60 天（28.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>H00-H59（眼）与 H60-H95（耳）的码位分界线</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>白内障 H25-H26 的病因-部位-形态三维编码体系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>青光眼 H40-H42 的"开角型 vs 闭角型 vs 继发性"分类轴心</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>中耳炎 H65-H67 的"急性 vs 慢性 vs 化脓性 vs 非化脓性"四象限</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免隐性错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>H 章与其他章的交叉边界：糖尿病眼病（E10-E14†+H36.0*）、外伤性眼病（S05）、神经系统眼病</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>听力损失 H90-H91 的"传导性 vs 感音神经性 vs 混合性"分类逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>耳部手术后的状态编码（Z96.2/Z96.3/Z96.4）与当前疾病编码的联动</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>H57 眼和附器的其他疾患（眼球震颤 H55 除外）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>H93 耳的其他疾患（包括耳鸣、听觉过敏等少见分类）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>H 章与围生期眼科疾病（P 章）、先天性眼病（Q 章）的边界规则</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>H 章在编码考试中占比不算最大，但白内障、青光眼、中耳炎三类编码是高频考点。关键是建立"病因 → 部位 → 形态"三维编码思维，而不是死记码位。青光眼的"开角型/闭角型"区分必须依赖临床检查报告，不能凭诊断名称猜测。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、H章全景速览：两大分部 + 14个板块</h2>
+
+<p>H章（H00-H95）是 ICD-10 中比较少见的"一分为二"结构——<strong>前60个码位给眼睛，后36个码位给耳朵</strong>。两个分部在编码逻辑上彼此独立，但在交叉场景（如糖尿病眼病、外伤性耳聋）中需要联动其他章节。</p>
+
+<div class="stat-row">
+  <div class="stat-badge"><div class="stat-num">96</div><div class="stat-label">三字符类目数</div></div>
+  <div class="stat-badge"><div class="stat-num">7</div><div class="stat-label">眼和附器（H00-H59）</div></div>
+  <div class="stat-badge"><div class="stat-num">7</div><div class="stat-label">耳和乳突（H60-H95）</div></div>
+</div>
+
+<h3>1.1 眼和附器（H00-H59）八大板块</h3>
+
+<table>
+  <tr><th>码位范围</th><th>板块名称</th><th>高频场景</th><th>核心考察点</th></tr>
+  <tr><td><code>H00-H06</code></td><td>眼睑、泪器、眼眶</td><td>睑腺炎（H00）、泪囊炎（H04.4）、眼眶蜂窝织炎（H05.0）</td><td>眶内vs眶周、急慢性区分</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H10-H13</code></td><td>结膜疾患 ★</td><td>结膜炎（H10）、翼状胬肉（H11.0）、结膜出血（H11.3）</td><td>感染性vs过敏性、H13* 星号联动</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H15-H22</code></td><td>巩膜/角膜/虹膜/睫状体 ★</td><td>角膜炎（H16）、角膜溃疡（H16.0）、虹膜炎（H20）、巩膜炎（H15.0）</td><td>角膜瘢痕（H17）vs活动性角膜炎</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H25-H28</code></td><td>晶状体疾患（白内障）★★★</td><td>老年性白内障（H25）、外伤性白内障（H26.1）、并发性白内障（H26.2）</td><td><strong>核心考点：病因-部位-形态三维编码</strong></td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H30-H36</code></td><td>脉络膜和视网膜 ★</td><td>视网膜脱离（H33）、糖尿病视网膜病变（H36.0*）、黄斑变性（H35.3）</td><td>H36* 星号码为系统性疾病在眼的表现</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H40-H42</code></td><td>青光眼 ★★★</td><td>原发性开角型（H40.1）、原发闭角型（H40.2）、继发性（H40.3-H40.6）</td><td><strong>核心考点：开角vs闭角必须看房角镜检查</strong></td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H43-H45</code></td><td>玻璃体和眼球疾患</td><td>玻璃体出血（H43.1）、眼内炎（H44.0）</td><td>眼内异物 S05 与 H44 的内源性区分</td></tr>
+  <tr><td><code>H46-H59</code></td><td>视神经/斜视/其他</td><td>视神经炎（H46）、斜视（H50）、眼球震颤（H55）</td><td>视神经萎缩 H47.2 需区别原发/继发</td></tr>
+</table>
+
+<h3>1.2 耳和乳突（H60-H95）六大板块</h3>
+
+<table>
+  <tr><th>码位范围</th><th>板块名称</th><th>高频场景</th><th>核心考察点</th></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H60-H62</code></td><td>外耳疾病 ★</td><td>外耳道炎（H60）、耳廓蜂窝织炎（H60.1）、耵聍栓塞（H61.2）</td><td>H62* 星号联动（全身疾病的外耳表现）</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H65-H75</code></td><td>中耳和乳突 ★★★</td><td>急性中耳炎（H65-H66）、慢性中耳炎（H65.2-H65.4）、胆脂瘤（H71）</td><td><strong>核心考点：化脓性vs非化脓性四象限</strong></td></tr>
+  <tr><td><code>H80-H83</code></td><td>内耳疾病</td><td>耳硬化症（H80）、梅尼埃病（H81.0）、迷路炎（H83.0）</td><td>耳硬化症的传导性/感音神经性区分</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H90-H95</code></td><td>听力损失 ★★</td><td>传导性聋（H90.0-H90.2）、感音神经性聋（H90.3-H90.5）、混合性聋（H90.6-H90.8）</td><td><strong>诊断必须靠纯音测听+声导抗</strong></td></tr>
+  <tr><td><code>H91-H93</code></td><td>其他听觉和前庭疾患</td><td>老年聋（H91.1）、突发特发性聋（H91.2）、耳鸣（H93.1）</td><td>突发性耳聋 H91.2 需要排除器质性病变</td></tr>
+  <tr><td><code>H94-H95</code></td><td>操作和后遗症</td><td>乳突切除术后的疾患（H95.0）</td><td>操作后状态可能需 Z 码联动</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 记忆口诀——H章码位分水岭：</strong>"眼到59，耳从60起。" 看到 H25-H28 自动联想到白内障，H40-H42 是青光眼，H65-H67 是中耳炎。这三个是 H 章编码的核心铁三角。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">👁️</span> 二、白内障编码 H25-H28 —— 三维决策体系深度拆解</h2>
+
+<p>白内障是 H 章最核心的编码板块之一，也是最容易出错的。编码员不能看到"白内障"就编 H25.9（未特指），因为 ICD-10 已经为白内障建立了<strong>"病因+部位+形态"三维编码体系</strong>。</p>
+
+<h3>2.1 为什么白内障编码是"三维立体"的？</h3>
+<p>白内障不是一个病，而是一个临床表现——它背后的病因决定了归类到哪个类目。ICD-10 的编码体系按病因将白内障分为四个核心类目：</p>
+
+<table>
+  <tr><th>类目</th><th>病因分类</th><th>是什么</th><th>典型场景</th></tr>
+  <tr><td><strong>H25</strong></td><td>老年性白内障</td><td>最常见的退行性晶状体混浊，年龄＞50岁且无明确其他病因</td><td>"双眼老年性白内障""老年性核性白内障"</td></tr>
+  <tr><td><strong>H26.0</strong></td><td>幼年性白内障</td><td>儿童/青少年发生，无明确代谢/外伤等继发因素</td><td>"先天性白内障"如无遗传依据可编此码（注意与Q12.0区分）</td></tr>
+  <tr><td><strong>H26.1</strong></td><td>外伤性白内障</td><td>明确由外伤导致（穿孔伤、挫伤、放射伤等）</td><td>"外伤性白内障"附加外因 S05/V 码</td></tr>
+  <tr><td><strong>H26.2</strong></td><td>并发性白内障</td><td>由其他眼部疾病（如葡萄膜炎、高度近视、视网膜脱离）继发</td><td>先查原发病编码，再编 H26.2</td></tr>
+  <tr><td><strong>H26.3</strong></td><td>药物性白内障</td><td>由糖皮质激素等药物长期使用引起</td><td>需附加外因编码（Y42-Y59）</td></tr>
+  <tr><td><strong>H28*</strong></td><td>全身疾病所致白内障</td><td>糖尿病性白内障（H28.0*）、甲状旁腺功能减退性（H28.1*）等</td><td><strong>星号码</strong>，必须与病因剑号码联动</td></tr>
+  <tr><td><strong>Q12.0</strong></td><td>先天性白内障</td><td>出生即存在或在生命早期出现</td><td><strong>不属于H章</strong>，归入Q章（先天性畸形）</td></tr>
+</table>
+
+<h3>2.2 白内障编码四步决策法</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>判断发病年龄和先天/后天</h4>
+      <p>出生即有 → <code>Q12.0</code>（Q章，不在H章内）；后天获得 → 继续第2步</p>
+      <p><strong>易错点：</strong>临床写"先天性白内障"但实际没有遗传/发育证据的幼年性白内障，应归 H26.0，不是 Q12.0</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>判断病因：是眼部疾病还是全身疾病？</h4>
+      <p>全身疾病（糖尿病、甲状旁腺功能减退等）→ <code>H28.0*</code> 或 <code>H28.1*</code> 或 <code>H28.2*</code>（星号，必须配剑号）</p>
+      <p>眼部本身疾病继发（葡萄膜炎、视网膜脱离）→ <code>H26.2</code>（并发性白内障）</p>
+      <p><strong>核心理念：</strong>H28* 是"身体其他部位病了→眼睛受牵连"，H26.2 是"眼睛自己病了→晶状体受牵连"</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>判断是否为外伤/药物所致</h4>
+      <p>明确外伤史 → <code>H26.1</code>（外伤性白内障），附加 S05 损伤外因 V/Y 编码</p>
+      <p>明确药物史（如长期糖皮质激素）→ <code>H26.3</code>（药物性白内障），附加 Y42-Y59 药物外因</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>排除上述原因后，按年龄和形态编细目</h4>
+      <p>50岁以上、退行性改变 → <code>H25</code>（老年性），再按形态细分亚目</p>
+      <p>儿童/青少年、无特殊病因 → <code>H26.0</code>（幼年性）</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.3 老年性白内障 H25 的形态亚目拆解</h3>
+
+<table>
+  <tr><th>亚目</th><th>形态</th><th>编码特征</th></tr>
+  <tr><td><code>H25.0</code></td><td>老年性初期白内障</td><td>晶状体皮质轻度混浊，尚未明显影响视力</td></tr>
+  <tr><td><code>H25.1</code></td><td>老年性核性白内障</td><td>混浊集中于晶状体核（中央区），最常见类型</td></tr>
+  <tr><td><code>H25.2</code></td><td>老年性白内障，莫加尼（Morgagni）型</td><td>过熟期白内障，晶状体核下沉</td></tr>
+  <tr><td><code>H25.8</code></td><td>其他老年性白内障</td><td>混合型、囊膜型等不典型形态</td></tr>
+  <tr><td><code>H25.9</code></td><td>未特指的老年性白内障</td><td><strong>尽量避免使用</strong>，只有在病程记录中完全没有形态描述时才用</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码陷阱——H25.9 滥用：</strong>很多编码员看到"老年性白内障"就直接编 H25.9。实际上，只要病程记录或裂隙灯检查报告提到了"核性""皮质性""后囊下"等形态描述，就应该编到对应的细目。H25.9 是信息不足时的兜底选项，不是默认值。
+</div>
+
+<h3>2.4 糖尿病性白内障的星剑号编码</h3>
+<p>糖尿病性白内障是考试高频考点，编码时必须星剑号联动：</p>
+
+<pre>临床诊断：2型糖尿病性白内障
+主导词：白内障 → 见于 → 糖尿病 → 索引指向 H28.0*
+
+编码结果：
+主诊断：E11.3†  2型糖尿病伴有眼部并发症（剑号——病因）
+附加码：H28.0*  糖尿病性白内障（星号——眼部表现）
+
+❌ 错误：只编 H28.0* 而不编 E11.3† → 丢失病因编码，DRG入组偏差
+❌ 错误：只编 H25.x + E11.9 → 没有用星剑号，属于编码规则执行不到位</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">📐</span> 三、青光眼编码 H40-H42 —— "轴心在于房角"</h2>
+
+<p>青光眼的编码体系以"房角状态"为核心分类轴心，同时结合"原发性 vs 继发性"和"急性 vs 慢性"。这是与白内障完全不同的分类逻辑。</p>
+
+<h3>3.1 为什么青光眼编码不能只看诊断名称？</h3>
+<p>临床诊断常写"青光眼""原发性青光眼""继发性青光眼"，但这些名称在 ICD-10 中只是分类的一个维度。完整的青光眼编码需要三个维度的信息：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 仅凭诊断名称</h4>
+    <p>看到"青光眼" → 编 H40.9（未特指）<br>看到"原发性青光眼" → 编 H40.0（可疑）<br>→ 大概率编错！</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 需要三重信息</h4>
+    <p>① 房角状态：开角型 / 闭角型（必须看房角镜报告）<br>② 原发/继发：原发性 / 继发于其他疾病<br>③ 急/慢性：急性发作 / 慢性进展</p>
+  </div>
+</div>
+
+<h3>3.2 H40 亚目全表——决策树</h3>
+
+<table>
+  <tr><th>亚目</th><th>分类</th><th>临床特征</th><th>关键鉴别点</th></tr>
+  <tr><td><code>H40.0</code></td><td>可疑青光眼</td><td>眼压偏高但无视野缺损和视盘损害</td><td><strong>不是确诊的青光眼</strong>！如果已确诊不应编此码</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H40.1</code></td><td>原发性开角型青光眼</td><td>房角开放但房水排出不畅，慢性进展</td><td><strong>房角镜报告："房角开放，宽角"</strong> → 排除闭角型</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>H40.2</code></td><td>原发性闭角型青光眼</td><td>房角狭窄/关闭，房水排出受阻</td><td><strong>房角镜报告："房角狭窄，N1-N2"</strong> → 闭角型</td></tr>
+  <tr><td><code>H40.3</code></td><td>继发于眼外伤的青光眼</td><td>外伤后房角后退、前房积血导致眼压升高</td><td>需附加外伤外因 S05 + V/Y 码</td></tr>
+  <tr><td><code>H40.4</code></td><td>继发于眼部炎症的青光眼</td><td>葡萄膜炎、角膜炎等炎症继发</td><td>需同时编原发炎症码</td></tr>
+  <tr><td><code>H40.5</code></td><td>继发于其他眼部疾病的青光眼</td><td>晶体膨胀、新生血管等</td><td>新生血管性青光眼即归此类</td></tr>
+  <tr><td><code>H40.6</code></td><td>药物性青光眼</td><td>糖皮质激素等长期使用导致</td><td>附加药物外因 Y42-Y59</td></tr>
+  <tr><td><code>H42.0*</code></td><td>内分泌/营养/代谢疾病青光眼</td><td>糖尿病、甲状腺疾病等全身病在眼部的表现</td><td><strong>星号码</strong>，必须配合剑号（如 E11.3†）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ H40.0（可疑青光眼）最容易用错：</strong>这是筛选/疑似状态，仅用于"眼压高但未确诊"的观察阶段。一旦通过视野+OCT+房角镜明确了青光眼诊断，必须从 H40.1 起步。编码员的职责是追问"到底是不是确诊的"，而不是看到"青光眼"就直接给码。
+</div>
+
+<h3>3.3 开角型 vs 闭角型的核对流程</h3>
+
+<pre>以"原发性青光眼，房角镜检查提示房角开放"为例：
+
+主导词：青光眼 → 原发性
+  └ 开角型 → 索引指向 H40.1
+
+核对卷一 H40.1：
+  包括：原发性开角型青光眼（慢性单纯性青光眼）
+  不包括：可疑青光眼（H40.0）、绝对期青光眼（H44.5）
+
+✅ 最终编码：H40.1 原发性开角型青光眼
+
+如果没有房角镜报告 → 编码员应联系医生确认房角状态
+绝不能自己猜测"大概率是开角/闭角"然后随意编码</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">👂</span> 四、中耳炎编码 H65-H75 —— "四象限"分类法</h2>
+
+<p>中耳炎编码是 H 章中的第二大核心板块，因为中耳炎是耳鼻喉科最常见的诊断之一。ICD-10 对中耳炎的分类可以用一个"四象限"矩阵来概括：</p>
+
+<div class="flow-chart">
+  <p style="font-size:15px;font-weight:700;color:var(--accent);margin-bottom:14px;">中耳炎编码四象限决策矩阵</p>
+  <div class="dual-panel" style="font-size:13px;text-align:left;">
+    <div style="background:#fff;padding:14px;border-radius:8px;border:2px solid var(--red);">
+      <strong style="color:var(--red);">🔴 急性 + 化脓性</strong><br>
+      <code>H66.0</code> 急性化脓性中耳炎<br>
+      典型表现：耳痛、发热、鼓膜充血穿孔、脓性分泌
+    </div>
+    <div style="background:#fff;padding:14px;border-radius:8px;border:2px solid var(--accent);">
+      <strong style="color:var(--accent);">🔵 急性 + 非化脓性</strong><br>
+      <code>H65.0</code> 急性浆液性中耳炎<br>
+      典型表现：耳闷、传导性聋、鼓膜内陷、积液无脓
+    </div>
+    <div style="background:#fff;padding:14px;border-radius:8px;border:2px solid var(--purple);">
+      <strong style="color:var(--purple);">🟣 慢性 + 化脓性</strong><br>
+      <code>H66.1</code> 慢性咽鼓管鼓室化脓性中耳炎<br>
+      <code>H66.2</code> 慢性上鼓室-鼓窦化脓性<br>
+      典型表现：反复流脓、鼓膜穿孔、听力下降
+    </div>
+    <div style="background:#fff;padding:14px;border-radius:8px;border:2px solid var(--green);">
+      <strong style="color:var(--green);">🟢 慢性 + 非化脓性</strong><br>
+      <code>H65.2</code> 慢性浆液性<br>
+      <code>H65.3</code> 慢性黏液样<br>
+      <code>H65.4</code> 其他慢性非化脓性<br>
+      典型表现：分泌性中耳炎、胶耳
+    </div>
+  </div>
+</div>
+
+<h3>4.1 化脓性中耳炎 H66 的亚目细节</h3>
+
+<table>
+  <tr><th>编码</th><th>类型</th><th>关键解剖部位</th><th>临床关联</th></tr>
+  <tr><td><code>H66.0</code></td><td>急性化脓性</td><td>中耳（鼓室）</td><td>耳痛+脓性分泌物+发热，首次发作或急性加重</td></tr>
+  <tr><td><code>H66.1</code></td><td>慢性咽鼓管鼓室化脓性</td><td>鼓室（咽鼓管-鼓室通道）</td><td>鼓膜中央穿孔，反复流脓，良性型</td></tr>
+  <tr><td><code>H66.2</code></td><td>慢性上鼓室-鼓窦化脓性</td><td>上鼓室+鼓窦</td><td>边缘性穿孔，伴胆脂瘤风险，危险型</td></tr>
+  <tr><td><code>H66.3</code></td><td>其他慢性化脓性</td><td>其他部位或混合</td><td>不能明确归入上述两类的慢性化脓性中耳炎</td></tr>
+  <tr><td><code>H66.4</code></td><td>未特指的化脓性中耳炎</td><td>—</td><td>仅在无分型信息时使用</td></tr>
+  <tr><td><code>H66.9</code></td><td>未特指的中耳炎</td><td>—</td><td>诊断过于笼统，尽量避免</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 慢性化脓性中耳炎分型的关键：</strong>H66.1（良性型，咽鼓管鼓室）和 H66.2（危险型，上鼓室鼓窦）的区分依赖于耳内镜报告中对穿孔位置的描述——中央穿孔→H66.1，边缘/上鼓室穿孔→H66.2。这是临床报告和编码衔接的典型案例。
+</div>
+
+<h3>4.2 胆脂瘤 H71 —— 不是中耳炎但常相伴出现</h3>
+
+<table>
+  <tr><th>编码</th><th>描述</th><th>编码要点</th></tr>
+  <tr><td><code>H71</code></td><td>中耳胆脂瘤</td><td>非肿瘤性角化鳞状上皮在中耳的异常生长，常与慢性中耳炎共存</td></tr>
+  <tr><td><code>H95.0</code></td><td>乳突切除术后复发胆脂瘤</td><td>术后状态的特殊编码，与 H71 互斥</td></tr>
+  <tr><td><code>H60.4</code></td><td>外耳道胆脂瘤</td><td>注意与 H71 的区别——位置不同编码不同</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 胆脂瘤不是肿瘤：</strong>尽管临床习惯称为"胆脂瘤"，但它本质是角化上皮异常增生，归入 H 章而非 C 章。如果编码员误归类到肿瘤章（C/D 章），将导致严重编码错误。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🔗</span> 五、H章与其他章的交叉边界——最容易踩的跨章错误</h2>
+
+<h3>5.1 五对交叉场景速查表</h3>
+
+<table>
+  <tr><th>临床场景</th><th>H章编码</th><th>关联章节编码</th><th>编码规则</th></tr>
+  <tr>
+    <td>糖尿病视网膜病变</td>
+    <td><code>H36.0*</code></td>
+    <td><code>E10.3†/E11.3†</code>（糖尿病伴眼部并发症）</td>
+    <td>星剑号联动，剑号为主诊断</td>
+  </tr>
+  <tr>
+    <td>糖尿病性白内障</td>
+    <td><code>H28.0*</code></td>
+    <td><code>E10.3†/E11.3†</code></td>
+    <td>星剑号联动，注意与 E11.7（多并发症）区分</td>
+  </tr>
+  <tr>
+    <td>眼球穿通伤</td>
+    <td>不用 H 章</td>
+    <td><code>S05.x</code> + 外因 V/Y 码</td>
+    <td>外伤性眼病归入 S 章（损伤），不在 H 章</td>
+  </tr>
+  <tr>
+    <td>先天性白内障</td>
+    <td>不用 H 章</td>
+    <td><code>Q12.0</code></td>
+    <td>先天性疾病归入 Q 章</td>
+  </tr>
+  <tr>
+    <td>高血压性视网膜病变</td>
+    <td><code>H35.0</code></td>
+    <td><code>I10.x</code>（高血压）</td>
+    <td>分别编码，H 码为附加码，I10 为主诊断</td>
+  </tr>
+  <tr>
+    <td>脑膜炎继发眼内炎</td>
+    <td><code>H44.0</code></td>
+    <td><code>G00.x</code>（脑膜炎）</td>
+    <td>分别编码，脑膜炎为主诊断</td>
+  </tr>
+  <tr>
+    <td>外伤性耳聋（如噪声性）</td>
+    <td><code>H83.3</code></td>
+    <td>外因 W42/Y96 等</td>
+    <td>可能需要外因附加码</td>
+  </tr>
+  <tr>
+    <td>药物性耳聋</td>
+    <td><code>H91.0</code></td>
+    <td>外因 Y40-Y59（药物）</td>
+    <td>附加药物外因编码</td>
+  </tr>
+  <tr>
+    <td>颅底骨折致耳漏</td>
+    <td>不用 H 章</td>
+    <td><code>S02.1</code>（颅底骨折）</td>
+    <td>属于 S 章（损伤），耳漏为临床表现</td>
+  </tr>
+</table>
+
+<h3>5.2 糖尿病眼病编码——最难决策的星剑号场景</h3>
+
+<div class="process-box">
+  <p style="font-weight:700;margin-bottom:10px;">糖尿病眼病编码的决策路径：</p>
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>是否有视网膜病变？</h4>
+      <p>有 → <code>E1x.3† + H36.0*</code>（糖尿病伴有眼的并发症，剑号+星号）</p>
+      <p>只有白内障、无视网膜病变 → 继续第2步</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>是否同时有视网膜病变+白内障？</h4>
+      <p>有 → 关键决策：E11.3（伴有眼部并发症）还是 E11.7（伴有多个并发症）？</p>
+      <p><strong>只有眼部并发症 → E11.3†</strong> + H36.0* + H28.0*</p>
+      <p><strong>眼部+其他系统（如肾、神经）→ E11.7</strong>，但注意 E11.7 的局限性</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>E11.3 vs E11.7 的抉择</h4>
+      <p><strong>E11.3†：</strong>仅眼部并发症，保留剑号，可带动多个星号（H36.0*+H28.0*）</p>
+      <p><strong>E11.7：</strong>多个系统并发症（眼+肾/神经等），但不带剑号，<strong>星号码需要单独处理</strong></p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ E11.7 的陷阱：</strong>E11.7（2型糖尿病伴有多个并发症）不自带剑号，这意味着使用 E11.7 时失去了带动星号码的"挂钩"。如果患者有多个系统并发症且其中有眼病，正确的做法可能是：E11.7（主诊断，多并发症）+ H36.0*（视网膜病变）+ H28.0*（白内障），三个码全部需要。但要确认国临版的星剑号规则是否强制要求剑号联动。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 重难点深度解析：青光眼开角型 vs 闭角型——"不能靠猜"的编码红线</h2>
+
+<h3>为什么这个区分编码员反复犯错？</h3>
+
+<p>青光眼的"开角型/闭角型"是 H 章中最高频的编码错误源之一。错误的根源不在编码规则本身，而在于<strong>编码员试图从诊断文字中推断，而不是从检查报告中确认</strong>。</p>
+
+<h3>真实场景对比：为何容易掉坑</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 依赖诊断名称推断</h4>
+    <p style="margin-bottom:8px;"><strong>场景：</strong>诊断写"原发性青光眼"，没有注明开角/闭角</p>
+    <p>编码员想："青光眼大部分是开角型，就编 H40.1 吧"</p>
+    <p style="color:var(--red);margin-top:8px;"><strong>结果：</strong>实际房角镜检查是闭角型（N2），该患者应编 H40.2。编码错误导致统计数据中"开角/闭角"比例失真。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 根据检查报告确认</h4>
+    <p style="margin-bottom:8px;"><strong>场景：</strong>诊断写"原发性青光眼"，房角镜报告："双眼房角狭窄，N2~N3"</p>
+    <p>编码员看到"N2~N3"→ 房角狭窄 → 闭角型 → <code>H40.2</code></p>
+    <p style="color:var(--green);margin-top:8px;"><strong>结果：</strong>编码与临床检查吻合，数据准确，DRG 入组无误。</p>
+  </div>
+</div>
+
+<h3>编码员如何处理"诊断信息不全"的情况？</h3>
+
+<pre>当诊断仅写"青光眼"但缺少分型信息时：
+
+1️⃣ 查看房角镜检查报告
+   → 关键字："房角开放/宽角" → H40.1
+   → 关键字："房角狭窄/关闭" → H40.2
+   → 关键字："房角后退" → H40.3（外伤继发）
+
+2️⃣ 查看 OCT 报告
+   → "RNFL变薄 + 视野缺损" → 已确诊（排除 H40.0）
+
+3️⃣ 如果以上都没有 → <strong>主动联系主管医生确认</strong>
+   → 不要自编 H40.9（未特指）
+   → 因为"开角/闭角"是治疗方案选择的基础（开角用药物/激光，闭角首选手术）
+   → 编码员有责任确保诊断分型信息完整</pre>
+
+<div class="card warn">
+  <strong>⚠️ 编码红线：</strong>"未特指"码（H40.9）在青光眼编码中是高频滥用码。ICD-10 设计"未特指"的本意是给"确实无法确定"的极少数情况预留出口，而不是给编码员偷懒的快捷通道。每当你想用 H40.9 时，扪心自问：我真的已经穷尽了所有获取信息的途径了吗？
+</div>
+
+<h3>急性闭角型青光眼发作——是否需要单独编码"急性"？</h3>
+
+<p>临床诊断常写"急性闭角型青光眼"，但在 ICD-10 中，H40.2（原发性闭角型青光眼）已经包含了急性、亚急性、慢性所有阶段。急性发作不改变编码——因为亚目已经按房角状态（闭角型）而不是按病程（急性/慢性）来分类了。</p>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 白内障病因分类</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>为以下四个白内障临床诊断选择正确的编码方向：</p>
+    <ol>
+      <li>72岁，双眼老年性核性白内障</li>
+      <li>55岁，10年2型糖尿病史，白内障</li>
+      <li>8岁，先天性白内障（无遗传/代谢证据）</li>
+      <li>28岁，眼球破裂伤术后3个月，外伤性白内障</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> <code>H25.1</code> 老年性核性白内障——年龄+形态都明确，标准编码</p>
+        <p><strong>2.</strong> <code>E11.3† + H28.0*</code> 糖尿病性白内障——星剑号联动！先查"白内障→见于→糖尿病"获得 H28.0*，再配 E11.3†</p>
+        <p><strong>3.</strong> <code>H26.0</code> 幼年性白内障，<strong>不是</strong> Q12.0。先天性白内障 Q12.0 仅用于"出生即存在且有明确先天证据"的情况，8岁无特殊病因应归 H26.0</p>
+        <p><strong>4.</strong> <code>H26.1</code> 外伤性白内障，附加 S05.x（眼球破裂伤）+ 外因编码。外伤性白内障不和 H25/老年性/其他病因混淆</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 中耳炎四象限判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>根据以下临床描述，判断每个场景的中耳炎编码：</p>
+    <table>
+      <tr><th>场景</th><th>病程</th><th>分泌物性质</th><th>耳内镜所见</th><th>你的编码</th></tr>
+      <tr><td>A</td><td>3天</td><td>黄绿色脓液</td><td>鼓膜充血、膨隆</td><td>？</td></tr>
+      <tr><td>B</td><td>3个月</td><td>黏液性、无脓</td><td>鼓膜内陷、积液</td><td>？</td></tr>
+      <tr><td>C</td><td>1年</td><td>反复流脓</td><td>中央穿孔</td><td>？</td></tr>
+      <tr><td>D</td><td>2年</td><td>反复流脓、有恶臭</td><td>边缘穿孔、胆脂瘤上皮</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>A：</strong><code>H66.0</code> 急性化脓性中耳炎——3天+脓液=急性+化脓性，符合左上象限</p>
+        <p><strong>B：</strong><code>H65.3</code> 慢性黏液样中耳炎——3个月+无脓+积液=慢性+非化脓性，具体为黏液样</p>
+        <p><strong>C：</strong><code>H66.1</code> 慢性咽鼓管鼓室化脓性中耳炎——1年+脓+中央穿孔=慢性化脓性+良性型</p>
+        <p><strong>D：</strong><code>H66.2</code> 慢性上鼓室-鼓窦化脓性中耳炎，同时<strong>加编</strong> <code>H71</code> 中耳胆脂瘤——边缘穿孔+胆脂瘤=危险型</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 青光眼开角/闭角鉴别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某眼科门诊患者，诊断写"原发性青光眼"。编码员在病程中查到房角镜报告："双眼房角开放，宽角，色素分级1级"。OCT 显示双眼 RNFL 变薄，视野检查有弓形暗点。</p>
+    <p><strong>问题：</strong>正确的诊断为？应编 H40.0 还是 H40.1？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ H40.1 原发性开角型青光眼，排除 H40.0</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 房角镜："房角开放，宽角" → <strong>开角型</strong>，排除闭角型 H40.2</p>
+        <p>② OCT："RNFL变薄" + 视野"弓形暗点" → <strong>已有视神经损害</strong>，排除 H40.0（可疑青光眼）</p>
+        <p>③ 无继发因素（外伤/炎症/药物）→ 原发性</p>
+        <p>④ 最终：H40.1 原发性开角型青光眼</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 糖尿病眼病星剑号综合编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者为2型糖尿病10年，本次因视力下降入院。眼科检查示：双眼糖尿病性视网膜病变（非增殖期）+ 右眼糖尿病性白内障。肾功能正常，无神经病变。</p>
+    <p><strong>问题：</strong>请给出完整的编码方案，包括主诊断和所有附加码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p>主诊断：<code>E11.3†</code> 2型糖尿病伴有眼的并发症（剑号——病因）</p>
+        <p>附加1：<code>H36.0*</code> 糖尿病性视网膜病变（星号——眼底表现）</p>
+        <p>附加2：<code>H28.0*</code> 糖尿病性白内障（星号——晶状体表现）</p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 仅有眼部并发症（视网膜+白内障），无肾/神经病变 → 不满足 E11.7 的"多系统"条件</p>
+        <p>② 因此用 E11.3†（仅涉及眼部），保留剑号以带动星号</p>
+        <p>③ E11.3† 可以同时带动 H36.0* 和 H28.0* 两个星号——这是允许的，属于同一系统的多个星号表现</p>
+        <p><strong>💡 常见错误：</strong>试图用 E11.7（多并发症），导致丢失星剑号联动</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 跨章边界：外伤性眼病 vs H章眼病</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"右眼钝挫伤后视力下降3天"就诊。CT示：右眼玻璃体积血、视网膜水肿。病程记录：3天前打篮球时被肘部撞击右眼。</p>
+    <p><strong>问题：</strong>主诊断应编 H43.1（玻璃体出血）还是 S05.1（眼球挫伤）？给出完整编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>主诊断：<code>S05.1</code> 眼球和眶组织挫伤</p>
+        <p>附加1：<code>W51.0</code>（撞击损伤，体育运动中）——外因编码</p>
+        <p><strong>❌ 不使用 H43.1（玻璃体出血）</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 病因明确为外伤 → <strong>外伤性疾病归入 S 章（损伤），不在 H 章</strong></p>
+        <p>② S05.x 覆盖了眼球挫伤及其各种表现（包括玻璃体出血、视网膜水肿）</p>
+        <p>③ H43.1 编码的是"内源性/自发性玻璃体出血"，如视网膜裂孔、糖尿病等引起的</p>
+        <p>④ 需要外因编码 W51.x 说明受伤机制（体育活动）</p>
+        <p><strong>💡 口诀：</strong>"有外伤就进 S 章，H 章专收内源病。"</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 听力损失三轴分类综合判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>听力中心报告："纯音测听：右耳气导65dB，骨导30dB，气骨导差35dB；左耳气导70dB，骨导65dB，气骨导差5dB。声导抗：右耳鼓室图B型，左耳正常型。"</p>
+    <p><strong>问题：</strong>请分析左右耳分别是什么类型的听力损失，并给出对应编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 分析：</strong></p>
+        <p><strong>右耳：</strong>气骨导差35dB（＞15dB），鼓室图B型 → <strong>传导性听力损失</strong> → <code>H90.1</code>（单侧传导性聋，对侧听力无损害）</p>
+        <p><strong>左耳：</strong>气骨导差5dB（≤15dB），骨导已降至65dB → <strong>感音神经性听力损失</strong> → <code>H90.4</code>（单侧感音神经性聋，对侧听力无损害）</p>
+        <p><strong>汇总：</strong>右耳传导性聋（H90.1）+ 左耳感音神经性聋（H90.4），两个码都需要。虽然不是混合性聋（混合性指同一侧耳朵同时有传导性和感音神经性成分），但两侧不同类型需要分别编码。</p>
+        <p><strong>💡 核心规则：</strong></p>
+        <ul>
+          <li>传导性聋：气骨导差＞15dB，骨导正常或接近正常</li>
+          <li>感音神经性聋：气骨导差≤15dB，气导和骨导同步下降</li>
+          <li>混合性聋（H90.6-H90.8）：同一侧耳气骨导差＞15dB 且 骨导也明显下降</li>
+          <li>编码前<strong>必须看纯音测听+声导抗报告</strong>，不能凭诊断名称判断</li>
+        </ul>
+      </div>
+    </answer-box>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>H章一分为二：</strong>H00-H59 眼、H60-H95 耳，两条总线独立运行但交叉时需跨章联动</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>白内障三维编码：</strong>病因（六轴分类）+ 部位（核/皮质/囊膜）+ 形态（初期/成熟/过熟），缺一不可</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>青光眼核心轴心：</strong>房角状态决定一切——看房角镜报告，不要猜</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>中耳炎四象限：</strong>急性~慢性 × 化脓性~非化脓性，慢性化脓性再按穿孔位置分 H66.1/H66.2</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>听力损失看报告：</strong>气骨导差＞15dB→传导性；气骨导同步下降→感音神经性；两侧不同需分别编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>外伤不进H章：</strong>明确外伤导致的眼病→S 章（损伤）+外因码，不是 H 章</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>先天不进H章：</strong>先天性眼病/耳病→Q 章（先天性畸形），不是 H 章</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>H40.0 是红线：</strong>可疑青光眼≠确诊青光眼，有 OCT+视野损害证据即可排除 H40.0</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九、明日预习 ======== -->
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 18 主题：I章——循环系统疾病（I00-I99）——冠心病、心梗、高血压</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>I21（急性心梗）的亚目按什么轴心分类？前壁/下壁/侧壁分别对应什么码？</li>
+    <li>高血压 I10 和高血压性心脏病 I11 有什么区别？什么时候用 I11 而非 I10？</li>
+    <li>冠心病（I25.1）和心绞痛（I20）的编码边界在哪？稳定型vs不稳定型怎么分？</li>
+    <li>急性心肌梗死发病 28 天后复查，应该用 I21 还是 I25.2（陈旧性心梗）？为什么？</li>
+    <li>心衰（I50）作为附加码时，如何与主诊断保持一致性？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 17 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
