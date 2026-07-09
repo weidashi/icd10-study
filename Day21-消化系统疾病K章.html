@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 21（2026年7月9日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Decision Tree ===== */
+  .decision-tree {
+    background: var(--card); border: 2px solid var(--accent); border-radius: var(--radius);
+    padding: 20px 24px; margin: 16px 0; font-size: 14px;
+  }
+  .decision-node {
+    padding: 8px 14px; margin: 6px 0; border-radius: 8px;
+    background: var(--accent-bg); border: 1px solid #c7d2fe;
+    font-weight: 600; text-align: center;
+  }
+  .decision-node.branch { background: #f0fdf4; border-color: #86efac; }
+  .decision-node.final { background: #fef2f2; border-color: #fecaca; color: var(--red); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 21 · 2026年7月9日</div>
+  <h1>📚 消化系统疾病编码</h1>
+  <p class="subtitle">K 章（K00-K93）——从口腔到肛门的完整编码地图</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:35%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 21 / 60 天（35%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>消化性溃疡 K25-K28 按部位+并发症四维编码（部位→急性/慢性→出血/穿孔→幽门螺杆菌 B95-B98）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>阑尾炎 K35-K37 亚目区分规则（K35.3急性vs K35.2慢性急性发作vs K36慢性vs K37未特指）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肠梗阻 K56 亚目分类轴心（麻痹性/机械性/混合性/未特指），K56.6为"其他和未特指"万能兜底</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>疝 K40-K46 分类→部位+梗阻/坏疽是唯一修饰（斜疝直疝不是ICD关心的维度）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>胆石症 K80.K81 胆囊炎+胆石是否共存的组合编码，K80优先级高于K81</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肝硬化 K74 与K70（酒精性肝病）、K76（其他肝病）的跨类目边界与组合编码规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>胰腺炎 K85 急性与 K86 慢性间的编码切换时机（"急性发作"→K85而非K86）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>消化道出血 K92.2 必须作为附加码出现（不能做主诊断，除非出血来源始终不明）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>克罗恩病K50 vs 溃疡性结肠炎K51的分界逻辑——小肠vs结肠、透壁vs表浅的病理差异</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>K00-K14 口腔颌骨疾病（龋齿K02、牙髓病K04）的编码细节</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>K65-K67 腹膜疾病（腹膜炎、腹膜粘连）的细分亚目</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>K90-K93 消化系统术后并发症（胃切除后倾倒综合征 K91.1、肠吻合口狭窄 K91.2）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>K 章是 ICD-10 中第三大章（仅次于 I 章和 S-T 章），涵盖口腔到肛门的全部消化器官。今天的学习重点是：①消化性溃疡的四维编码模型 ②阑尾炎/肠梗阻/疝/胆石症四大高频场景的亚目选择 ③消化道出血的编码位置限制。记不住整个K章没关系，但这五个场景必须滚瓜烂熟。
+</div>
+
+<!-- ======== 统计卡片 ======== -->
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">11</div>
+    <div class="stat-label">K章板块数</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">20+</div>
+    <div class="stat-label">高频类目（三字符）</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">K25-K93</div>
+    <div class="stat-label">核心码位范围</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">5</div>
+    <div class="stat-label">本日重点场景</div>
+  </div>
+</div>
+
+<!-- ======== 一、K章码位全景 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、K 章码位全景速查</h2>
+
+<p>K章（K00-K93）共有 11 个板块，囊括了从口腔到肛门的全部消化器官疾病。虽然涵盖面广，但在病案编码实践中，绝大多数日常编码集中在 K20-K87 之间的 7 个板块。</p>
+
+<table>
+  <tr><th>板块</th><th>码位</th><th>板块名称</th><th>高频类目</th><th>重要度</th></tr>
+  <tr><td>1</td><td><code>K00-K14</code></td><td>口腔、涎腺和颌骨疾病</td><td>K02 龋齿、K04 牙髓病</td><td style="color:#10b981;">★☆☆</td></tr>
+  <tr style="background:var(--accent-bg);"><td>2</td><td><code>K20-K31</code></td><td>食管、胃和十二指肠疾病</td><td>K21 胃食管反流、K25 胃溃疡、K26 十二指肠溃疡、K27 部位未特指溃疡、K29 胃炎</td><td style="color:#ef4444;">★★★</td></tr>
+  <tr><td>3</td><td><code>K35-K38</code></td><td>阑尾疾病</td><td>K35 急性阑尾炎、K36 其他阑尾炎、K37 未特指</td><td style="color:#ef4444;">★★★</td></tr>
+  <tr><td>4</td><td><code>K40-K46</code></td><td>疝</td><td>K40 腹股沟疝、K41 股疝、K42 脐疝、K43 腹疝、K44 膈疝</td><td style="color:#f59e0b;">★★☆</td></tr>
+  <tr><td>5</td><td><code>K50-K52</code></td><td>非感染性小肠炎和结肠炎</td><td>K50 克罗恩病、K51 溃疡性结肠炎</td><td style="color:#f59e0b;">★★☆</td></tr>
+  <tr style="background:var(--accent-bg);"><td>6</td><td><code>K55-K64</code></td><td>肠的其他疾病</td><td>K56 肠梗阻、K57 憩室病、K59 功能性肠病、K60 肛裂</td><td style="color:#ef4444;">★★★</td></tr>
+  <tr><td>7</td><td><code>K65-K67</code></td><td>腹膜疾病</td><td>K65 腹膜炎、K66 腹膜其他疾病</td><td style="color:#10b981;">★☆☆</td></tr>
+  <tr style="background:var(--accent-bg);"><td>8</td><td><code>K70-K77</code></td><td>肝疾病</td><td>K70 酒精性肝病、K74 肝硬化、K75-K77 其他肝病</td><td style="color:#f59e0b;">★★☆</td></tr>
+  <tr style="background:var(--accent-bg);"><td>9</td><td><code>K80-K87</code></td><td>胆囊、胆道和胰腺疾病</td><td>K80 胆石症、K81 胆囊炎、K85 急性胰腺炎、K86 其他胰腺病</td><td style="color:#ef4444;">★★★</td></tr>
+  <tr><td>10</td><td><code>K90-K91</code></td><td>消化系统术后并发症</td><td>K91 消化系统操作后疾患 NEC</td><td style="color:#f59e0b;">★★☆</td></tr>
+  <tr><td>11</td><td><code>K92-K93</code></td><td>消化系统其他疾病</td><td>K92.2 消化道出血（不可做主诊断！）、K92.0 呕血、K92.1 黑便</td><td style="color:#ef4444;">★★★</td></tr>
+</table>
+
+<div class="note">
+  <strong>📌 快速记忆法：</strong>标 ★★★ 的 6 个板块（食管胃十二指肠、阑尾、肠其他疾病、胆胰、消化道出血、加上"疝"板块）构成了消化科编码员日常 90% 的工作量。不必背全部，但这几个必须信手拈来。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、消化性溃疡 ======== -->
+<h2><span class="icon">🩹</span> 二、消化性溃疡（K25-K28）——四维编码模型</h2>
+
+<p>消化性溃疡是 K 章中最核心、最需要精准把握的编码区域。ICD-10 将溃疡按<strong>部位</strong>分为四个类目，然后在每个类目下按<strong>并发症</strong>设亚目——这就是经典的"四维编码模型"。</p>
+
+<h3>2.1 第一维：解剖部位——四个类目一字排开</h3>
+
+<table>
+  <tr><th>类目</th><th>部位</th><th>记忆口诀</th></tr>
+  <tr><td><code>K25</code></td><td>胃溃疡（Gastric Ulcer）</td><td>"胃 = 25"（联想：胃口好，二十五岁的时候）</td></tr>
+  <tr><td><code>K26</code></td><td>十二指肠溃疡（Duodenal Ulcer）</td><td>"十二 = 26"（联想：十二月＝第12个月，类目+1＝25+1）</td></tr>
+  <tr><td><code>K27</code></td><td>部位未特指的消化性溃疡</td><td>"未定位 = 27"（联想：不确定=七上八下=27）</td></tr>
+  <tr><td><code>K28</code></td><td>胃空肠溃疡（Gastrojejunal Ulcer）</td><td>"空肠 = 28"（联想：空肠吻合术后=P28=手术后=K28）</td></tr>
+</table>
+
+<h3>2.2 第二至第四维：并发症——六个亚目共用一套体系</h3>
+
+<p>K25-K28 每个类目下的亚目编号完全相同，共享一套并发症体系。这是 ICD-10 对称设计的典型代表，学会一个类目，四个全会。</p>
+
+<table>
+  <tr><th>亚目</th><th>含义</th><th>举例（以K25为例）</th></tr>
+  <tr><td><code>.0</code></td><td>急性伴出血（Acute with hemorrhage）</td><td>K25.0 急性胃溃疡伴出血</td></tr>
+  <tr><td><code>.1</code></td><td>急性伴穿孔（Acute with perforation）</td><td>K25.1 急性胃溃疡伴穿孔</td></tr>
+  <tr><td><code>.2</code></td><td>急性伴出血和穿孔（Acute with both）</td><td>K25.2 急性胃溃疡伴出血和穿孔</td></tr>
+  <tr><td><code>.3</code></td><td>急性不伴出血或穿孔（Acute without）</td><td>K25.3 急性胃溃疡（单纯急性，无并发症）</td></tr>
+  <tr><td><code>.4</code></td><td>慢性或未特指伴出血</td><td>K25.4 慢性胃溃疡伴出血</td></tr>
+  <tr><td><code>.5</code></td><td>慢性或未特指伴穿孔</td><td>K25.5 慢性胃溃疡伴穿孔</td></tr>
+  <tr><td><code>.6</code></td><td>慢性或未特指伴出血和穿孔</td><td>K25.6 慢性胃溃疡伴出血和穿孔</td></tr>
+  <tr><td><code>.7</code></td><td>慢性不伴出血或穿孔</td><td>K25.7 慢性胃溃疡</td></tr>
+  <tr><td><code>.9</code></td><td>未特指急慢性，不伴出血或穿孔</td><td>K25.9 胃溃疡 NOS</td></tr>
+</table>
+
+<h3>2.3 第五维：幽门螺杆菌——附加编码 B95-B98</h3>
+
+<div class="card warn">
+  <strong>⚠️ 编码员必须注意：</strong>如果胃镜病理报告明确标注"幽门螺杆菌阳性"或"HP（+）"，必须加编 <code>B98.0</code>（幽门螺杆菌感染作为分类于他处疾病的原因）。这个附加编码不能漏，因为它直接影响 DRG/DIP 入组和医保结算清单的疾病复杂程度评分。
+</div>
+
+<h3>2.4 完整编码路径示例</h3>
+
+<pre>病理报告：胃窦部黏膜活检示慢性炎症，HP(+)
+胃镜报告：胃窦部可见一约 0.8cm 溃疡，底覆白苔，边缘规整
+出院诊断：胃窦部溃疡（慢性）
+
+编码推导：
+主导词：溃疡 → 胃 → 慢性 → 不伴出血/穿孔
+→ K25.7（慢性胃溃疡）  +  B98.0（幽门螺杆菌感染）
+
+注意：如果出院诊断只写了"胃溃疡"没写急慢性 → K25.9
+但编码员应主动查看胃镜/病理报告，能明确的一定要用最细码</pre>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 常见错误</h4>
+    <p>看到"胃溃疡伴呕血"→ 编 K25.0（急性）或 K25.4（慢性），但不加 B98.0</p>
+    <p><strong>问题：</strong>漏掉了幽门螺杆菌附加码，疾病诊断完整性打折</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p>胃镜示十二指肠球部溃疡伴出血，病理 HP(+)，入院时呕血 300ml</p>
+    <p><strong>正确：</strong>K26.4（慢性十二指肠溃疡伴出血）+ K92.0（呕血）+ B98.0（HP 感染）</p>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>📌 编码技巧——主导词选择的陷阱：</strong><br>
+  - <strong>胃溃疡</strong> → 查"溃疡→胃"（不是"胃→溃疡"！）<br>
+  - <strong>十二指肠溃疡</strong> → 查"溃疡→十二指肠"<br>
+  - <strong>如果有"出血"→ 可能用到"出血→消化道"</strong>但编码员必须先确定溃疡本身的码，出血作附加码<br>
+  - <strong>主导词永远是"溃疡"（Ulcer），部位的修饰词跟在后面</strong>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、阑尾炎/肠梗阻/疝 ======== -->
+<h2><span class="icon">🔬</span> 三、三大高频场景——阑尾炎 / 肠梗阻 / 疝</h2>
+
+<h3>3.1 阑尾炎（K35-K37）——你要看的是病理报告，不是出院诊断</h3>
+
+<p>阑尾炎是消化科和普外科最常遇到的编码，但也是最容易"差不多就行了"的陷阱区。关键在于：<strong>出院诊断写了"急性阑尾炎"不等于直接用 K35.9</strong>——必须结合手术记录和病理报告，确认有无穿孔、有无腹膜炎、有无脓肿形成。</p>
+
+<table>
+  <tr><th>代码</th><th>名称</th><th>何时使用</th><th>关键判断依据</th></tr>
+  <tr><td><code>K35.3</code></td><td>急性阑尾炎（单纯性）</td><td>红肿但未穿孔、无脓肿</td><td>病理：急性单纯性阑尾炎</td></tr>
+  <tr><td><code>K35.2</code></td><td>急性阑尾炎伴穿孔（局限性腹膜炎）</td><td>穿孔但未波及全腹腔</td><td>术后诊断：急性化脓性/坏疽性阑尾炎伴穿孔</td></tr>
+  <tr><td><code>K35.2+K65.0</code></td><td>急性阑尾炎伴弥漫性腹膜炎</td><td>穿孔+全腹膜炎</td><td>描述"满腹压痛反跳痛，腹腔大量脓液"</td></tr>
+  <tr><td><code>K36</code></td><td>其他阑尾炎</td><td>慢性、复发性</td><td>有反复发作史</td></tr>
+  <tr><td><code>K37</code></td><td>未特指的阑尾炎</td><td><strong>尽量不要用！</strong></td><td>几乎不存在"无法确定"的场景</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键坑——"慢性阑尾炎急性发作"：</strong><br>
+  如果病理显示"慢性阑尾炎急性发作"，ICD-10 的原则是<strong>按急性表现分类</strong>——即应编 K35.3（急性阑尾炎），而不是 K36（慢性阑尾炎）。原因在于：住院的驱动事件是"急性发作"，该次住院的治疗目标是切除急性炎症的阑尾。<strong>主导词仍然查"阑尾炎→急性"</strong>，病理描述的"慢性背景"只是病史的一部分。
+</div>
+
+<h3>3.2 肠梗阻（K56）——分类轴心是"机制"而非"原因"</h3>
+
+<p>肠梗阻的亚目分类基于<strong>生理机制</strong>（动力性障碍 vs 机械性堵塞），而不是病因（肿瘤？粘连？扭转？）。这是很多编码员第一次学 K56 时搞反的地方。</p>
+
+<table>
+  <tr><th>亚目</th><th>机制类型</th><th>典型病因举例</th><th>附加编码</th></tr>
+  <tr><td><code>K56.0</code></td><td>麻痹性肠梗阻（动力性）</td><td>术后肠麻痹、腹膜炎后、电解质紊乱</td><td>原发病因</td></tr>
+  <tr><td><code>K56.1</code></td><td>肠套叠</td><td>小儿特发性、成人肿瘤继发</td><td>继发套叠的病因（如肿瘤）</td></tr>
+  <tr><td><code>K56.2</code></td><td>肠扭转（Volvulus）</td><td>乙状结肠扭转、盲肠扭转</td><td>—</td></tr>
+  <tr><td><code>K56.4</code></td><td>肠的其他嵌塞</td><td>粪石嵌塞、胆石肠梗阻</td><td>—</td></tr>
+  <tr style="background:var(--red-bg);"><td><code>K56.5</code></td><td>肠粘连伴梗阻</td><td>术后肠粘连导致梗阻</td><td>通常这就是主诊断</td></tr>
+  <tr><td><code>K56.6</code></td><td>其他和未特指的肠梗阻</td><td>机械性梗阻但类型不明</td><td><strong>兜底码，尽量不用</strong></td></tr>
+  <tr><td><code>K56.7</code></td><td>未特指的肠梗阻</td><td>连机械性/麻痹性都无法判断</td><td><strong>空白诊断，严禁使用</strong></td></tr>
+</table>
+
+<h4>肠梗阻编码的完整路径示例</h4>
+
+<pre>患者，78岁，因腹痛腹胀伴停止排气排便2天入院。
+腹部CT：乙状结肠冗长伴扭转，近端肠管扩张积气积液。
+急诊行乙状结肠扭转复位术。
+
+主导词：扭转 → 肠 → 乙状结肠
+→ K56.2（肠扭转）
+
+但是！如果CT还显示结肠肿瘤导致套叠：
+主导词：套叠 → 肠
+→ K56.1（肠套叠）+ C18.7（乙状结肠恶性肿瘤）
+
+规则：当肠梗阻有明确器质性病因时，病因码才是主诊断，
+肠梗阻 K56.x 降级为附加码。</pre>
+
+<h3>3.3 疝（K40-K46）——记住：ICD只关心"有无梗阻/坏疽"</h3>
+
+<p>临床上描述疝的维度有很多：直疝/斜疝、可复性/难复性/嵌顿性、有无内容物——但 ICD-10 的分类轴心只有三个：<strong>解剖部位 → 有无梗阻 → 有无坏疽</strong>。</p>
+
+<table>
+  <tr><th>部位</th><th>单侧/未特指,无梗阻无坏疽</th><th>单侧/未特指,伴梗阻</th><th>单侧/未特指,伴坏疽</th></tr>
+  <tr><td>腹股沟疝</td><td><code>K40.9</code></td><td><code>K40.3</code></td><td><code>K40.4</code></td></tr>
+  <tr><td>股疝</td><td><code>K41.9</code></td><td><code>K41.3</code></td><td><code>K41.4</code></td></tr>
+  <tr><td>脐疝</td><td><code>K42.9</code></td><td><code>K42.0</code></td><td><code>K42.1</code></td></tr>
+  <tr><td>腹疝（切口疝等）</td><td><code>K43.9</code></td><td><code>K43.0</code></td><td><code>K43.1</code></td></tr>
+  <tr><td>膈疝</td><td><code>K44.9</code></td><td><code>K44.0</code></td><td><code>K44.1</code></td></tr>
+  <tr><td>其他腹部疝</td><td><code>K45.8</code></td><td>—</td><td>—</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码员注意：</strong><br>
+  ① <strong>不要找"斜疝"或"直疝"</strong>——ICD-10 不按疝囊路径分类，只按表面解剖部位（腹股沟 K40、股 K41、脐 K42、腹壁 K43）<br>
+  ② <strong>双侧腹股沟疝</strong> → K40.2（双侧，无梗阻无坏疽）或 K40.0/.1（双侧伴梗阻/坏疽）——有独立的双侧亚目！<br>
+  ③ <strong>术后切口疝</strong> → 先看部位，如果是腹壁切口疝 → K43.0-K43.9，不要错编为术后并发症（T81-T88 操作并发症是为操作直接并发症准备的，疝不是直接操作并发症）
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、胆石症与胆囊炎 ======== -->
+<h2><span class="icon">🪨</span> 四、胆石症（K80）与胆囊炎（K81）——组合编码的典型范例</h2>
+
+<h3>4.1 为什么 K80 和 K81 必须一起考虑？</h3>
+
+<p>在 ICD-10 中，K80（胆石症，Cholelithiasis）的亚目设计已经把"结石 + 胆囊炎"合并进去了。这意味着：<strong>凡是胆石症伴有胆囊炎的，必须用 K80 中的组合亚目，不能分开编 K80 + K81</strong>。K81（胆囊炎）只用于"没有结石"的胆囊炎。</p>
+
+<table>
+  <tr><th>亚目</th><th>含义</th><th>包含的K81成分</th></tr>
+  <tr><td><code>K80.0</code></td><td>胆囊结石伴急性胆囊炎</td><td>胆石 + K81.0（急性胆囊炎）→ 用 K80.0，不用 K81</td></tr>
+  <tr><td><code>K80.1</code></td><td>胆囊结石伴其他胆囊炎</td><td>胆石 + K81.1（慢性胆囊炎）→ 用 K80.1</td></tr>
+  <tr><td><code>K80.2</code></td><td>胆囊结石不伴胆囊炎</td><td>单独存在胆石，胆囊无炎症</td></tr>
+  <tr><td><code>K80.3</code></td><td>胆管结石伴胆管炎</td><td>胆管结石 + 胆管炎 → 注意是<strong>胆管结石</strong>不是胆囊结石</td></tr>
+  <tr><td><code>K80.4</code></td><td>胆管结石伴胆囊炎</td><td>胆管结石 + 胆囊炎</td></tr>
+  <tr><td><code>K80.5</code></td><td>胆管结石不伴胆管炎或胆囊炎</td><td>单纯胆管结石</td></tr>
+  <tr><td><code>K81.0</code></td><td>急性胆囊炎（无结石）</td><td><strong>独立使用</strong>：无结石的急性胆囊炎（如感染性、创伤后）</td></tr>
+  <tr><td><code>K81.1</code></td><td>慢性胆囊炎（无结石）</td><td><strong>独立使用</strong>：无结石的慢性胆囊炎</td></tr>
+</table>
+
+<h3>4.2 编码决策流程</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>第一步：确定是否有结石</h4>
+      <p>查看 B 超/CT/ERCP 报告——"胆囊内强回声光团，后伴声影" → 有结石</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>第二步：结石的位置</h4>
+      <p>在胆囊（GB）→ K80.0-K80.2；在胆管（CBD/IHD）→ K80.3-K80.5</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第三步：有无胆囊炎/胆管炎</h4>
+      <p>查看血常规 WBC↑、B超胆囊壁增厚/双边征、临床Murphy征 → 合并胆囊炎/胆管炎</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>第四步：核对第一卷确认最终编码</h4>
+      <p>K80 有丰富的"包括"和"不包括"注释——特别注意 K80 中"不包括"指出的需要另编码的情况</p>
+    </div>
+  </div>
+</div>
+
+<h3>4.3 完整编码示例</h3>
+
+<pre>患者，45岁女性，右上腹痛3天，发热38.5℃。
+B超：胆囊多发结石，胆囊壁增厚0.6cm，呈双边征。
+血常规：WBC 15.2×10⁹/L
+临床诊断：急性结石性胆囊炎
+
+主导词：结石 → 胆囊 → 伴急性胆囊炎
+→ K80.0（胆囊结石伴急性胆囊炎）
+
+❌ 错误做法：分开编码 K80.2（胆囊结石）+ K81.0（急性胆囊炎）
+   第③步规则——K80就已经涵盖了胆囊炎，不能分拆！</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 五、胰腺炎/肝病/消化道出血 ======== -->
+<h2><span class="icon">🫁</span> 五、胰腺炎（K85-K86）与肝病（K70-K77）——状态切换与因果关系</h2>
+
+<h3>5.1 胰腺炎：急性 vs 慢性的编码分界线</h3>
+
+<p>胰腺炎的 ICD-10 设计如下：<code>K85</code> = 急性胰腺炎，<code>K86</code> = 其他胰腺疾病（含慢性胰腺炎 K86.0-K86.1）。<strong>关键规则：如果是慢性胰腺炎急性发作，应编 K85（急性）——原则和阑尾炎一样，当前住院的驱动事件决定编码。</strong></p>
+
+<table>
+  <tr><th>代码</th><th>名称</th><th>使用场景</th></tr>
+  <tr><td><code>K85.0</code></td><td>特发性急性胰腺炎</td><td>原因不明的急性胰腺炎</td></tr>
+  <tr><td><code>K85.1</code></td><td>胆源性急性胰腺炎</td><td>胆石/泥沙堵塞胰管开口→继发胰腺炎（最常见类型！）</td></tr>
+  <tr><td><code>K85.2</code></td><td>酒精性急性胰腺炎</td><td>大量饮酒后发病</td></tr>
+  <tr><td><code>K85.3</code></td><td>药物性急性胰腺炎</td><td>药物不良反应诱发</td></tr>
+  <tr><td><code>K85.8</code></td><td>其他急性胰腺炎</td><td>高脂血症性、外伤后、ERCP后</td></tr>
+  <tr><td><code>K85.9</code></td><td>急性胰腺炎，未特指</td><td><strong>尽量避免使用</strong></td></tr>
+  <tr><td><code>K86.0</code></td><td>酒精性慢性胰腺炎</td><td>长期饮酒，反复发作</td></tr>
+  <tr><td><code>K86.1</code></td><td>其他慢性胰腺炎</td><td>非酒精性</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>💡 胆源性胰腺炎的多编码组合：</strong><br>
+  胆源性胰腺炎（K85.1）的患者，如果 B 超显示"胆囊多发结石 + 胆总管结石"→ 同时要编：<br>
+  <strong>主诊断：K85.1</strong>（胰腺炎是住院治理的主因）<br>
+  <strong>其他诊断：K80.5</strong>（胆管结石）或 K80.3（胆管结石伴胆管炎）<br>
+  注意：不能说"胰腺炎比结石更重要就只编胰腺炎"——<strong>二者都要编</strong>，但是 K85.1 做主诊断。
+</div>
+
+<h3>5.2 肝病：K70 K74 K76 三者边界</h3>
+
+<table>
+  <tr><th>类目</th><th>关键特征</th><th>典型编码</th></tr>
+  <tr><td><code>K70</code> 酒精性肝病</td><td>病因必须是"酒精"——肝硬化+饮酒史 = K70.3（酒精性肝硬化）</td><td>K70.0 酒精性脂肪肝 → K70.3 酒精性肝硬化 → K70.4 酒精性肝衰竭</td></tr>
+  <tr><td><code>K74</code> 肝纤维化和肝硬化</td><td>非酒精性原因导致的肝硬化——病毒性、自身免疫性、代谢性</td><td>K74.6 其他和未特指的肝硬化</td></tr>
+  <tr><td><code>K76</code> 肝的其他疾病</td><td>不属于 K70-K75 的肝病兜底类目——脂肪肝 K76.0、肝淤血 K76.1</td><td>K76.0 脂肪肝（非酒精性）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 肝硬化编码的致命陷阱：</strong><br>
+  如果出院诊断只写了"肝硬化"三个字 → 编码员有<strong>义务</strong>从病历中寻找病因线索：<br>
+  - 有长期大量饮酒史 → K70.3（酒精性肝硬化）<br>
+  - 乙肝/丙肝阳性 → K74.6 + B18.1/B18.2（病毒性病因做附加码）<br>
+  - 自身免疫性肝病指标阳性 → 查具体病因<br>
+  <strong>不能直接编 K74.6</strong> 而不问病因！这是质控审核的高频扣分项。
+</div>
+
+<h3>5.3 消化道出血（K92.0-K92.2）——编码位置限制</h3>
+
+<p>记住一条铁律：</p>
+
+<div class="card" style="border: 2px solid var(--red);">
+  <p style="font-size: 16px; text-align: center;"><strong>🔴 K92.0（呕血）、K92.1（黑便）、K92.2（消化道出血）<br>永远不能作为主要诊断编码！</strong></p>
+  <p style="font-size:14px;color:var(--text2);">它们只能出现在"其他诊断"栏，作为原发病的伴随表现。</p>
+  <p style="font-size:14px;color:var(--text3);"><strong>唯一例外：</strong>经过全面检查（包括胃镜、肠镜、胶囊内镜、血管造影）后<strong>始终未能找到出血来源</strong>——此时 K92.2 才能勉强做主诊断。但实际工作中这种情况极少出现。</p>
+</div>
+
+<table>
+  <tr><th>临床场景</th><th>主诊断</th><th>其他诊断</th></tr>
+  <tr><td>十二指肠溃疡并出血</td><td><code>K26.4</code></td><td>K92.2（消化道出血）</td></tr>
+  <tr><td>肝硬化食管静脉曲张破裂出血</td><td><code>I85.0</code>（食管静脉曲张伴出血）</td><td>K74.6（肝硬化）+ K92.0（呕血）</td></tr>
+  <tr><td>胃癌并出血</td><td><code>C16.9</code>（胃恶性肿瘤）</td><td>K92.2（消化道出血）</td></tr>
+  <tr><td>出血来源始终不明</td><td><code>K92.2</code></td><td>—（极少使用）</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点深度解析——肠梗阻的"病因优先 vs 机制兜底"冲突</h2>
+
+<p>在 K 章的所有编码中，肠梗阻（K56）是最容易出现编码哲学冲突的场景：<strong>到底是用 K56.x 单独做主诊断，还是把肠梗阻降级为附加码、让病因做主诊断？</strong></p>
+
+<h3>6.1 根本原则：ICD-10 第二章（肿瘤）和损伤章优先于肠梗阻</h3>
+
+<div class="decision-tree">
+  <p style="text-align:center;font-weight:700;margin-bottom:14px;">🔀 肠梗阻编码决策树——你的五步判断法</p>
+
+  <div class="decision-node">第①步：梗阻的直接原因是什么？</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node branch">肿瘤（结肠癌、胃癌等）</div>
+    <div class="decision-node branch">非肿瘤原因</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node final">→ 肿瘤 C 码做主诊断<br>肠梗阻 K56.x 降为附加码</div>
+    <div class="decision-node">下一步：第②步</div>
+  </div>
+
+  <div class="decision-node">第②步：是否为术后肠粘连？</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node branch">是（有手术史，粘连导致梗阻）</div>
+    <div class="decision-node branch">否</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node final">→ K56.5 肠粘连伴梗阻做主诊断<br>（这是少见的K56子码做主诊断的情况）</div>
+    <div class="decision-node">下一步：第③步</div>
+  </div>
+
+  <div class="decision-node">第③步：是否为嵌顿疝导致的梗阻？</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node branch">是</div>
+    <div class="decision-node branch">否</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node final">→ 疝（K40-K43）伴梗阻做主诊断<br>不需要另编 K56</div>
+    <div class="decision-node">下一步：第④步</div>
+  </div>
+
+  <div class="decision-node">第④步：能否明确机制？（扭转/套叠/麻痹性...）</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node branch">能</div>
+    <div class="decision-node branch">不能</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;">
+    <div class="decision-node final">→ K56.0-K56.4 对应亚目做主诊断</div>
+    <div class="decision-node">最后一步：第⑤步</div>
+  </div>
+
+  <div class="decision-node">第⑤步：无法确定机制 → K56.6 兜底做主诊断</div>
+</div>
+
+<h3>6.2 常见错误对比</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 场景：结肠癌导致肠梗阻</h4>
+    <p>临床诊断：结肠癌伴肠梗阻</p>
+    <p>错误编码：K56.6（肠梗阻，未特指）</p>
+    <p><strong>错在哪：</strong>忽视了"肿瘤C码优先"原则，肠梗阻在此处应降级为附加码</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p style="font-weight:700;">C18.4（横结肠恶性肿瘤）</p>
+    <p style="color:var(--text3);">其他诊断：K56.6（肠梗阻）</p>
+    <p>理由：肿瘤是原发性疾病，肠梗阻是其并发症。ICD-10 明确要求肿瘤做主诊断。</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 场景：乙状结肠扭转</h4>
+    <p>临床诊断：肠梗阻</p>
+    <p>错误编码：K56.6（其他和未特指的肠梗阻）</p>
+    <p><strong>错在哪：</strong>CT已明确显示"乙状结肠扭转"——应编至K56.2（肠扭转），而非兜底码K56.6</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p style="font-weight:700;">K56.2（肠扭转）</p>
+    <p>理由：当梗阻的机制明确（扭转），必须编至精确亚目。K56.6 是"其他和未特指"——你的影像报告明确了机制，就不属于"未特指"。</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 消化性溃疡四维编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"呕血伴黑便2天"入院。胃镜示：十二指肠球部前壁见一约1.2cm溃疡，表面覆血痂，幽门螺杆菌快速尿素酶试验阳性。</p>
+    <p><strong>问题：</strong>请给出完整编码组合（主诊断+其他诊断+附加码），并说明每个码的推导依据。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>主诊断：<code>K26.4</code>（慢性十二指肠溃疡伴出血）——溃疡在十二指肠，索引路径"溃疡→十二指肠→慢性→伴出血"</p>
+        <p>其他诊断：<code>K92.0</code>（呕血）——出血的表现码，K92只能做附加诊断</p>
+        <p>附加码：<code>B98.0</code>（幽门螺杆菌感染作为分类于他处疾病的原因）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>主导词：溃疡 → 十二指肠 → 未明确急慢性 → 默认慢性 → 伴出血 → K26.4</li>
+          <li>临床表现"呕血"→ K92.0（附加码，不能做主诊断）</li>
+          <li>HP阳性 → B98.0（附加码，不能漏！）</li>
+          <li>核对卷一：K26.4 的"包括"确认涵盖慢性十二指肠溃疡伴出血；"不包括"无冲突</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 胆石症组合编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因右上腹剧烈疼痛入院，B 超示"胆囊多发结石伴胆囊壁增厚、双边征"。血常规 WBC 18.0×10⁹/L。出院诊断："急性结石性胆囊炎"。</p>
+    <p><strong>问题：</strong>① 主诊断应该用什么？② 能不能分开编 K80.2（胆囊结石）+ K81.0（急性胆囊炎）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：<code>K80.0</code>（胆囊结石伴急性胆囊炎）</strong></p>
+        <p><strong>② 不能分开编 K80.2 + K81.0！</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>主导词：结石 → 胆囊 → 伴急性胆囊炎</li>
+          <li>K80 类目下的亚目设计已经将"结石+胆囊炎"合并为一个<strong>组合编码</strong></li>
+          <li>K80.0 本身就代表了"胆囊结石伴急性胆囊炎"，不再需要另加 K81.0</li>
+          <li>K81.0（急性胆囊炎）只用于<strong>无结石</strong>的急性胆囊炎——例如感染性、创伤后</li>
+          <li>这是 ICD-10 的<strong>组合编码原则</strong>：当类目表提供了现成的"病因+并发症"组合码时，必须使用组合码，不允许分拆</li>
+        </ol>
+        <p><strong>💡 判断技巧：</strong>K80.0 名称中的"伴"字（with）就是信号——这个码本身就融合了两个诊断。再看索引路径"结石→胆囊→伴急性胆囊炎"只有一个条目→K80.0——不存在分开的路径。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 阑尾炎亚目判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下三个阑尾炎场景，分别给出正确编码，并说明判断依据：</p>
+    <table>
+      <tr><th>场景</th><th>手术记录关键描述</th><th>你的编码</th></tr>
+      <tr><td>A</td><td>阑尾充血水肿，未见穿孔。病理：急性单纯性阑尾炎</td><td>？</td></tr>
+      <tr><td>B</td><td>阑尾坏疽穿孔，腹腔少量脓液，局限于右下腹。病理：急性坏疽性阑尾炎伴穿孔</td><td>？</td></tr>
+      <tr><td>C</td><td>既往反复右下腹痛2年，本次急性发作2天。病理：慢性阑尾炎急性发作</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：<code>K35.3</code></strong>（急性阑尾炎，未伴穿孔或腹膜炎）——无穿孔、无腹膜炎，单纯性炎症，K35.3</p>
+        <p><strong>✅ B：<code>K35.2</code></strong>（急性阑尾炎伴穿孔和局限性腹膜炎）——有穿孔+脓液局限于右下腹 → 穿孔伴局限性腹膜炎。注意：脓液仅限右下腹 → 是"局限性腹膜炎"而非弥漫性，所以不需要加 K65.0</p>
+        <p><strong>✅ C：<code>K35.3</code></strong>（急性阑尾炎）——虽然是慢性背景+急性发作，但当前住院的驱动事件是"急性发作"。ICD-10 原则：<strong>按急性表现分类</strong>，查"阑尾炎→急性"→ K35.3。不要查"阑尾炎→慢性"→ K36</p>
+        <p><strong>💡 C 场景的编码哲学：</strong>"慢性阑尾炎急性发作"的编码逻辑和胰腺炎完全一致——以本次住院的主要病症（急性发作）为准，既往慢性病史只是背景信息。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 肠梗阻多编码冲突</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，72岁，因"腹痛腹胀伴停止排气排便3天"入院。既往5年前行"直肠癌 Dixon 术"。腹部CT示：吻合口处软组织肿块，考虑肿瘤复发，近端结肠扩张积气积液。</p>
+    <p>临床诊断：直肠癌术后复发伴肠梗阻</p>
+    <p><strong>问题：</strong>① 主诊断应该是什么？② 肠梗阻的编码应该是什么？③ 这个案例中主诊断和肠梗阻的主次关系是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>主诊断：<code>C20.x00</code>（直肠恶性肿瘤）</p>
+        <p>其他诊断：<code>K56.6</code>（其他和未特指的肠梗阻）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>CT 显示"吻合口处软组织肿块"——直肠癌术后复发，这是肠梗阻的直接<strong>病因</strong></li>
+          <li>根据 ICD-10 肿瘤优先原则：当肿瘤是疾病的根本原因时，肿瘤做主诊断</li>
+          <li>肠梗阻 K56.6 在此处仅为<strong>肿瘤的并发症</strong>，只能放在"其他诊断"</li>
+          <li>为什么用 K56.6 而不是更细的亚目？——影像并未明确描述是"肿瘤压迫导致的机械性梗阻"还是"麻痹性梗阻"。在无法判定具体机制时 K56.6 是合理的</li>
+          <li>不是 K56.5（肠粘连伴梗阻）——虽然患者有手术史，但 CT 明确找到了肿瘤复发这个更直接的病因，应优先归因于肿瘤而非术后粘连</li>
+        </ol>
+        <p><strong>💡 为什么不是 K56.5？</strong>虽然有直肠癌手术史，但影像报告明确指向"肿瘤复发"而非"粘连索带"——在编码中应尊重影像学证据，选择最明确的病因。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 肝硬化+消化道出血全案编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，58岁男性，因"呕血800ml"入院。有乙肝病史15年，饮酒史30年（每日高度白酒约半斤）。胃镜示"食管静脉重度曲张，可见活动性出血点"。</p>
+    <p>化验：HBsAg(+)、HBV-DNA 3.5×10^5 IU/mL、ALT 120 U/L。B 超：肝脏缩小、表面不平、肝内呈结节状改变。</p>
+    <p><strong>问题：</strong>请给出完整编码组合，特别注意：肝硬化病因码的选择（酒精性？病毒性？）、消化道出血码的位置，以及是否需要附加码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>主诊断：<code>I85.0</code>（食管静脉曲张伴出血）——呕血+胃镜证实食管静脉曲张破裂，这是本次住院的<strong>直接驱动事件</strong></p>
+        <p>其他诊断：</p>
+        <ul>
+          <li><code>K74.6</code>（其他和未特指的肝硬化）——B超典型肝硬化表现</li>
+          <li><code>B18.1</code>（慢性乙型病毒性肝炎）——HBsAg(+)，HBV-DNA 阳性</li>
+          <li><code>K92.0</code>（呕血）——出血的临床表现码</li>
+        </ul>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li><strong>肝硬化病因选择——K74.6 而非 K70.3：</strong>虽然有饮酒史，但 HBsAg(+)+HBV-DNA(+)+ALT升高明确指向<strong>慢性乙肝活动期</strong>。在有明确病毒学证据的情况下，病毒性病因的权重优先于酒精性。K70.3（酒精性肝硬化）仅用于"排除了病毒性、自身免疫性等其他原因后，饮酒是唯一合理解释"的场景。</li>
+          <li><strong>为什么 I85.0 做主诊断而非 K74.6？</strong>本次入院的直接原因是食管静脉曲张破裂出血（呕血800ml），而非慢性肝硬化的常规管理。静脉曲张破裂出血是危及生命的急性事件——应优先反映在主要诊断中。</li>
+          <li><strong>K92.0 是附加码——</strong>用于记录出血的临床表现，不能做主诊断</li>
+          <li><strong>B18.1 是必须的——</strong>乙肝是肝硬化的病因，对DRG/DIP入组有影响</li>
+        </ol>
+        <p><strong>💡 为什么不能编 K70.3（酒精性肝硬化）？</strong>K70.3 属于酒精相关性肝病谱系，使用前提是"酒精是肝硬化的主要原因"。但在本例中，HBV 感染证据充分（HBsAg+、HBV-DNA 高载量），不能把病因归给酒精。正确的做法是 K74.6 + B18.1。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · K80/K81/K85 胆胰联动</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"中上腹持续剧痛向背部放射"入院。血淀粉酶 1850 U/L。B 超+CT 示：① 胆囊多发小结石，胆总管下段见一枚结石嵌顿，肝内胆管轻度扩张；② 胰腺体积增大，周围少量渗出。出院诊断："急性胰腺炎"。</p>
+    <p><strong>问题：</strong>① 主诊断应编什么？② 胆管结石是否需要单独编码？怎么编？③ 胆囊结石（胆囊内）是否需要单独编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>主诊断：<code>K85.1</code>（胆源性急性胰腺炎）——血淀粉酶升高 + CT胰腺渗出明确诊断；结石嵌顿胆总管下端是直接病因 → K85.1</p>
+        <p>其他诊断：</p>
+        <ul>
+          <li><code>K80.4</code>（胆管结石伴胆囊炎）<strong>或</strong> <code>K80.5</code>（胆管结石不伴胆管炎/胆囊炎）——取决于胆囊是否伴发炎症</li>
+          <li>如果血常规 WBC 升高+B超胆囊壁增厚 → K80.4</li>
+          <li>如果胆囊无炎症 → K80.5</li>
+        </ul>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li><strong>主诊断为什么是 K85.1 而不是 K80.x？</strong>——本次住院的直接原因是急性胰腺炎（血淀粉酶1850，CT渗出）。胆管结石是胰腺炎的病因，不是本次住院治理的主因。编码优先级按"临床表现优先于潜在病因"（当表现是急危重症时）</li>
+          <li><strong>胆管结石必须单独编码：</strong>K85.1（胆源性急性胰腺炎）只说明了"胰腺炎的原因是胆源性"，<strong>但并未包含胆管结石本身的编码</strong>。胆管结石（K80.3-K80.5）需要作为"其他诊断"补充编码，以完整反映患者的胆道问题</li>
+          <li><strong>胆囊结石不需要单独编码：</strong>因为胆囊内的结石没有引起胆管炎或胆囊炎（如果B超未报告胆囊壁异常），它作为患者的背景疾病——但注意，如果胆囊也有炎症，则胆管+胆囊都需要在 K80 亚目中体现</li>
+          <li><strong>如果患者还做了 ERCP 取石：</strong>手术编码另编——51.85（内镜逆行胰胆管造影伴 Oddi 括约肌切开术取石）</li>
+        </ol>
+        <p><strong>💡 总结口诀：</strong>"急性胰腺炎胆源性，K85.1当主诊；胆管结石别忘编，K80 亚目做附加；胆囊没炎不用管，有炎才算 K80.4。"</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>溃疡四维编码：</strong>K25胃→K26十二指肠→急性/慢性→出血/穿孔/双并发→+B98.0（HP阳性）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>阑尾炎看病理：</strong>有无穿孔+腹膜炎范围决定K35.2 vs K35.3；慢性急性发作→按急性编K35.3</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肠梗阻分机制：</strong>麻痹性K56.0/套叠K56.1/扭转K56.2/粘连K56.5；肿瘤优先！</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>疝只看两件事：</strong>部位+有无梗阻/坏疽，不关心直疝/斜疝</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>胆石+胆囊炎=K80：</strong>K80 是组合码，不能分拆 K80+K81；K81只用无结石胆囊炎</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>K92.x 不能做主诊断：</strong>K92.0/K92.1/K92.2 永远放"其他诊断"（除非出血来源始终不明）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肝硬化必须追病因：</strong>酒精→K70.3；病毒→K74.6+B18.x；不能只看"肝硬化"三个字</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>胰腺炎急性优先：</strong>K85（急性） vs K86（慢性）；胆源性K85.1要加胆管结石K80.x</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 22 主题：M 章——肌肉骨骼系统和结缔组织疾病（M00-M99）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>M 章的核心分类轴心是什么？（解剖部位？病因？炎症/退行性？）</li>
+    <li>类风湿关节炎（M05-M06）和骨关节炎（M15-M19）在分类逻辑上有什么根本区别？</li>
+    <li>椎间盘疾病（M50-M51）的病理性编码和临床表现码如何联动？</li>
+    <li>骨质疏松（M80-M81）的"伴/不伴病理骨折"亚目是怎么设计的？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 21 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
