@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 26（2026年7月14日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 26 · 2026年7月14日</div>
+  <h1>🔪 ICD-9-CM-3 手术操作编码概述</h1>
+  <p class="subtitle">今日主题：结构、类目体系、分类轴心 —— 从疾病编码迈向手术编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:43.3%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 26 / 60 天（43.3%）· 第三阶段：ICD-9-CM-3 手术操作编码</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>ICD-9-CM-3 的两大部分结构：类目表 + 字母顺序索引</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>18章类目体系及编码范围（至少掌握高频6章）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>四大分类轴心：部位 + 术式 + 入路 + 疾病性质</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>手术编码三步法：确定主导词 → 查索引 → 核对类目表</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码层级结构：类目（两位数）→ 亚目（三位数）→ 细目（四位数）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>ICD-9-CM-3 与 ICPM 的区别与渊源</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>核心轴心（部位+术式）与修饰成分（入路+疾病性质）的区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>主导词三种形式：基本术式 / 部位+术式 / 人名命名手术</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>省略编码（Omit code）与另编码（Code also）的概念</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-9-CM-3 在美国每年修订的历史背景</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>国临版 2.0 / 3.0 的扩展规则与 DRG 对应关系</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>今天是第三阶段的开篇，从疾病编码（ICD-10）跨入手术操作编码（ICD-9-CM-3）。两者查找方法相似（都是三步法），但分类轴心完全不同。重点理解"<strong>部位+术式</strong>"这对核心轴心——它是手术编码的"DNA"，后续所有章节的学习都建立在这个基础上。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、什么是 ICD-9-CM-3？——手术操作分类的世界标准</h2>
+
+<h3>1.1 从 ICPM 到 ICD-9-CM-3</h3>
+<p>ICD-9-CM-3（International Classification of Diseases, 9th Revision, Clinical Modification, Volume 3）是国际疾病分类第九版临床修订本第三卷，专门用于<strong>手术操作分类</strong>。它源于世界卫生组织的《国际医疗操作分类》（ICPM）第五章"外科操作"，由美国国家健康统计中心在此基础上细分扩展而成，并获得了 WHO 的承认。</p>
+
+<p>中国原卫生部于 1989 年决定采用 ICD-9-CM-3 作为全国统一的手术操作编码标准。选择它的核心理由有三：一是分类结构以<strong>解剖部位为主轴</strong>，临床使用方便；二是美国每年修订更新，能反映最新的临床操作技术（如介入治疗、内镜手术）；三是我国医院已有 20 余年的使用基础，数据连续性好。</p>
+
+<div class="card tip">
+  <strong>ICD-9-CM-3 与 ICD-10 的关系：</strong><br>
+  ① ICD-10 是<strong>疾病分类</strong>编码，用于病案首页的诊断栏<br>
+  ② ICD-9-CM-3 是<strong>手术操作分类</strong>编码，用于病案首页的手术操作栏<br>
+  ③ 两者在病案首页上并行填报，各自独立，互不替代<br>
+  ④ DRG/DIP 分组时，<strong>主诊断（ICD-10）+ 主要手术（ICD-9-CM-3）</strong>共同决定入组
+</div>
+
+<h3>1.2 两大部分：类目表 + 索引</h3>
+<p>ICD-9-CM-3 中文编译本包括两大部分：<strong>类目表</strong>和<strong>字母顺序索引</strong>。这与 ICD-10 的三卷本结构有所不同——ICD-9-CM-3 没有独立的"指导手册"卷，规则指导融入在类目表的注释中。</p>
+
+<table>
+  <tr><th>组成部分</th><th>作用</th><th>使用时机</th></tr>
+  <tr>
+    <td><strong>类目表</strong></td>
+    <td>按编码数字顺序排列的所有类目、亚目、细目及其注释</td>
+    <td>索引给出编码后，<strong>必须</strong>回到类目表核对"包括""不包括"注释</td>
+  </tr>
+  <tr>
+    <td><strong>字母顺序索引</strong></td>
+    <td>按汉语拼音顺序排列的手术操作术语，包含大量类目表中未列出的具体术式名称</td>
+    <td>编码的<strong>起点</strong>——从索引入手查找编码</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键理解：</strong>索引是类目表的"重要补充"——有相当一部分具体的手术及操作名称没有被列入类目表，<strong>只有通过查找索引才能得到其在类目表中的位置</strong>。这就像查字典：你不可能从字典正文第一页开始翻，而是先查拼音索引定位页码。
+</div>
+
+<h3>1.3 编码的层级结构——从两位数到六位数</h3>
+<pre>以 51.23（胆囊切除术，腹腔镜）为例：
+
+51           ← 两位数类目："胆囊和胆管手术"（第十一章消化系统）
+51.2         ← 三位数亚目："胆囊手术"（术式轴心细分）
+51.23        ← 四位数细目："胆囊切除术-腹腔镜"（ICD-9-CM-3 原版最细层级）
+51.2300x001  ← 国临版扩展码（中国本土化扩展，满足DRG分组需求）</pre>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ ICD-10 的编码层级</h4>
+    <p>字母 + 两位数字（类目）+ 小数点 + 一位数字（亚目）<br>例：<code>I21.4</code><br>层级：章→类目→亚目</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ ICD-9-CM-3 的编码层级</h4>
+    <p>两位数字（类目）+ 小数点 + 一位数字（亚目）+ 一位数字（细目）<br>例：<code>51.23</code><br>层级：章→类目→亚目→细目</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 核心区别：</strong>ICD-10 用<strong>字母</strong>标识章节（如 I 代表循环系统），而 ICD-9-CM-3 全部用<strong>数字</strong>，章节由编码范围隐含表示（如 35-39 代表心血管系统手术）。ICD-9-CM-3 比 ICD-10 多一个层级——<strong>细目</strong>（第四位数），分类更精细。
+</div>
+
+<!-- ======== 二 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 二、18 章类目体系全览——按解剖系统排列</h2>
+
+<p>ICD-9-CM-3 类目表共分为 18 章，除第一章（操作和介入）、第五章（其他诊断性和治疗性操作）和第十八章（其他诊断性和治疗性操作）外，其余各章<strong>均按解剖系统分类</strong>，按编码大小顺序排列。其中第二至第四章、第六至第十六章按系统或部位分类，第十五章产科操作是唯一按<strong>专科</strong>分类的章节。</p>
+
+<table>
+  <tr><th>章</th><th>编码范围</th><th>章节名称</th><th>分类轴心</th><th>高频场景</th></tr>
+  <tr><td>一</td><td><code>00</code></td><td>操作和介入，NEC</td><td>非手术性</td><td>介入治疗、血管支架</td></tr>
+  <tr><td>二</td><td><code>01-05</code></td><td>神经系统手术</td><td>解剖系统</td><td>颅脑手术、脊髓手术</td></tr>
+  <tr><td>三</td><td><code>06-07</code></td><td>内分泌系统手术</td><td>解剖系统</td><td>甲状腺切除、垂体手术</td></tr>
+  <tr><td>四</td><td><code>08-16</code></td><td>眼部手术</td><td>解剖部位</td><td>白内障摘除、青光眼手术</td></tr>
+  <tr><td>五</td><td><code>17</code></td><td>其他各类诊断性和治疗性操作</td><td>非手术性</td><td>腹腔镜手术、机器人辅助</td></tr>
+  <tr><td>六</td><td><code>18-20</code></td><td>耳部手术</td><td>解剖部位</td><td>中耳重建、鼓膜修补</td></tr>
+  <tr><td>七</td><td><code>21-29</code></td><td>鼻、口、咽手术</td><td>解剖系统</td><td>鼻窦手术、扁桃体切除</td></tr>
+  <tr style="background:var(--accent-bg);"><td>八</td><td><code>30-34</code></td><td>呼吸系统手术 ★</td><td>解剖系统</td><td>肺叶切除、喉切除、胸腔引流</td></tr>
+  <tr style="background:var(--accent-bg);"><td>九</td><td><code>35-39</code></td><td>心血管系统手术 ★</td><td>解剖系统</td><td>瓣膜置换、冠脉搭桥、支架置入</td></tr>
+  <tr><td>十</td><td><code>40-41</code></td><td>造血和淋巴系统手术</td><td>解剖系统</td><td>淋巴结清扫、脾切除</td></tr>
+  <tr style="background:var(--accent-bg);"><td>十一</td><td><code>42-54</code></td><td>消化系统手术 ★</td><td>解剖系统</td><td>胃切除、肠切除、胆囊切除、疝修补</td></tr>
+  <tr style="background:var(--accent-bg);"><td>十二</td><td><code>55-59</code></td><td>泌尿系统手术 ★</td><td>解剖系统</td><td>肾切除、膀胱手术、碎石术</td></tr>
+  <tr><td>十三</td><td><code>60-64</code></td><td>男性生殖器官手术</td><td>解剖部位</td><td>前列腺切除、睾丸手术</td></tr>
+  <tr><td>十四</td><td><code>65-71</code></td><td>女性生殖器官手术</td><td>解剖部位</td><td>子宫切除、卵巢切除</td></tr>
+  <tr><td>十五</td><td><code>72-75</code></td><td>产科操作</td><td><span class="keyword-tag">专科</span></td><td>剖宫产、产钳助产、会阴切开</td></tr>
+  <tr style="background:var(--accent-bg);"><td>十六</td><td><code>76-84</code></td><td>肌肉骨骼系统手术 ★</td><td>解剖系统</td><td>骨折内固定、关节置换、脊柱融合</td></tr>
+  <tr><td>十七</td><td><code>85-86</code></td><td>体被系统手术</td><td>解剖系统</td><td>皮肤切除、皮瓣移植</td></tr>
+  <tr><td>十八</td><td><code>87-99</code></td><td>其他诊断性和治疗性操作</td><td>非手术性</td><td>影像检查、放射治疗、内镜检查</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 记忆技巧：</strong>18 章看似很多，但核心规律是"从头到脚"按解剖顺序排列：神经系统（脑）→ 内分泌（甲状腺）→ 眼 → 耳 → 鼻口咽 → 呼吸 → 心血管 → 消化 → 泌尿 → 生殖 → 骨骼 → 皮肤。标 ★ 的为高频章节（呼吸、心血管、消化、泌尿、骨骼），后续 Day 27-34 将逐一精讲。
+</div>
+
+<h3>2.1 三类特殊章节</h3>
+<p>18 章中，有 3 章不按解剖系统分类，需要特别注意：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>第一章：操作和介入（00）</h4>
+    <p>收录<strong>非手术性</strong>的介入操作，如血管支架置入、经皮血管成形术等。这些操作不属于传统意义上的"手术"，但需要编码。</p>
+  </div>
+  <div class="example-item">
+    <h4>第五章：其他操作（17）</h4>
+    <p>收录<strong>新型技术</strong>操作，如腹腔镜下的腹股沟疝手术、机器人辅助手术、引导下激光间质热治疗等。是技术发展后新增的章节。</p>
+  </div>
+  <div class="example-item">
+    <h4>第十八章：诊断和治疗操作（87-99）</h4>
+    <p>收录<strong>非手术性</strong>的检查和治疗操作，如 X 线检查、CT/MRI、放射治疗、内镜检查等。全部是临床检查与治疗性操作。</p>
+  </div>
+</div>
+
+<!-- ======== 三 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔬</span> 三、四大分类轴心——手术编码的"DNA"</h2>
+
+<p>ICD-9-CM-3 的分类轴心可以归纳为四大类：<strong>部位、术式、入路、疾病性质</strong>。其中"部位+术式"是核心轴心（也叫基本成分），"入路+疾病性质"是修饰成分。理解这四个轴心，就掌握了手术编码的本质。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>解剖部位（核心轴心）——"在哪里做"</h4>
+      <p>部位是手术操作名称的核心成分，不指出部位的情况极为罕见。同一个术式在不同部位，编码完全不同。</p>
+      <p><strong>例：</strong>"切除术"——胃部分切除术 <code>43.89</code> vs 阑尾切除术 <code>47.09</code> vs 肺叶切除术 <code>32.49</code></p>
+      <p><strong>注意：</strong>当部位过于详细、索引中未列出时，采用"放大法"——归入上一级部位。如"左手食指远节"可放大为"手指"。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>手术术式（核心轴心）——"做什么"</h4>
+      <p>术式是手术操作名称的另一个核心成分，比部位还要重要——<strong>没有术式根本无法编码</strong>。不同术式即使部位相同，编码也截然不同。</p>
+      <p><strong>例：</strong>胃的手术——胃切开术 <code>43.0</code> vs 胃部分切除术 <code>43.89</code> vs 胃全部切除术 <code>43.99</code> vs 胃造瘘术 <code>43.19</code></p>
+      <p><strong>常见术式类型：</strong>切除术、切开术、修补术、吻合术、成形术、造瘘术、移植术、置换术、探查术、引流术、抽吸术、 Destruction（破坏术）</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>手术入路（修饰成分）——"怎么进去"</h4>
+      <p>入路在<strong>大多数情况下不影响编码</strong>，但少数手术必须区分入路。当入路与术式不符时，<strong>优先考虑术式</strong>。</p>
+      <p><strong>例：</strong>颈椎融合术——前入路 <code>81.0200x001</code> vs 后入路 <code>81.0300x001</code>——入路不同，编码不同</p>
+      <p><strong>例：</strong>肺叶切除——开放手术 <code>32.49</code> vs 胸腔镜 <code>32.41</code>——入路影响编码</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>疾病性质（修饰成分）——"因为什么病"</h4>
+      <p>疾病性质<strong>通常对手术编码无影响</strong>，但某些情况下必须指出疾病性质才能正确编码。</p>
+      <p><strong>例：</strong>视网膜冷凝术——病损破坏 <code>14.22</code> vs 撕裂修补 <code>14.32</code> vs 脱离修补 <code>14.52</code>——同一部位同一术式，疾病性质不同编码不同</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.1 核心轴心 vs 修饰成分</h3>
+
+<table>
+  <tr><th>维度</th><th>部位 + 术式</th><th>入路 + 疾病性质</th></tr>
+  <tr><td>性质</td><td><strong>核心成分</strong>（基本成分）</td><td><strong>修饰成分</strong>（辅助成分）</td></tr>
+  <tr><td>必要性</td><td>缺一不可——没有就无法编码</td><td>大多数情况不影响，少数必须指出</td></tr>
+  <tr><td>影响范围</td><td>决定编码的大方向</td><td>在同一编码区间内进一步细分</td></tr>
+  <tr><td>示例</td><td>"胃切除术"——部位(胃)+术式(切除)</td><td>"腹腔镜下"——入路；"因溃疡"——疾病性质</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 实战要点：</strong>临床医生常写的"肺癌切除术"是一个<strong>不规范的手术名称</strong>——只说了部位（肺），没说术式（是肺病损切除？肺段切除？肺叶切除？全肺切除？）。编码员必须查阅手术记录，确认实际切除范围和术式后才能编码。这是DRG/DIP时代的高频质控问题。
+</div>
+
+<h3>3.2 "肺癌切除术"的术式细分</h3>
+<p>以"肺癌切除术"为例，不同术式的编码差异巨大，直接影响 DRG 入组和权重：</p>
+
+<table>
+  <tr><th>术式</th><th>开放手术编码</th><th>胸腔镜编码</th><th>切除范围</th></tr>
+  <tr><td>肺病损切除术</td><td><code>32.29</code></td><td><code>32.2003</code></td><td>仅切除肿瘤组织</td></tr>
+  <tr><td>肺节段切除术</td><td><code>32.39</code></td><td><code>32.30</code></td><td>切除肺段</td></tr>
+  <tr><td>肺叶切除术</td><td><code>32.49</code></td><td><code>32.41</code></td><td>切除整个肺叶</td></tr>
+  <tr><td>全肺切除伴纵隔淋巴结清扫</td><td><code>32.59</code></td><td><code>32.50</code></td><td>切除一侧全肺</td></tr>
+</table>
+
+<!-- ======== 四 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔍</span> 四、编码三步法——与 ICD-10 相似但有差异</h2>
+
+<p>ICD-9-CM-3 的编码查找方法与 ICD-10 疾病编码的查找方法<strong>基本相同</strong>，也是三步走。但在主导词选择和核对要点上有显著差异。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>第一步：确定主导词</h4>
+      <p>手术编码的主导词选择与 ICD-10 不同——ICD-10 通常以疾病名称为主导词，而 ICD-9-CM-3 通常以<strong>手术方式</strong>为主导词。</p>
+      <p><strong>三种主导词形式：</strong></p>
+      <table style="margin:8px 0;">
+        <tr><th>形式</th><th>说明</th><th>示例</th></tr>
+        <tr><td>① 基本术式</td><td>以手术方式类型为主导词</td><td>切除术、吻合术、修补术</td></tr>
+        <tr><td>② 部位+术式</td><td>以"部位+术式"全称直接查找</td><td>胆囊切除术、胃切开术</td></tr>
+        <tr><td>③ 人名命名</td><td>以人名或音译名查找</td><td>Davis手术、Barr手术</td></tr>
+      </table>
+      <p><strong>核心规则：</strong>主导词通常位于手术名称的<strong>尾部</strong>。如"食管胃吻合术"→主导词"吻合术"；"胸脓肿抽吸术"→主导词"抽吸术"。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>第二步：查找索引</h4>
+      <p>在字母顺序索引中，按"主导词 → 一级修饰词 → 二级修饰词 → ……"的层级逐级缩窄范围。</p>
+      <pre>主导词：切除术
+  └ 胆囊
+      └ 腹腔镜 → 索引指向 51.23</pre>
+      <p>索引按汉语拼音顺序排列。主导词用黑体字表示，修饰词按层级缩进排列。下一级修饰词只修饰与其距离最近的上一级修饰词。</p>
+      <p><strong>注意：</strong>ICD-9-CM-3 的交叉索引不如 ICD-10 广泛，当一种方法查不到时，需要换一种方法试。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第三步：核对类目表</h4>
+      <p>返回类目表，核对编码是否正确，重点关注：</p>
+      <ul>
+        <li><strong>"包括"注释：</strong>确认该码确实涵盖当前手术</li>
+        <li><strong>"不包括"注释：</strong>是否有相似但应归入其他码的情况</li>
+        <li><strong>"另编码"（Code also）：</strong>是否需要额外编码（如支架置入需另编码血管操作）</li>
+        <li><strong>"省略编码"（Omit code）：</strong>某些步骤是手术的先行步骤，不必单独编码</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h3>4.1 ICD-10 vs ICD-9-CM-3 编码三步法对比</h3>
+
+<table>
+  <tr><th>对比维度</th><th>ICD-10（疾病编码）</th><th>ICD-9-CM-3（手术编码）</th></tr>
+  <tr><td>工具书</td><td>三卷本（卷一类目表+卷二指导+卷三索引）</td><td>两本（类目表+索引）</td></tr>
+  <tr><td>主导词来源</td><td>疾病名称（如"阑尾炎""肺炎"）</td><td>手术方式（如"切除术""吻合术"）</td></tr>
+  <tr><td>主导词位置</td><td>诊断的核心词，位置不定</td><td>通常在手术名称的<strong>尾部</strong></td></tr>
+  <tr><td>编码层级</td><td>类目(3字符)→亚目(4字符)→扩展码</td><td>类目(2位数)→亚目(3位数)→细目(4位数)→扩展码</td></tr>
+  <tr><td>核对重点</td><td>"包括/不包括"注释</td><td>"包括/不包括"+"另编码/省略编码"</td></tr>
+  <tr><td>分类轴心</td><td>病因+解剖部位+临床表现</td><td>部位+术式+入路+疾病性质</td></tr>
+</table>
+
+<h3>4.2 两个重要概念：另编码与省略编码</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>📌 另编码（Code also）</h4>
+    <p>表示在编主码之外，<strong>还应该再编一个编码</strong>，不可漏编。</p>
+    <p><strong>例：</strong>经皮冠状动脉支架置入术（<code>36.06</code>），需要另编码：<br>
+    • <code>00.40</code> 单根血管操作<br>
+    • <code>00.45</code> 置入一根血管支架<br>
+    • <code>88.56</code> 冠状动脉造影</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>📌 省略编码（Omit code）</h4>
+    <p>表示某步骤只是手术的先行步骤，<strong>不必单独编码</strong>。</p>
+    <p><strong>例：</strong>剖腹阑尾切除术——剖腹的目的只是为了切除阑尾，因此<strong>不必编码</strong>腹部剖开术（<code>54.11</code>），只编阑尾切除术（<code>47.09</code>）。</p>
+  </div>
+</div>
+
+<!-- ======== 五 ======== -->
+<hr class="divider">
+<h2><span class="icon">🧹</span> 五、索引的排列规则与主导词选择技巧</h2>
+
+<h3>5.1 索引的排列方法</h3>
+<p>ICD-9-CM-3 的字母顺序索引按<strong>汉语拼音英文字母顺序</strong>排列，排列规则如下：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>主导词排列</h4>
+      <p>主导词用<strong>黑体字</strong>表示，按首字拼音的英文字母顺序排列。如果首字拼音相同，比较第二个字的拼音，以此类推。</p>
+      <p>如果拼音同音，按<strong>四声先后</strong>排列；如果同音同调，按<strong>汉字笔画</strong>由少到多排列；如果同音同调同笔画，则随意排列。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>修饰词排列</h4>
+      <p>主导词下的各级修饰词同样按拼音顺序排列。一级修饰词下有二级、三级修饰词，<strong>下一级只修饰最近的上一级</strong>。</p>
+      <pre>主导词：扫描—C.A.T（计算机轴向X射线断层摄影术）
+    一级修饰词：伴计算机辅助手术
+        二级修饰词：腹
+        二级修饰词：骨
+            三级修饰词：矿物质</pre>
+      <p>"矿物质"修饰的是"骨"，而"骨"修饰的是"C.A.T"——不是修饰"腹"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>人名命名的手术</h4>
+      <p>以人名命名的手术名称放在字母顺序索引的<strong>最前面</strong>。如有交叉索引，编码放在英文条目下。</p>
+      <p><strong>例：</strong>Davis手术 → 可查"Davis手术"，也可查"手术-Davis"，也可查"输尿管切开术"——三种方法都指向 <code>56.2</code>。但并非每个手术都有如此完善的交叉索引。</p>
+    </div>
+  </div>
+</div>
+
+<h3>5.2 主导词选择的实战技巧</h3>
+
+<table>
+  <tr><th>临床手术名称</th><th>主导词</th><th>查找路径</th><th>最终编码</th></tr>
+  <tr>
+    <td>腹腔镜胆囊切除术</td>
+    <td>切除术</td>
+    <td>切除术→胆囊→腹腔镜</td>
+    <td><code>51.23</code></td>
+  </tr>
+  <tr>
+    <td>食管胃吻合术</td>
+    <td>吻合术</td>
+    <td>吻合术→食管→胃</td>
+    <td><code>42.51</code></td>
+  </tr>
+  <tr>
+    <td>经皮肾镜碎石取石术</td>
+    <td>碎石术</td>
+    <td>碎石术→肾→经皮肾镜</td>
+    <td><code>98.01</code></td>
+  </tr>
+  <tr>
+    <td>胃大部分切除术（毕II式）</td>
+    <td>切除术/胃切除术</td>
+    <td>胃切除术→大部分→伴吻合术</td>
+    <td><code>43.7</code></td>
+  </tr>
+  <tr>
+    <td>剖宫产术</td>
+    <td>剖宫产</td>
+    <td>剖宫产→子宫下段横切口</td>
+    <td><code>74.1</code></td>
+  </tr>
+  <tr>
+    <td>Barr手术（后路椎板切除）</td>
+    <td>Barr/手术</td>
+    <td>手术→Barr 或直接查 Barr</td>
+    <td><code>03.09</code></td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>💡 术式优先原则：</strong>手术编码的主导词优先选择"<strong>术式</strong>"（如"切除""吻合""造瘘""探查"），其次是"部位+术式"。当术式不明确时，以"部位+操作性质"为核心词（如"手术，胃"），再在子条目中筛选具体术式。内镜/微创类手术需包含"<strong>入路</strong>"关键词。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 章节定位</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请将以下手术操作归入正确的 ICD-9-CM-3 章节（填写章号和编码范围）：</p>
+    <table>
+      <tr><th>手术名称</th><th>章号</th><th>编码范围</th></tr>
+      <tr><td>① 腹腔镜胆囊切除术</td><td>？</td><td>？</td></tr>
+      <tr><td>② 冠状动脉支架置入术</td><td>？</td><td>？</td></tr>
+      <tr><td>③ 全髋关节置换术</td><td>？</td><td>？</td></tr>
+      <tr><td>④ 剖宫产术</td><td>？</td><td>？</td></tr>
+      <tr><td>⑤ 经皮肾镜碎石术</td><td>？</td><td>？</td></tr>
+      <tr><td>⑥ 脑动脉造影</td><td>？</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>①</strong> 胆囊切除术 → 第十一章消化系统手术 <code>42-54</code>（胆囊手术属 51.x）</p>
+        <p><strong>②</strong> 冠状动脉支架 → 第一章操作和介入 <code>00</code>（非手术性介入操作，36.06 已移至 00 章）</p>
+        <p><strong>③</strong> 全髋关节置换 → 第十六章肌肉骨骼系统手术 <code>76-84</code>（髋关节属 81.x）</p>
+        <p><strong>④</strong> 剖宫产 → 第十五章产科操作 <code>72-75</code>（唯一按专科分类的章节，74.1）</p>
+        <p><strong>⑤</strong> 经皮肾镜碎石 → 第十二章泌尿系统手术 <code>55-59</code>（肾手术属 55.x，碎石术 98.01 另编）</p>
+        <p><strong>⑥</strong> 脑动脉造影 → 第十八章诊断性操作 <code>87-99</code>（造影属诊断性操作，88.41）</p>
+        <p><strong>💡 技巧：</strong>先判断是手术还是非手术操作——非手术操作归第一章(00)或第十八章(87-99)；手术按解剖系统归章。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 主导词选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下手术名称选出<strong>正确的主导词</strong>，并写出索引查找路径：</p>
+    <ol>
+      <li>阑尾切除术</li>
+      <li>食管胃吻合术</li>
+      <li>经尿道前列腺电切术</li>
+      <li>Davis手术（插管输尿管切开术）</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 主导词：<strong>阑尾切除术</strong>（部位+术式全称直接查）→ 索引路径：阑尾切除术 → <code>47.09</code></p>
+        <p><strong>2.</strong> 主导词：<strong>吻合术</strong>（术式优先，位于尾部）→ 索引路径：吻合术 → 食管 → 胃 → <code>42.51</code></p>
+        <p><strong>3.</strong> 主导词：<strong>切除术</strong>（术式优先）→ 索引路径：切除术 → 前列腺 → 经尿道 → <code>60.29</code></p>
+        <p><strong>4.</strong> 主导词：<strong>Davis手术</strong>（人名直接查）→ 也可查"手术-Davis"或"输尿管切开术"→ 三种路径都指向 <code>56.2</code></p>
+        <p><strong>💡 规律：</strong>主导词通常在手术名称的尾部（术式部分）。全名称可直接查的（如"阑尾切除术"）就直接查；不能直接查的，取术式做主导词，再逐级加部位和入路修饰词。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 四要素识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请从以下手术名称中拆解出四大要素（部位、术式、入路、疾病性质）：</p>
+    <table>
+      <tr><th>手术名称</th><th>部位</th><th>术式</th><th>入路</th><th>疾病性质</th></tr>
+      <tr><td>腹腔镜胆囊切除术</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+      <tr><td>经额垂体腺瘤切除术</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+      <tr><td>视网膜脱离冷凝修补术</td><td>？</td><td>？</td><td>？</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>① 腹腔镜胆囊切除术</strong></p>
+        <p>• 部位：胆囊 | 术式：切除术 | 入路：腹腔镜 | 疾病性质：未指定（通常不影响）</p>
+        <p><strong>② 经额垂体腺瘤切除术</strong></p>
+        <p>• 部位：垂体 | 术式：切除术 | 入路：经额 | 疾病性质：腺瘤</p>
+        <p><strong>③ 视网膜脱离冷凝修补术</strong></p>
+        <p>• 部位：视网膜 | 术式：修补术（冷凝） | 入路：未指定 | 疾病性质：脱离</p>
+        <p><strong>💡 分析：</strong>第③题是"疾病性质影响编码"的典型案例——同一部位（视网膜）同一术式（冷凝修补），疾病性质不同（病损破坏 vs 撕裂修补 vs 脱离修补），编码完全不同（<code>14.22</code> / <code>14.32</code> / <code>14.52</code>）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 省略编码与另编码判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下场景中，哪些操作需要编码，哪些应省略，哪些需要另编码：</p>
+    <p><strong>场景A：</strong>患者行"剖腹阑尾切除术"，手术过程中先剖开腹部，再切除阑尾。</p>
+    <p><strong>场景B：</strong>患者行"经皮冠状动脉支架置入术"，术中心脏外科先做了冠状动脉造影确认狭窄部位，再置入药物洗脱支架。</p>
+    <p><strong>场景C：</strong>患者行"胸腔镜肺叶切除术"，术中因需要显露视野，切除了部分肋骨。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 场景A：</strong>剖腹是阑尾切除的先行步骤，<strong>省略编码</strong>。只编 <code>47.09</code>（阑尾切除术），不编 <code>54.11</code>（腹部剖开术）。</p>
+        <p><strong>✅ 场景B：</strong>需要<strong>另编码</strong>。主码 <code>36.06</code>（冠状动脉支架置入），另编码：<code>00.40</code>（单根血管操作）、<code>00.45</code>（置入一根血管支架）、<code>88.56</code>（冠状动脉造影）。造影虽然伴随进行，但它是独立的诊断性操作，不能省略。</p>
+        <p><strong>✅ 场景C：</strong>肋骨切除是肺叶切除的显露步骤，<strong>省略编码</strong>。只编 <code>32.41</code>（胸腔镜肺叶切除术），不编 <code>77.91</code>（肋骨切除术）。索引中"肋骨切除术—与胸部手术有关的—省略编码"有明确提示。</p>
+        <p><strong>💡 核心逻辑：</strong>"省略编码"=该操作是另一个手术的必经步骤，不独立存在；"另编码"=该操作具有独立的诊断或治疗价值，必须分别记录。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 完整编码推导</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者行"腹腔镜下胆囊切除术"，请按完整的编码三步法给出最终编码，并说明每一步做了什么。如果术中发现胆囊与周围组织严重粘连，中转开腹行胆囊切除术，编码应如何变化？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 情况一：腹腔镜胆囊切除术</strong></p>
+        <p><strong>第一步 · 主导词：</strong>"切除术"（术式优先）</p>
+        <p><strong>第二步 · 查索引：</strong>切除术 → 胆囊 → 腹腔镜 → <code>51.23</code></p>
+        <p><strong>第三步 · 核对类目表：</strong>51.23 "腹腔镜胆囊切除术"，"包括"注释确认涵盖此手术，无"不包括"冲突。</p>
+        <p><strong>最终编码：</strong><code>51.23</code>（国临版扩展码 <code>51.2300x001</code>）</p>
+        <p style="margin-top:10px;"><strong>✅ 情况二：中转开腹胆囊切除术</strong></p>
+        <p><strong>第一步 · 主导词：</strong>"切除术"</p>
+        <p><strong>第二步 · 查索引：</strong>切除术 → 胆囊 → （开腹/开放）→ <code>51.22</code></p>
+        <p><strong>第三步 · 核对：</strong>51.22 "胆囊切除术"（开放性），确认无误。</p>
+        <p><strong>最终编码：</strong><code>51.22</code>（国临版 <code>51.2200x001</code>）</p>
+        <p><strong>💡 关键点：</strong>入路变化导致编码改变（51.23→51.22）。虽然手术意图相同，但实际执行方式不同，编码必须反映实际情况。中转开腹不影响主诊断，但手术编码以实际完成的术式为准。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 同名不同义编码辨析</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>以下手术名称在临床书写和 ICD-9-CM-3 分类中"同名但不同义"，请分析编码差异及易错原因：</p>
+    <p><strong>①</strong> "肺叶切除伴淋巴结清扫" vs "肺叶切除术 + 纵隔淋巴结根治性清扫"</p>
+    <p><strong>②</strong> "直肠癌根治术"——临床习惯写法 vs ICD-9-CM-3 应如何编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 肺叶切除伴淋巴结清扫</strong></p>
+        <p>临床写"肺叶切除+淋巴结清扫"，字典库中有"32.6 肺叶切除伴淋巴结清扫"——但 <code>32.6</code> 的正确含义是"胸腔结构的根治性清扫"，并非肺癌手术中的肺叶切除+淋巴结清扫。正确编码应该是：</p>
+        <p>• 肺叶切除术 <code>32.49</code>（开放）/ <code>32.41</code>（胸腔镜）</p>
+        <p>• 纵隔淋巴结清扫 <code>40.59</code>（另编码）</p>
+        <p><strong>易错原因：</strong>编码员见字典库名称与临床书写一致，未查书就直接使用，错误率高达 12.17%。</p>
+        <p style="margin-top:10px;"><strong>✅ ② 直肠癌根治术</strong></p>
+        <p>"直肠癌根治术"是临床习惯写法，但 ICD-9-CM-3 中没有"根治术"这个术式——必须根据手术记录拆解为具体术式：</p>
+        <p>• 直肠前切除术（Dixon）→ <code>48.63</code></p>
+        <p>• 腹会阴联合切除术（Miles）→ <code>48.50</code></p>
+        <p>• 直肠切除术（Hartmann）→ <code>48.62</code></p>
+        <p><strong>易错原因：</strong>编码员将"直肠癌根治术"笼统编到 <code>48.69</code>（其他直肠切除手术），错误率 15.36%。必须查阅手术记录确定具体术式。</p>
+        <p><strong>💡 核心教训：</strong>临床书写名称 ≠ ICD-9-CM-3 分类名称。不能因为"字面相同"就直接使用，必须按三步法核实编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 七、重难点解析：临床书写与编码分类的"同名不同义"陷阱</h2>
+
+<p>在 ICD-9-CM-3 编码实践中，最高频的错误来源不是"查不到编码"，而是"<strong>同名不同义</strong>"——临床医生写的手术名称与 ICD-9-CM-3 分类条目字面相同，但内涵不同。编码员看到字典库名称和临床书写一致，就放松警惕直接选用，导致系统性错误。</p>
+
+<h3>高频同名不同义陷阱 TOP 5</h3>
+
+<table>
+  <tr><th>临床书写</th><th>易错编码</th><th>正确编码</th><th>差异分析</th></tr>
+  <tr>
+    <td>肺叶切除+淋巴结清扫</td>
+    <td><code>32.6</code>（胸腔结构根治性清扫）</td>
+    <td><code>32.49</code>+<code>40.59</code></td>
+    <td>32.6 含义是"胸腔根治性清扫"而非肺癌手术</td>
+  </tr>
+  <tr>
+    <td>直肠癌根治术</td>
+    <td><code>48.69</code>（其他直肠切除）</td>
+    <td><code>48.63</code>/<code>48.50</code>/<code>48.62</code></td>
+    <td>"根治术"不是 ICD-9-CM-3 术式，需按实际术式编</td>
+  </tr>
+  <tr>
+    <td>回肠代膀胱术</td>
+    <td><code>57.87</code>（膀胱重建-回肠代膀胱）</td>
+    <td><code>56.51</code>（回肠造口术-尿路分流）</td>
+    <td>57.87 是膀胱重建，56.51 是尿流改道，术式目的不同</td>
+  </tr>
+  <tr>
+    <td>输卵管切除术（异位妊娠）</td>
+    <td><code>66.4</code>（单侧输卵管切除术）</td>
+    <td><code>66.01</code>（输卵管妊娠去除）</td>
+    <td>异位妊娠手术是去除妊娠组织，非切除输卵管</td>
+  </tr>
+  <tr>
+    <td>肝动脉栓塞术（化疗）</td>
+    <td><code>39.79</code>（肝动脉物理栓塞）</td>
+    <td><code>99.25</code>（化疗）+<code>88.47</code>（造影）</td>
+    <td>化疗栓塞以化疗为主要目的，需编化疗码</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 错误根源分析：</strong>同名不同义错误的根本原因有三个——①编码员过度依赖字典库匹配，未按三步法核实；②对手术操作的实际过程理解不足，只看名称不看手术记录；③字典库本身的名称翻译不够精准，与临床用语重合度高。据统计，某院核查 1070 份病案，此类错误高达 173 例（16.17%）。
+</div>
+
+<h3>防范策略：编码员三必看原则</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>看手术记录</h4>
+      <p>不能只看病案首页的手术名称——必须阅读手术记录的详细描述，确认实际切除范围、吻合方式、入路选择。临床名称可能是笼统的"根治术"，但手术记录会写明具体术式。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>看类目表注释</h4>
+      <p>即使字典库匹配成功，也要回到类目表核对"包括""不包括"注释。确认该编码的内涵确实涵盖当前手术，排除同名不同义的陷阱。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>看另编码提示</h4>
+      <p>核对类目表时注意"另编码"（Code also）提示——是否有伴随操作需要额外编码。漏编另编码是 DRG 歧义病例（QY）的重要成因。</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>两大部分结构：</strong>类目表 + 字母顺序索引（没有独立的指导手册卷）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>18章按解剖系统排列：</strong>除第1、5、18章外，其余按解剖系统/部位分类</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>四大分类轴心：</strong>部位+术式（核心）→ 入路+疾病性质（修饰）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码层级：</strong>类目(2位数)→亚目(3位数)→细目(4位数)→国临版扩展</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三步法：</strong>确定主导词→查索引→核对类目表（含另编码/省略编码）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>主导词在尾部：</strong>术式优先，通常位于手术名称末尾</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>省略编码 vs 另编码：</strong>先行步骤省略，独立操作另编</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>同名不同义陷阱：</strong>临床名称≠分类名称，必须查手术记录核实</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 27 主题：手术编码四要素拆解法（部位+术式+入路+疾病性质）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>当手术记录中只写了"肺癌切除术"而没有写明具体术式时，编码员应该如何处理？</li>
+    <li>同一个部位的同一种术式，什么情况下入路会影响编码？什么情况下不影响？</li>
+    <li>疾病性质通常不影响手术编码——你能举出几个"必须区分疾病性质"的例外情况吗？</li>
+    <li>复合手术（如"切除+吻合"同时进行）如何拆解为多个编码？</li>
+    <li>手术伴随的其他情况（如粘连松解、探查）什么情况下需要另编码？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 26 / 60 · 第三阶段：ICD-9-CM-3 手术操作编码</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
