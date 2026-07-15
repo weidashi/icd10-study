@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 12（2026年6月30日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 12 · 2026年6月30日</div>
+  <h1>肿瘤编码基础（C章 + D00-D48）</h1>
+  <p class="subtitle">良恶性区分、动态编码 /0~/9、肿瘤编码三部曲、原发与继发</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 12 / 60 天（20%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤章节结构：C00-C97 / D00-D09 / D10-D36 / D37-D48 四大组</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>动态编码 /0 /1 /2 /3 /6 的含义及对应的部位编码字母</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤编码三部曲：先形态学→后部位→核对卷一</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>原发恶性肿瘤（C00-C75）与继发恶性肿瘤（C77-C79）的区分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>形态学编码 M8000-M9989 的结构与组织学编码含义</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>动态未定（/1）与性质未特指的本质区别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>形态学动态编码与部位编码的一一对应关系</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>ICD-O（国际肿瘤分类）与 ICD-10 肿瘤编码的关系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>C97 复合恶性肿瘤的特殊编码规则</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>肿瘤编码是 ICD-10 中最特殊的章节——其他章节只编一个部位码，肿瘤编码必须同时编"部位编码 + 形态学编码"两个码。今天务必把动态编码 /0~/6 的含义刻进脑子，这是整个肿瘤编码的基石。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、肿瘤章节结构：C章与D00-D48 全景</h2>
+
+<h3>1.1 肿瘤在 ICD-10 中的地位</h3>
+<p>肿瘤分类于 ICD-10 的第二章（C00-D48），属于<span class="hl"><strong>一般优先分类章</strong></span>——也就是说，无论患者同时还有多少其他疾病，只要本次住院涉及肿瘤，肿瘤编码就必须优先处理。肿瘤章节的编码范围横跨两个字母：C 和 D，这与其他章节只用一个字母截然不同。</p>
+
+<div class="card tip">
+  <strong>为什么肿瘤要分 C 和 D 两个字母？</strong><br>
+  因为肿瘤按"动态"（behavior，即良恶性）分为四大类：恶性肿瘤用 C，良性/原位/未定用 D。C 和 D 的分界线就是<strong>恶性与否</strong>。
+</div>
+
+<h3>1.2 四大组结构详解</h3>
+<p>肿瘤部位编码有<strong>两个分类轴心</strong>：第一个轴心是"动态"（良恶性），第二个轴心是"解剖部位"。按动态分组如下：</p>
+
+<table>
+  <tr><th>编码范围</th><th>组名</th><th>动态编码</th><th>说明</th></tr>
+  <tr><td><code>C00-C75</code></td><td>特指部位原发恶性肿瘤</td><td>/3</td><td>各解剖部位的原发性恶性肿瘤，不含淋巴造血组织</td></tr>
+  <tr><td><code>C76-C80</code></td><td>不明确/继发/部位未特指的恶性</td><td>/3 或 /6</td><td>C76 部位不明确，C77-C79 继发（转移），C80 未特指</td></tr>
+  <tr><td><code>C81-C96</code></td><td>淋巴造血组织恶性肿瘤</td><td>/3</td><td>淋巴瘤、白血病、多发性骨髓瘤等</td></tr>
+  <tr><td><code>C97</code></td><td>独立多个部位原发恶性肿瘤</td><td>/3</td><td>复合癌专用编码</td></tr>
+  <tr><td><code>D00-D09</code></td><td>原位肿瘤</td><td>/2</td><td>原位癌（上皮内、非浸润性、非侵袭性）</td></tr>
+  <tr><td><code>D10-D36</code></td><td>良性肿瘤</td><td>/0</td><td>脂肪瘤、纤维瘤、子宫肌瘤等</td></tr>
+  <tr><td><code>D37-D48</code></td><td>动态未定或未知的肿瘤</td><td>/1</td><td>交界恶性/做了病理但良恶不定，或未做病理</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 记忆口诀：</strong>C = 恶性（Cancer），D = 非恶性（D开头都"不恶"）。C76 以后是"找不到原发灶"或"转移来的"，C97 是"多个原发灶同时存在"。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🔬</span> 二、动态编码 /0~/9：肿瘤编码的灵魂</h2>
+
+<h3>2.1 什么是动态编码</h3>
+<p>动态编码（Behavior Code）是形态学编码斜线后的那一位数字，用来表示肿瘤的<strong>生物学行为</strong>——即肿瘤是良性、恶性、原位还是转移。它不仅决定了形态学编码的最后一个数字，还直接决定了部位编码落在 C 还是 D。</p>
+
+<p>一个完整的肿瘤形态学编码格式为：<code>M + 4位组织学编码 + / + 1位动态编码</code>。例如 <code>M8140/3</code> 中，M8140 表示腺癌的组织学类型，/3 表示恶性、原发部位。</p>
+
+<h3>2.2 六种动态编码详解</h3>
+
+<table>
+  <tr><th>动态编码</th><th>含义</th><th>对应部位编码范围</th><th>典型示例</th></tr>
+  <tr>
+    <td><code>/0</code></td>
+    <td><strong>良性</strong>（Benign）</td>
+    <td><code>D10-D36</code></td>
+    <td>脂肪瘤 M8850/0、子宫平滑肌瘤 M8890/0</td>
+  </tr>
+  <tr>
+    <td><code>/1</code></td>
+    <td><strong>良性或恶性未肯定</strong>（交界恶性/潜在低度恶性）</td>
+    <td><code>D37-D48</code></td>
+    <td>交界性浆液性囊腺瘤 M8442/1</td>
+  </tr>
+  <tr>
+    <td><code>/2</code></td>
+    <td><strong>原位癌</strong>（上皮内/非浸润性/非侵袭性）</td>
+    <td><code>D00-D09</code></td>
+    <td>宫颈原位鳞癌 M8070/2、乳腺导管内癌 M8500/2</td>
+  </tr>
+  <tr>
+    <td><code>/3</code></td>
+    <td><strong>恶性，原发部位</strong>（Malignant, primary）</td>
+    <td><code>C00-C76, C80-C97</code></td>
+    <td>肺鳞癌 M8070/3、胃腺癌 M8140/3</td>
+  </tr>
+  <tr>
+    <td><code>/6</code></td>
+    <td><strong>恶性，转移部位</strong>（Malignant, secondary/metastatic）</td>
+    <td><code>C77-C79</code></td>
+    <td>骨转移癌 M8070/6（原发肺鳞癌的骨转移）</td>
+  </tr>
+  <tr>
+    <td><code>/9</code></td>
+    <td>恶性，原发或转移未定</td>
+    <td>—</td>
+    <td>ICD-10 中不使用（所有恶性肿瘤均假定为 /3 或 /6）</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ /1 的双重含义——最容易出错的地方：</strong><br>
+  动态未定（/1）和性质未特指在 ICD-10 中<strong>合二为一</strong>，部位编码都是 D37-D48，但性质完全不同：<br>
+  ① <strong>动态未定</strong>：做了病理检查，肿瘤处于交界恶性（如卵巢交界性肿瘤）<br>
+  ② <strong>性质未特指</strong>：没有做病理检查，良恶性都不明确<br>
+  两者可通过形态学编码区分：前者有具体的 M 编码（如 M8442/1），后者用 M8000/1。
+</div>
+
+<h3>2.3 动态编码与部位编码的对应关系</h3>
+<p>动态编码不是孤立的——它必须与部位编码严格对应。编错一个，另一个必然跟着错。</p>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">/0 良性</div>
+    →
+    <div class="flow-box">D10-D36</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">/1 未定</div>
+    →
+    <div class="flow-box">D37-D48</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">/2 原位</div>
+    →
+    <div class="flow-box">D00-D09</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">/3 恶性原发</div>
+    →
+    <div class="flow-box">C00-C76, C80-C97</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">/6 恶性转移</div>
+    →
+    <div class="flow-box warn-step">C77-C79</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔍</span> 三、肿瘤编码三部曲：先形态学后部位</h2>
+
+<p>肿瘤的编码方法<strong>不同于一般疾病</strong>。一般疾病编码三部曲是"主导词→查索引→核对卷一"，而肿瘤编码需要先查形态学编码，再查部位编码——相当于做两轮"三部曲"。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>确定形态学主导词，查第三卷形态学编码</h4>
+      <p>从病理报告中提取组织学类型作为主导词（如"腺癌""鳞癌""淋巴瘤"），在第三卷第一部分（形态学索引）中查找。</p>
+      <p>例：病理报告"鳞状细胞癌" → 第三卷查"癌—鳞状（细胞）（M8070/3）" → 另见肿瘤，恶性</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>核对第一卷形态学编码</h4>
+      <p>回到第一卷核对 M8070/3 鳞状细胞癌 NOS 是否正确。注意：NOS（Not Otherwise Specified）表示"未特指"，如果病理有更具体的分型（如角化型），应使用更特异的编码。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>根据动态编码，在第三卷肿瘤表中查部位编码</h4>
+      <p>形态学编码的动态码（如 /3）决定了在肿瘤表中查哪一栏（恶性原发栏）。在第三卷肿瘤表中按"肿瘤→解剖部位→动态"查找部位编码。</p>
+      <p>例：肿瘤→肺→上叶（恶性，原发）→ C34.1</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>核对第一卷部位编码</h4>
+      <p>回到第一卷核对 C34.1 的"包括"和"不包括"注释，确认编码准确。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.1 完整编码示例：肺上叶腺癌</h3>
+<pre>病理诊断：肺上叶腺癌
+
+第一步 · 形态学编码查找：
+  主导词：腺癌
+  第三卷 → 腺癌（M8140/3）— 另见 肿瘤，恶性
+  核对卷一 → M8140/3 腺癌 NOS ✓
+
+第二步 · 部位编码查找：
+  主导词：肿瘤，肿瘤性
+  第三卷肿瘤表 → 肿瘤 → 肺 → 上叶（恶性，原发）→ C34.1
+  核对卷一 → C34.1 上叶，支气管或肺的恶性肿瘤 ✓
+
+最终编码：
+  部位编码：C34.1（肺上叶恶性肿瘤）
+  形态学编码：M8140/3（腺癌）</pre>
+
+<div class="card tip">
+  <strong>💡 关键提醒：</strong>肿瘤患者至少有<strong>两个编码</strong>——部位编码和形态学编码，缺一不可。如果肿瘤有转移，还需要编码转移部位的肿瘤。如果肿瘤具有功能活性（如分泌激素），还需附加第四章内分泌编码。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">⚔️</span> 四、原发 vs 继发：恶性肿瘤的核心分界</h2>
+
+<h3>4.1 为什么要区分原发和继发</h3>
+<p>恶性肿瘤最关键的信息之一是：这个肿瘤是"长在这里的"（原发），还是"从别处转移来的"（继发/转移）。两者的编码范围完全不同——原发用 C00-C76，继发用 C77-C79。区分错误会直接影响统计、治疗决策和医保支付。</p>
+
+<table>
+  <tr><th>特征</th><th>原发恶性肿瘤</th><th>继发（转移）恶性肿瘤</th></tr>
+  <tr><td>部位编码</td><td><code>C00-C76</code>（特指部位）</td><td><code>C77-C79</code>（继发部位）</td></tr>
+  <tr><td>形态学动态码</td><td>/3</td><td>/6</td></tr>
+  <tr><td>含义</td><td>肿瘤的原发部位</td><td>肿瘤转移到的部位</td></tr>
+  <tr><td>C77</td><td colspan="2">淋巴结转移（继发）</td></tr>
+  <tr><td>C78</td><td colspan="2">呼吸和消化器官转移（继发）</td></tr>
+  <tr><td>C79</td><td colspan="2">其他部位转移（继发，含骨 C79.5、脑 C79.3 等）</td></tr>
+</table>
+
+<h3>4.2 转移癌的编码规则</h3>
+<p>当恶性肿瘤发生转移时，<strong>继发肿瘤保持与原发肿瘤相同的组织形态学</strong>，但动态编码从 /3 变为 /6。这意味着同一个患者可能需要多个编码。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例1：肺癌骨转移</h4>
+    <p>原发：C34.1 肺上叶恶性肿瘤</p>
+    <p>形态学：M8070/3 鳞状细胞癌（原发）</p>
+    <p>继发：C79.5 骨继发恶性肿瘤</p>
+    <p>形态学：M8070/6 鳞状细胞癌（转移性）</p>
+  </div>
+  <div class="example-item">
+    <h4>例2：结肠癌肝转移</h4>
+    <p>原发：C18.9 结肠恶性肿瘤</p>
+    <p>形态学：M8140/3 腺癌（原发）</p>
+    <p>继发：C78.7 肝继发恶性肿瘤</p>
+    <p>形态学：M8140/6 腺癌（转移性）</p>
+  </div>
+</div>
+
+<h3>4.3 原发灶未知的处理</h3>
+<p>临床上经常遇到"发现转移灶但找不到原发灶"的情况。此时编码规则为：</p>
+<ul>
+  <li>只编继发肿瘤部位编码（C77-C79），不编假定的原发部位</li>
+  <li>形态学编 M8000/6（恶性肿瘤，转移性，NOS）</li>
+  <li>如果后续确诊了原发灶，必须<strong>补充原发部位编码</strong>并更新形态学编码</li>
+</ul>
+
+<div class="card warn">
+  <strong>⚠️ 易错点：</strong>不要因为"可能是从肺转移来的"就编 C34.x 的原发码。没有病理证实的原发灶，只能编继发码 + M8000/6。编码必须基于客观证据，不能靠猜。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🧩</span> 五、形态学编码 M 编码详解</h2>
+
+<h3>5.1 M 编码的结构</h3>
+<p>形态学编码（Morphology Code）用来表示肿瘤细胞的<strong>结构和形态</strong>，由"M + 4位组织学编码 + / + 1位动态编码"构成。组织学编码代表肿瘤的组织来源，范围从 M8000 到 M9989。</p>
+
+<pre>M 编码结构拆解：
+
+M 8140 / 3
+  │  │    │
+  │  │    └── 动态编码：/3 = 恶性，原发部位
+  │  └────── 组织学编码：8140 = 腺癌
+  └───────── 标识符：M = 形态学编码</pre>
+
+<h3>5.2 常见组织学编码速查</h3>
+
+<table>
+  <tr><th>组织学编码</th><th>名称</th><th>常见动态码</th><th>说明</th></tr>
+  <tr><td><code>M8000</code></td><td>恶性肿瘤 NOS</td><td>/3 或 /6</td><td>未特指类型的恶性肿瘤，编码员应尽量避免使用</td></tr>
+  <tr><td><code>M8010</code></td><td>癌 NOS</td><td>/3</td><td>上皮性恶性肿瘤，未特指</td></tr>
+  <tr><td><code>M8070</code></td><td>鳞状细胞癌</td><td>/3 或 /2</td><td>鳞癌，可原位（/2）或浸润（/3）</td></tr>
+  <tr><td><code>M8140</code></td><td>腺癌</td><td>/3 或 /2</td><td>腺上皮来源的恶性肿瘤</td></tr>
+  <tr><td><code>M8550</code></td><td>腺泡细胞癌</td><td>/3</td><td>腺泡组织来源</td></tr>
+  <tr><td><code>M8560</code></td><td>腺鳞癌</td><td>/3</td><td>同时含腺癌和鳞癌成分</td></tr>
+  <tr><td><code>M8800</code></td><td>肉瘤 NOS</td><td>/3</td><td>间叶组织来源的恶性肿瘤</td></tr>
+  <tr><td><code>M8850</code></td><td>脂肪瘤/脂肪肉瘤</td><td>/0 或 /3</td><td>/0 良性脂肪瘤，/3 脂肪肉瘤</td></tr>
+  <tr><td><code>M8890</code></td><td>平滑肌瘤/平滑肌肉瘤</td><td>/0 或 /3</td><td>/0 子宫肌瘤，/3 平滑肌肉瘤</td></tr>
+  <tr><td><code>M9540</code></td><td>神经鞘瘤</td><td>/0</td><td>听神经瘤等良性神经鞘肿瘤</td></tr>
+  <tr><td><code>M8500</code></td><td>浸润性导管癌</td><td>/3 或 /2</td><td>乳腺癌最常见类型</td></tr>
+  <tr><td><code>M9590</code></td><td>淋巴瘤 NOS</td><td>/3</td><td>归入 C81-C96 淋巴造血系统</td></tr>
+</table>
+
+<h3>5.3 M 编码的查找路径</h3>
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>直接从第一卷类目表中找 M 编码 → M 编码不在第一卷正文，只在第三卷索引中查找</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>第三卷形态学索引中查病理名称 → 得到 M 编码 → 回第一卷核对（第一卷有 M 编码附录表）</p>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>💡 编码原则：</strong>能编具体的就不编 NOS。如果病理报告写了"中分化腺癌"，就应该编 M8140/3（腺癌），而不是 M8000/3（恶性肿瘤 NOS）。NOS 是"兜底"编码，只有在信息不足时才使用。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点解析：动态未定（/1）vs 性质未特指——D37-D48 的陷阱</h2>
+
+<p>在 D37-D48 这一组"动态未定或动态未知的肿瘤"中，隐藏着编码员最容易踩的坑——<strong>动态未定</strong>和<strong>性质未特指</strong>虽然都编到 D37-D48，但含义天差地别。</p>
+
+<h3>两者的本质区别</h3>
+
+<table>
+  <tr><th>对比维度</th><th>动态未定（Borderline）</th><th>性质未特指（Unspecified）</th></tr>
+  <tr><td>是否做病理</td><td>✅ 做了病理检查</td><td>❌ 没做病理检查</td></tr>
+  <tr><td>病理结论</td><td>交界恶性（如卵巢交界性肿瘤）</td><td>良恶性都不明确</td></tr>
+  <tr><td>形态学编码</td><td>有具体的 M 编码（如 M8442/1）</td><td>M8000/1（恶性肿瘤 NOS，动态未定）</td></tr>
+  <tr><td>临床意义</td><td>肿瘤有潜在低度恶性可能</td><td>信息不足，需进一步检查</td></tr>
+  <tr><td>编码处理</td><td>按病理结果编 D37-D48 + 具体 M 码</td><td>编 D37-D48 + M8000/1</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 为什么这个区别很重要？</strong><br>
+  ① <strong>统计层面</strong>：动态未定肿瘤需要按交界瘤登记上报；性质未特指可能只是暂时的——后续确诊后需修改编码。<br>
+  ② <strong>医保层面</strong>：DRG/DIP 入组时，动态未定（/1）和恶性（/3）的权重不同，强行将 /1 编为 /3 会被判定为"高套编码"。<br>
+  ③ <strong>临床层面</strong>：动态未定肿瘤有复发转移风险，需要密切随访；性质未特指则需尽快明确诊断。
+</div>
+
+<h3>典型案例</h3>
+<div class="example-grid">
+  <div class="example-item">
+    <h4>动态未定案例</h4>
+    <p>病理：卵巢交界性浆液性囊腺瘤</p>
+    <p>部位编码：D39.1（卵巢动态未定肿瘤）</p>
+    <p>形态学：M8442/1（交界性浆液性囊腺瘤）</p>
+    <p>含义：做了病理，明确为交界恶性</p>
+  </div>
+  <div class="example-item">
+    <h4>性质未特指案例</h4>
+    <p>临床：肺占位，未行穿刺，良恶性不明</p>
+    <p>部位编码：D38.1（肺动态未定肿瘤）</p>
+    <p>形态学：M8000/1（肿瘤 NOS，动态未定）</p>
+    <p>含义：没做病理，良恶性都不明确</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 动态编码判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下肿瘤诊断选择正确的动态编码（/0 /1 /2 /3 /6）：</p>
+    <ol>
+      <li>子宫平滑肌瘤</li>
+      <li>宫颈原位鳞状细胞癌</li>
+      <li>右肺上叶鳞状细胞癌（原发）</li>
+      <li>乳腺癌骨转移</li>
+      <li>卵巢交界性黏液性囊腺瘤</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 子宫平滑肌瘤 → <code>M8890/0</code>（良性，/0）→ 部位 D25.x</p>
+        <p><strong>2.</strong> 宫颈原位鳞癌 → <code>M8070/2</code>（原位癌，/2）→ 部位 D06.x</p>
+        <p><strong>3.</strong> 肺上叶鳞癌（原发）→ <code>M8070/3</code>（恶性原发，/3）→ 部位 C34.1</p>
+        <p><strong>4.</strong> 乳腺癌骨转移 → 原发 <code>M8500/3</code>（乳腺）+ 继发 <code>M8500/6</code>（骨）→ 部位 C79.5</p>
+        <p><strong>5.</strong> 卵巢交界性黏液性囊腺瘤 → <code>M8472/1</code>（动态未定，/1）→ 部位 D39.1</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 部位编码范围判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下肿瘤应归入 C00-C75、C77-C79、D00-D09、D10-D36 还是 D37-D48：</p>
+    <table>
+      <tr><th>诊断</th><th>形态学编码</th><th>应归入范围</th></tr>
+      <tr><td>胃腺癌</td><td>M8140/3</td><td>？</td></tr>
+      <tr><td>结肠癌肝转移</td><td>M8140/6</td><td>？</td></tr>
+      <tr><td>食管原位鳞癌</td><td>M8070/2</td><td>？</td></tr>
+      <tr><td>脂肪瘤</td><td>M8850/0</td><td>？</td></tr>
+      <tr><td>腹膜后肿瘤（未做病理）</td><td>M8000/1</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 胃腺癌 M8140/3 → /3 恶性原发 → <code>C00-C75</code>（具体为 C16.x）</p>
+        <p><strong>2.</strong> 结肠癌肝转移 M8140/6 → /6 恶性转移 → <code>C77-C79</code>（肝继发 C78.7）</p>
+        <p><strong>3.</strong> 食管原位鳞癌 M8070/2 → /2 原位 → <code>D00-D09</code>（D00.1）</p>
+        <p><strong>4.</strong> 脂肪瘤 M8850/0 → /0 良性 → <code>D10-D36</code>（D17.x）</p>
+        <p><strong>5.</strong> 腹膜后肿瘤未做病理 M8000/1 → /1 未定 → <code>D37-D48</code>（D48.3）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 完整编码推导</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，58岁，因咳嗽就诊。CT发现右肺上叶占位，穿刺活检病理报告：鳞状细胞癌。请给出完整的肿瘤编码（部位编码 + 形态学编码），并写出查找步骤。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 形态学编码查找：</strong></p>
+        <p>主导词：癌 → 鳞状（细胞）→ 第三卷索引给出 M8070/3 → 另见 肿瘤，恶性</p>
+        <p>核对卷一：M8070/3 鳞状细胞癌 NOS ✓</p>
+        <p><strong>✅ 第二步 · 部位编码查找：</strong></p>
+        <p>主导词：肿瘤，肿瘤性 → 肺 → 上叶 → 恶性原发 → C34.1</p>
+        <p>核对卷一：C34.1 上叶，支气管或肺的恶性肿瘤 ✓</p>
+        <p><strong>✅ 最终编码：</strong></p>
+        <p>部位编码：<code>C34.1</code>（肺上叶恶性肿瘤）</p>
+        <p>形态学编码：<code>M8070/3</code>（鳞状细胞癌）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 转移癌多编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女性，52岁，确诊右乳浸润性导管癌 6 月余，本次因腰背疼痛入院。PET-CT 提示：胸椎、腰椎多发骨转移。请给出本次住院需要的全部肿瘤编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 分析：</strong>患者有原发灶（乳腺）和转移灶（骨），需要分别编码。</p>
+        <p><strong>原发肿瘤：</strong></p>
+        <p>部位编码：<code>C50.9</code>（乳房恶性肿瘤，未特指部位）或 C50.4（外上象限等具体部位）</p>
+        <p>形态学编码：<code>M8500/3</code>（浸润性导管癌）</p>
+        <p><strong>继发肿瘤：</strong></p>
+        <p>部位编码：<code>C79.5</code>（骨和骨髓继发恶性肿瘤）</p>
+        <p>形态学编码：<code>M8500/6</code>（浸润性导管癌，转移性）</p>
+        <p><strong>💡 要点：</strong>转移癌的形态学组织学编码不变（M8500），但动态编码从 /3 变为 /6。部位编码从 C50 变为 C79.5。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 动态未定 vs 性质未特指</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>以下两个病例都编到了 D37-D48，但性质完全不同。请说明区别，并给出各自的完整编码。</p>
+    <p><strong>病例A：</strong>患者女性，42岁，卵巢肿瘤切除术，病理报告："卵巢交界性浆液性囊腺瘤"。</p>
+    <p><strong>病例B：</strong>患者男性，65岁，体检发现肺占位，未行穿刺活检，临床印象"肺占位性质待查"。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 病例A（动态未定）：</strong></p>
+        <p>做了病理，确诊为交界恶性（潜在低度恶性）。</p>
+        <p>部位编码：<code>D39.1</code>（卵巢动态未定肿瘤）</p>
+        <p>形态学编码：<code>M8442/1</code>（交界性浆液性囊腺瘤）</p>
+        <p><strong>✅ 病例B（性质未特指）：</strong></p>
+        <p>未做病理，良恶性都不明确。</p>
+        <p>部位编码：<code>D38.1</code>（肺动态未定肿瘤）</p>
+        <p>形态学编码：<code>M8000/1</code>（肿瘤 NOS，动态未定）</p>
+        <p><strong>💡 核心区别：</strong>病例A有具体组织学编码（M8442），病例B只有 NOS（M8000）。后续确诊后，病例B需要修改编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 原发灶未知</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，70岁，因头痛呕吐入院。头颅 MRI 发现颅内多发占位，PET-CT 全身扫描未发现原发灶。行脑活检病理报告："转移性腺癌"。请给出编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 分析：</strong>病理明确为转移性腺癌，但原发灶未知。只能编继发部位编码 + 转移性形态学编码。</p>
+        <p>部位编码：<code>C79.3</code>（脑和脑膜继发恶性肿瘤）</p>
+        <p>形态学编码：<code>M8140/6</code>（腺癌，转移性）</p>
+        <p><strong>⚠️ 注意：</strong>不能因为"腺癌常见于肺/胃肠"就编 C34 或 C16 的原发码。编码必须基于客观证据——没有找到原发灶，就不编原发码。</p>
+        <p><strong>💡 后续处理：</strong>如果后续检查发现了原发灶（如支气管镜确诊肺腺癌），需要补充原发编码 C34.x + M8140/3。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>肿瘤章节四大组：</strong>C00-C97 恶性、D00-D09 原位、D10-D36 良性、D37-D48 未定</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>动态编码六种：</strong>/0 良性、/1 未定、/2 原位、/3 恶性原发、/6 恶性转移、/9 不用</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>动态码与部位码对应：</strong>/0→D10-D36、/1→D37-D48、/2→D00-D09、/3→C00-C76、/6→C77-C79</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肿瘤编码三部曲：</strong>先查形态学编码→再查部位编码→分别核对卷一</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肿瘤至少两个码：</strong>部位编码 + 形态学编码，缺一不可</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>转移癌规则：</strong>组织学编码不变，动态码 /3→/6，部位码 C00-C76→C77-C79</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>动态未定 vs 性质未特指：</strong>前者做了病理（交界恶性），后者没做病理（信息不足）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>原发灶未知：</strong>只编继发码 C77-C79 + M8000/6，不猜原发部位</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 13 主题：肿瘤编码进阶——放化疗编码 Z51、肿瘤形态学深入</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>患者术后入院化疗，主诊断该编 C 码还是 Z51？什么情况下用 Z51 做主诊断？</li>
+    <li>Z51.0（放疗）和 Z51.1（化疗）怎么区分？手术后放化疗用哪个亚目？</li>
+    <li>肿瘤患者治疗后随诊检查怎么编码？Z08 各亚目的含义是什么？</li>
+    <li>恶性肿瘤个人史 Z85 和现患肿瘤 C 码有什么区别？什么时机切换？</li>
+    <li>复合癌 C97 的使用条件是什么？什么时候 C97 做主诊断？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 12 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>

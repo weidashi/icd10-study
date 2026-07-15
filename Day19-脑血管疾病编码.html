@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 19（2026年7月7日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 19 · 2026年7月7日</div>
+  <h1>🧠 I章进阶：脑血管疾病编码</h1>
+  <p class="subtitle">今日主题：脑梗死、脑出血、TIA —— I60-I69 与 G45 的编码迷宫</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:31.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 19 / 60 天（31.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>脑梗死 I63 双轴心分类（责任血管 + 病因：血栓/栓塞）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>脑出血 I61 按部位编码（基底节/丘脑/脑干/小脑/脑叶）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>蛛网膜下腔出血 I60 按责任血管编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>创伤性 vs 非创伤性脑出血的区分（S06 vs I60-I62）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>TIA 编码于 G45（非 I 章），与脑梗死的鉴别</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>脑血管病后遗症 I69 的使用条件和编码顺序</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>入脑前动脉闭塞 I65 / 脑内动脉闭塞 I66（未造成脑梗死时）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>后循环缺血的编码决策（TIA vs 脑梗死 vs 椎基底动脉综合征）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>I67 其他脑血管病（Moyamoya病、脑血管淀粉样变性等）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>I64 未特指脑卒中的使用场景与避免策略</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>脑血管疾病编码是 I 章中最复杂的部分，难点在于<strong>分类轴心多</strong>（部位、血管、病因、时间）且<strong>跨章交叉</strong>（TIA 在 G 章、创伤性在 S 章）。今天的核心是<strong>脑梗死 I63 的双轴心</strong>和<strong>创伤性 vs 非创伤性</strong>的判断——这是考试和实际工作中最容易出错的地方。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、脑血管疾病编码全景（I60-I69）</h2>
+
+<h3>1.1 I60-I69 章节结构</h3>
+<p>脑血管疾病（Cerebrovascular Diseases）是 I 章中仅次于缺血性心脏病的第二大高频板块。ICD-10 将脑血管病分类于 I60-I69，涵盖出血性和缺血性两大类，以及脑血管病后遗症。理解本章的关键在于掌握每个类目的<strong>分类轴心</strong>——不同类目的轴心完全不同。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>分类轴心</th><th>核心内容</th></tr>
+  <tr><td><code>I60</code></td><td>蛛网膜下腔出血（SAH）</td><td><strong>责任血管</strong></td><td>颅内动脉瘤破裂所致，按破裂血管分类</td></tr>
+  <tr><td><code>I61</code></td><td>脑内出血（脑实质出血）</td><td><strong>出血部位</strong></td><td>高血压性脑出血，按解剖部位分类</td></tr>
+  <tr><td><code>I62</code></td><td>其他非创伤性颅内出血</td><td><strong>出血部位</strong></td><td>硬膜下/硬膜外出血（非创伤性）</td></tr>
+  <tr><td><code>I63</code></td><td>脑梗死</td><td><strong>双轴心：责任血管 + 病因</strong></td><td>血栓/栓塞导致，按血管+病因分类</td></tr>
+  <tr><td><code>I64</code></td><td>脑卒中，未特指</td><td>—</td><td>无法区分出血或梗死时使用（应尽量避免）</td></tr>
+  <tr><td><code>I65-I66</code></td><td>入脑前/脑内动脉闭塞</td><td><strong>血管部位</strong></td><td>未造成脑梗死的血管狭窄/闭塞</td></tr>
+  <tr><td><code>I67</code></td><td>其他脑血管病</td><td>—</td><td>Moyamoya病、脑血管淀粉样变性等</td></tr>
+  <tr><td><code>I68</code></td><td>其他疾病引起的脑血管病</td><td>—</td><td>分类于他处的疾病引起的脑血管损害</td></tr>
+  <tr><td><code>I69</code></td><td>脑血管病后遗症</td><td><strong>原发病因</strong></td><td>I60-I64 后遗症表现</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>关键认知：</strong>脑血管病编码的第一步不是查索引，而是<strong>确定疾病类型</strong>——是出血性还是缺血性？是创伤性还是非创伤性？这条主线确定后，才能进入正确的编码路径。
+</div>
+
+<h3>1.2 出血性 vs 缺血性脑卒中编码决策树</h3>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">脑卒中</div>
+    <span>→</span>
+    <div class="flow-box">影像学确诊？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">出血性 → I60/I61/I62</div>
+    <div class="flow-box warn-step">缺血性 → I63</div>
+    <div class="flow-box">未明确 → I64（避免使用）</div>
+  </div>
+  <div class="flow-row" style="margin-top:8px;">
+    <div class="flow-box">I60: 蛛网膜下腔 → 按责任血管</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">I61: 脑实质 → 按出血部位</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">I62: 硬膜下/外 → 按部位</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">I63: 脑梗死 → 按血管+病因</div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ I64 的使用限制：</strong>I64（未特指脑卒中）应<strong>尽量避免</strong>。仅在以下情况可使用：患者转院或死亡前未能完成影像学检查、医疗机构缺乏影像能力、或转诊记录未注明卒中类型。只要影像学排除了出血，即应编为缺血性（I63）。
+</div>
+
+<!-- ======== 二 ======== -->
+<hr class="divider">
+<h2><span class="icon">🩸</span> 二、脑出血编码（I60-I62）——按部位/血管分类</h2>
+
+<h3>2.1 蛛网膜下腔出血 I60——责任血管轴心</h3>
+<p>蛛网膜下腔出血（Subarachnoid Hemorrhage, SAH）是指颅内血管破裂，血液流入蛛网膜下腔。非创伤性 SAH 的主要原因是<strong>颅内动脉瘤破裂</strong>（占 85%），其次为脑血管畸形。ICD-10 以<strong>责任血管</strong>（即破裂的动脉瘤所在血管）为分类轴心。</p>
+
+<table>
+  <tr><th>编码</th><th>责任血管</th><th>临床特征</th></tr>
+  <tr><td><code>I60.0</code></td><td>颈内动脉分叉部</td><td>颈内动脉瘤破裂</td></tr>
+  <tr><td><code>I60.1</code></td><td>大脑中动脉</td><td>MCA 动脉瘤破裂（最常见）</td></tr>
+  <tr><td><code>I60.2</code></td><td>前交通动脉</td><td>前交通动脉瘤破裂</td></tr>
+  <tr><td><code>I60.3</code></td><td>后交通动脉</td><td>后交通动脉瘤破裂（动眼神经麻痹）</td></tr>
+  <tr><td><code>I60.4</code></td><td>基底动脉</td><td>基底动脉瘤破裂</td></tr>
+  <tr><td><code>I60.5</code></td><td>椎动脉</td><td>椎动脉瘤破裂</td></tr>
+  <tr><td><code>I60.6</code></td><td>其他颅内动脉（多个）</td><td>多发性动脉瘤</td></tr>
+  <tr><td><code>I60.7</code></td><td>未特指颅内动脉</td><td>动脉瘤部位不明</td></tr>
+  <tr><td><code>I60.8</code></td><td>其他</td><td>动静脉畸形破裂、脑膜出血</td></tr>
+  <tr><td><code>I60.9</code></td><td>未特指</td><td>病因不明（应尽量避免）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码要点：</strong>临床对 SAH 主要按<strong>病因</strong>分类（动脉瘤 vs 血管畸形 vs 其他），而 ICD-10 按<strong>责任血管</strong>分类——两者存在差异。动脉瘤破裂所致 SAH 编 I60.0-I60.7，而颅内动静脉畸形破裂所致 SAH 编 <code>I60.8</code>（其他）。编码员必须查阅影像报告（DSA/CTA）确定破裂血管。
+</div>
+
+<h4>索引路径示例：</h4>
+<pre>主导词：出血
+  └ 蛛网膜下（非创伤性）
+      └ 颈动脉分叉部 → I60.0
+      └ 大脑中动脉 → I60.1
+      └ 前交通动脉 → I60.2
+      └ 未特指 → I60.9</pre>
+
+<h3>2.2 脑内出血 I61——部位轴心</h3>
+<p>脑内出血（Intracerebral Hemorrhage, ICH）是指脑实质内的非创伤性自发出血，是高血压最严重的并发症之一。高血压性脑出血分类于 I61，以<strong>出血部位</strong>为分类轴心。不同部位的脑出血预后差异巨大，因此部位编码至关重要。</p>
+
+<table>
+  <tr><th>编码</th><th>出血部位</th><th>临床特征</th><th>常见病因</th></tr>
+  <tr><td><code>I61.0</code></td><td>大脑半球皮质下（脑叶）</td><td>皮层下出血，可破入脑室</td><td>淀粉样血管病、AVM</td></tr>
+  <tr><td><code>I61.1</code></td><td>基底节</td><td>壳核出血（最常见部位）</td><td>高血压</td></tr>
+  <tr><td><code>I61.2</code></td><td>丘脑</td><td>丘脑出血，常伴意识障碍</td><td>高血压</td></tr>
+  <tr><td><code>I61.3</code></td><td>脑干</td><td>脑桥/中脑/延髓出血，死亡率极高</td><td>高血压</td></tr>
+  <tr><td><code>I61.4</code></td><td>小脑</td><td>小脑出血，易压迫脑干</td><td>高血压、AVM</td></tr>
+  <tr><td><code>I61.5</code></td><td>脑室内</td><td>脑室出血（原发或继发）</td><td>脑室周围血管破裂</td></tr>
+  <tr><td><code>I61.6</code></td><td>多部位</td><td>累及多个脑区</td><td>—</td></tr>
+  <tr><td><code>I61.8</code></td><td>其他</td><td>其他特指部位</td><td>—</td></tr>
+  <tr><td><code>I61.9</code></td><td>未特指</td><td>部位不明（应尽量避免）</td><td>—</td></tr>
+</table>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：高血压性基底节出血</h4>
+    <p>临床诊断：右侧基底节区脑出血</p>
+    <p>编码：<code>I61.1</code>（脑内出血，基底节）</p>
+    <p>附加编码：<code>I10</code>（原发性高血压）</p>
+    <p>索引：出血 → 脑内 → 基底节 → I61.1</p>
+  </div>
+  <div class="example-item">
+    <h4>例：脑干出血</h4>
+    <p>临床诊断：脑桥出血</p>
+    <p>编码：<code>I61.3</code>（脑内出血，脑干）</p>
+    <p>附加编码：<code>I10</code>（高血压）</p>
+    <p>索引：出血 → 脑内 → 脑干 → I61.3</p>
+  </div>
+</div>
+
+<h3>2.3 其他非创伤性颅内出血 I62</h3>
+<p>I62 涵盖硬膜下和硬膜外的<strong>非创伤性</strong>出血。注意：创伤性硬膜下/硬膜外出血分类于 S06（损伤章），不编 I62。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>区别要点</th></tr>
+  <tr><td><code>I62.0</code></td><td>非创伤性硬膜下出血</td><td>非创伤性 → I62.0；创伤性 → S06.5</td></tr>
+  <tr><td><code>I62.1</code></td><td>非创伤性硬膜外出血</td><td>非创伤性 → I62.1；创伤性 → S06.4</td></tr>
+  <tr><td><code>I62.9</code></td><td>未特指的非创伤性颅内出血</td><td>部位不明时使用</td></tr>
+</table>
+
+<!-- ======== 三 ======== -->
+<hr class="divider">
+<h2><span class="icon">🧩</span> 三、脑梗死编码 I63——双轴心分类</h2>
+
+<h3>3.1 脑梗死 I63 的双轴心结构</h3>
+<p>脑梗死（Cerebral Infarction）是脑血管病中最常见的类型，约占全部脑卒中的 60%-70%。ICD-10 对 I63 采用<strong>双轴心分类</strong>：第一轴心是<strong>责任血管</strong>（入脑前动脉 vs 脑内动脉），第二轴心是<strong>病因</strong>（血栓形成 vs 栓塞）。</p>
+
+<table>
+  <tr><th>编码</th><th>责任血管</th><th>病因</th><th>含义</th></tr>
+  <tr><td><code>I63.0</code></td><td>入脑前动脉</td><td>血栓形成</td><td>颈内动脉/椎动脉血栓导致梗死</td></tr>
+  <tr><td><code>I63.1</code></td><td>入脑前动脉</td><td>栓塞</td><td>颈内动脉/椎动脉栓塞导致梗死</td></tr>
+  <tr><td><code>I63.2</code></td><td>入脑前动脉</td><td>未特指</td><td>入脑前动脉闭塞，病因不明</td></tr>
+  <tr><td><code>I63.3</code></td><td>脑内动脉</td><td>血栓形成</td><td>大脑中/前/后动脉血栓</td></tr>
+  <tr><td><code>I63.4</code></td><td>脑内动脉</td><td>栓塞</td><td>大脑中/前/后动脉栓塞</td></tr>
+  <tr><td><code>I63.5</code></td><td>脑内动脉</td><td>未特指</td><td>脑内动脉闭塞，病因不明</td></tr>
+  <tr><td><code>I63.8</code></td><td>其他</td><td>—</td><td>其他脑血管闭塞导致的梗死</td></tr>
+  <tr><td><code>I63.9</code></td><td>未特指</td><td>未特指</td><td>脑梗死，未特指（应尽量避免）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 核心原则：</strong>只有临床<strong>无法明确</strong>责任血管或病因时，才可编码于 <code>I63.9</code>（未特指的脑梗死）。住院患者应通过 CT/MRI/DSA 等影像学检查明确责任血管和病因，编到最具体的亚目。I63.9 在住院病案中属于<strong>质控扣分项</strong>。
+</div>
+
+<h3>3.2 责任血管的判断</h3>
+<p>脑梗死的责任血管分为两大类：<strong>入脑前动脉</strong>（颅外段至入颅前）和<strong>脑内动脉</strong>（颅内段）。不同血管供血区域不同，临床表现也各异。</p>
+
+<table>
+  <tr><th>血管分类</th><th>主要血管</th><th>对应编码</th><th>供血区域</th></tr>
+  <tr><td rowspan="3">入脑前动脉</td><td>颈内动脉（颅外段）</td><td>I63.0-I63.2</td><td>前循环（大脑半球前2/3）</td></tr>
+  <tr><td>椎动脉</td><td>I63.0-I63.2</td><td>后循环（脑干、小脑、枕叶）</td></tr>
+  <tr><td>基底动脉</td><td>I63.0-I63.2</td><td>后循环（脑干、小脑）</td></tr>
+  <tr><td rowspan="3">脑内动脉</td><td>大脑中动脉（MCA）</td><td>I63.3-I63.5</td><td>侧裂周围区（最常见梗死部位）</td></tr>
+  <tr><td>大脑前动脉（ACA）</td><td>I63.3-I63.5</td><td>额叶内侧、胼胝体</td></tr>
+  <tr><td>大脑后动脉（PCA）</td><td>I63.3-I63.5</td><td>枕叶、颞叶底面</td></tr>
+</table>
+
+<h3>3.3 I65/I66——未造成脑梗死的血管闭塞</h3>
+<p>当入脑前动脉或脑内动脉存在狭窄/闭塞，但<strong>尚未导致脑梗死</strong>时（无症状或仅有TIA），不编 I63，而编 I65/I66。这是一个容易混淆的边界。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>使用条件</th><th>与I63的区别</th></tr>
+  <tr><td><code>I65.x</code></td><td>入脑前动脉闭塞/狭窄</td><td>未造成脑梗死</td><td>I63 = 已造成梗死</td></tr>
+  <tr><td><code>I66.x</code></td><td>脑内动脉闭塞/狭窄</td><td>未造成脑梗死</td><td>I63 = 已造成梗死</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 常见错误</h4>
+    <p>患者颈动脉超声示"颈内动脉狭窄70%"，无脑梗死证据 → 错误地编为 I63.0（脑梗死）</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p>应编 <code>I65.2</code>（颈内动脉闭塞和狭窄，未造成脑梗死）——因为影像学没有梗死灶</p>
+  </div>
+</div>
+
+<!-- ======== 四 ======== -->
+<hr class="divider">
+<h2><span class="icon">⚡</span> 四、TIA 与脑血管病后遗症——跨章编码</h2>
+
+<h3>4.1 TIA 编码于 G45——不在 I 章</h3>
+<p>短暂性脑缺血发作（Transient Ischemic Attack, TIA）是脑局部缺血导致的短暂性神经功能缺损，症状通常在 24 小时内完全缓解，且<strong>无梗死灶</strong>。TIA 在 ICD-10 中分类于<strong>第六章神经系统疾病 G45</strong>，而不是 I 章循环系统——这是一个跨章编码的特殊情况。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>含义</th></tr>
+  <tr><td><code>G45.0</code></td><td>椎-基底动脉综合征</td><td>后循环TIA（眩晕、复视、共济失调）</td></tr>
+  <tr><td><code>G45.1</code></td><td>颈动脉综合征（大脑半球）</td><td>前循环TIA（一过性偏瘫/失语）</td></tr>
+  <tr><td><code>G45.2</code></td><td>多发性+双侧TIA</td><td>前后循环均受累</td></tr>
+  <tr><td><code>G45.8</code></td><td>其他TIA</td><td>其他特指的短暂性脑缺血</td></tr>
+  <tr><td><code>G45.9</code></td><td>TIA，未特指</td><td>短暂性大脑缺血性发作NOS</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ TIA vs 脑梗死的鉴别金标准：</strong>是否在 DWI（弥散加权成像）上出现梗死灶。如果影像学<strong>确认了梗死灶</strong>，无论症状是否在 24 小时内缓解，都应编为<strong>脑梗死 I63</strong>，而不是 TIA。TIA 的前提是"无组织学梗死证据"。
+</div>
+
+<h3>4.2 后循环缺血的编码决策</h3>
+<p>临床常诊断"后循环缺血"（Posterior Circulation Ischemia），这是一个涵盖性术语，编码员必须进一步明确具体表现：</p>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">临床诊断"后循环缺血"</div>
+    <span>→</span>
+    <div class="flow-box">影像学有梗死灶？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">有 → I63.x（脑梗死）</div>
+    <span>↓ 无</span>
+    <div class="flow-box">症状 24h 内缓解？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">是 → G45.0（椎基底动脉综合征）</div>
+    <div class="flow-box warn-step">否 → 进一步检查</div>
+  </div>
+</div>
+
+<h3>4.3 脑血管病后遗症 I69</h3>
+<p>脑血管病后遗症（Sequelae of Cerebrovascular Disease）是指脑血管病急性期过后（通常 >28 天）持续存在的神经功能缺损。I69 的编码以<strong>原发病因</strong>为轴心，即根据最初的脑血管病类型选择不同的 I69 亚目。</p>
+
+<table>
+  <tr><th>编码</th><th>原发病因</th><th>含义</th></tr>
+  <tr><td><code>I69.0</code></td><td>蛛网膜下腔出血后遗症</td><td>SAH 后遗留的表现</td></tr>
+  <tr><td><code>I69.1</code></td><td>脑内出血后遗症</td><td>脑出血后遗留的表现</td></tr>
+  <tr><td><code>I69.2</code></td><td>其他非创伤性颅内出血后遗症</td><td>硬膜下/外出血后遗留</td></tr>
+  <tr><td><code>I69.3</code></td><td>脑梗死后遗症</td><td>脑梗死后遗留的表现</td></tr>
+  <tr><td><code>I69.4</code></td><td>未特指脑卒中后遗症</td><td>卒中类型不明的后遗症</td></tr>
+  <tr><td><code>I69.8</code></td><td>其他脑血管病后遗症</td><td>其他脑血管病后遗留</td></tr>
+  <tr><td><code>I69.9</code></td><td>未特指脑血管病后遗症</td><td>—</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ I69 的使用要点：</strong><br>
+  ① I69 是后遗症编码，<strong>不能单独使用</strong>，需与具体后遗症表现（如偏瘫 G81.x、失语 R47.0等）配合使用。<br>
+  ② 当患者住院目的是<strong>康复治疗</strong>时，选择康复治疗的问题作为主诊断，I69 作为附加编码。<br>
+  ③ 如果同时存在多个后遗症且无法区分主次，可使用 I69 做主诊断，再将具体后遗症一一列出。<br>
+  ④ <strong>无时间限制</strong>：只要后遗症持续存在，无论距急性发病多久，都可以使用 I69。
+</div>
+
+<!-- ======== 五 ======== -->
+<hr class="divider">
+<h2><span class="icon">💡</span> 五、重难点深度解析：创伤性 vs 非创伤性脑出血</h2>
+
+<p>创伤性脑出血和非创伤性脑出血在 ICD-10 中分类于<strong>完全不同的章节</strong>，这是脑血管病编码中最容易出错的领域之一。非创伤性脑出血编在 I 章（I60-I62），创伤性脑出血编在第十九章损伤中毒（S06）。两者的编码规则、DRG 入组路径和医保支付标准完全不同。</p>
+
+<h3>5.1 分类对照表</h3>
+
+<table>
+  <tr><th>出血类型</th><th>非创伤性（I章）</th><th>创伤性（S章）</th><th>区分依据</th></tr>
+  <tr>
+    <td>蛛网膜下腔出血</td>
+    <td><code>I60.x</code></td>
+    <td><code>S06.6</code></td>
+    <td>有无外伤史</td>
+  </tr>
+  <tr>
+    <td>脑实质出血</td>
+    <td><code>I61.x</code></td>
+    <td><code>S06.3</code>（局限）/ <code>S06.8</code>（多发）</td>
+    <td>有无外伤史</td>
+  </tr>
+  <tr>
+    <td>硬膜下出血</td>
+    <td><code>I62.0</code></td>
+    <td><code>S06.5</code></td>
+    <td>有无外伤史</td>
+  </tr>
+  <tr>
+    <td>硬膜外出血</td>
+    <td><code>I62.1</code></td>
+    <td><code>S06.4</code></td>
+    <td>有无外伤史</td>
+  </tr>
+</table>
+
+<h3>5.2 判断流程</h3>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">颅内出血</div>
+    <span>→</span>
+    <div class="flow-box">有外伤史？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">是 → S06.x（创伤性）</div>
+    <div class="flow-box">否 → I60-I62（非创伤性）</div>
+  </div>
+  <div class="flow-row" style="margin-top:8px;">
+    <div class="flow-box">需附加外因码（V01-Y98）</div>
+    <span style="margin:0 8px;">vs</span>
+    <div class="flow-box">无需外因码</div>
+  </div>
+</div>
+
+<h3>5.3 特殊场景分析</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景1：外伤后脑出血</h4>
+    <p>30岁男性，被棒球击中头部，CT示蛛网膜下腔出血+颞叶血肿。既往无高血压。</p>
+    <p><strong>主编码：</strong><code>S06.6</code>（创伤性SAH）</p>
+    <p><strong>附加编码：</strong><code>S06.3</code>（创伤性脑内出血）</p>
+    <p><strong>外因码：</code>W21.x（被物体击中）</p>
+    <p><strong>注意：</strong>不编 I60/I61</p>
+  </div>
+  <div class="example-item">
+    <h4>场景2：高血压性脑出血</h4>
+    <p>65岁女性，突发头痛呕吐，CT示基底节出血。既往高血压15年。无外伤。</p>
+    <p><strong>主编码：</strong><code>I61.1</code>（脑内出血，基底节）</p>
+    <p><strong>附加编码：</strong><code>I10</code>（原发性高血压）</p>
+    <p><strong>注意：</strong>不编 S06，不需要外因码</p>
+  </div>
+  <div class="example-item">
+    <h4>场景3：外伤诱发动脉瘤破裂</h4>
+    <p>50岁男性，车祸后突发剧烈头痛，CT示SAH，DSA示后交通动脉瘤破裂。</p>
+    <p><strong>主编码：</strong><code>S06.6</code>（创伤性SAH）</p>
+    <p><strong>附加编码：</strong>外因码（车祸）</p>
+    <p><strong>争议点：</strong>若动脉瘤破裂为自发性（非外伤直接导致），部分专家认为应编 I60.3。需根据临床判断因果关系。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景4：跌倒后硬膜下出血</h4>
+    <p>75岁男性，步行跌倒后3周出现头痛，CT示慢性硬膜下血肿。</p>
+    <p><strong>主编码：</strong><code>S06.5</code>（创伤性硬膜下出血）</p>
+    <p><strong>外因码：</strong>W01.x（跌倒）</p>
+    <p><strong>注意：</strong>即使间隔3周，外伤性硬膜下出血仍编 S06.5，不编 I62.0</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 编码员必读：</strong>判断创伤性 vs 非创伤性的核心依据是<strong>病史</strong>，不是影像表现。即使 CT 表现完全相同，有外伤史编 S06，无外伤史编 I60-I62。编码员必须查阅急诊记录、入院记录中的外伤史描述，不能仅凭影像报告编码。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 脑出血部位编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，68岁，突发左侧肢体无力3小时入院。头颅CT示"右侧基底节区脑出血，出血量约15ml"。既往高血压病史20年。</p>
+    <p><strong>问题：</strong>请给出主诊断和附加编码，并写出完整索引路径。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I61.1</code>（脑内出血，基底节），国临版扩展码 <code>I61.100x006</code></p>
+        <p><strong>✅ 附加编码：</strong><code>I10</code>（原发性高血压）</p>
+        <p><strong>✅ 索引路径：</strong>出血 → 脑内 → 基底节 → I61.1</p>
+        <p><strong>✅ 解析：</strong>基底节是高血压性脑出血最常见部位。I61 以出血部位为分类轴心。高血压与脑出血无合并编码（I11-I13 仅涵盖心脏和肾脏），因此高血压需另编 I10 作为附加编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 脑梗死双轴心编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女性，72岁，突发右侧肢体偏瘫伴失语2小时。头颅MRI示左侧大脑中动脉供血区急性脑梗死。MRA示左侧大脑中动脉M1段闭塞。心电图为房颤。</p>
+    <p><strong>问题：</strong>脑梗死应编什么编码？说明双轴心的判断依据。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：</strong><code>I63.4</code>（脑内动脉栓塞导致的脑梗死）</p>
+        <p><strong>✅ 索引路径：</strong>梗死 → 大脑 → 动脉 → 栓塞 → I63.4</p>
+        <p><strong>✅ 双轴心分析：</strong></p>
+        <p>第一轴心——责任血管：MRA示左侧大脑中动脉M1段闭塞，大脑中动脉属于<strong>脑内动脉</strong>（I63.3-I63.5）</p>
+        <p>第二轴心——病因：患者有房颤史，房颤导致附壁血栓脱落→脑栓塞，因此是<strong>栓塞</strong>（I63.4）而非血栓形成（I63.3）</p>
+        <p><strong>💡 附加编码：</strong>房颤 <code>I48.x</code></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · TIA vs 脑梗死鉴别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，60岁，发作性右侧肢体无力伴言语不清，每次持续约10分钟可自行完全缓解，共发作3次。头颅CT未见异常。DWI-MRI未见弥散受限。</p>
+    <p><strong>问题：</strong>应编 TIA 还是脑梗死？编码是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：</strong><code>G45.1</code>（颈动脉综合征，大脑半球的短暂性脑缺血发作）</p>
+        <p><strong>✅ 理由：</strong>症状在 24 小时内完全缓解 + DWI-MRI <strong>无梗死灶</strong> = TIA。TIA 编码于 G 章（神经系统），不在 I 章。</p>
+        <p><strong>✅ 索引路径：</strong>发作 → 缺血 → 短暂性 → 大脑 → 颈动脉综合征 → G45.1</p>
+        <p><strong>💡 关键鉴别点：</strong>如果 DWI 显示了弥散受限（梗死灶），即使症状在 24 小时内缓解，也应编为脑梗死 I63，而非 TIA。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 创伤性 vs 非创伤性</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，25岁，骑电动车摔倒后头部着地，意识不清1天入院。头颅CT示"蛛网膜下腔出血，右侧颞叶血肿"。既往无高血压、无脑血管病史。保守治疗后好转出院。</p>
+    <p><strong>问题：</strong>主诊断应编 I 章还是 S 章？给出完整编码列表。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>S06.600x002</code>（创伤性蛛网膜下腔血肿）</p>
+        <p><strong>✅ 附加编码：</strong><code>S06.300x002</code>（创伤性脑内血肿，颞叶）</p>
+        <p><strong>✅ 外因码：</code>如 V28.x（电动车交通事故）</p>
+        <p><strong>✅ 不编 I60/I61 的理由：</strong>患者有明确外伤史（骑电动车摔倒），既往无脑血管病，出血为外伤所致 → 创伤性 → S 章。编码员必须根据外伤史判断，不能仅凭 CT 表现编 I 章。</p>
+        <p><strong>💡 索引路径：</strong>出血 → 蛛网膜下 → 创伤性 → S06.6</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 脑梗死后遗症编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，70岁。6个月前因"急性脑梗死"住院治疗，出院后遗留右侧偏瘫、运动性失语。本次入院目的是进行康复训练。</p>
+    <p><strong>问题：</strong>主诊断应编什么？需要哪些附加编码？说明 I69 的使用规则。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断选择方案（两种情况）：</strong></p>
+        <p><strong>方案A（以康复治疗问题为主诊断）：</strong>主诊断编偏瘫或失语（如 <code>G81.9</code>），附加编码 <code>I69.3</code>（脑梗死后遗症）</p>
+        <p><strong>方案B（多个后遗症无法区分主次时）：</strong>主诊断 <code>I69.3</code>（脑梗死后遗症），附加编码 <code>G81.9</code>（偏瘫）+ <code>R47.0</code>（失语）</p>
+        <p><strong>✅ I69 使用规则：</strong></p>
+        <p>① 本次入院目的是康复 → 以康复治疗的问题为主诊断</p>
+        <p>② I69.3 表明后遗症的<strong>原发病因是脑梗死</strong>（而非脑出血）</p>
+        <p>③ I69 无时间限制——只要后遗症持续存在即可使用</p>
+        <p>④ 偏瘫需标注侧别（左/右）和优势半球，国临版扩展到更细</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 蛛网膜下腔出血责任血管编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女性，55岁，突发剧烈头痛伴呕吐入院。CT示蛛网膜下腔出血。DSA示"后交通动脉瘤破裂"。既往高血压5年。</p>
+    <p><strong>问题：</strong>请给出完整编码列表和索引路径。为什么不能编 I60.9？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I60.3</code>（后交通动脉的蛛网膜下出血）</p>
+        <p><strong>✅ 附加编码：</strong><code>I10</code>（原发性高血压）</p>
+        <p><strong>✅ 索引路径：</strong>出血 → 蛛网膜下（非创伤性） → 后交通动脉 → I60.3</p>
+        <p><strong>✅ 不能编 I60.9 的原因：</strong>DSA 已明确破裂血管为后交通动脉，I60 以<strong>责任血管</strong>为分类轴心，必须编到具体血管 I60.3。I60.9（未特指）仅在病因和血管完全不明时才可使用，在有 DSA 结果的情况下使用属于<strong>编码缺陷</strong>。</p>
+        <p><strong>💡 临床关联：</strong>后交通动脉瘤破裂常伴动眼神经麻痹（患侧眼睑下垂、瞳孔散大），这是临床定位线索。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>I60蛛网膜下腔出血：</strong>以责任血管为轴心（I60.0-I60.7动脉瘤，I60.8血管畸形）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I61脑内出血：</strong>以出血部位为轴心（基底节I61.1/丘脑I61.2/脑干I61.3/小脑I61.4）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I63脑梗死双轴心：</strong>责任血管（入脑前/脑内）× 病因（血栓/栓塞）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>TIA编在G45</strong>而非I章，金标准是DWI无梗死灶</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>创伤性vs非创伤性：</strong>S06 vs I60-I62，核心依据是外伤史</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I64未特指脑卒中</strong>应尽量避免，影像排除出血即编I63</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I69后遗症：</strong>以原发病因为轴心，康复住院时以康复问题为主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I65/I66：</strong>血管闭塞但未造成脑梗死时使用，与I63区分</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、明日预习 ======== -->
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 20 主题：J章 呼吸系统疾病（J00-J99）——COPD、肺炎、气胸</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>J44 COPD 的四个亚目如何区分？J44.0（伴呼吸道感染）和 J44.1（伴急性加重）的分水岭是什么？</li>
+    <li>肺炎 J12-J18 的分类轴心是病原体还是临床表现？病原体未明时编什么？</li>
+    <li>气胸 J93（自发性）和 S27.0（创伤性）如何区分？</li>
+    <li>ACOS（哮喘-COPD重叠综合征）如何编码？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 19 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>

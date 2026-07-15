@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 23（2026年7月11日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 23 · 2026年7月11日</div>
+  <h1>🫘 N章：泌尿生殖系统疾病</h1>
+  <p class="subtitle">今日主题：N00-N99 —— 从肾小球疾病到泌尿系结石，掌握泌尿生殖编码全貌</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:38.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 23 / 60 天（38.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>N章整体结构：肾脏疾病→尿路结石→膀胱尿道→生殖系统→乳腺，五大区块</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>急性肾衰竭 N17 与慢性肾脏病 N18 的区分及 CKD 分期编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>泌尿系结石 N20-N23 的部位编码与并发症合并编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肾小球肾炎 N00-N07 的临床综合征分类体系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>前列腺增生 N40 的编码与亚目区分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>N08/N16"分类于他处疾病引起的"肾小球/肾小管疾患的继发编码逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肾盂积水 N13 的分类：阻塞性 vs 反流性</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>尿路感染 N39.0 的病原体附加编码（B95-B97）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>乳腺疾病 N60-N64 的良恶性区分与编码边界</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（拓展视野，提升专业度）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>女性盆腔炎症 N70-N77 的细分编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>子宫内膜异位症 N80 的部位扩展</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>N99 泌尿生殖系统操作后并发症的编码规则</span></div>
+    </div>
+  </details>
+</div>
+
+<!-- ======== 知识点1：N章总览 ======== -->
+<h2><span class="icon">📐</span> 知识点一：N章整体结构与分类逻辑</h2>
+
+<div class="card">
+  <h3>是什么</h3>
+  <p>N章（N00-N99）是 ICD-10 第十四章，涵盖<span class="hl">泌尿生殖系统疾病</span>（Diseases of the genitourinary system）。本章按照<strong>解剖部位</strong>为主要分类轴心：肾脏→输尿管→膀胱→尿道→生殖器官，同时结合<strong>病理性质</strong>（炎症、结石、肿瘤、功能异常）进行细分。</p>
+  
+  <h3>为什么重要</h3>
+  <p>泌尿生殖系统疾病是住院病案的高频章节，尤其肾衰竭、泌尿系结石、前列腺增生等在临床极为常见。N章的编码准确度直接影响肾病统计、DRG 分组和医保支付。其中急慢性肾衰竭的区分、CKD 分期编码是编码员必须掌握的核心技能。</p>
+  
+  <h3>怎么用 —— 五大区块速查</h3>
+  <table>
+    <tr>
+      <th>编码范围</th>
+      <th>区块名称</th>
+      <th>核心内容</th>
+      <th>高频编码</th>
+    </tr>
+    <tr>
+      <td><code>N00-N08</code></td>
+      <td>肾小球疾病</td>
+      <td>肾炎综合征、肾病综合征</td>
+      <td>N00急性肾炎、N03慢性肾炎、N04肾病综合征</td>
+    </tr>
+    <tr>
+      <td><code>N10-N16</code></td>
+      <td>肾小管-间质疾病</td>
+      <td>间质性肾炎、肾盂积水</td>
+      <td>N10急性间质性肾炎、N13梗阻性尿路病</td>
+    </tr>
+    <tr>
+      <td><code>N17-N19</code></td>
+      <td>肾衰竭</td>
+      <td>急性肾损伤、慢性肾病</td>
+      <td>N17急性肾衰竭、N18慢性肾脏病（CKD 1-5期）</td>
+    </tr>
+    <tr>
+      <td><code>N20-N23</code></td>
+      <td>尿石病</td>
+      <td>泌尿系结石</td>
+      <td>N20.0肾结石、N20.1输尿管结石、N21膀胱结石</td>
+    </tr>
+    <tr>
+      <td><code>N25-N29</code></td>
+      <td>肾和输尿管其他疾患</td>
+      <td>肾下垂、肾囊肿等</td>
+      <td>N28肾囊肿、N28.8肾下垂</td>
+    </tr>
+    <tr>
+      <td><code>N30-N39</code></td>
+      <td>膀胱和尿道疾病</td>
+      <td>膀胱炎、尿道炎、尿路感染</td>
+      <td>N30膀胱炎、N39.0尿路感染</td>
+    </tr>
+    <tr>
+      <td><code>N40-N53</code></td>
+      <td>男性生殖器官疾病</td>
+      <td>前列腺、睾丸、阴茎</td>
+      <td>N40前列腺增生、N43鞘膜积液</td>
+    </tr>
+    <tr>
+      <td><code>N60-N64</code></td>
+      <td>乳房疾病</td>
+      <td>乳腺良性疾病</td>
+      <td>N61乳腺炎、N63乳腺肿块</td>
+    </tr>
+    <tr>
+      <td><code>N70-N77</code></td>
+      <td>女性盆腔炎症</td>
+      <td>子宫附件炎、阴道炎</td>
+      <td>N72宫颈炎、N76阴道炎</td>
+    </tr>
+    <tr>
+      <td><code>N80-N98</code></td>
+      <td>女性生殖道非炎性疾病</td>
+      <td>子宫内膜异位症、子宫脱垂</td>
+      <td>N80子宫内膜异位症、N81子宫脱垂</td>
+    </tr>
+  </table>
+  
+  <div class="note">
+    <strong>编码技巧：</strong>N章有两个特殊的"桥梁"类目——<code>N08</code>（分类于他处疾病引起的肾小球疾患）和 <code>N16</code>（分类于他处疾病引起的肾小管-间质疾患）。当肾脏病变是全身性疾病的继发表现时，优先使用这两个类目，并附加原发病编码。
+  </div>
+</div>
+
+<!-- ======== 知识点2：肾衰竭与CKD编码 ======== -->
+<h2><span class="icon">🫘</span> 知识点二：肾衰竭编码——N17/N18/N19 深度解析</h2>
+
+<div class="card">
+  <h3>是什么</h3>
+  <p>肾衰竭在 ICD-10 中分为三大类：急性肾衰竭/急性肾损伤（N17）、慢性肾脏病/慢性肾衰竭（N18）、未特指的肾衰竭（N19）。其中 N18 按照CKD分期进一步细分到 N18.1-N18.5，是临床和编码中最为重要的肾衰竭编码。</p>
+  
+  <h3>为什么重要</h3>
+  <p>急慢性肾衰竭的编码直接影响 DRG 分组和医保支付权重。慢性肾脏病（CKD）的分期编码是我国病案首页质控的重点指标之一。编码员必须能够根据 GFR（肾小球滤过率）和肌酐值准确判断 CKD 分期，并选择正确的编码。</p>
+  
+  <h3>怎么用 —— N17 vs N18 vs N19</h3>
+  <table>
+    <tr>
+      <th>编码</th>
+      <th>含义</th>
+      <th>临床对应</th>
+      <th>亚目分类</th>
+    </tr>
+    <tr>
+      <td><code>N17</code></td>
+      <td>急性肾衰竭（AKI）</td>
+      <td>肾功能短期内急剧下降</td>
+      <td>.0肾小管坏死、.1皮质坏死、.2髓质坏死、.8其他、.9未特指</td>
+    </tr>
+    <tr>
+      <td><code>N18</code></td>
+      <td>慢性肾脏病（CKD）</td>
+      <td>肾功能持续减退≥3月</td>
+      <td>.1 1期、.2 2期、.3 3期、.4 4期、.5 5期（终末期肾病）</td>
+    </tr>
+    <tr>
+      <td><code>N19</code></td>
+      <td>未特指的肾衰竭</td>
+      <td>急性慢性区分不明</td>
+      <td>无亚目，尽量不用</td>
+    </tr>
+  </table>
+  
+  <h4>CKD 分期与编码对照</h4>
+  <div class="example-grid">
+    <div class="example-item">
+      <h4>CKD 1期 → N18.1</h4>
+      <p>GFR ≥ 90 ml/min/1.73m²</p>
+      <p>肾功能正常但存在肾脏损害指标</p>
+    </div>
+    <div class="example-item">
+      <h4>CKD 2期 → N18.2</h4>
+      <p>GFR 60-89</p>
+      <p>肾功能轻度下降</p>
+    </div>
+    <div class="example-item">
+      <h4>CKD 3期 → N18.3</h4>
+      <p>GFR 30-59</p>
+      <p>肾功能中度下降</p>
+    </div>
+    <div class="example-item">
+      <h4>CKD 4期 → N18.4</h4>
+      <p>GFR 15-29</p>
+      <p>肾功能重度下降</p>
+    </div>
+    <div class="example-item">
+      <h4>CKD 5期 → N18.5</h4>
+      <p>GFR < 15 或透析</p>
+      <p>终末期肾病（ESRD），需透析或肾移植</p>
+    </div>
+    <div class="example-item">
+      <h4>透析状态 → Z99.2</h4>
+      <p>依赖透析的附加编码</p>
+      <p>CKD 5期透析患者需同时编码 N18.5 + Z99.2</p>
+    </div>
+  </div>
+  
+  <div class="card warn">
+    <strong>易错提醒：</strong>"慢性肾衰竭急性加重"应编为 <code>N18.x</code>（慢性肾脏病相应分期），而非 N17。因为 N17 仅指单纯的急性肾损伤。如果同时存在急慢性，以慢性为主编 N18，附加 N17 说明急性加重。N19（未特指）应尽量避免使用。
+  </div>
+</div>
+
+<!-- ======== 知识点3：肾小球肾炎编码 ======== -->
+<h2><span class="icon">🔬</span> 知识点三：肾小球疾病 N00-N08 的分类体系</h2>
+
+<div class="card">
+  <h3>是什么</h3>
+  <p>肾小球疾病 N00-N08 采用<strong>双轴心分类</strong>：首先按<strong>临床综合征</strong>分为 N00-N07，再按<strong>病理形态学</strong>用第4位数亚目细分（.0轻微病变、.1局灶节段性、.2弥漫性膜性、.3弥漫性系膜毛细血管性、.4弥漫性毛细血管内、.5弥漫性系膜增生性、.6新月体性、.7弥漫性膜增生性、.8其他、.9未特指）。N08 是"分类于他处疾病引起的肾小球疾患"的桥梁类目。</p>
+  
+  <h3>为什么重要</h3>
+  <p>肾小球疾病的编码需要同时理解临床综合征和肾脏病理分型。临床医师常写"肾炎"而未明确临床综合征类型，编码员需要根据临床表现（血尿、蛋白尿、水肿、高血压、肾功能损害）和肾穿刺病理报告来判断正确的编码。这是编码考试的高频考点。</p>
+  
+  <h3>怎么用 —— 临床综合征编码对照</h3>
+  <table>
+    <tr>
+      <th>编码</th>
+      <th>临床综合征</th>
+      <th>临床表现</th>
+      <th>常见病理</th>
+    </tr>
+    <tr>
+      <td><code>N00</code></td>
+      <td>急性肾炎综合征</td>
+      <td>突发血尿、蛋白尿、水肿、高血压</td>
+      <td>毛细血管内增生性（.4）</td>
+    </tr>
+    <tr>
+      <td><code>N01</code></td>
+      <td>急进型肾炎综合征</td>
+      <td>肾功能急速恶化，数周至数月</td>
+      <td>新月体性（.6）</td>
+    </tr>
+    <tr>
+      <td><code>N02</code></td>
+      <td>复发性和持续性血尿</td>
+      <td>反复发作肉眼血尿或持续镜下血尿</td>
+      <td>IgA肾病常见</td>
+    </tr>
+    <tr>
+      <td><code>N03</code></td>
+      <td>慢性肾炎综合征</td>
+      <td>慢性进行性肾功能减退</td>
+      <td>多种病理类型</td>
+    </tr>
+    <tr>
+      <td><code>N04</code></td>
+      <td>肾病综合征</td>
+      <td>大量蛋白尿(>3.5g/d)、低白蛋白血症、水肿</td>
+      <td>膜性（.2）、微小病变（.0）</td>
+    </tr>
+    <tr>
+      <td><code>N05</code></td>
+      <td>未特指的肾炎综合征</td>
+      <td>临床信息不足</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><code>N06</code></td>
+      <td>孤立性蛋白尿伴形态学损害</td>
+      <td>蛋白尿但无综合征</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><code>N07</code></td>
+      <td>遗传性肾病</td>
+      <td>Alport综合征等</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><code>N08</code></td>
+      <td>继发性肾小球疾患</td>
+      <td>SLE、糖尿病等全身疾病累及肾脏</td>
+      <td>需附加原发病编码</td>
+    </tr>
+  </table>
+  
+  <div class="note">
+    <strong>查找路径示例：</strong>肾病综合征（膜性肾病）<br>
+    主导词：综合征→肾病→ <code>N04</code>→ 膜性→ <code>N04.2</code><br>
+    或：肾病→综合征→ <code>N04</code>→ 膜性→ <code>N04.2</code>
+  </div>
+</div>
+
+<!-- ======== 知识点4：泌尿系结石编码 ======== -->
+<h2><span class="icon">🪨</span> 知识点四：泌尿系结石 N20-N23 编码</h2>
+
+<div class="card">
+  <h3>是什么</h3>
+  <p>尿石病（Urolithiasis）N20-N23 按结石<strong>解剖部位</strong>分类：肾结石（N20.0）、输尿管结石（N20.1）、肾结石伴输尿管结石（N20.2）、下泌尿道结石（N21）、未特指肾绞痛（N23）。N22 是"分类于他处疾病引起的泌尿道结石"的桥梁类目。</p>
+  
+  <h3>为什么重要</h3>
+  <p>泌尿系结石是泌尿外科最常见的疾病之一。编码时需要注意结石的部位是否准确，以及是否伴有并发症（如肾积水、感染）。如果存在合并编码，应优先使用合并编码而非分别编码。</p>
+  
+  <h3>怎么用 —— 结石编码决策树</h3>
+  
+  <div class="flow-chart">
+    <div class="flow-row">
+      <div class="flow-box">泌尿系结石</div>
+      <span>→</span>
+      <div class="flow-box warn-step">结石部位？</div>
+    </div>
+    <div class="flow-row" style="margin-top:12px;">
+      <div class="flow-box" style="border-color:var(--green);background:var(--green-bg);">肾脏 → N20.0</div>
+      <div class="flow-box" style="border-color:var(--accent);background:var(--accent-bg);">输尿管 → N20.1</div>
+      <div class="flow-box" style="border-color:var(--purple);background:#f5f3ff;">肾+输尿管 → N20.2</div>
+    </div>
+    <div class="flow-row" style="margin-top:8px;">
+      <div class="flow-box" style="border-color:var(--pink);background:#fdf2f8;">膀胱 → N21.0</div>
+      <div class="flow-box" style="border-color:var(--warn);background:var(--warn-bg);">尿道 → N21.1</div>
+      <div class="flow-box" style="border-color:var(--text3);background:#f1f5f9;">未特指 → N20.9</div>
+    </div>
+  </div>
+  
+  <table>
+    <tr>
+      <th>编码</th>
+      <th>含义</th>
+      <th>是否含并发症</th>
+      <th>编码注意</th>
+    </tr>
+    <tr>
+      <td><code>N20.0</code></td>
+      <td>肾结石</td>
+      <td>不含肾积水</td>
+      <td>鹿角状结石也编此码</td>
+    </tr>
+    <tr>
+      <td><code>N20.1</code></td>
+      <td>输尿管结石</td>
+      <td>不含肾积水</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td><code>N20.2</code></td>
+      <td>肾结石伴输尿管结石</td>
+      <td>不含肾积水</td>
+      <td>合并编码，不分开编</td>
+    </tr>
+    <tr>
+      <td><code>N13.2</code></td>
+      <td>肾积水伴梗阻</td>
+      <td>含梗阻</td>
+      <td>结石伴肾积水时优先用此码</td>
+    </tr>
+    <tr>
+      <td><code>N21.0</code></td>
+      <td>膀胱结石</td>
+      <td>伴膀胱炎/尿道炎</td>
+      <td>N21含伴膀胱炎和尿道炎</td>
+    </tr>
+    <tr>
+      <td><code>N23</code></td>
+      <td>未特指的肾绞痛</td>
+      <td>—</td>
+      <td>无结石证据时使用</td>
+    </tr>
+  </table>
+  
+  <div class="card tip">
+    <strong>关键规则：</strong>当结石伴有<span class="hl">肾积水</span>时，应编为 <code>N13.2</code>（肾积水伴梗阻和结石），而不是 N20.0 + N13.0。因为 N13.2 是合并编码，优先使用。查找路径：肾积水→伴有结石→ <code>N13.2</code>。
+  </div>
+</div>
+
+<!-- ======== 知识点5：前列腺与乳腺疾病 ======== -->
+<h2><span class="icon">⚕️</span> 知识点五：前列腺增生 N40 与乳腺疾病 N60-N64</h2>
+
+<div class="card">
+  <h3>是什么</h3>
+  <p>前列腺增生（BPH）是老年男性最常见的前列腺良性疾病，编码于 N40。乳腺疾病 N60-N64 涵盖女性乳房的良性疾病（不包括恶性肿瘤 C50 和乳腺原位癌 D05）。这两个区块在泌尿外科和乳腺外科病案中极为常见。</p>
+  
+  <h3>为什么重要</h3>
+  <p>前列腺增生 N40 的亚目区分涉及是否伴有下尿路症状（LUTS），影响手术指征的编码。乳腺疾病需要严格区分良恶性——N60-N64 仅用于良性病变和未特指性质的肿块，恶性必须编 C50，原位癌编 D05。</p>
+  
+  <h3>怎么用 —— 前列腺增生编码</h3>
+  <table>
+    <tr>
+      <th>编码</th>
+      <th>含义</th>
+      <th>临床特征</th>
+    </tr>
+    <tr>
+      <td><code>N40.0</code></td>
+      <td>前列腺增生不伴下尿路症状</td>
+      <td>无症状 BPH</td>
+    </tr>
+    <tr>
+      <td><code>N40.1</code></td>
+      <td>前列腺增生伴下尿路症状</td>
+      <td>尿频、尿急、排尿困难等</td>
+    </tr>
+    <tr>
+      <td><code>N40.2</code></td>
+      <td>前列腺增生伴急性尿潴留</td>
+      <td>急性尿潴留需导尿</td>
+    </tr>
+    <tr>
+      <td><code>N40.3</code></td>
+      <td>前列腺增生伴慢性尿潴留</td>
+      <td>慢性尿潴留、残余尿增多</td>
+    </tr>
+  </table>
+  
+  <h4>乳腺疾病 N60-N64 速查</h4>
+  <div class="example-grid">
+    <div class="example-item">
+      <h4>N60 良性乳腺发育不良</h4>
+      <p><code>N60.0</code> 囊性乳腺病</p>
+      <p><code>N60.1</code> 弥漫性囊性乳腺病</p>
+      <p><code>N60.8</code> 其他良性发育不良</p>
+    </div>
+    <div class="example-item">
+      <h4>N61 乳房炎症性疾病</h4>
+      <p><code>N61.0</code> 乳房脓肿</p>
+      <p><code>N61.1</code> 乳房肥大</p>
+      <p>哺乳期乳腺炎 → O91</p>
+    </div>
+    <div class="example-item">
+      <h4>N63 乳房未特指肿块</h4>
+      <p>性质不明的乳腺肿块</p>
+      <p>活检后需根据病理修改编码</p>
+      <p>恶性 → C50，良性 → N60/D24</p>
+    </div>
+    <div class="example-item">
+      <h4>N64 乳房其他疾病</h4>
+      <p><code>N64.0</code> 乳头内陷</p>
+      <p><code>N64.4</code> 乳房疼痛（乳痛症）</p>
+      <p><code>N64.5</code> 乳房萎缩</p>
+    </div>
+  </div>
+  
+  <div class="card warn">
+    <strong>编码边界：</strong>乳腺疾病编码需注意三条边界线：<br>
+    ① 恶性肿瘤 → <code>C50.x</code>（第二章肿瘤）<br>
+    ② 原位癌 → <code>D05.x</code>（第二章肿瘤）<br>
+    ③ 良性肿瘤 → <code>D24</code>（第二章肿瘤）<br>
+    N60-N64 仅用于非肿瘤性良性疾病和性质未特指的肿块。
+  </div>
+</div>
+
+<!-- ======== 重难点深度解析 ======== -->
+<h2><span class="icon">⚡</span> 重难点深度解析：继发性肾病的编码逻辑——N08/N16 桥梁类目</h2>
+
+<div class="card">
+  <h3>问题背景</h3>
+  <p>当肾脏病变是全身性疾病的继发表现时（如糖尿病肾病、狼疮性肾炎、高血压肾病等），ICD-10 提供了两个特殊的"桥梁"类目：<code>N08</code>（分类于他处疾病引起的肾小球疾患）和 <code>N16</code>（分类于他处疾病引起的肾小管-间质疾患）。这些类目的使用规则是 N 章最容易出错的知识点。</p>
+  
+  <h3>核心规则</h3>
+  <div class="process-box">
+    <div class="process-step">
+      <div class="process-num">1</div>
+      <div class="process-content">
+        <h4>确定肾脏病变的病理类型</h4>
+        <p>肾小球病变 → N08；肾小管-间质病变 → N16</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">2</div>
+      <div class="process-content">
+        <h4>确定原发疾病</h4>
+        <p>找到引起肾脏病变的全身性疾病（如糖尿病 E10-E14、SLE M32 等）</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">3</div>
+      <div class="process-content">
+        <h4>查找 N08/N16 的亚目</h4>
+        <p>根据原发病选择 .0-.8 亚目（如 N08.5 继发于 SLE，N08.3 继发于糖尿病）</p>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">4</div>
+      <div class="process-content">
+        <h4>附加原发病编码</h4>
+        <p>N08/N16 编码后，必须附加原发疾病的编码作为补充说明</p>
+      </div>
+    </div>
+  </div>
+  
+  <table>
+    <tr>
+      <th>原发病</th>
+      <th>肾脏继发病变编码</th>
+      <th>原发病编码</th>
+      <th>完整编码方案</th>
+    </tr>
+    <tr>
+      <td>糖尿病</td>
+      <td><code>N08.3</code></td>
+      <td><code>E10-E14</code>（+ .2 糖尿病肾病亚目）</td>
+      <td>N08.3 + E11.2</td>
+    </tr>
+    <tr>
+      <td>系统性红斑狼疮</td>
+      <td><code>N08.5</code></td>
+      <td><code>M32.1</code></td>
+      <td>N08.5 + M32.1</td>
+    </tr>
+    <tr>
+      <td>高血压</td>
+      <td><code>N08.0</code>（或直接编 N26 肾萎缩）</td>
+      <td><code>I10-I15</code></td>
+      <td>N08.0 + I12.x（高血压肾病）</td>
+    </tr>
+    <tr>
+      <td>多发性骨髓瘤</td>
+      <td><code>N08.8</code></td>
+      <td><code>C90.0</code></td>
+      <td>N08.8 + C90.0</td>
+    </tr>
+    <tr>
+      <td>药物性肾损伤</td>
+      <td><code>N14.0-N14.2</code>（直接编此码，非 N16）</td>
+      <td>—</td>
+      <td>N14.0 + T36-T50（药物编码）</td>
+    </tr>
+  </table>
+  
+  <div class="card warn">
+    <strong>关键区分：</strong>高血压肾病有特殊合并编码 <code>I12.x</code>（高血压性肾脏病），此时优先编 I12 而非 N08.0 + I10。而糖尿病肾病则需要同时编 <code>E11.2</code>（糖尿病肾病亚目）和 <code>N08.3</code>，因为 E 编码的 .2 亚目已包含糖尿病肾病概念，但 N08.3 提供了更特指的肾脏病理信息。
+  </div>
+</div>
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">📝</span> 案例练习</h2>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>案例一：慢性肾脏病</span>
+    <span class="case-tag practice">基础题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者男性，62岁。糖尿病病史15年，逐渐出现乏力、纳差。实验室检查：血肌酐 320μmol/L，eGFR 28 ml/min/1.73m²，尿蛋白(++)。诊断为"慢性肾脏病4期，2型糖尿病肾病"。</p>
+    <p>请给出诊断编码方案。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：</strong><br>
+        主要编码：<code>N18.400</code>（慢性肾脏病4期）<br>
+        附加编码：<code>N08.3</code>（糖尿病引起的肾小球疾患）<br>
+        附加编码：<code>E11.2</code>（2型糖尿病肾病）<br><br>
+        <strong>解析：</strong>eGFR 28 对应 CKD 4期（GFR 15-29），编为 N18.4。糖尿病肾病是继发性肾小球疾病，需附加 N08.3 和 E11.2。注意：不能只编 E11.2 而漏掉 N18.4 和 N08.3，因为 N18.4 提供了肾功能分期信息，N08.3 提供了继发性肾病信息。三码联合才能完整描述病情。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>案例二：泌尿系结石伴肾积水</span>
+    <span class="case-tag practice">基础题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者男性，45岁。左侧腰部剧痛伴血尿。CT示左肾结石（1.2cm），伴左肾中度积水。诊断为"左肾结石伴肾积水"。</p>
+    <p>请给出诊断编码。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：N13.200</strong>（伴有梗阻的肾积水，伴结石）<br><br>
+        <strong>解析：</strong>当结石伴有肾积水时，应使用合并编码 N13.2，而不是分别编 N20.0（肾结石）+ N13.0（肾积水）。查找路径：肾积水→伴有结石→ <code>N13.2</code>。国临版扩展码第6位表示侧别。注意：<span class="hl">N13.2 已包含结石信息</span>，不需要再附加 N20.0。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>案例三：急性肾损伤</span>
+    <span class="case-tag practice">基础题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者男性，55岁。因重症肺炎入院，出现尿量减少，血肌酐从 90 升至 380μmol/L。诊断为"急性肾损伤，急性肾小管坏死"。</p>
+    <p>请给出诊断编码。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：N17.000</strong>（急性肾衰竭伴肾小管坏死）<br><br>
+        <strong>解析：</strong>急性肾损伤（AKI）编为 N17。伴有肾小管坏死的亚目为 .0，即 N17.0。查找路径：衰竭→肾→急性→伴有肾小管坏死→ <code>N17.0</code>。注意：本例不能编为 N18（慢性），因为患者既往无慢性肾病，肾功能在短期内急剧恶化。如需附加外因编码（感染），可附加重症肺炎的编码。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>案例四：肾病综合征</span>
+    <span class="case-tag challenge">进阶题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者女性，28岁。大量蛋白尿（5.2g/24h）、低白蛋白血症（22g/L）、双下肢水肿。肾穿刺病理：膜性肾病。诊断为"肾病综合征，膜性肾病"。</p>
+    <p>请给出诊断编码。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：N04.200</strong>（肾病综合征，膜性肾小球肾炎）<br><br>
+        <strong>解析：</strong>肾病综合征编为 N04，病理分型为膜性肾病的亚目为 .2。查找路径：综合征→肾病→ <code>N04</code>→ 膜性→ <code>N04.2</code>。N00-N08 类目的第4位亚目代表病理形态学分型：.0轻微病变、.1局灶节段性、.2弥漫性膜性、.3弥漫性系膜毛细血管性、.4弥漫性毛细血管内、.5弥漫性系膜增生性、.6新月体性。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>案例五：前列腺增生伴尿潴留</span>
+    <span class="case-tag challenge">进阶题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者男性，72岁。进行性排尿困难3年，突发不能排尿8小时入院。急诊留置导尿。直肠指检：前列腺II度增大，质韧。诊断为"前列腺增生伴急性尿潴留"。</p>
+    <p>请给出诊断编码。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：N40.200</code></strong>（前列腺增生伴急性尿潴留）<br>
+        附加操作编码：留置导尿 <code>96.04</code><br><br>
+        <strong>解析：</strong>前列腺增生伴急性尿潴留编为 N40.2。查找路径：增生→前列腺→伴有急性尿潴留→ <code>N40.2</code>。注意：不能编为 N40.0（不伴症状）或 N40.1（伴下尿路症状），因为急性尿潴留有独立的亚目 N40.2。慢性尿潴留用 N40.3。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>案例六：狼疮性肾炎</span>
+    <span class="case-tag challenge">进阶题</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者女性，26岁。SLE病史3年。近期出现蛋白尿和血尿。肾穿刺：狼疮性肾炎IV型（弥漫增殖型）。血肌酐 145μmol/L，eGFR 48 ml/min。诊断为"狼疮性肾炎，CKD 3期"。</p>
+    <p>请给出完整诊断编码方案。</p>
+    <details>
+      <summary>查看答案与解析</summary>
+      <div class="answer-box">
+        <strong>答案：</strong><br>
+        <code>N18.300</code>（慢性肾脏病3期，eGFR 48）<br>
+        <code>N08.5</code>（分类于他处疾病引起的肾小球疾患，SLE引起）<br>
+        <code>M32.101</code>（SLE 累及器官或系统）<br><br>
+        <strong>解析：</strong>本例涉及三个编码联合使用：①N18.3 表示 CKD 分期（eGFR 48 = 3期）；②N08.5 是桥梁类目，表示继发于 SLE 的肾小球疾病；③M32.1 是原发病 SLE 伴器官受累。三者缺一不可。查找路径：衰竭→肾→慢性→ <code>N18</code>→ 3期。然后查：肾小球疾患→分类于他处→狼疮→ <code>N08.5</code>。
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ======== 今日重点回顾 ======== -->
+<h2><span class="icon">📌</span> 今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item">
+    <div class="key-num">1</div>
+    <div>N章五大区块：肾小球(N00-08)→肾小管间质(N10-16)→肾衰竭(N17-19)→结石(N20-23)→膀胱尿道生殖器</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">2</div>
+    <div>急性肾衰竭 N17，慢性肾脏病 N18（.1-.5对应CKD 1-5期），未特指 N19（避免使用）</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">3</div>
+    <div>CKD 5期（GFR<15或透析）→ N18.5 + Z99.2（透析状态附加码）</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">4</div>
+    <div>肾小球疾病双轴心分类：N00-N07按临床综合征，第4位亚目按病理形态学</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">5</div>
+    <div>结石伴肾积水→N13.2（合并编码优先），不编 N20.0+N13.0</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">6</div>
+    <div>N08/N16是桥梁类目，用于继发性肾病，需附加原发病编码</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">7</div>
+    <div>前列腺增生：N40.0无症状/N40.1伴LUTS/N40.2急性尿潴留/N40.3慢性尿潴留</div>
+  </div>
+  <div class="key-item">
+    <div class="key-num">8</div>
+    <div>乳腺疾病N60-N64仅用于非肿瘤性病变，恶性→C50，原位癌→D05，良性肿瘤→D24</div>
+  </div>
+</div>
+
+<!-- ======== 明日预习 ======== -->
+<h2><span class="icon">📖</span> 明日预习提示</h2>
+
+<div class="card tip">
+  <h4>Day 24 预习：O-P章——妊娠分娩产褥期 + 围生期疾病</h4>
+  <p>明日将进入第十五章和第十六章的学习，这是产科和新生儿编码的核心内容。建议预习：</p>
+  <ul>
+    <li>O章强烈优先分类章的概念：孕妇因产科情况就医时，必须优先编 O 章</li>
+    <li>产科主要诊断选择原则：并发症/合并症 > 分娩方式 > 妊娠周数</li>
+    <li>妊娠期高血压 O10-O16 的分类（原有高血压 vs 妊娠期高血压 vs 子痫前期/子痫）</li>
+    <li>O80-O84 分娩方式编码与 Z37 分娩结局附加编码</li>
+    <li>P章围生期疾病 P00-P96：新生儿疾病编码逻辑与母体因素的关联</li>
+  </ul>
+  <p><strong>重点思考：</strong>O章为何被称为"强烈优先分类章"？产妇因非产科疾病（如骨折）入院时，应该编 O 章还是其他章？</p>
+</div>
+
+<!-- ======== Footer ======== -->
+<div class="footer">
+  <p>病案编码学习 · Day 23 · N章泌尿生殖系统疾病</p>
+  <p style="margin-top:6px;">国临版 ICD-10 编码标准 | 学习第23天 / 共60天</p>
+</div>
+
+</body>
+</html>

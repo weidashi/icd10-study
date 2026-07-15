@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 18（2026年7月6日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 18 · 2026年7月6日</div>
+  <h1>🫀 I章 循环系统疾病（I00-I99）</h1>
+  <p class="subtitle">今日主题：冠心病、心梗、高血压 —— 编码员最常打交道的章节</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 18 / 60 天（30.0%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>急性心肌梗死 I21 双轴心分类（部位 + STEMI/NSTEMI）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>高血压 I10-I15 合并编码规则（I11/I12/I13 的使用条件）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>心绞痛 I20 分型编码（稳定型/不稳定型/变异型）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>急性心梗 28 天时间窗：I21 → I22 → I25.2 的转换逻辑</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>冠心病 I25.1 vs 缺血性心肌病 I25.5 的区别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>心梗并发症 I23（近期）vs I25（远期）的时间界限</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>继发性高血压 I15 的病因追查与编码顺序</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>急性心梗 Type 2（I21.A1）的编码规则（国临版扩展）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>I章其他疾病（风湿热 I00-I09、心包炎 I30-I32 等）概述</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>I 章是循环系统疾病，是编码考试和实际工作中<strong>最高频的章节</strong>。高血压、冠心病、心梗三大病种几乎占了心血管编码的 80%。今天的核心是<strong>急性心梗 I21 的双轴心分类</strong>和<strong>高血压合并编码</strong>——这两块搞定了，I 章就通了七八成。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、I 章循环系统疾病全景概览</h2>
+
+<h3>1.1 I00-I99 章节结构总览</h3>
+<p>循环系统疾病（Diseases of the circulatory system）是 ICD-10 第九章，码位范围 I00-I99。这一章涵盖了心脏、血管疾病的几乎所有类型，是病案编码中<strong>出现频率最高</strong>的章节之一。理解本章的分类结构，是编码员的基本功。</p>
+
+<table>
+  <tr><th>码位范围</th><th>板块名称</th><th>核心疾病</th><th>编码频率</th></tr>
+  <tr><td><code>I00-I09</code></td><td>风湿性热和风湿性心脏病</td><td>风湿热、风湿性瓣膜病</td><td>中</td></tr>
+  <tr><td><code>I10-I15</code></td><td>高血压性疾病 <span class="keyword-tag">★高频</span></td><td>原发性高血压、高血压性心脏病/肾病</td><td>极高</td></tr>
+  <tr><td><code>I20-I25</code></td><td>缺血性心脏病 <span class="keyword-tag">★高频</span></td><td>心绞痛、急性心梗、冠心病</td><td>极高</td></tr>
+  <tr><td><code>I26-I28</code></td><td>肺循环疾病</td><td>肺栓塞、肺动脉高压</td><td>中</td></tr>
+  <tr><td><code>I30-I52</code></td><td>其他心脏疾病</td><td>心包炎、心肌炎、心内膜炎、心力衰竭</td><td>高</td></tr>
+  <tr><td><code>I60-I69</code></td><td>脑血管疾病 <span class="keyword-tag">★高频</span></td><td>脑出血、脑梗死、脑血管病后遗症</td><td>极高</td></tr>
+  <tr><td><code>I70-I79</code></td><td>动脉、小动脉和毛细血管疾病</td><td>动脉粥样硬化、主动脉瘤</td><td>中</td></tr>
+  <tr><td><code>I80-I89</code></td><td>静脉、淋巴结疾病</td><td>静脉血栓、静脉曲张</td><td>中</td></tr>
+  <tr><td><code>I95-I99</code></td><td>循环系统其他疾患</td><td>低血压、直立性低血压</td><td>低</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>今日聚焦三大板块：</strong><br>
+  ① <strong>I10-I15 高血压性疾病</strong>——"合并编码"的典型代表<br>
+  ② <strong>I20-I25 缺血性心脏病</strong>——心绞痛、心梗、冠心的编码核心<br>
+  ③ <strong>心梗时间轴</strong>——I21→I22→I25.2 的动态转换<br>
+  脑血管疾病（I60-I69）留到 <strong>Day 19</strong> 专题讲解。
+</div>
+
+<h3>1.2 I 章编码的通用规则</h3>
+<p>I 章有几条贯穿始终的编码规则，必须牢记：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>高血压合并编码的"推定关系"</h4>
+      <p>当高血压与心脏病/肾病同时存在时，ICD-10 <strong>推定</strong>存在因果关系，应使用合并编码 I11/I12/I13，而非分别编码。但继发性高血压 I15 例外。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>缺血性心脏病的"时间轴"分类</h4>
+      <p>心梗以 4 周（28 天）为界：≤28 天 = 急性（I21）；出院后 28 天内再发 = 随后性（I22）；>28 天 = 慢性（I25.8）；已愈合无症状 = 陈旧性（I25.2）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>同时提及高血压的附加编码</h4>
+      <p>I20-I25 类目下注明"包括同时提及的高血压（I10-I15）"，需要时可使用附加编码标明存在的高血压。但若使用了 I11-I13 合并编码，则<strong>不再另编 I10</strong>。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 二 ======== -->
+<hr class="divider">
+<h2><span class="icon">🩸</span> 二、高血压编码规则（I10-I15）——合并编码的核心</h2>
+
+<h3>2.1 高血压分类总览</h3>
+<p>高血压（Hypertension）是心血管疾病中最常见的慢性病，几乎所有中老年患者病案中都会出现。ICD-10 将高血压分为<strong>原发性</strong>和<strong>继发性</strong>两大类，并对高血压导致的心脏/肾脏损害提供了<strong>合并编码</strong>。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>含义</th><th>使用条件</th></tr>
+  <tr><td><code>I10</code></td><td>原发性高血压</td><td>无明确病因的高血压</td><td>未提及心/肾损害</td></tr>
+  <tr><td><code>I11.0</code></td><td>高血压性心脏病<strong>伴</strong>心力衰竭</td><td>高血压导致心脏病 + 心衰</td><td>因果关系明确</td></tr>
+  <tr><td><code>I11.9</code></td><td>高血压性心脏病<strong>不伴</strong>心力衰竭</td><td>高血压导致心脏病，无心衰</td><td>因果关系明确</td></tr>
+  <tr><td><code>I12.0</code></td><td>高血压性肾病<strong>伴</strong>肾衰竭</td><td>高血压导致肾病 + 肾衰</td><td>因果关系明确</td></tr>
+  <tr><td><code>I12.9</code></td><td>高血压性肾病<strong>不伴</strong>肾衰竭</td><td>高血压导致肾病，无肾衰</td><td>因果关系明确</td></tr>
+  <tr><td><code>I13.x</code></td><td>高血压性心脏和肾病</td><td>同时累及心脏和肾脏</td><td>因果关系明确</td></tr>
+  <tr><td><code>I15.x</code></td><td>继发性高血压</td><td>由其他疾病引起的高血压</td><td>有明确原发病因</td></tr>
+</table>
+
+<h3>2.2 合并编码的判断流程</h3>
+<p>高血压合并编码是考试<strong>必考</strong>的知识点，核心在于判断高血压与靶器官损害之间是否存在因果关系。</p>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">高血压 + 心脏病</div>
+    <span>→</span>
+    <div class="flow-box">因果关系明确？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">是 → I11.x 合并编码</div>
+    <div class="flow-box">否 → I10 + 心脏病分别编码</div>
+  </div>
+  <div class="flow-row" style="margin-top:10px;">
+    <div class="flow-box">高血压 + 肾病</div>
+    <span>→</span>
+    <div class="flow-box">因果关系明确？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">是 → I12.x 合并编码</div>
+    <div class="flow-box">否 → I10 + 肾病分别编码</div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键区分：</strong>I11-I13 是<strong>原发性高血压</strong>导致心/肾损害的合并编码。如果是<strong>继发性高血压</strong>（如肾血管性高血压 I15.0），则<strong>不使用</strong> I11-I13，而应编 I15.x 并附加靶器官损害编码。
+</div>
+
+<h3>2.3 继发性高血压 I15 的病因追查</h3>
+<p>继发性高血压意味着高血压是其他疾病的<strong>症状</strong>之一，编码时必须追查原发病因。原发病因编在主诊断，I15 作为附加编码。</p>
+
+<table>
+  <tr><th>编码</th><th>病因</th><th>编码路径</th></tr>
+  <tr><td><code>I15.0</code></td><td>肾血管性（肾动脉狭窄）</td><td>主导词：高血压 → 继发性 → 肾血管性 → I15.0</td></tr>
+  <tr><td><code>I15.1</code></td><td>继发于其他肾疾患</td><td>主导词：高血压 → 继发性 → 由于 → 肾脏疾患 NEC → I15.1</td></tr>
+  <tr><td><code>I15.2</code></td><td>继发于内分泌疾病</td><td>主导词：高血压 → 继发性 → 由于 → 内分泌疾患 → I15.2</td></tr>
+  <tr><td><code>I15.8</code></td><td>其他继发性</td><td>药物引起、主动脉缩窄等</td></tr>
+  <tr><td><code>I15.9</code></td><td>未特指的继发性</td><td>应尽量避免使用</td></tr>
+</table>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：肾血管性高血压</h4>
+    <p>临床诊断：肾动脉狭窄伴高血压</p>
+    <p>主诊断：<code>I70.1</code> 肾动脉粥样硬化</p>
+    <p>附加编码：<code>I15.0</code> 肾血管性高血压</p>
+    <p><strong>注意：原发病因为主诊断</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>例：原发性高血压+心衰</h4>
+    <p>临床诊断：高血压性心脏病伴心力衰竭</p>
+    <p>主诊断：<code>I11.0</code></p>
+    <p>附加编码：心衰类型码（如 <code>I50.9</code>）</p>
+    <p><strong>注意：不再另编 I10</strong></p>
+  </div>
+</div>
+
+<!-- ======== 三 ======== -->
+<hr class="divider">
+<h2><span class="icon">❤️</span> 三、冠心病与心绞痛编码（I20-I25）</h2>
+
+<h3>3.1 缺血性心脏病 I20-I25 结构</h3>
+<p>缺血性心脏病（Ischemic Heart Disease, IHD）是冠状动脉狭窄或闭塞导致心肌缺血的一组疾病，临床统称"冠心病"。ICD-10 将其分类于 I20-I25，按<strong>临床表现形式</strong>和<strong>时间</strong>进行分类。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>分类轴心</th><th>临床对应</th></tr>
+  <tr><td><code>I20</code></td><td>心绞痛</td><td>临床分型</td><td>稳定型/不稳定型/变异型</td></tr>
+  <tr><td><code>I21</code></td><td>急性心肌梗死</td><td>部位 + 透壁性</td><td>STEMI / NSTEMI</td></tr>
+  <tr><td><code>I22</code></td><td>随后性心肌梗死</td><td>部位 + 透壁性</td><td>28 天内再发心梗</td></tr>
+  <tr><td><code>I23</code></td><td>急性心梗后近期并发症</td><td>并发症类型</td><td>心包积血、心脏破裂等</td></tr>
+  <tr><td><code>I24</code></td><td>其他急性缺血性心脏病</td><td>—</td><td>急性冠脉综合征（未分型）</td></tr>
+  <tr><td><code>I25</code></td><td>慢性缺血性心脏病</td><td>具体类型</td><td>冠心病、陈旧性心梗、缺血性心肌病</td></tr>
+</table>
+
+<h3>3.2 心绞痛 I20 的分型编码</h3>
+<p>心绞痛（Angina Pectoris）是冠脉供血不足引起的发作性胸痛。ICD-10 按临床分型进行编码，<strong>住院患者必须找到准确分型</strong>，不能笼统编 I20.9。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>临床特征</th><th>编码路径</th></tr>
+  <tr><td><code>I20.0</code></td><td>不稳定型心绞痛</td><td>新发/加重/休息时发作，梗死前状态</td><td>心绞痛 → 不稳定 → I20.0</td></tr>
+  <tr><td><code>I20.1</code></td><td>伴有确证痉挛的心绞痛</td><td>变异型/Prinzmetal心绞痛，冠脉痉挛</td><td>心绞痛 → 伴有确证的痉挛 → I20.1</td></tr>
+  <tr><td><code>I20.8</code></td><td>其他形式的心绞痛</td><td>稳定型/劳力型心绞痛</td><td>心绞痛 → 其他 → I20.8</td></tr>
+  <tr><td><code>I20.9</code></td><td>心绞痛，未特指</td><td>类型不明时才使用</td><td>心绞痛 → I20.9</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 常见错误：</strong>临床经常只写"心绞痛"而不注明分型。编码员必须查阅病程记录、心电图结果，尽量找到准确分型。变异型心绞痛（I20.1）有ST段一过性抬高，不稳定型心绞痛（I20.0）有梗死前状态描述——这些临床线索是编码的依据。
+</div>
+
+<h3>3.3 慢性缺血性心脏病 I25</h3>
+<p>I25 是慢性缺血性心脏病的总称，包含冠心病、陈旧性心梗、缺血性心肌病等多个亚型，是编码工作中最容易混淆的区域之一。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>使用场景</th><th>能否做主诊断</th></tr>
+  <tr><td><code>I25.1</code></td><td>冠状动脉粥样硬化性心脏病</td><td>冠脉粥样硬化确诊，无急性发作</td><td>可以（但应优先用更明确分型）</td></tr>
+  <tr><td><code>I25.2</code></td><td>陈旧性心肌梗死</td><td>心梗已愈合（>28天），无症状</td><td>不能做主诊断（仅做附加）</td></tr>
+  <tr><td><code>I25.5</code></td><td>缺血性心肌病</td><td>冠心病导致心脏扩大、心衰</td><td>可以（心衰作为附加编码）</td></tr>
+  <tr><td><code>I25.6</code></td><td>隐匿性冠心病</td><td>无症状性心肌缺血</td><td>可以</td></tr>
+  <tr><td><code>I25.8</code></td><td>其他慢性缺血性心脏病</td><td>慢性心梗（>28天仍有症状）</td><td>可以</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 常见错误</h4>
+    <p>患者急性心梗出院后 3 个月因"胸闷"入院，编码员直接编 <code>I25.1</code> 冠心病——忽略了急性心梗病史，应为 <code>I25.2</code> 陈旧性心梗</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>查阅既往病史：心梗 >28 天且无症状 → <code>I25.2</code>；心梗 >28 天仍有缺血症状 → <code>I25.8</code>；仅有冠脉硬化无心梗史 → <code>I25.1</code></p>
+  </div>
+</div>
+
+<!-- ======== 四 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔥</span> 四、急性心肌梗死编码（I21-I22）——双轴心分类</h2>
+
+<h3>4.1 急性心梗 I21 的双轴心分类</h3>
+<p>急性心肌梗死（Acute Myocardial Infarction, AMI）是 I 章编码的重中之重。ICD-10 对 I21 采用<strong>双轴心分类</strong>：第一轴心是<strong>发病部位</strong>（前壁/下壁/其他部位），第二轴心是<strong>透壁性</strong>（STEMI 透壁 vs NSTEMI 非透壁）。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>对应临床</th><th>心电图特征</th></tr>
+  <tr><td><code>I21.0</code></td><td>急性前壁透壁性心梗</td><td>前壁 STEMI</td><td>V1-V4 ST段抬高</td></tr>
+  <tr><td><code>I21.1</code></td><td>急性下壁透壁性心梗</td><td>下壁 STEMI</td><td>II/III/aVF ST段抬高</td></tr>
+  <tr><td><code>I21.2</code></td><td>其他部位的透壁性心梗</td><td>侧壁/后壁等 STEMI</td><td>对应导联ST抬高</td></tr>
+  <tr><td><code>I21.3</code></td><td>未特指部位的透壁性心梗</td><td>STEMI 部位不明</td><td>ST抬高但未记录部位</td></tr>
+  <tr><td><code>I21.4</code></td><td>急性非透壁性心梗</td><td>NSTEMI / 心内膜下心梗</td><td>ST-T动态演变，无ST持续抬高</td></tr>
+  <tr><td><code>I21.9</code></td><td>急性心肌梗死，未特指</td><td>类型不明时使用</td><td>—</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>国临版扩展：</strong>国临版在 I21 基础上进一步扩展，如 <code>I21.001</code>（急性前壁STEMI）、<code>I21.101</code>（急性下壁STEMI）、<code>I21.401</code>（急性NSTEMI）等。填报时应编到最细扩展码。
+</div>
+
+<h3>4.2 心梗时间轴：I21 → I22 → I25.2</h3>
+<p>心肌梗死的编码随<strong>时间推移</strong>而变化，这是 I 章编码的核心逻辑之一。28 天（4 周）是关键时间节点。</p>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">发病 ≤28天</div>
+    <span>→</span>
+    <div class="flow-box warn-step">I21 急性心梗</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">28天内再发新心梗</div>
+    <span>→</span>
+    <div class="flow-box warn-step">I22 随后性心梗（+I21同时使用）</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">>28天仍有症状</div>
+    <span>→</span>
+    <div class="flow-box">I25.8 慢性心梗</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">>28天已愈合无症状</div>
+    <span>→</span>
+    <div class="flow-box">I25.2 陈旧性心梗</div>
+  </div>
+</div>
+
+<h4>I22 随后性心肌梗死的使用要点：</h4>
+<ul>
+  <li><strong>条件：</strong>首次急性心梗后 28 天内再发新的急性心梗</li>
+  <li><strong>必须同时使用 I21：</strong>I22 与 I21 配合使用，I22 表示"本次再发"，I21 表示"首次发作"</li>
+  <li><strong>排序规则：</strong>如果本次入院主要治疗再发心梗，则 I22 为主诊断，I21 为附加诊断</li>
+  <li><strong>限制：</strong>I22 仅适用于 Type 1 心梗的再发；Type 2 心梗再发只用 I21.A1，不用 I22</li>
+</ul>
+
+<h3>4.3 心梗并发症 I23-I25 的时间界限</h3>
+<p>心梗并发症的编码与<strong>发生时间</strong>密切相关，近期并发症和远期并发症归入不同类目。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>时间界限</th><th>典型并发症</th></tr>
+  <tr><td><code>I23.x</code></td><td>急性心梗后近期并发症</td><td>心梗后 28 天内</td><td>心包积血、心脏破裂、室间隔穿孔、乳头肌断裂</td></tr>
+  <tr><td><code>I25.x</code></td><td>心梗后远期并发症</td><td>心梗后 >28 天</td><td>心室壁瘤（I25.3）、冠状动脉瘤（I25.4）</td></tr>
+  <tr><td><code>I31.x</code></td><td>心梗后晚期心包疾患</td><td>心梗后 >28 天</td><td>心包积血（慢性）</td></tr>
+  <tr><td><code>I51.x</code></td><td>心梗后其他晚期并发症</td><td>心梗后 >28 天</td><td>血栓形成、乳头肌断裂（慢性）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码顺序：</strong>当心梗（I21/I22）和并发症（I23）同时存在时，<strong>I21/I22 为主诊断，I23 为附加诊断</strong>。但如果入院目的就是治疗并发症，则可能以并发症为主诊断（需根据具体情况判断）。
+</div>
+
+<!-- ======== 五 ======== -->
+<hr class="divider">
+<h2><span class="icon">💡</span> 五、重难点深度解析：高血压合并编码的因果判断</h2>
+
+<p>高血压合并编码是 I 章编码中<strong>最容易出错</strong>的区域。核心难点在于：什么时候该用合并编码（I11/I12/I13），什么时候该分别编码（I10 + 心脏病/肾病）？</p>
+
+<h3>5.1 合并编码的三个判断条件</h3>
+
+<table>
+  <tr><th>条件</th><th>说明</th><th>示例</th></tr>
+  <tr>
+    <td>① 存在原发性高血压</td>
+    <td>必须是原发性（I10），继发性高血压不用合并编码</td>
+    <td>I10 原发性高血压 + I50 心衰 → 可能需要 I11.0</td>
+  </tr>
+  <tr>
+    <td>② 存在靶器官损害</td>
+    <td>心脏损害（心衰、心室肥厚等）或肾脏损害（肾衰、蛋白尿等）</td>
+    <td>心力衰竭、慢性肾脏病</td>
+  </tr>
+  <tr>
+    <td>③ 因果关系明确</td>
+    <td>病历中明确描述"高血压性心脏病"或"高血压导致肾损害"</td>
+    <td>临床诊断写"高血压性心脏病"</td>
+  </tr>
+</table>
+
+<h3>5.2 国临版的"推定关系"规则</h3>
+<p>在国临版编码规则中，当高血压与心脏病/肾病同时存在时，<strong>推定存在因果关系</strong>，默认使用合并编码。但有一个重要例外：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误理解</h4>
+    <p>只要患者同时有高血压和心脏病，就用 I11.x → <strong>忽略了继发性高血压的例外</strong></p>
+    <p>例：肾血管性高血压 + 心衰 → 错误地编为 I11.0</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确规则</h4>
+    <p>推定关系仅适用于<strong>原发性高血压</strong>。继发性高血压（I15）<strong>不使用</strong>合并编码</p>
+    <p>例：肾血管性高血压 + 心衰 → 编 I15.0 + I50.x（分别编码）</p>
+  </div>
+</div>
+
+<h3>5.3 高血压合并编码决策树</h3>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">高血压 + 心脏病/肾病</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">是继发性高血压？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">是 → I15.x + 靶器官码</div>
+    <span>↓ 否</span>
+    <div class="flow-box">原发性高血压</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">累及心脏？→ I11.x</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">累及肾脏？→ I12.x</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">同时累及？→ I13.x</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">仅高血压无损害？→ I10</div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 特别注意：</strong>使用了 I11/I12/I13 合并编码后，<strong>不再另编 I10</strong>。合并编码已经包含了高血压成分。但如果有心衰，需要<strong>附加心衰类型码</strong>（I50.x）以标明心衰的具体类型。
+</div>
+
+<h3>5.4 高血压与脑血管病/冠心病的关系</h3>
+<p>高血压合并编码 I11-I13 <strong>仅涵盖心脏和肾脏</strong>两个靶器官。高血压导致的脑血管病（如高血压性脑出血）和冠心病（如急性心梗）<strong>没有合并编码</strong>，必须分别编码。</p>
+
+<table>
+  <tr><th>场景</th><th>错误做法</th><th>正确做法</th></tr>
+  <tr>
+    <td>高血压 + 脑出血</td>
+    <td>编 I11.x（错误：脑不是I11的靶器官）</td>
+    <td>I61.x（脑出血）+ I10（高血压，附加编码）</td>
+  </tr>
+  <tr>
+    <td>高血压 + 急性心梗</td>
+    <td>编 I11.x（错误：心梗不属于I11范畴）</td>
+    <td>I21.x（急性心梗）+ I10（高血压，附加编码）</td>
+  </tr>
+  <tr>
+    <td>高血压 + 心脏扩大+心衰</td>
+    <td>I10 + I50.x（分别编码）</td>
+    <td>I11.0（合并编码）+ I50.x（心衰类型）</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 急性心梗编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，58岁，因"突发胸痛3小时"入院。心电图示 V1-V4 导联 ST 段弓背向上抬高，肌钙蛋白升高。临床诊断：急性前壁ST段抬高型心肌梗死。</p>
+    <p><strong>问题：</strong>请给出最终编码及完整索引路径。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：</strong><code>I21.0</code>（急性前壁透壁性心肌梗死），国临版扩展码 <code>I21.001</code></p>
+        <p><strong>✅ 索引路径：</strong>梗死 → 心肌 → 急性 → 透壁 → 前壁 → I21.0</p>
+        <p><strong>✅ 解析：</strong>STEMI = 透壁性心梗，V1-V4对应前壁，因此编 I21.0。双轴心分类：第一轴心=部位（前壁），第二轴心=透壁性（STEMI）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 高血压合并编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女性，72岁，有高血压病史10年。本次因"活动后气促1月"入院，超声心动图示左心室扩大、EF 38%，NT-proBNP 显著升高。临床诊断：高血压性心脏病伴心力衰竭。</p>
+    <p><strong>问题：</strong>主诊断和附加诊断分别编什么？是否需要另编 I10？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I11.0</code>（高血压性心脏病伴心力衰竭）</p>
+        <p><strong>✅ 附加编码：</strong><code>I50.9</code>（心力衰竭，未特指）——标明心衰类型</p>
+        <p><strong>✅ 不再另编 I10：</strong>合并编码 I11.0 已包含高血压成分，重复编码 I10 是错误。</p>
+        <p><strong>💡 索引路径：</strong>高血压 → 心脏病 → 伴有心力衰竭 → I11.0</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 心绞痛分型编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，65岁，反复夜间睡眠中发作胸痛，伴ST段一过性抬高。冠脉造影示右冠状动脉痉挛。临床诊断：变异型心绞痛。</p>
+    <p><strong>问题：</strong>应编什么编码？为什么不能编 I20.0（不稳定型心绞痛）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：</strong><code>I20.1</code>（心绞痛伴有确证的痉挛）</p>
+        <p><strong>✅ 索引路径：</strong>心绞痛 → 伴有确证的痉挛 → I20.1</p>
+        <p><strong>✅ 不能编 I20.0 的原因：</strong>变异型心绞痛（Prinzmetal）的发病机制是<strong>冠状动脉痉挛</strong>，而非冠脉固定狭窄导致的不稳定斑块。虽然变异型心绞痛在临床上属于不稳定型心绞痛的一种特殊类型，但 ICD-10 为其单独设立了 I20.1 编码，应优先使用更特异的编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 心梗时间轴编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，55岁。3周前因"急性前壁心梗"在某院行PCI支架植入术。本次因"再发胸痛2小时"入院，心电图示下壁导联ST段抬高，肌钙蛋白升高。诊断：急性下壁心肌梗死（再发）。</p>
+    <p><strong>问题：</strong>本次住院的主诊断和附加诊断分别是什么？说明理由。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I22.1</code>（随后性下壁透壁性心肌梗死）</p>
+        <p><strong>✅ 附加诊断：</strong><code>I21.0</code>（急性前壁透壁性心肌梗死——首次发作）</p>
+        <p><strong>✅ 理由：</strong>首次心梗后 28 天内（3周 = 21天）再发新的急性心梗，使用 I22。I22 必须与 I21 配合使用——I22 表示本次再发心梗，I21 表示首次心梗。本次入院主要治疗再发心梗，故 I22 为主诊断。</p>
+        <p><strong>💡 索引路径：</strong>梗死 → 心肌 → 随后性 → 透壁 → 下壁 → I22.1</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 继发性高血压编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，11岁。因"血压升高伴蛋白尿6月"入院。既往肾病综合征病史2年。肾穿刺活检示 IgA 肾病。血压 160/100mmHg，口服降压药效果不佳。临床诊断：难治性高血压、IgA 肾病。</p>
+    <p><strong>问题：</strong>高血压应编 I10 还是 I15？主诊断和附加编码如何排列？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 高血压编码：</strong><code>I15.1</code>（继发于其他肾疾患的高血压），<strong>不是 I10</strong></p>
+        <p><strong>✅ 主诊断：</strong><code>I15.1</code>（继发性高血压）——或以 IgA 肾病 N02.8 为主诊断，视入院目的而定</p>
+        <p><strong>✅ 附加编码：</strong>IgA 肾病编码</p>
+        <p><strong>✅ 理由：</strong>患者有明确的肾脏疾病基础（肾病综合征/IgA肾病），高血压是由肾脏疾病导致的——属于继发性高血压。虽然临床写"难治性高血压"，但编码员必须根据病因判断：有肾脏疾患基础 → 继发性 → I15.1。</p>
+        <p><strong>💡 索引路径：</strong>高血压 → 继发性 → 由于 → 肾脏疾患 NEC → I15.1</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 心梗并发症编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，68岁。急性前壁心梗后第5天，突发胸痛加重，超声心动图示心包积液（中等量），考虑心梗后心包炎。同期还发现室间隔穿孔。</p>
+    <p><strong>问题：</strong>请列出所有应编的疾病编码及排列顺序。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码列表：</strong></p>
+        <p>① <code>I21.0</code>（急性前壁透壁性心肌梗死）——主诊断</p>
+        <p>② <code>I23.0</code>（心包积血作为急性心梗后近期并发症）——附加诊断</p>
+        <p>③ <code>I23.1</code>（室间隔穿孔作为急性心梗后近期并发症）——附加诊断</p>
+        <p><strong>✅ 理由：</strong>心梗后第5天（28天内）出现的并发症属于<strong>近期并发症</strong>，分类于 I23。心包炎/心包积液和室间隔穿孔都是 I23 的亚目。I21 为主诊断，I23 为附加诊断。</p>
+        <p><strong>💡 关键点：</strong>如果这些并发症在心梗 28 天后才发现，则不编 I23，而编 I31（心包疾患）或 I51（其他晚期并发症）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>I章结构：</strong>I10-I15高血压、I20-I25缺血性心脏病、I60-I69脑血管病为三大高频板块</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>高血压合并编码：</strong>I11（心）、I12（肾）、I13（心+肾），使用后不再另编I10</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>继发性高血压</strong>I15不使用合并编码，需追查原发病因</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>急性心梗I21双轴心：</strong>部位（前壁/下壁/其他）× 透壁性（STEMI/NSTEMI）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>心梗时间轴：</strong>≤28天I21 → 28天内再发I22 → >28天I25.8 → 愈合I25.2</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I22必须配合I21使用：</strong>排序视本次入院目的决定</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>心绞痛I20分型：</strong>不稳定I20.0、痉挛I20.1、稳定I20.8，尽量避免I20.9</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>高血压合并编码</strong>仅涵盖心脏和肾脏，脑出血/心梗需分别编码</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、明日预习 ======== -->
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 19 主题：I 章进阶 —— 脑血管疾病编码（脑梗死、脑出血、TIA）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>脑出血 I60/I61/I62 的分类轴心分别是什么？</li>
+    <li>脑梗死 I63 的双轴心分类（责任血管 + 病因）如何使用？</li>
+    <li>TIA（短暂性脑缺血发作）编在 I 章还是 G 章？为什么？</li>
+    <li>脑血管病后遗症 I69 的使用条件和编码顺序是什么？</li>
+    <li>创伤性脑出血和非创伤性脑出血如何区分？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 18 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
