@@ -13,884 +13,285 @@
     --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
     --green: #10b981; --green-bg: #ecfdf5;
     --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
-    --purple: #8b5cf6; --pink: #ec4899;
-    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
-    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
-    --radius: 12px;
+    --purple: #8b5cf6; --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1); --radius: 12px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.85;
-    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
-  }
-  .hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
-    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
-    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
-  }
-  .hero::before {
-    content: ''; position: absolute; top: -60px; right: -60px;
-    width: 200px; height: 200px; border-radius: 50%;
-    background: rgba(255,255,255,.08);
-  }
-  .hero::after {
-    content: ''; position: absolute; bottom: -40px; left: 30%;
-    width: 140px; height: 140px; border-radius: 50%;
-    background: rgba(255,255,255,.05);
-  }
-  .hero .day-badge {
-    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
-    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
-    letter-spacing: .5px; backdrop-filter: blur(4px);
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif; background: var(--bg); color: var(--text); line-height: 1.85; max-width: 920px; margin: 0 auto; padding: 0 24px 80px; }
+  .hero { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%); margin: 0 -24px; padding: 48px 32px 40px; color: #fff; border-radius: 0 0 24px 24px; position: relative; overflow: hidden; }
+  .hero .day-badge { display: inline-block; background: rgba(255,255,255,.2); color: #fff; padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px; backdrop-filter: blur(4px); }
   .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
   .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
-  h2 {
-    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
-    background: var(--card); border-radius: var(--radius);
-    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
-    display: flex; align-items: center; gap: 10px;
-    border-left: 4px solid var(--accent);
-  }
+  h2 { font-size: 20px; margin: 44px 0 18px; padding: 14px 18px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent); }
   h2 .icon { font-size: 24px; flex-shrink: 0; }
   h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
-  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
   p { margin: 10px 0; font-size: 15px; }
-  .card {
-    background: var(--card); border-radius: var(--radius);
-    padding: 18px 22px; margin: 14px 0; font-size: 14px;
-    box-shadow: var(--shadow); border: 1px solid var(--border);
-    transition: transform .15s, box-shadow .15s;
-  }
-  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
   .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
   .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
   .card.info { background: #f0fdf4; border-color: #86efac; }
   .mastery-table { margin: 16px 0; }
-  .mastery-row {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
-    background: var(--card); border: 1px solid var(--border);
-    font-size: 14px; transition: transform .15s;
-  }
-  .mastery-row:hover { transform: translateX(4px); }
-  .mastery-badge {
-    display: inline-block; min-width: 52px; text-align: center;
-    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
-    flex-shrink: 0;
-  }
+  .mastery-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; margin: 6px 0; border-radius: 8px; background: var(--card); border: 1px solid var(--border); font-size: 14px; }
+  .mastery-badge { display: inline-block; min-width: 52px; text-align: center; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
   .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
   .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
   .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
   .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
-  .case-header {
-    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
-    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
-  }
-  .case-num {
-    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; flex-shrink: 0;
-  }
+  .case-header { background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+  .case-num { background: var(--accent); color: #fff; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
   .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
   .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
   .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
   .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
   details { margin-top: 12px; }
-  details > summary {
-    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
-    font-size: 14px; user-select: none; background: var(--accent-bg);
-    border-radius: 8px; transition: background .15s; list-style: none;
-  }
-  details > summary::-webkit-details-marker { display: none; }
+  details > summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px; font-size: 14px; background: var(--accent-bg); border-radius: 8px; list-style: none; }
   details > summary::before { content: '▶ '; font-size: 11px; }
   details[open] > summary::before { content: '▼ '; }
-  details > summary:hover { background: var(--accent-light); }
-  .answer-box {
-    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
-    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
-  }
+  .answer-box { margin-top: 10px; padding: 16px 20px; background: var(--green-bg); border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green); }
   .answer-box strong { color: var(--green); }
   .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
-  .key-item {
-    background: var(--card); border-radius: 10px; padding: 14px 16px;
-    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
-    box-shadow: var(--shadow); border: 1px solid var(--border);
-    transition: transform .15s;
-  }
-  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
-  .key-num {
-    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
-  }
+  .key-item { background: var(--card); border-radius: 10px; padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .key-num { background: var(--accent); color: #fff; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
   table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
   th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
   th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
   tr:hover { background: var(--accent-light); }
-  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
   code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
-  pre {
-    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
-    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
-    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
-    box-shadow: var(--shadow-md);
-  }
-  .note {
-    background: var(--accent-bg); border-left: 4px solid var(--accent);
-    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
-    margin: 14px 0; font-size: 14px;
-  }
-  .note strong { color: var(--accent); }
-  .process-box {
-    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
-    padding: 20px 24px; margin: 16px 0;
-  }
-  .process-step {
-    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
-    border-bottom: 1px dashed var(--border);
-  }
-  .process-step:last-child { border-bottom: none; }
-  .process-num {
-    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 16px; flex-shrink: 0;
-  }
-  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
-  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
-  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
-  .example-item {
-    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
-    background: var(--card); box-shadow: var(--shadow);
-  }
-  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
-  .example-item p { font-size: 13px; margin: 4px 0; }
   .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
-  .compare-col {
-    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
-    font-size: 14px;
-  }
+  .compare-col { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px; }
   .compare-col.good { background: var(--green-bg); border-color: #86efac; }
   .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
   .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
-  .flow-chart {
-    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
-    padding: 20px 24px; margin: 16px 0; text-align: center;
-  }
-  .flow-row {
-    display: flex; justify-content: center; align-items: center; gap: 8px;
-    margin: 6px 0; flex-wrap: wrap;
-  }
-  .flow-box {
-    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
-    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
-  }
-  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
-  .progress-bar {
-    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
-    margin: 12px 0 4px; overflow: hidden;
-  }
-  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
-  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
-  .stat-badge {
-    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
-    padding: 16px; text-align: center; box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-  }
-  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
-  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
-  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
-  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
-  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
-  .keyword-tag { color: var(--red); font-weight: 600; }
+  .process-box { background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .process-step { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .process-step:last-child { border-bottom: none; }
+  .process-num { background: var(--accent); color: #fff; min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .note { background: var(--accent-bg); border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px; margin: 14px 0; font-size: 14px; }
+  .note strong { color: var(--accent); }
   ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
   li { margin: 5px 0; }
-  li p { margin: 4px 0; }
   .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
-  @media (max-width: 600px) {
-    body { padding: 0 12px 60px; }
-    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
-    .hero h1 { font-size: 22px; }
-    h2 { font-size: 17px; padding: 12px 14px; }
-    .key-grid { grid-template-columns: 1fr; }
-    .stat-row { flex-direction: column; }
-    .compare-row { grid-template-columns: 1fr; }
-    .example-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 600px) { body { padding: 0 12px 60px; } .hero { margin: 0 -12px; padding: 32px 16px 28px; } .hero h1 { font-size: 22px; } .compare-row { grid-template-columns: 1fr; } .key-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
-<!-- ==================== HERO ==================== -->
 <div class="hero">
-  <div class="day-badge">Day 22 · 2026年7月10日</div>
-  <h1>🦴 M章：肌肉骨骼系统和结缔组织疾病</h1>
-  <p class="subtitle">今日主题：M00-M99 —— 从关节炎到骨质疏松，掌握骨与关节的编码逻辑</p>
-  <div class="progress-bar"><div class="progress-fill" style="width:36.67%"></div></div>
-  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 22 / 60 天（36.67%）</p>
+  <div class="day-badge">Day 22 · 2026年7月10日 · 星期五</div>
+  <h1>M 章 肌肉骨骼系统和结缔组织疾病（M00-M99）</h1>
+  <div class="subtitle">掌握13大板块全景：关节炎三维编码、脊柱病内外科交界、骨质疏松病理分型、软组织≠骨骼部位、M章与G章/N章交叉</div>
 </div>
 
-<hr class="divider">
+<h2><span class="icon">🎯</span> 今日掌握程度</h2>
+<div class="mastery-table">
+  <div class="mastery-row"><span class="mastery-badge l1">必须掌握</span><span>类风湿性关节炎M05-M06与M08的亚类边界、骨关节炎M15-M19的部位递进编码、脊柱病损M40-M54的内外科分界、骨质疏松M80-M81病理/非病理双轨</span></div>
+  <div class="mastery-row"><span class="mastery-badge l2">应该理解</span><span>M章与G章(瘫痪/肌肉萎缩)的交叉判断、椎间盘突出M51.x亚目的体位+临床表现双轴心、系统性红斑狼疮M32→L93的形态编码、痛风M10亚目区分原发性/继发性/铅性</span></div>
+  <div class="mastery-row"><span class="mastery-badge l3">了解即可</span><span>M01感染性关节炎的直接感染vs反应性、M章†星剑号使用场景</span></div>
+</div>
 
-<!-- ======== 掌握程度 ======== -->
-<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+<h2><span class="icon">📖</span> 核心知识点一：M章全景——13大板块与四大编码陷阱</h2>
 
 <div class="card">
-  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
-  <details style="margin:6px 0;">
-    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
-      🔴 L1 必须掌握（考试高频，编码员基本功）
-    </summary>
-    <div style="padding:10px 14px;">
-      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>M章整体结构：6大类疾病区块（关节→脊柱→软组织→骨病→骨软骨病→其他）</span></div>
-      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>骨关节炎 M15-M19 与类风湿关节炎 M05-M06 的区分编码</span></div>
-      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>骨质疏松症 M80（伴病理性骨折）与 M81（不伴病理性骨折）的区分</span></div>
-      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>痛风 M10 的分类与主导词查找路径</span></div>
-      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>背部疾病 M40-M54 中颈椎病、椎间盘突出的编码</span></div>
-    </div>
-  </details>
-  <details style="margin:6px 0;">
-    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
-      🟡 L2 应该理解（深入理解，避免隐形错误）
-    </summary>
-    <div style="padding:10px 14px;">
-      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>血清阳性类风湿关节炎 M05 与其他类风湿关节炎 M06 的血清学区分</span></div>
-      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>系统性结缔组织疾病 M30-M36（SLE、强直性脊柱炎、系统性硬化症等）</span></div>
-      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>病理性骨折的编码规则：M84.4 + 外因编码的联合使用</span></div>
-      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>解剖部位编码扩展：第6位数表示左右侧</span></div>
-    </div>
-  </details>
-  <details style="margin:6px 0;">
-    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
-      🟢 L3 了解即可（拓展视野，提升专业度）
-    </summary>
-    <div style="padding:10px 14px;">
-      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>骨软骨病 M91-M94 的分类逻辑</span></div>
-      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>生物力学损伤 M99 的概念与应用</span></div>
-      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>M章后遗症编码 M91-M94 中 .7 亚目的使用</span></div>
-    </div>
-  </details>
+<h3>M章（M00-M99）13大板块速查</h3>
+<table>
+  <tr><th>板块</th><th>编码范围</th><th>核心内容</th><th>关键编码规则</th></tr>
+  <tr><td>感染性关节病</td><td>M00-M03</td><td>M00化脓性、M01直接感染、M02反应性、M03感染后</td><td>化脓性单独编码病原体(B95-B98)；M01/M02/M03不加病原体附加码(已在亚目中区分)</td></tr>
+  <tr><td>炎性多关节病</td><td>M05-M14</td><td>M05-M06类风湿、M07-M08青少年、M10痛风</td><td>M05血清阳性vs M06血清阴性是第一步分叉；M08按发病年龄<16岁区分</td></tr>
+  <tr><td>骨关节炎</td><td>M15-M19</td><td>M15多关节、M16髋、M17膝、M18第一腕掌、M19其他</td><td>部位递进：先查M15-M18特指部位，查不到才用M19</td></tr>
+  <tr><td>脊柱病</td><td>M40-M54</td><td>脊柱侧弯M41、强直M45、椎间盘M50-M51</td><td>先天性vs获得性：先天性Q76，获得性M40-M43</td></tr>
+  <tr><td>软组织疾病</td><td>M60-M79</td><td>滑囊炎M70-M71、肌炎M60、肌腱M65-M67</td><td>感染性M60.0 vs 非感染性M60.8-M60.9</td></tr>
+  <tr><td>骨密度与结构</td><td>M80-M85</td><td>骨质疏松M80-M81、骨软化M83</td><td>M80有病理性骨折、M81无骨折——这一个字决定编码</td></tr>
+  <tr><td>其他骨病</td><td>M86-M90</td><td>骨髓炎M86、骨坏死M87、佩吉特M88</td><td>骨髓炎急/慢性亚目+解剖部位</td></tr>
+  <tr><td>其他关节病</td><td>M20-M25</td><td>关节畸形、关节积液、关节僵硬</td><td>先天性畸形Q65-Q79，获得性M20-M21</td></tr>
+</table>
 </div>
 
-<!-- ======== 知识点1：M章总览 ======== -->
-<h2><span class="icon">📐</span> 知识点一：M章整体结构与分类逻辑</h2>
+<div class="card warn">
+  <strong>⚠️ M章四大编码陷阱</strong><br>
+  <strong>陷阱1：骨骼=骨骼系统？</strong>颅骨病变→M章，但颅骨属于头部→也可能是其他章节。原则：<strong>骨本身的疾病→M章</strong>。<br>
+  <strong>陷阱2：肌肉=M章、神经=G章、血管=I章。</strong>同一部位"痛"可能是M章(肌筋膜炎)、G章(神经根病)或I章(缺血性疼痛)。<br>
+  <strong>陷阱3：损伤vs疾病。</strong>急性损伤→S-T章(损伤)；慢性累积性→M章(疾病)。时间线和机制决定编码归属。<br>
+  <strong>陷阱4：全身性疾病</strong>如SLE(M32)→狼疮肾炎(N08.5†)→N章。全身表现在各系统章节分散编码，M章只编"肌肉骨骼受累"部分。
+</div>
+
+<h2><span class="icon">🦴</span> 核心知识点二：关节炎四大家族编码详解</h2>
 
 <div class="card">
-  <h3>是什么</h3>
-  <p>M章（M00-M99）是 ICD-10 第十三章，涵盖<span class="hl">肌肉骨骼系统和结缔组织疾病</span>（Diseases of the musculoskeletal system and connective tissue）。这一章的特点是分类轴心<strong>混合使用</strong>：既有按解剖部位分类的（如脊柱 M40-M54），也有按病因分类的（如感染性关节炎 M00-M03），还有按病理性质分类的（如骨密度异常 M80-M85）。</p>
-  
-  <h3>为什么重要</h3>
-  <p>M章是编码考试和实际工作中的高频章节。肌肉骨骼系统疾病在门诊和住院病案中占比极高，且编码涉及大量解剖部位扩展码，是编码员容易出错的重灾区。掌握 M 章的分区结构，能帮助你快速定位编码范围，避免在卷三索引中"迷路"。</p>
-  
-  <h3>怎么用 —— 六大区块速查</h3>
-  <table>
-    <tr>
-      <th>编码范围</th>
-      <th>区块名称</th>
-      <th>核心内容</th>
-      <th>高频编码</th>
-    </tr>
-    <tr>
-      <td><code>M00-M25</code></td>
-      <td>关节疾病</td>
-      <td>关节炎、关节病</td>
-      <td>M05/M06 类风湿、M15-M19 骨关节炎、M10 痛风</td>
-    </tr>
-    <tr>
-      <td><code>M26-M27</code></td>
-      <td>牙面系统疾病</td>
-      <td>颌面关节、牙齿疾病</td>
-      <td>M26 颞下颌关节疾病</td>
-    </tr>
-    <tr>
-      <td><code>M30-M36</code></td>
-      <td>系统性结缔组织疾病</td>
-      <td>自身免疫性疾病</td>
-      <td>M32 SLE、M45 强直性脊柱炎、M34 系统性硬化症</td>
-    </tr>
-    <tr>
-      <td><code>M40-M54</code></td>
-      <td>背部病（Dorsopathies）</td>
-      <td>脊柱相关疾病</td>
-      <td>M47 颈椎病、M50/M51 椎间盘突出、M54 背痛</td>
-    </tr>
-    <tr>
-      <td><code>M60-M79</code></td>
-      <td>软组织疾病</td>
-      <td>肌肉、筋膜、肌腱</td>
-      <td>M79.7 纤维肌痛、M71 滑囊炎</td>
-    </tr>
-    <tr>
-      <td><code>M80-M85</code></td>
-      <td>骨密度和骨结构疾病</td>
-      <td>骨质疏松、骨坏死</td>
-      <td>M80/M81 骨质疏松、M87 骨坏死</td>
-    </tr>
-    <tr>
-      <td><code>M86-M90</code></td>
-      <td>骨其他疾病</td>
-      <td>骨髓炎、骨炎</td>
-      <td>M86 骨髓炎</td>
-    </tr>
-    <tr>
-      <td><code>M91-M94</code></td>
-      <td>骨软骨病</td>
-      <td>骨发育异常</td>
-      <td>M91 髋骨软骨病</td>
-    </tr>
-    <tr>
-      <td><code>M95-M99</code></td>
-      <td>肌肉骨骼系统其他疾病</td>
-      <td>变形、生物力学损伤</td>
-      <td>M99 生物力学损伤</td>
-    </tr>
-  </table>
-  
-  <div class="note">
-    <strong>编码技巧：</strong>M 章查找主导词常为疾病名称本身，如"关节炎—类风湿—血清阳性"、"骨质疏松—伴有病理性骨折"。注意卷一中大量"不包括"注释指向其他章节，如感染性关节炎可能需编码到感染章节。
-  </div>
+<h3>第一家族：类风湿性关节炎（M05-M08）——血清学是分水岭</h3>
+<table>
+  <tr><th>编码</th><th>诊断</th><th>关键判别点</th></tr>
+  <tr><td>M05</td><td>血清阳性类风湿性关节炎</td><td>RF/抗CCP抗体阳性。第五位亚目：.0费尔蒂综合征、.1肺部表现、.2血管炎、.3其他器官系统受累、.9未特指</td></tr>
+  <tr><td>M06</td><td>其他类风湿性关节炎</td><td>RF阴性。亚目包括M06.0血清阴性、M06.1成人Still病、M06.4炎性多关节病</td></tr>
+  <tr><td>M08</td><td>青少年关节炎（<16岁）</td><td>按系统受累分亚目：.0全身型、.1少关节型、.2多关节型(RF-)、.3多关节型(RF+)、.4少关节型(RF+)</td></tr>
+</table>
+<div class="card tip"><strong>🔑 实战决策链：</strong>先看年龄≤16→M08；再看RF/抗CCP+→M05；否则M06。三个维度，三选一。</div>
 </div>
-
-<!-- ======== 知识点2：关节炎的编码体系 ======== -->
-<h2><span class="icon">🔧</span> 知识点二：关节炎分类编码——M00-M25 深度解析</h2>
 
 <div class="card">
-  <h3>是什么</h3>
-  <p>关节炎/关节病是 M 章最核心的内容，涵盖 M00-M25。这一区块按照<strong>病因学轴心</strong>进一步细分：感染性（M00-M03）、炎症性多关节病（M05-M14）、关节病（M15-M19）、关节紊乱（M20-M25）。不同类型关节炎的治疗方式和 DRG 分组差异显著，因此准确区分类型至关重要。</p>
-  
-  <h3>为什么重要</h3>
-  <p>类风湿关节炎（RA）与骨关节炎（OA）是临床最常见的两种关节疾病，但编码完全不同。RA 属于自身免疫性疾病，编码于 M05-M06；OA 属于退行性病变，编码于 M15-M19。混淆两者会导致统计数据失真、DRG 入组错误。此外，痛风性关节炎 M10 也需要与上述两种区分。</p>
-  
-  <h3>怎么用 —— 三大关节炎对比</h3>
-  <table>
-    <tr>
-      <th>特征</th>
-      <th>类风湿关节炎 (RA)</th>
-      <th>骨关节炎 (OA)</th>
-      <th>痛风性关节炎</th>
-    </tr>
-    <tr>
-      <td>编码范围</td>
-      <td><code>M05-M06</code></td>
-      <td><code>M15-M19</code></td>
-      <td><code>M10</code></td>
-    </tr>
-    <tr>
-      <td>病因</td>
-      <td>自身免疫性</td>
-      <td>退行性变</td>
-      <td>尿酸代谢异常</td>
-    </tr>
-    <tr>
-      <td>血清学</td>
-      <td>M05 血清阳性（RF+）<br>M06 其他（含血清阴性）</td>
-      <td>无血清学分类</td>
-      <td>无血清学分类</td>
-    </tr>
-    <tr>
-      <td>部位编码</td>
-      <td>M05/M06 后缀部位（.0肩 .1肘 .2腕 .3髋 .4膝 .5踝 .6多部位 .9未特指）</td>
-      <td>M15多关节/M16髋/M17膝/M18第一腕掌/M19其他</td>
-      <td>M10.0/M10.1等按病因分型</td>
-    </tr>
-    <tr>
-      <td>主导词查找</td>
-      <td>关节炎—类风湿</td>
-      <td>关节病（查"骨关节病"或"关节病—骨的"）</td>
-      <td>痛风 或 关节炎—痛风性</td>
-    </tr>
-  </table>
-  
-  <h4>类风湿关节炎 M05 vs M06 的关键区分</h4>
-  <div class="compare-row">
-    <div class="compare-col good">
-      <h4>M05 血清阳性 RA</h4>
-      <p>需有实验室证据：类风湿因子（RF）阳性或抗CCP抗体阳性</p>
-      <p>索引路径：关节炎→类风湿→血清阳性→ M05._</p>
-      <p>例：<code>M05.900</code> 血清阳性类风湿关节炎，多部位</p>
-    </div>
-    <div class="compare-col bad">
-      <h4>M06 其他 RA</h4>
-      <p>血清阴性 RA、未做血清学检查、或未特指血清学状态</p>
-      <p>索引路径：关节炎→类风湿→ M06._</p>
-      <p>例：<code>M06.900</code> 类风湿关节炎，未特指</p>
-    </div>
-  </div>
-  
-  <div class="card warn">
-    <strong>易错提醒：</strong>临床医师常写"类风湿关节炎"而不注明血清学状态。如果病案中无 RF/抗CCP 检查结果，默认编码为 <code>M06.9</code>，不能编为 <code>M05.9</code>。编码员应主动查阅检验报告确认。
-  </div>
+<h3>第二家族：痛风（M10）——亚目区分病因</h3>
+<table>
+  <tr><th>编码</th><th>类型</th><th>判别标准</th></tr>
+  <tr><td>M10.0</td><td>特发性痛风</td><td>无明确继发因素，也是最常见的原发性痛风</td></tr>
+  <tr><td>M10.1</td><td>铅性痛风</td><td>职业暴露或环境中铅中毒导致的继发性痛风</td></tr>
+  <tr><td>M10.2</td><td>药物性痛风</td><td>利尿剂、环孢素等药物诱发。需附加第20章外因编码Y40-Y59</td></tr>
+  <tr><td>M10.3</td><td>肾功能损害所致</td><td>慢性肾病导致尿酸排泄减少</td></tr>
+</table>
+<div class="note"><strong>📌 编码提示：</strong>痛风发作时<strong>同时编码</strong>高尿酸血症(E79.0)作为疾病背景，但只有明确检验结果支持时才编。</div>
 </div>
-
-<!-- ======== 知识点3：骨质疏松编码 ======== -->
-<h2><span class="icon">🦴</span> 知识点三：骨质疏松症编码——M80 vs M81</h2>
 
 <div class="card">
-  <h3>是什么</h3>
-  <p>骨质疏松症（Osteoporosis）是骨量减少、骨微结构破坏导致骨脆性增加的代谢性骨病。ICD-10 中以<strong>是否伴有病理性骨折</strong>作为首要分类轴心，将骨质疏松分为两大类：M80（伴有病理性骨折）和 M81（不伴有病理性骨折）。</p>
-  
-  <h3>为什么重要</h3>
-  <p>骨质疏松是老年人群的常见病，病理性骨折与否直接影响 DRG 分组和手术编码。伴有病理性骨折时，M80 编码本身已包含骨折信息，<strong>不需要额外编码 S 章骨折编码</strong>。这一点是考试和实操的高频考点。</p>
-  
-  <h3>怎么用 —— M80/M81 编码决策树</h3>
-  
-  <div class="flow-chart">
-    <div class="flow-row">
-      <div class="flow-box">骨质疏松诊断</div>
-      <span>→</span>
-      <div class="flow-box warn-step">是否伴有病理性骨折？</div>
-    </div>
-    <div class="flow-row" style="margin-top:12px;">
-      <div class="flow-box" style="border-color:var(--green);background:var(--green-bg);">是 → M80</div>
-      <span style="margin:0 20px;">|</span>
-      <div class="flow-box" style="border-color:var(--accent);background:var(--accent-bg);">否 → M81</div>
-    </div>
-  </div>
-  
-  <table>
-    <tr>
-      <th>编码</th>
-      <th>含义</th>
-      <th>常见亚目</th>
-      <th>是否需外因编码</th>
-    </tr>
-    <tr>
-      <td><code>M80.0</code></td>
-      <td>绝经后骨质疏松伴病理性骨折</td>
-      <td>.0 肩部、.1 前臂、.2 股骨、.3 脊柱等</td>
-      <td>是（外因编码补充说明骨折原因）</td>
-    </tr>
-    <tr>
-      <td><code>M80.4</code></td>
-      <td>药物性骨质疏松伴病理性骨折</td>
-      <td>同上</td>
-      <td>是</td>
-    </tr>
-    <tr>
-      <td><code>M80.8</code></td>
-      <td>其他骨质疏松伴病理性骨折</td>
-      <td>同上</td>
-      <td>是</td>
-    </tr>
-    <tr>
-      <td><code>M81.0</code></td>
-      <td>绝经后骨质疏松不伴骨折</td>
-      <td>—</td>
-      <td>否</td>
-    </tr>
-    <tr>
-      <td><code>M81.1</code></td>
-      <td>老年性骨质疏松不伴骨折</td>
-      <td>—</td>
-      <td>否</td>
-    </tr>
-    <tr>
-      <td><code>M81.2</code></td>
-      <td>特发性骨质疏松不伴骨折</td>
-      <td>—</td>
-      <td>否</td>
-    </tr>
-  </table>
-  
-  <div class="note">
-    <strong>关键规则：</strong>当编 <code>M80.x</code> 时，<span class="hl">不需要再编 S 章的骨折码</span>，因为 M80 本身已包含"病理性骨折"概念。但需要附加外因编码（V01-Y98）说明导致骨折的外部原因，如跌倒（W01-W19）。
-  </div>
+<h3>第三家族：骨关节炎（M15-M19）——部位递进查找法</h3>
+<p>骨关节炎的部位编码遵循<strong>"特指优先→泛化兜底"</strong>原则：</p>
+<ol>
+  <li>先看是否为<strong>多关节</strong>（同时累及双侧或2个以上部位）→ M15</li>
+  <li>再查特指部位：髋M16 → 膝M17 → 第一腕掌关节M18</li>
+  <li>都不匹配 → M19（其他和未特指部位的骨关节炎）</li>
+</ol>
+<div class="compare-row">
+  <div class="compare-col good"><h4>✅ 正确：双膝骨关节炎</h4><p>M17.0 原发性双侧膝关节病</p></div>
+  <div class="compare-col bad"><h4>❌ 错误：双膝骨关节炎</h4><p>M17.9 未特指的膝关节病（丢失了"双侧"这个关键信息）</p></div>
+</div>
 </div>
 
-<!-- ======== 知识点4：背部疾病与脊柱编码 ======== -->
-<h2><span class="icon">脊柱</span> 知识点四：背部疾病 M40-M54 与椎间盘编码</h2>
+<h2><span class="icon">🦴</span> 核心知识点三：脊柱病损——内外科交界的关键分界线</h2>
 
 <div class="card">
-  <h3>是什么</h3>
-  <p>背部病（Dorsopathies）M40-M54 涵盖脊柱和背部相关疾病，包括脊柱变形（M40-M43）、脊柱关节病（M45-M49）、椎间盘疾病（M50-M54）等。这一区块的临床书写较为规范，但编码扩展到部位时需要注意颈椎/胸椎/腰椎的区分。</p>
-  
-  <h3>为什么重要</h3>
-  <p>椎间盘突出、颈椎病是门诊和住院的高频诊断。编码时需要精确到具体部位和节段，且需要区分是否伴有神经压迫症状（如脊髓病、神经根病），这些信息直接影响是否需要附加 G 章神经编码。</p>
-  
-  <h3>怎么用 —— 椎间盘疾病编码速查</h3>
-  <table>
-    <tr>
-      <th>编码</th>
-      <th>疾病</th>
-      <th>部位</th>
-      <th>伴随症状</th>
-    </tr>
-    <tr>
-      <td><code>M50.1</code></td>
-      <td>颈椎间盘病变伴脊髓病</td>
-      <td>颈椎</td>
-      <td>脊髓受压</td>
-    </tr>
-    <tr>
-      <td><code>M50.2</code></td>
-      <td>颈椎间盘病变伴神经根病</td>
-      <td>颈椎</td>
-      <td>神经根受压</td>
-    </tr>
-    <tr>
-      <td><code>M50.3</code></td>
-      <td>其他颈椎间盘病变</td>
-      <td>颈椎</td>
-      <td>未特指</td>
-    </tr>
-    <tr>
-      <td><code>M51.1</code></td>
-      <td>腰椎间盘病变伴脊髓病</td>
-      <td>胸/腰椎</td>
-      <td>脊髓受压</td>
-    </tr>
-    <tr>
-      <td><code>M51.2</code></td>
-      <td>腰椎间盘病变伴神经根病</td>
-      <td>胸/腰椎</td>
-      <td>神经根受压（如坐骨神经痛）</td>
-    </tr>
-    <tr>
-      <td><code>M51.3</code></td>
-      <td>其他胸/腰椎间盘病变</td>
-      <td>胸/腰椎</td>
-      <td>未特指</td>
-    </tr>
-  </table>
-  
-  <div class="card tip">
-    <strong>查找路径示例：</strong>腰椎间盘突出伴坐骨神经痛<br>
-    主导词：椎间盘移位→腰椎→伴有神经根病→ <code>M51.2</code><br>
-    附加编码：坐骨神经痛 <code>G54.1</code>（如需特指神经受累）
-  </div>
-  
-  <h4>颈椎病编码</h4>
-  <p>颈椎病是一个笼统的诊断，编码时需要根据具体病理类型拆分：</p>
-  <ul>
-    <li>颈椎关节强硬（退行性）→ <code>M47._</code>（如伴脊髓病 M47.1，伴神经根病 M47.2）</li>
-    <li>颈椎间盘突出 → <code>M50._</code></li>
-    <li>颈椎管狭窄 → <code>M48.0_</code></li>
-    <li>单纯颈部疼痛 → <code>M54.2</code>（颈痛）</li>
-  </ul>
+<h3>脊柱疾病的三级编码路径</h3>
+<div class="process-box">
+  <div class="process-step"><div class="process-num">1</div><div class="process-content"><h4>确定性质：先天性 vs 获得性</h4><p>先天性（如先天性脊柱侧弯）→ Q67.5/Q76.3；获得性→进入M40-M54</p></div></div>
+  <div class="process-step"><div class="process-num">2</div><div class="process-content"><h4>形态分类：后凸/侧弯/前凸</h4><p>M40后凸和前凸、M41脊柱侧弯（再按先天性/青少年/其他分亚目）</p></div></div>
+  <div class="process-step"><div class="process-num">3</div><div class="process-content"><h4>病因细分：感染/退变/炎性/肿瘤</h4><p>感染→M46(脊柱炎)；退变→M47(椎关节强硬)、M48(椎管狭窄)；炎性→M45(强直)、M46；肿瘤→C/D章节</p></div></div>
 </div>
 
-<!-- ======== 知识点5：系统性结缔组织疾病 ======== -->
-<h2><span class="icon">🔗</span> 知识点五：系统性结缔组织疾病 M30-M36</h2>
+<h4>椎间盘疾病：M50（颈）+ M51（胸/腰）的高频编码陷阱</h4>
+<table>
+  <tr><th>原诊断</th><th>正确编码</th><th>错误编码</th><th>为什么</th></tr>
+  <tr><td>C5/6椎间盘突出伴颈髓压迫</td><td>M50.0† + G99.2*</td><td>M50.1（仅神经根受压）</td><td>有脊髓压迫→用星剑号双重分类；仅神经根受压→M50.1</td></tr>
+  <tr><td>L4/5椎间盘突出伴坐骨神经痛</td><td>M51.1† + G55.1*</td><td>M51.2+M54.3</td><td>明确神经根受累→†/*；不要拆分编码</td></tr>
+  <tr><td>腰椎间盘突出，无脊髓/神经根受累</td><td>M51.2</td><td>M51.1</td><td>只有影像学突出，无神经症状→M51.2</td></tr>
+</table>
+</div>
+
+<h2><span class="icon">🦴</span> 核心知识点四：骨质疏松与骨坏死——一字之差的编码鸿沟</h2>
 
 <div class="card">
-  <h3>是什么</h3>
-  <p>M30-M36 涵盖系统性结缔组织疾病（Systemic connective tissue disorders），这是一组以自身免疫异常为特征的全身性疾病，包括系统性红斑狼疮（SLE）、强直性脊柱炎（AS）、系统性硬化症、多发性肌炎/皮肌炎、干燥综合征等。</p>
-  
-  <h3>为什么重要</h3>
-  <p>这类疾病常累及多个器官系统，编码时可能需要多个章节的附加编码。例如 SLE 累及肾脏时，需要同时编码 M32.1（SLE 累及器官）和相应的肾脏疾病编码。这类编码在风湿免疫科病案中极为常见。</p>
-  
-  <h3>怎么用 —— 常见结缔组织病编码对照</h3>
-  <div class="example-grid">
-    <div class="example-item">
-      <h4>系统性红斑狼疮 SLE</h4>
-      <p><code>M32.9</code> SLE 未特指</p>
-      <p><code>M32.1</code> SLE 累及器官或系统</p>
-      <p>注意：药物性狼疮 → <code>M32.0</code></p>
-    </div>
-    <div class="example-item">
-      <h4>强直性脊柱炎 AS</h4>
-      <p><code>M45.9</code> 强直性脊柱炎，未特指部位</p>
-      <p>按部位扩展：.0颈椎 .1胸椎 .2腰椎等</p>
-      <p>注意：不属于 M46 系列</p>
-    </div>
-    <div class="example-item">
-      <h4>系统性硬化症</h4>
-      <p><code>M34.9</code> 系统性硬化症，未特指</p>
-      <p><code>M34.0</code> 进行性系统性硬化症</p>
-      <p><code>M34.1</code> CRST综合征</p>
-    </div>
-    <div class="example-item">
-      <h4>干燥综合征</h4>
-      <p><code>M35.0</code> 干燥综合征（Sjögren）</p>
-      <p>注意：需区分原发性和继发性</p>
-      <p>继发性需附加原发病编码</p>
-    </div>
-    <div class="example-item">
-      <h4>多发性肌炎/皮肌炎</h4>
-      <p><code>M33.0</code> 皮肌炎</p>
-      <p><code>M33.1</code> 其他型皮肌炎</p>
-      <p><code>M33.2</code> 多发性肌炎</p>
-    </div>
-    <div class="example-item">
-      <h4>纤维肌痛综合征</h4>
-      <p><code>M79.7</code> 纤维肌痛</p>
-      <p>注意：编码在 M79（软组织疾病）而非 M30-M36</p>
-      <p>属于独立的功能性疼痛综合征</p>
-    </div>
-  </div>
-  
-  <div class="note">
-    <strong>编码提示：</strong>SLE 伴多器官受累时，<code>M32.1</code> 已包含器官受累信息，但仍需附加具体器官疾病的编码。例如 SLE 性肾炎 → 主要编码 <code>M32.1</code> + 附加编码 <code>N08.5</code>（分类于他处疾病引起的肾小球疾患）。
-  </div>
+<h3>骨质疏松：M80 vs M81 的生死线</h3>
+<table>
+  <tr><th>编码</th><th>类型</th><th>判别标准</th><th>常见场景</th></tr>
+  <tr><td>M80.0</td><td>绝经后骨质疏松伴病理性骨折</td><td>有骨折 + 绝经后</td><td>老年女性轻微摔倒→椎体压缩性骨折</td></tr>
+  <tr><td>M80.1</td><td>卵巢切除术后骨质疏松伴病理性骨折</td><td>有骨折 + 术后</td><td>子宫+双附件切除术后</td></tr>
+  <tr><td>M80.2</td><td>废用性骨质疏松伴病理性骨折</td><td>有骨折 + 长期制动</td><td>截瘫患者、长期卧床</td></tr>
+  <tr><td>M81.0</td><td>绝经后骨质疏松（无骨折）</td><td>无骨折</td><td>骨密度检查T<-2.5，但无骨折事件</td></tr>
+  <tr><td>M81.9</td><td>未特指的骨质疏松（无骨折）</td><td>无骨折</td><td>药源性/特发性等无法归入M81.0-M81.8的</td></tr>
+</table>
+<div class="card warn"><strong>⚠️ 核心规则：</strong>M80=有病理性骨折，M81=无骨折。临床上"T值<-3.0"不重要——编M80还是M81，<strong>只看病历里有没有记录骨折事件</strong>。</div>
+
+<h3>骨坏死（M87）——坏死比骨折更"重"</h3>
+<p>股骨头坏死（M87.0-M87.3）在DRG中权重<strong>高于</strong>股骨颈骨折（S72.0）。如果患者因股骨头坏死入院做关节置换，编码M87而非S72。<br>
+<strong>关键区分：</strong>外伤性股骨头坏死→S72+后续M87？原则：如果外伤是直接原因→编骨折(S72)为主诊断，M87为附加诊断。</p>
 </div>
 
-<!-- ======== 重难点深度解析 ======== -->
-<h2><span class="icon">⚡</span> 重难点深度解析：病理性骨折的编码逻辑</h2>
-
-<div class="card">
-  <h3>问题背景</h3>
-  <p>病理性骨折（Pathological fracture）是指骨骼在正常活动或轻微外力下发生的骨折，通常由骨肿瘤、骨质疏松、骨感染等基础疾病导致。病理性骨折的编码是 M 章最容易出错的知识点之一，核心难点在于：<strong>什么时候用 M84.4，什么时候用 M80.x？是否需要附加 S 章编码？</strong></p>
-  
-  <h3>三种情况对比</h3>
-  <table>
-    <tr>
-      <th>情境</th>
-      <th>基础疾病</th>
-      <th>编码方案</th>
-      <th>说明</th>
-    </tr>
-    <tr>
-      <td>骨质疏松伴骨折</td>
-      <td>骨质疏松</td>
-      <td><code>M80.x</code> + 外因编码</td>
-      <td>M80 已包含骨折，<strong>不编 S 章骨折码</strong></td>
-    </tr>
-    <tr>
-      <td>骨肿瘤伴骨折</td>
-      <td>骨肿瘤</td>
-      <td><code>M84.5</code>（肿瘤性病理性骨折）+ 肿瘤编码</td>
-      <td>需附加肿瘤形态学编码</td>
-    </tr>
-    <tr>
-      <td>其他原因病理性骨折</td>
-      <td>骨感染、骨营养不良等</td>
-      <td><code>M84.4</code> + 基础疾病编码</td>
-      <td>需要附加病因编码</td>
-    </tr>
-    <tr>
-      <td>外伤性骨折</td>
-      <td>无基础疾病</td>
-      <td><code>S12-S92</code> 骨折码 + 外因编码</td>
-      <td>不属于病理性骨折，编 S 章</td>
-    </tr>
-  </table>
-  
-  <h3>编码查找路径</h3>
-  <div class="process-box">
-    <div class="process-step">
-      <div class="process-num">1</div>
-      <div class="process-content">
-        <h4>确认骨折性质</h4>
-        <p>阅读病案，确认骨折是否由轻微外力或自发发生，是否存在基础骨病</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="process-num">2</div>
-      <div class="process-content">
-        <h4>判断基础疾病类型</h4>
-        <p>骨质疏松 → M80；骨肿瘤 → M84.5；其他 → M84.4；无基础病 → S章</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="process-num">3</div>
-      <div class="process-content">
-        <h4>查找部位编码</h4>
-        <p>根据骨折部位选择亚目（.0肩部 .1前臂 .2股骨 .3脊柱 .4骨盆 .5胫骨等）</p>
-      </div>
-    </div>
-    <div class="process-step">
-      <div class="process-num">4</div>
-      <div class="process-content">
-        <h4>附加外因编码</h4>
-        <p>即使是病理性骨折，也需要补充外因编码（如跌倒 W01-W19）说明诱因</p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="card warn">
-    <strong>核心记忆点：</strong>M80（骨质疏松伴骨折）= 自含骨折码，不再编 S 章；M84.4/M84.5（其他病理性骨折）= 需编 M84.4 + 基础病编码，同样不编 S 章骨折码。外伤性骨折才编 S 章。
-  </div>
-</div>
-
-<!-- ======== 案例练习 ======== -->
-<h2><span class="icon">📝</span> 案例练习</h2>
+<h2><span class="icon">✍️</span> 案例练习</h2>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">1</div>
-    <span>案例一：类风湿关节炎</span>
-    <span class="case-tag practice">基础题</span>
-  </div>
+  <div class="case-header"><div class="case-num">1</div> 类风湿编码 <span class="case-tag practice">基础</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者女性，55岁。双手近端指间关节、双腕关节肿痛伴晨僵2年。实验室检查：RF 阳性（1:160），抗CCP抗体阳性。X光示双手关节骨质侵蚀。诊断为"类风湿关节炎"。</p>
-    <p>请给出主要诊断编码。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：M05.300</strong>（血清阳性类风湿关节炎，腕部）<br><br>
-        <strong>解析：</strong>患者 RF 阳性且抗CCP抗体阳性，属于血清阳性类风湿关节炎，编码于 M05 而非 M06。病变累及双手和双腕（多部位），查找路径：关节炎→类风湿→血清阳性→多部位→ <code>M05.300</code>。注意：如果只有 RF 阳性而无抗CCP，也编为 M05。M06 用于血清阴性或未做血清学检查的情况。
-      </div>
-    </details>
+    <p>患者，女，52岁，确诊类风湿性关节炎，RF阳性，抗CCP抗体阳性，累及双手和双腕关节，无明显关节外表现。请编码。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>M05.8 其他血清阳性类风湿性关节炎（+附加编码标明部位）</strong><br>
+      <strong>推理过程：</strong>①RF阳性→M05家族；②无Felty(M05.0)、无肺部(M05.1)、无血管炎(M05.2)、无其他器官(M05.3)→排除前三；③多部位→M05.8；④多关节RA属于M05.8，未特指则M05.9。<br>
+      <strong>常见错误：</strong>把"多关节受累"编成M06(血清阴性)——RF阳性已经锁定了M05。
+    </div></details>
   </div>
 </div>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">2</div>
-    <span>案例二：骨质疏松伴骨折</span>
-    <span class="case-tag practice">基础题</span>
-  </div>
+  <div class="case-header"><div class="case-num">2</div> 骨质疏松鉴别 <span class="case-tag practice">基础</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者女性，68岁。绝经后骨质疏松病史5年。在家不慎滑倒，致右股骨颈骨折。X光示右股骨颈骨折，骨密度T值-3.2。诊断为"骨质疏松伴病理性骨折（右股骨颈）"。</p>
-    <p>请给出诊断编码方案。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：</strong><br>
-        主要编码：<code>M80.051</code>（绝经后骨质疏松伴病理性骨折，股骨颈，右侧）<br>
-        外因编码：<code>W18.0</code>（在同一平面上滑倒、绊倒和摔倒）<br><br>
-        <strong>解析：</strong>绝经后骨质疏松伴病理性骨折编为 M80.0。部位为股骨（颈），亚目为 .0 中的股骨颈扩展码。注意：<span class="hl">不需要编 S72.x 股骨颈骨折码</span>，因为 M80.0 已包含病理性骨折信息。需附加外因编码说明跌倒原因。国临版扩展码第6位表示侧别：1=右，2=左。
-      </div>
-    </details>
+    <p>患者，女，68岁，绝经后骨质疏松（T值-3.2），本次因轻微摔伤后L1椎体压缩性骨折入院，行椎体成形术。请编码主诊断。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>M80.0 绝经后骨质疏松伴病理性骨折</strong><br>
+      <strong>推理过程：</strong>骨折已发生→进入M80(有病理性骨折)；68岁女性→M80.0(绝经后)；摔伤仅为诱因，本质上骨质疏松才是骨折的病理基础——应编M80而非S22/S32(创伤性骨折)。<br>
+      <strong>避坑：</strong>①T值不重要——只看"有没有骨折"；②不要因为"摔了"就编创伤性骨折——轻微外力下的骨折在骨质疏松患者身上就是病理性骨折。
+    </div></details>
   </div>
 </div>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">3</div>
-    <span>案例三：痛风性关节炎</span>
-    <span class="case-tag practice">基础题</span>
-  </div>
+  <div class="case-header"><div class="case-num">3</div> 椎间盘突出 <span class="case-tag practice">基础</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者男性，52岁。右足第一跖趾关节红肿剧痛2天。血尿酸 580μmol/L。既往有类似发作。诊断为"痛风性关节炎，右足第一跖趾关节"。</p>
-    <p>请给出诊断编码。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：M10.301</strong>（痛风，特指的，足部关节，右侧）<br><br>
-        <strong>解析：</strong>痛风编码于 M10。主导词查找：痛风→足→ <code>M10.3</code>（特指部位的痛风）。本例未特指原发/继发，按未特指处理。国临版扩展到第6位表示右侧。注意：不能编为 M10.9（未特指部位），因为病案明确了具体关节。
-      </div>
-    </details>
+    <p>患者，男，45岁，MRI显示L4/5椎间盘突出，临床表现为右下肢放射性疼痛伴感觉减退（L5神经根支配区），直腿抬高试验阳性。请编码。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>M51.1† 腰椎间盘突出伴神经根病 + G55.1* 椎间盘疾患引起的神经根压迫</strong><br>
+      <strong>推理过程：</strong>MRI证实突出+临床有神经根症状（放射性痛、感觉减退、直腿抬高+）→神经根受累明确→M51.1(伴神经根病)，使用†/*双重分类。<br>
+      <strong>常见错误：</strong>①只编M51.2（突出无神经根受累）——遗漏了神经症状；②编M51.1后又另加M54.3（坐骨神经痛）——重复编码。
+    </div></details>
   </div>
 </div>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">4</div>
-    <span>案例四：腰椎间盘突出</span>
-    <span class="case-tag challenge">进阶题</span>
-  </div>
+  <div class="case-header"><div class="case-num">4</div> 痛风鉴别 <span class="case-tag challenge">进阶</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者男性，45岁。腰痛伴右下肢放射痛3月。MRI示 L4-L5 椎间盘突出，压迫右侧神经根。诊断为"腰椎间盘突出伴神经根病"。</p>
-    <p>请给出诊断编码方案。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：</strong><br>
-        主要编码：<code>M51.101</code>（腰椎间盘移位伴神经根病，胸/腰段）<br>
-        附加编码：<code>G55.1*</code>（分类于他处疾病引起的神经根和神经丛受压）—— 按需添加<br><br>
-        <strong>解析：</strong>查找路径：椎间盘移位→腰椎→伴有神经根病→ <code>M51.1</code>。国临版扩展码到第6位。伴神经根病说明有神经压迫症状（右下肢放射痛），需要编为 M51.1 而非 M51.3（其他椎间盘病变）。如果同时要表明坐骨神经痛，可附加 G54.1，但通常 M51.1 已包含此信息。
-      </div>
-    </details>
+    <p>患者，男，55岁，既往高血压病史，长期口服氢氯噻嗪。近3天右足第一跖趾关节红肿热痛，血尿酸562μmol/L。关节液镜检见尿酸钠结晶。请完整编码。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>主诊断：</strong>M10.2 药物性痛风<br>
+      <strong>其他诊断：</strong>E79.0 高尿酸血症（有检验证据）<br>
+      <strong>外因编码：</strong>Y54.5 利尿剂引起的药物不良反应<br>
+      <strong>推理过程：</strong>①长期氢氯噻嗪→药物诱发→M10.2；②尿酸562→有检验证据→编码E79.0；③药物归因→Y54.5。<br>
+      <strong>关键陷阱：</strong>不能因为"第一跖趾关节"就默认M10.0（特发性）——病因链提示药物诱导，必须走M10.2。
+    </div></details>
   </div>
 </div>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">5</div>
-    <span>案例五：SLE 多器官受累</span>
-    <span class="case-tag challenge">进阶题</span>
-  </div>
+  <div class="case-header"><div class="case-num">5</div> 骨坏死编码 <span class="case-tag challenge">进阶</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者女性，30岁。面部蝶形红斑、关节疼痛、蛋白尿。ANA 阳性 1:640，抗 dsDNA 阳性。肾穿刺示狼疮性肾炎（IV型）。诊断为"系统性红斑狼疮，狼疮性肾炎"。</p>
-    <p>请给出诊断编码方案。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：</strong><br>
-        主要编码：<code>M32.101</code>（SLE 累及器官或系统）<br>
-        附加编码：<code>N08.5</code>（分类于他处疾病引起的肾小球疾患）<br><br>
-        <strong>解析：</strong>SLE 累及肾脏属于器官受累型，编为 M32.1 而非 M32.9（未特指）。同时需附加 N08.5 表明肾脏受累是 SLE 引起的。查找路径：红斑狼疮→系统性→累及器官→ <code>M32.1</code>。注意：N08 类目是"分类于他处疾病引起的肾小球疾患"，专门用于继发性肾病编码。
-      </div>
-    </details>
+    <p>患者，男，42岁，长期酗酒史。X线+MR显示双侧股骨头坏死（ARCO III期），拟行右侧人工全髋关节置换术。血常规、肝肾功能正常。请编码主诊断和主要手术。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>主诊断：</strong>M87.0 特发性无菌性骨坏死（股骨头）<br>
+      <strong>主要手术：</strong>81.51 全髋关节置换术<br>
+      <strong>推理过程：</strong>①酗酒诱因→特发性（非创伤性/非激素性）→M87.0；②坏死→未提及感染→排除M86(骨髓炎)；③ARCO III期需手术→关节置换。DRG中骨坏死权重高于骨折，这对支付很重要。<br>
+      <strong>避坑：</strong>不要因为"酗酒→酒精性肝病→凝血异常→骨坏死"把酒精性肝病编成主诊断——本次住院核心问题是股骨头坏死。
+    </div></details>
   </div>
 </div>
 
 <div class="case">
-  <div class="case-header">
-    <div class="case-num">6</div>
-    <span>案例六：骨肿瘤病理性骨折</span>
-    <span class="case-tag challenge">进阶题</span>
-  </div>
+  <div class="case-header"><div class="case-num">6</div> 复杂组合 <span class="case-tag challenge">进阶</span></div>
   <div class="case-body">
-    <p><strong>病历摘要：</strong>患者男性，65岁。前列腺癌骨转移。轻微活动后右股骨干疼痛，X光示右股骨干病理性骨折，骨质破坏。诊断为"股骨病理性骨折（肿瘤性），前列腺癌骨转移"。</p>
-    <p>请给出诊断编码方案。</p>
-    <details>
-      <summary>查看答案与解析</summary>
-      <div class="answer-box">
-        <strong>答案：</strong><br>
-        主要编码：<code>M84.551</code>（肿瘤性病理性骨折，股骨，右侧）<br>
-        附加编码：<code>C79.5</code>（骨和骨髓继发性恶性肿瘤）<br>
-        原发肿瘤编码：<code>C61</code>（前列腺恶性肿瘤）<br>
-        外因编码：如跌倒 <code>W18.0</code> 等<br><br>
-        <strong>解析：</strong>骨肿瘤引起的病理性骨折编为 M84.5（而非 M80.x，因为基础疾病是肿瘤而非骨质疏松）。需附加继发性骨肿瘤编码 C79.5 和原发肿瘤编码。查找路径：骨折→病理性→肿瘤性→股骨→ <code>M84.5</code>。注意：同样不编 S 章骨折码，因为 M84.5 已包含病理性骨折。
-      </div>
-    </details>
+    <p>患者，女，35岁，确诊SLE 5年，长期口服泼尼松。本次因双髋疼痛3月加重入院，MR提示双侧股骨头坏死（ARCO II期），同时尿蛋白+++，肾活检提示狼疮肾炎IV型。请给编码方案。</p>
+    <details><summary>点击查看答案</summary><div class="answer-box">
+      <strong>主诊断：</strong>M87.1 药物性骨坏死（糖皮质激素所致）<br>
+      <strong>附加诊断：</strong>M32.1† 系统性红斑狼疮 + N08.5* 狼疮肾炎<br>
+      <strong>外因编码：</strong>Y42.0 糖皮质激素的不良反应<br>
+      <strong>推理过程：</strong>①本次住院核心问题→股骨头坏死→主诊断M87.1；②长期激素→药物性→M87.1而非M87.0；③SLE是基础病→附加编码；④狼疮肾炎→†/*双重分类。<br>
+      <strong>临床逻辑：</strong>骨坏死虽然由激素引起，但SLE是激素治疗的指征。三者形成病因链：SLE→需要激素→骨坏死。编码反映完整故事。
+    </div></details>
   </div>
 </div>
 
-<!-- ======== 今日重点回顾 ======== -->
-<h2><span class="icon">📌</span> 今日重点回顾</h2>
-
+<h2><span class="icon">📋</span> 今日重点回顾</h2>
 <div class="key-grid">
-  <div class="key-item">
-    <div class="key-num">1</div>
-    <div>M章分6大区块：关节(M00-25)、结缔组织(M30-36)、脊柱(M40-54)、软组织(M60-79)、骨病(M80-90)、其他(M91-99)</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">2</div>
-    <div>类风湿关节炎：M05 血清阳性（RF+/抗CCP+），M06 其他/血清阴性/未特指</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">3</div>
-    <div>骨关节炎 M15-M19：M15多关节、M16髋、M17膝、M18第一腕掌、M19其他</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">4</div>
-    <div>骨质疏松 M80（伴骨折）vs M81（不伴骨折），M80 自含骨折码不再编 S 章</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">5</div>
-    <div>椎间盘突出：M50 颈椎、M51 胸腰椎，伴神经根病用 .1/.2 亚目</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">6</div>
-    <div>SLE 编码 M32：.0 药物性、.1 器官受累、.9 未特指，器官受累需附加相应编码</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">7</div>
-    <div>病理性骨折：骨质疏松→M80，肿瘤→M84.5，其他→M84.4，外伤→S章</div>
-  </div>
-  <div class="key-item">
-    <div class="key-num">8</div>
-    <div>痛风 M10、强直性脊柱炎 M45、系统性硬化症 M34、干燥综合征 M35.0</div>
-  </div>
+  <div class="key-item"><div class="key-num">1</div>RF阳性→M05；RF阴性→M06；<16岁→M08</div>
+  <div class="key-item"><div class="key-num">2</div>骨质疏松命门：有病理性骨折→M80，无骨折→M81</div>
+  <div class="key-item"><div class="key-num">3</div>痛风按病因分亚目：特发性M10.0、药物性M10.2+Y编码</div>
+  <div class="key-item"><div class="key-num">4</div>椎间盘突出伴神经根病→M50.1/M51.1†+G55.1*</div>
+  <div class="key-item"><div class="key-num">5</div>脊柱疾病先判先天性(Q章)vs获得性(M章)</div>
+  <div class="key-item"><div class="key-num">6</div>骨坏死M87权重高于创伤性骨折S72</div>
+  <div class="key-item"><div class="key-num">7</div>药物性骨坏死需附加外因编码Y42/Y54</div>
+  <div class="key-item"><div class="key-num">8</div>SLE全身受累→各系统分别编码，M章只编骨骼</div>
 </div>
 
-<!-- ======== 明日预习 ======== -->
-<h2><span class="icon">📖</span> 明日预习提示</h2>
-
-<div class="card tip">
-  <h4>Day 23 预习：N章——泌尿生殖系统疾病（N00-N99）</h4>
-  <p>明日将进入第十四章泌尿生殖系统疾病的学习。建议预习以下内容：</p>
+<h2><span class="icon">🔮</span> 明日预习提示</h2>
+<div class="card info">
+  <p><strong>Day 23（7/11）：N章 泌尿生殖系统疾病（N00-N99）</strong></p>
   <ul>
-    <li>肾小球疾病 N00-N08 的分类轴心（按临床综合征+病理形态学）</li>
-    <li>急性肾衰竭 N17 与慢性肾脏病 N18 的区分（CKD 分期与编码对应）</li>
-    <li>泌尿系结石 N20-N23 的编码（结石部位与并发症的合并编码规则）</li>
-    <li>前列腺增生 N40 的亚目分类</li>
-    <li>乳腺疾病 N60-N64 与女性生殖系统疾病 N80-N98</li>
+    <li>肾小球疾病N00-N08：临床vs病理分类怎么映射到编码？</li>
+    <li>慢性肾脏病N18的CKD分期如何对应亚目？</li>
+    <li>N章"D"（女性盆腔器官）与O章（妊娠）怎么区分？</li>
   </ul>
-  <p><strong>重点思考：</strong>慢性肾脏病（CKD）的1-5期在 ICD-10 中如何编码？急性肾损伤（AKI）和慢性肾衰竭急性加重如何区分？</p>
 </div>
 
-<!-- ======== Footer ======== -->
-<div class="footer">
-  <p>病案编码学习 · Day 22 · M章肌肉骨骼系统和结缔组织疾病</p>
-  <p style="margin-top:6px;">国临版 ICD-10 编码标准 | 学习第22天 / 共60天</p>
-</div>
-
+<div class="footer">病案编码 60 天系统学习 · Day 22 · 由 WorkBuddy 生成 · 2026年7月10日</div>
 </body>
 </html>
