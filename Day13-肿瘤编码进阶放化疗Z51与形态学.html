@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 13（2026年7月1日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="day-badge">Day 13 · 2026年7月1日 · 星期三</div>
+  <h1>肿瘤编码进阶：放化疗编码 Z51 与肿瘤形态学编码</h1>
+  <div class="subtitle">掌握放化疗编码规则、M编码体系及肿瘤主诊断选择——DRG入组的关键分水岭</div>
+</div>
+
+<!-- 掌握程度 -->
+<h2><span class="icon">🎯</span> 今日掌握程度</h2>
+<div class="mastery-table">
+  <div class="mastery-row"><span class="mastery-badge l1">必须掌握</span><span>Z51放化疗编码规则、放化疗入院时的主诊断选择、M编码五级动态分类</span></div>
+  <div class="mastery-row"><span class="mastery-badge l2">应该理解</span><span>同步放化疗的编码优先级、"术后"诊断的编码路径判断、形态学编码查找流程</span></div>
+  <div class="mastery-row"><span class="mastery-badge l3">了解即可</span><span>ICD-O-3与ICD-10肿瘤编码的对应关系、复发癌的编码处理</span></div>
+</div>
+
+<!-- ===== 核心知识点1：Z51 放化疗编码 ===== -->
+<h2><span class="icon">📖</span> 核心知识点一：Z51 放化疗编码——为什么"化疗"能当主诊断</h2>
+
+<div class="card">
+<h3>一、Z51 编码的定位与分类</h3>
+<p>Z51 属于 ICD-10 第21章"影响健康状态和与保健机构接触的因素"（Z00-Z99）。它在肿瘤编码体系中扮演了一个<strong>特殊角色</strong>：当患者本次住院的主要目的是接受抗肿瘤治疗（而非诊断或手术）时，Z51应作为<strong>主要诊断</strong>，恶性肿瘤作为其他诊断。</p>
+
+<table>
+  <tr><th>编码</th><th>含义</th><th>适用场景</th></tr>
+  <tr><td><code>Z51.0</code></td><td>放射治疗疗程</td><td>患者本次专门为接受放疗而入院</td></tr>
+  <tr><td><code>Z51.1</code></td><td>为肿瘤化学治疗疗程</td><td>患者本次专门为接受化疗而入院</td></tr>
+  <tr><td><code>Z51.8</code></td><td>其他特指的医疗照顾（含免疫治疗）</td><td>靶向治疗、免疫治疗等</td></tr>
+  <tr><td><code>Z51.9</code></td><td>未特指的医疗照顾</td><td>类型不明确的抗肿瘤治疗</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 核心规则：</strong>如果患者入院<strong>专门为了放化疗</strong>，主要编码选 Z51（反映住院目的），恶性肿瘤作为附加编码。这个规则直接影响 DRG 入组——选错主诊断可能导致不入 MDC 肿瘤组。
+</div>
+</div>
+
+<div class="card">
+<h3>二、什么时候 Z51 做主要诊断 vs 附加诊断？</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ Z51 为主诊断的情况</h4>
+    <p>患者<strong>本次单纯为化疗/放疗</strong>入院，无手术计划。</p>
+    <p>示例：肺癌患者入院化疗</p>
+    <p><strong>主诊断：</strong>Z51.1 化学治疗疗程<br>
+    <strong>其他诊断：</strong>C34.9 肺恶性肿瘤</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>✅ 肿瘤为主诊断的情况</h4>
+    <p>患者入院主要目的是<strong>手术治疗</strong>肿瘤，即使术前/术后做了放化疗。</p>
+    <p>示例：直肠癌入院手术切除</p>
+    <p><strong>主诊断：</strong>C20 直肠恶性肿瘤<br>
+    <strong>其他诊断：</strong>Z51.1 术前化疗</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 高频易错：同步放化疗的编码顺序</strong><br>
+  如果患者同时接受放疗和化疗，<strong>放疗（Z51.0）为主要诊断</strong>，化疗（Z51.1）写入其他诊断。判断标准：哪个治疗是本次住院的<strong>主要原因</strong>——通常情况下放疗的医疗资源消耗更大。
+</div>
+</div>
+
+<div class="card">
+<h3>三、"术后"诊断的编码路径判断</h3>
+<p>临床经常写"XX癌术后"，编码员需要根据患者<strong>本次住院的真实目的</strong>选择编码路径：</p>
+
+<table>
+  <tr><th>本次住院目的</th><th>编码路径</th><th>示例</th></tr>
+  <tr><td>疾病本身的再手术</td><td>编码在各系统章</td><td>胃癌复发再切除 → C16</td></tr>
+  <tr><td>术后并发症治疗</td><td>编码在各系统章</td><td>术后感染 → T81.4</td></tr>
+  <tr><td>固定装置的调试/更换/取出</td><td>Z47</td><td>取内固定 → Z47.0</td></tr>
+  <tr><td>术后放/化疗</td><td><strong>Z51</strong></td><td>术后化疗 → Z51.1</td></tr>
+  <tr><td>术后造口维护</td><td>Z43</td><td>造口护理 → Z43.3</td></tr>
+  <tr><td>术后造口状态</td><td>Z93</td><td>结肠造口状态 → Z93.1</td></tr>
+  <tr><td>术后随诊检查</td><td>Z09</td><td>术后复查 → Z09</td></tr>
+</table>
+</div>
+
+<!-- ===== 核心知识点2：肿瘤形态学编码 ===== -->
+<h2><span class="icon">🧬</span> 核心知识点二：肿瘤形态学编码——M编码体系完整解析</h2>
+
+<div class="card">
+<h3>一、M编码的结构与含义</h3>
+<p>肿瘤形态学编码采用<strong>"M + 组织学编码 + / + 动态编码"</strong>的三段式结构：</p>
+
+<pre>M 8140 / 3
+│  │     │
+│  │     └── 动态编码：/3 = 恶性，原发部位
+│  └──────── 组织学编码：8140 = 腺癌
+└─────────── 形态学前缀</pre>
+
+<p><strong>组织学编码</strong>（M800-M998）描述肿瘤细胞的<strong>组织来源和结构</strong>：</p>
+<ul>
+  <li><code>M8000</code> — 肿瘤，未特指（兜底编码）</li>
+  <li><code>M8140</code> — 腺癌（最常见恶性肿瘤类型之一）</li>
+  <li><code>M8070</code> — 鳞状细胞癌</li>
+  <li><code>M8240</code> — 类癌（神经内分泌肿瘤）</li>
+  <li><code>M8480</code> — 黏液腺癌</li>
+  <li><code>M8720</code> — 恶性黑色素瘤</li>
+  <li><code>M9821</code> — 急性淋巴细胞白血病</li>
+</ul>
+
+<p><strong>动态编码</strong>（/后一位数字）描述肿瘤的<strong>生物学行为</strong>：</p>
+
+<table>
+  <tr><th>动态编码</th><th>含义</th><th>对应ICD-10章节</th></tr>
+  <tr><td><code>/0</code></td><td>良性</td><td>D10-D36</td></tr>
+  <tr><td><code>/1</code></td><td>良性或恶性未肯定（交界恶性/动态未定）</td><td>D37-D48</td></tr>
+  <tr><td><code>/2</code></td><td>原位癌（局限于上皮层内，未突破基底膜）</td><td>D00-D09</td></tr>
+  <tr><td><code>/3</code></td><td>恶性，原发部位</td><td>C00-C76, C80-C96</td></tr>
+  <tr><td><code>/6</code></td><td>恶性，转移部位（继发性）</td><td>C77-C79</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 关键区分：/1 的两种情况</strong><br>
+  <strong>动态未定</strong>（做了病理，明确处于交界恶性）vs <strong>性质未特指</strong>（没做病理，形态学和动态都不明确）。二者在 ICD-10 中部位编码不再区分，但<strong>性质完全不同</strong>，可通过 M8000/1 来标记后者。
+</div>
+</div>
+
+<div class="card">
+<h3>二、肿瘤编码查找的标准流程（五步法）</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>确定形态学主导词</h4>
+      <p>从病理报告中提取肿瘤的组织学类型，如"腺癌""鳞状细胞癌""乳头状瘤"</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>在卷三第一部分查找形态学编码</h4>
+      <p>以形态学主导词查索引，找到 M 编码和动态编码，如腺癌 → M8140/3</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>在卷一核对形态学编码</h4>
+      <p>确认 M 编码与病理描述一致，动态编码与肿瘤性质一致</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>根据形态学编码指示查部位编码</h4>
+      <p>在卷三"肿瘤"表（1364页起）对应栏内查找部位编码：良性栏/原位栏/恶性原发栏/恶性继发栏</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content">
+      <h4>在卷一核对部位编码</h4>
+      <p>确认部位编码与解剖位置一致。一个肿瘤患者至少有两个编码：部位编码 + 形态学编码</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见错误：跳过步骤2直接查部位</strong><br>
+  肿瘤编码必须<strong>先确定形态学再找部位</strong>，因为形态学编码的指示决定了你去肿瘤表的哪一栏。例如 M8140/2（原位腺癌）和 M8140/3（浸润性腺癌）部位编码不同。
+</div>
+</div>
+
+<!-- ===== 核心知识点3：编码规则进阶 ===== -->
+<h2><span class="icon">⚠️</span> 核心知识点三：肿瘤编码的特殊规则与避坑指南</h2>
+
+<div class="card">
+<h3>一、复发癌的编码</h3>
+<p>复发癌是指经过手术治疗或其他方法治疗后再次发生的肿瘤。<strong>编码时按原发癌处理</strong>：</p>
+<p>示例：肺腺癌术后复发 → <code>C34.9 M8140/3</code>（同原发癌编码）</p>
+</div>
+
+<div class="card">
+<h3>二、复合恶性肿瘤（C97）</h3>
+<p>人体在<strong>多个部位</strong>发生了两个或两个以上<strong>独立的原发</strong>恶性肿瘤时，使用 <code>C97 M8000/3</code> 作为综合编码。</p>
+<ul>
+  <li>C97 作为主编码时，各具体肿瘤部位和形态学作为附加编码</li>
+  <li>如果只治疗了其中一个肿瘤，则以该肿瘤为主诊断，C97 作为附加编码</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>三、原位癌 vs 浸润癌的编码差异</h3>
+<p>原位癌（/2）指癌细胞<strong>局限于上皮层内，未突破基底膜</strong>；浸润癌（/3）表示癌细胞已<strong>侵犯周围组织</strong>。</p>
+
+<table>
+  <tr><th>病理诊断</th><th>部位编码</th><th>形态学编码</th></tr>
+  <tr><td>宫颈原位腺癌</td><td>D06.9</td><td>M8140/2</td></tr>
+  <tr><td>宫颈浸润性腺癌</td><td>C53.9</td><td>M8140/3</td></tr>
+  <tr><td>直肠原位癌</td><td>D01.3</td><td>M8140/2</td></tr>
+  <tr><td>直肠浸润性腺癌</td><td>C20</td><td>M8140/3</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>四、肿瘤转移时的编码</h3>
+<p>当肿瘤发生转移时，<strong>原发部位</strong>使用 /3 动态编码，<strong>转移部位</strong>使用 /6 动态编码：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>肺腺癌肝转移</h4>
+    <p>原发：<code>C34.9 M8140/3</code><br>继发：<code>C78.7 M8140/6</code></p>
+  </div>
+  <div class="example-item">
+    <h4>直肠腺癌肝转移</h4>
+    <p>原发：<code>C20 M8140/3</code><br>继发：<code>C78.7 M8140/6</code></p>
+  </div>
+</div>
+</div>
+
+<!-- ===== 重难点深度解析 ===== -->
+<h2><span class="icon">🔬</span> 重难点深度解析：放化疗入院的编码决策树</h2>
+
+<div class="card">
+<p>这是肿瘤编码中<strong>最容易出错的场景</strong>——因为编码员需要判断"主诊断到底是肿瘤本身还是治疗目的"，而这个判断直接影响 DRG 分组和医保支付。</p>
+
+<h4>判断流程图</h4>
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">Q1</div>
+    <div class="process-content">
+      <h4>本次是否做了肿瘤切除手术？</h4>
+      <p>是 → <strong>主诊断 = 肿瘤（C章节）</strong> | 否 → 进入 Q2</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">Q2</div>
+    <div class="process-content">
+      <h4>本次住院主要目的是放/化疗？</h4>
+      <p>是 → <strong>主诊断 = Z51.0/Z51.1/Z51.8</strong>，恶性肿瘤作为其他诊断 | 否 → 进入 Q3</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">Q3</div>
+    <div class="process-content">
+      <h4>本次是检查/复查/其他目的？</h4>
+      <p>随诊检查 → Z08/Z09 | 对症治疗 → 编码症状 | 并发症治疗 → 编码并发症</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 经典错误案例</strong><br>
+  患者因"肺癌"入院，实际只是来做第3周期化疗。<br>
+  <span style="color:var(--red)"><strong>错误：</strong>主诊断 C34.9（肺恶性肿瘤）</span><br>
+  <span style="color:var(--green)"><strong>正确：</strong>主诊断 Z51.1（化学治疗疗程）+ 其他诊断 C34.9</span><br>
+  <strong>后果：</strong>选错主诊断可能导致 DRG 不入肿瘤内科组而入普通内科组，权重差异可达数倍。
+</div>
+</div>
+
+<!-- ===== 案例练习 ===== -->
+<h2><span class="icon">✍️</span> 案例练习</h2>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">1</div> 主导词选择 <span class="case-tag practice">基础</span></div>
+  <div class="case-body">
+    <p>患者诊断为"肺腺癌"，请写出查找形态学编码时使用的<strong>主导词</strong>。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>主导词：腺癌</strong><br>
+        <strong>推理过程：</strong>肿瘤编码需先确定形态学主导词。"肺腺癌"中，"肺"是部位，"腺癌"是形态学类型。因此主导词为"腺癌"→ 索引查得 M8140/3 → 再根据指示到肿瘤表查找部位编码 C34.9。<br>
+        <strong>常见错误：</strong>直接用"肺癌"或"肿瘤"查索引——这样找不到正确的形态学编码。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">2</div> 主诊断选择 <span class="case-tag practice">基础</span></div>
+  <div class="case-body">
+    <p>患者，女，56岁，左乳浸润性导管癌术后，本次为<strong>第4周期辅助化疗</strong>入院。化疗过程顺利，无特殊并发症。请选择主要诊断和其他诊断。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>主诊断：</strong>Z51.1 为肿瘤化学治疗疗程<br>
+        <strong>其他诊断：</strong>C50.9 乳房恶性肿瘤，M8500/3 浸润性导管癌<br>
+        <strong>推理过程：</strong>本次入院<strong>唯一目的</strong>是化疗，未做手术，无并发症。根据规则，放化疗入院主诊断应为 Z51。乳腺癌作为病因写入其他诊断，形态学编码根据病理补充。<br>
+        <strong>避坑：</strong>不要因为患者"有癌症"就把肿瘤放主诊断——判断标准是<strong>本次住院的目的</strong>。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">3</div> 同步放化疗 <span class="case-tag practice">基础</span></div>
+  <div class="case-body">
+    <p>鼻咽癌患者本次入院接受<strong>同步放化疗</strong>（放疗为主，化疗为辅）。请写出编码方案。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>主诊断：</strong>Z51.0 放射治疗疗程<br>
+        <strong>其他诊断：</strong>C11.9 鼻咽恶性肿瘤 + Z51.1 化学治疗疗程<br>
+        <strong>推理过程：</strong>同步放化疗时，以<strong>放疗为主诊断</strong>（Z51.0），化疗写入其他诊断。依据：放疗通常消耗更多医疗资源，且是本次治疗计划的核心。<br>
+        <strong>常见错误：</strong>两码都放主诊断位置，或者把化疗放主诊断。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">4</div> 形态学编码查找 <span class="case-tag challenge">进阶</span></div>
+  <div class="case-body">
+    <p>病理报告：<strong>乙状结肠中分化腺癌</strong>，侵犯浆膜层。请给出完整的部位编码和形态学编码，并说明查找流程。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>部位编码：</strong>C18.7 乙状结肠恶性肿瘤<br>
+        <strong>形态学编码：</strong>M8140/3 腺癌，恶性<br>
+        <strong>查找流程：</strong><br>
+        ① 确定形态学主导词："腺癌"<br>
+        ② 查卷三 → 腺癌 M8140/3<br>
+        ③ 核对卷一 → 确认 M8140/3 为腺癌<br>
+        ④ 根据 M8140/3 指示到肿瘤表"恶性，原发"栏查"结肠-乙状结肠" → C18.7<br>
+        ⑤ 核对卷一 → 确认 C18.7<br>
+        <strong>注意：</strong>乙状结肠（C18.7）≠ 直肠乙状结肠连接处（C19）≠ 直肠（C20），部位要精确。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">5</div> 原位癌 vs 浸润癌 <span class="case-tag challenge">进阶</span></div>
+  <div class="case-body">
+    <p>两份病理报告：<br>A. 宫颈鳞状上皮重度不典型增生，累及全层（CIN III级），未突破基底膜<br>B. 宫颈鳞状细胞癌，浸润深度 5mm<br>请分别编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>A（原位癌）：</strong>部位 D06.9 + 形态学 M8070/2<br>
+        <strong>推理：</strong>CIN III级按原位癌分类（ICD-10 明确规定），未突破基底膜 → /2 动态编码。部位编码在 D00-D09 原位癌章节。<br><br>
+        <strong>B（浸润癌）：</strong>部位 C53.9 + 形态学 M8070/3<br>
+        <strong>推理：</strong>浸润深度 5mm 已突破基底膜 → /3 动态编码。部位编码在 C51-C58 恶性章节。<br><br>
+        <strong>关键区分：</strong>同样的"鳞状细胞癌"（M8070），动态编码 /2 vs /3 决定了部位编码完全不同——这是 DRG 入组的关键差异。
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><div class="case-num">6</div> 肿瘤转移编码 <span class="case-tag challenge">进阶</span></div>
+  <div class="case-body">
+    <p>患者确诊<strong>原发性肝细胞癌</strong>，CT 发现<strong>双肺多发转移</strong>。请给出完整的编码方案（含主诊断选择）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <strong>主诊断：</strong>C22.0 肝细胞癌（原发）<br>
+        <strong>其他诊断：</strong>C78.0 肺继发恶性肿瘤<br>
+        <strong>形态学编码：</strong>C22.0 对应 M8170/3（肝细胞癌）<br>C78.0 对应 M8170/6（继发性肝细胞癌）<br>
+        <strong>推理过程：</strong>原发肿瘤作为主诊断（因为本次主要处理原发灶），转移部位作为其他诊断。原发部位动态编码 /3，转移部位动态编码 /6。<br>
+        <strong>常见错误：</strong>转移部位也使用 /3 或忽略 /6 的动态编码差异。
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===== 今日重点回顾 ===== -->
+<h2><span class="icon">📋</span> 今日重点回顾</h2>
+<div class="key-grid">
+  <div class="key-item"><div class="key-num">1</div>放化疗入院主诊断选 Z51.0/Z51.1/Z51.8，恶性肿瘤为其他诊断</div>
+  <div class="key-item"><div class="key-num">2</div>同步放化疗：放疗（Z51.0）为主，化疗（Z51.1）为附加</div>
+  <div class="key-item"><div class="key-num">3</div>M编码 = 组织学编码 + / + 动态编码（/0良 /1交界 /2原位 /3恶性原发 /6恶性继发）</div>
+  <div class="key-item"><div class="key-num">4</div>肿瘤编码五步法：形态学主导词→卷三查M编码→核对卷一→肿瘤表查部位→核对部位</div>
+  <div class="key-item"><div class="key-num">5</div>复发癌按原发癌编码，不作区分</div>
+  <div class="key-item"><div class="key-num">6</div>CIN III / VIN III / VAIN III 均按原位癌分类</div>
+  <div class="key-item"><div class="key-num">7</div>原位癌（/2）部位在 D00-D09，浸润癌（/3）部位在 C00-C96</div>
+  <div class="key-item"><div class="key-num">8</div>复合恶性肿瘤 C97 M8000/3，具体部位作附加编码</div>
+</div>
+
+<!-- ===== 明日预习 ===== -->
+<h2><span class="icon">🔮</span> 明日预习提示</h2>
+<div class="card info">
+  <p><strong>Day 14（7/2）：内分泌、营养和代谢疾病（E00-E90）</strong></p>
+  <p>预习问题：</p>
+  <ul>
+    <li>糖尿病的分类轴心是什么？E10-E14 的亚目如何区分？</li>
+    <li>甲状腺疾病的编码范围，甲亢和甲减分别在哪些编码？</li>
+    <li>肥胖症在 ICD-10 中的归属章节和编码规则？</li>
+  </ul>
+</div>
+
+<div class="footer">病案编码 60 天系统学习 · Day 13 · 由 WorkBuddy 生成 · 2026年7月1日</div>
+
+</body>
+</html>

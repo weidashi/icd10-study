@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 28（2026年7月16日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .hero::after { content: ''; position: absolute; bottom: -40px; left: 30%; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.05); }
+  .hero .day-badge { display: inline-block; background: rgba(255,255,255,.2); color: #fff; padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px; backdrop-filter: blur(4px); }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 { font-size: 20px; margin: 44px 0 18px; padding: 14px 18px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent); }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform .15s, box-shadow .15s; }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 16px; margin: 6px 0; border-radius: 8px; background: var(--card); border: 1px solid var(--border); font-size: 14px; transition: transform .15s; }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge { display: inline-block; min-width: 52px; text-align: center; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header { background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+  .case-num { background: var(--accent); color: #fff; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px; font-size: 14px; user-select: none; background: var(--accent-bg); border-radius: 8px; transition: background .15s; list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box { margin-top: 10px; padding: 16px 20px; background: var(--green-bg); border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green); }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item { background: var(--card); border-radius: 10px; padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform .15s; }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num { background: var(--accent); color: #fff; min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre { background: #1e293b; color: #e2e8f0; border-radius: var(--radius); padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7; margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; box-shadow: var(--shadow-md); }
+  .note { background: var(--accent-bg); border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px; margin: 14px 0; font-size: 14px; }
+  .note strong { color: var(--accent); }
+  .process-box { background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+  .process-step { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+  .process-step:last-child { border-bottom: none; }
+  .process-num { background: var(--accent); color: #fff; min-width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; background: var(--card); box-shadow: var(--shadow); }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px; }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .flow-chart { background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0; text-align: center; }
+  .flow-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+  .flow-box { background: #fff; border: 2px solid var(--accent); border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .progress-bar { background: rgba(255,255,255,.2); border-radius: 10px; height: 8px; margin: 12px 0 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge { flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 28 · 2026年7月16日</div>
+  <h1>🧠 神经系统手术编码</h1>
+  <p class="subtitle">今日主题：ICD-9-CM-3 类目 01-05 —— 颅脑、脊髓、周围神经和交感神经手术操作</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:46.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 28 / 60 天（46.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">神经系统手术编码覆盖 ICD-9-CM-3 从 01 到 05 共五个类目，是手术操作编码中"部位决定编码"特征最明显的几个类目。点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（出科考核必考，日常编码高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>五个类目的码位范围和各自的核心分类轴心（01颅脑→02分流→03脊髓→04周围神经→05交感神经）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>颅内血肿清除三码体系：部位轴心（01.24硬膜外 / 01.31硬膜下/蛛网膜下 / 01.39脑内）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>脑室引流（02.21）与血肿钻孔引流（01.39）的核心边界区分口诀</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>颅骨修补术（02.0x）与颅骨瓣成形/骨瓣去除术（01.2x）的区别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>钻孔与开颅的本质判断标准：是否形成游离骨瓣</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（质控检查高频区，编码员防错能力）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>神经刺激器植入/置换编码路径：电极(04.92/04.93)与脉冲发生器(86.94-86.98)的分开编</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>脊柱融合术81.0x与椎管减压03.0x的"不包括"交叉关系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>PVP(81.65)与PKP(81.66)的核心术式区分——"直接注入" vs "先撑开再注入"</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>脑室腹腔分流术(VPS) 02.34 与脑室心房分流术 02.32 的区别与选择</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（拓宽视野，初学不要求全部掌握）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>脑深部电刺激(DBS)与脊髓电刺激(SCS)的植入编码差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>周围神经手术（04.5-04.7）的神经移植、神经转位等复杂术式</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>交感神经切除术（05.2）的临床应用场景和编码对应</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>神经系统手术编码的核心矛盾是"部位+术式+入路"三位一体。今天最重要的收获是学会"看了手术记录再编码"——同一个"钻孔引流"，可能是01.39（脑内血肿）、02.21（脑室引流）甚至03.31（脊髓穿刺），部位不同，编码完全不同。
+</div>
+
+<!-- ======== 一、五类目全景速览 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、五类目全景速览——01到05码位地图</h2>
+
+<p>在 ICD-9-CM-3 中，神经系统手术被按 <strong>"从中央到外周、从主干到分支"</strong> 的层次结构分配类目。理解这五个类目的地理边界，是正确编码的前提：</p>
+
+<table>
+  <tr><th>类目</th><th>码位范围</th><th>核心解剖区域</th><th>典型术式</th><th>编码轴心</th></tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>01</strong></td>
+    <td><code>01.0 - 01.9</code></td>
+    <td>颅骨、大脑、脑膜</td>
+    <td>开颅探查、血肿清除、颅骨瓣去除</td>
+    <td>切口/切除 + 层次</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>02</strong></td>
+    <td><code>02.0 - 02.9</code></td>
+    <td>颅骨、大脑、脑膜（其他操作）</td>
+    <td>颅骨成形/修补、脑室分流、颅骨切开</td>
+    <td>成形/引流 + 分流目的地</td>
+  </tr>
+  <tr>
+    <td><strong>03</strong></td>
+    <td><code>03.0 - 03.9</code></td>
+    <td>脊髓、椎管结构</td>
+    <td>椎管探查减压、脊髓穿刺、脊神经根切断</td>
+    <td>减压/探查 + 脊柱节段</td>
+  </tr>
+  <tr>
+    <td><strong>04</strong></td>
+    <td><code>04.0 - 04.9</code></td>
+    <td>颅神经、周围神经（含神经节）</td>
+    <td>神经切断、缝合、移植、神经刺激器</td>
+    <td>神经名称 + 术式</td>
+  </tr>
+  <tr>
+    <td><strong>05</strong></td>
+    <td><code>05.0 - 05.9</code></td>
+    <td>交感神经干、神经节</td>
+    <td>交感神经切断术、神经节阻滞</td>
+    <td>部位（颈/胸/腰）+ 术式</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <h4 style="margin-top:0;">🏗️ 记忆框架："三层神经，两翼分支"</h4>
+  <p><strong>中央三层：</strong>01（颅骨-脑膜-脑实质）→ 02（颅腔分流-修补）→ 03（脊髓-椎管）——自上而下的解剖路线</p>
+  <p><strong>两翼分支：</strong>04（颅神经+周围神经）→ 05（自主神经·交感）——从躯干向外周辐射</p>
+  <p><strong>主导词选择规律：</strong>颅脑手术主导词多用解剖名词（切开术→颅骨；引流术→脑室）；神经手术主导词多用"神经（术）→X神经→术式"</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、类目01详解 ======== -->
+<h2><span class="icon">🔪</span> 二、类目 01：颅骨、脑和脑膜的切开术与切除术</h2>
+
+<h3>2.1 核心结构：层次决定编码</h3>
+<p>类目 01 是神经外科最常用的类目之一，从颅骨外表层到脑实质深部，按照<strong>由外向内</strong>的解剖层次分配亚目。编码员的关键能力是：看到手术名称后，立即在心里还原颅腔的解剖层次。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num" style="background:var(--accent);">头皮</div>
+    <div class="process-content">
+      <h4>颅骨层 01.0-01.2</h4>
+      <p><code>01.0</code> 颅穿刺（诊断性穿刺） | <code>01.1</code> 颅腔诊断性操作 | <code>01.2</code> 开颅术和颅骨切除术</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num" style="background:#6366f1;">脑膜</div>
+    <div class="process-content">
+      <h4>脑膜层 01.3-01.5</h4>
+      <p><code>01.3</code> 脑和脑膜的切开术 | <code>01.4</code> 脑和脑膜的手术 | <code>01.5</code> 脑膜其他切除术</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num" style="background:#8b5cf6;">脑实质</div>
+    <div class="process-content">
+      <h4>脑实质层 01.5-01.6</h4>
+      <p><code>01.5</code> 脑的其他切除术和破坏术 | <code>01.6</code> 颅结构病损的切除术（如肿瘤、AVM）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num" style="background:#a855f7;">附加</div>
+    <div class="process-content">
+      <h4>附属操作 01.9</h4>
+      <p><code>01.9</code> 颅的其他手术</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.2 颅内血肿清除术——最核心的编码场景</h3>
+<p>颅内血肿清除是神经外科最常见的手术之一，编码核心轴心是<strong>出血部位（解剖层次）</strong>，而非术式名称。同一台手术可能因为硬膜外/硬膜下/脑实质内而编完全不同的码：</p>
+
+<table>
+  <tr><th>血肿位置</th><th>ICD-9-CM-3</th><th>典型术式</th><th>编码陷阱</th></tr>
+  <tr>
+    <td>硬膜外</td>
+    <td><code>01.24</code> 其他颅骨切开术</td>
+    <td>骨瓣开颅硬膜外血肿清除</td>
+    <td>易与硬膜下混淆，需看CT/MR定位</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td>硬膜下 / 蛛网膜下</td>
+    <td><code>01.31</code> 脑膜切开术</td>
+    <td>钻孔引流或开颅清除硬膜下血肿</td>
+    <td>（常考）慢性硬膜下血肿钻孔引流 → 01.31</td>
+  </tr>
+  <tr>
+    <td>脑实质内</td>
+    <td><code>01.39</code> 脑的其他切开术</td>
+    <td>开颅脑内血肿清除、锥颅穿刺抽吸</td>
+    <td>（高频混淆）脑室出血 → 不是 01.39</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 01.39 的高频陷阱：</strong>
+  <p>① <strong>脑室内血肿</strong>：不是 01.39！脑室属于 CSF 循环系统，引流脑室内血肿/脑脊液应编 <code>02.21</code>（脑室外引流装置置入）。</p>
+  <p>② <strong>钻孔 vs 开颅</strong>：01.39 只要求"确实进入了脑实质"，不限制入路方式——锥颅穿刺抽吸照样编 01.39。关键是<strong>操作目标层</strong>，不是切多大多小。</p>
+  <p>③ <strong>同时清除多种层次血肿</strong>：应分别编码，硬膜外清除编码 01.24 + 脑内清除编码 01.39。</p>
+</div>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>✅ 正确：急性硬膜外血肿</h4>
+    <p>CT示右颞部硬膜外血肿 → 骨瓣开颅血肿清除<br>→ <code>01.24</code>（以层次为轴心，进入硬膜外腔）</p>
+  </div>
+  <div class="example-item">
+    <h4>✅ 正确：慢性硬膜下血肿</h4>
+    <p>双侧慢性硬膜下血肿 → 钻孔引流术<br>→ <code>01.31</code>（脑膜切开引流，层次在硬膜下腔）</p>
+  </div>
+  <div class="example-item">
+    <h4>⚠️ 易错：脑室出血</h4>
+    <p>基底节出血破入脑室 → 脑室外引流(EVD)置入<br>→ <code>02.21</code>（引流脑脊液和脑室内血肿）<br><strong>不是</strong> 01.39！</p>
+  </div>
+</div>
+
+<h3>2.3 颅骨瓣去除术 vs 颅骨瓣成形术</h3>
+<table>
+  <tr><th>术式</th><th>编码</th><th>本质</th><th>何时使用</th></tr>
+  <tr>
+    <td>颅骨瓣去除术（去骨瓣减压）</td>
+    <td><code>01.24</code>（骨瓣去除）+ 必要时附加 <code>02.0x</code>（二期修补）</td>
+    <td>切除骨瓣且不立即放回</td>
+    <td>严重脑水肿、颅内高压——骨瓣不还纳</td>
+  </tr>
+  <tr>
+    <td>颅骨瓣成形术</td>
+    <td><code>01.2x</code>（开颅）+ 术后骨瓣复位不另编</td>
+    <td>切开后骨瓣放回原位</td>
+    <td>常规开颅手术——术毕骨瓣复位固定</td>
+  </tr>
+  <tr>
+    <td>颅骨修补术（二期）</td>
+    <td><code>02.0x</code> 颅骨成形术</td>
+    <td>用人工材料（钛网等）修补颅骨缺损</td>
+    <td>前期去骨瓣减压后，择期修补</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 记忆口诀：</strong>"开颅放回算开颅（01.2），去骨不还加修补（01.24→02.0），钛网修补是成形（02.0）。"
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、类目02详解 ======== -->
+<h2><span class="icon">🔄</span> 三、类目 02：颅骨、脑和脑膜的其他手术——分流、引流和成形</h2>
+
+<h3>3.1 脑室分流术——编码要看"终点站"</h3>
+<p>脑室分流术的编码核心轴心是<strong>分流液的去向</strong>，不同"终点站"对应不同亚目。掌握这一点，三个相关亚目便一目了然：</p>
+
+<table>
+  <tr><th>分流目的</th><th>编码</th><th>分流途径</th><th>关键识别词</th></tr>
+  <tr>
+    <td>脑室-心房分流</td>
+    <td><code>02.32</code></td>
+    <td>脑室 → 颈静脉 → 右心房</td>
+    <td>"VA分流"、"脑室心房分流"</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td>脑室-腹腔分流(VPS)</td>
+    <td><code>02.34</code></td>
+    <td>脑室 → 皮下隧道 → 腹腔</td>
+    <td>"VP分流"、"脑室腹腔分流"——最常见</td>
+  </tr>
+  <tr>
+    <td>脑室外引流(EVD)</td>
+    <td><code>02.21</code></td>
+    <td>脑室 → 体外引流袋（临时）</td>
+    <td>"脑室外引流"、"外引流装置"——临时性</td>
+  </tr>
+  <tr>
+    <td>脑室-胸腔分流</td>
+    <td><code>02.33</code></td>
+    <td>脑室 → 胸腔</td>
+    <td>"脑室胸部分流"——二线选择</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ VPS分流管"仅做探查"的编码陷阱：</strong>
+  <p>如果手术记录描述为"原VPS分流管探查、调整"，且未更换分流管主体 → <strong>不是</strong> 02.34（那是"置入"分流），而是编 <code>02.41</code>（脑室分流管冲洗探查术）或 <code>02.42</code>（脑室分流管置换术）。<strong>看了手术记录再编码。</strong></p>
+</div>
+
+<h3>3.2 颅骨成形与修补术（02.0x）</h3>
+<p>颅骨修补的核心亚目有：</p>
+<table>
+  <tr><th>编码</th><th>名称</th><th>场景</th></tr>
+  <tr><td><code>02.01</code></td><td>颅缝切开术</td><td>狭颅症——婴儿颅缝早闭切开</td></tr>
+  <tr><td><code>02.02</code></td><td>颅骨骨折提升术</td><td>凹陷性颅骨骨折——撬起复位</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>02.03</code></td><td>颅骨瓣成形术（修补）</td><td>自体骨瓣还纳</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>02.04</code></td><td>颅骨骨移植术</td><td>自体骨移植修补</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>02.05</code></td><td>颅骨板置入术</td><td>人工材料修补（钛网、PEEK等）</td></tr>
+  <tr><td><code>02.06</code></td><td>其他颅骨成形术</td><td>未另分类的颅骨修补</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四、类目03详解 ======== -->
+<h2><span class="icon">🦴</span> 四、类目 03：脊髓和椎管结构的手术</h2>
+
+<h3>4.1 椎管减压——为什么不是脊柱手术？</h3>
+<p>很多新手看到"椎管"就想到骨科（类目 78-84），但实际上：</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 类目 03（神经系统）</h4>
+    <p><strong>椎板切除减压</strong> → <code>03.09</code> 椎管其他探查术和减压术</p>
+    <p><strong>脊髓探查</strong> → <code>03.0</code></p>
+    <p><strong>脊神经根切断</strong> → <code>03.1</code></p>
+    <p><strong>核心逻辑：</strong>操作的<strong>直接目标</strong>是神经结构（脊髓、神经根），而不是骨骼本身</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误思路（易混淆→骨科）</h4>
+    <p>脊柱融合术（81.0x）→ 骨科类别</p>
+    <p>椎体成形术PVP/PKP（81.65/66）→ 骨科类别</p>
+    <p>椎间盘切除术（80.51）→ 骨科类别</p>
+    <p><strong>区分标准：</strong>如果主要目的是稳定骨骼/椎体结构，不涉及神经减压 → 骨科类目</p>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>🎯 椎管减压的关键判断三问：</strong>
+  <p>① 手术<strong>主要目的</strong>是解除神经压迫吗？（是 → 03.0x）</p>
+  <p>② 是否同时做了脊柱融合？（同时做 → 分别编码 03.0x + 81.0x）</p>
+  <p>③ 切除的是椎板还是间盘？（椎板 → 03.0x；间盘 → 80.51）</p>
+</div>
+
+<h3>4.2 脊髓电刺激（SCS）编码路径</h3>
+<p>脊髓电刺激涉及两类部件，应分别编码：</p>
+<pre>电极植入/置换 → 03.93（脊髓电刺激电极的植入或置换）
+脉冲发生器植入 → 86.94-86.98（体表脉冲发生器）
+
+注意：电极去除 → 03.93（与植入同码，索引交叉引回）
+      脉冲发生器去除 → 86.05</pre>
+
+<h3>4.3 脊柱手术编码速查对比</h3>
+<table>
+  <tr><th>临床术式</th><th>ICD-9-CM-3</th><th>归属类目</th><th>编码要点</th></tr>
+  <tr><td>椎板切除减压术</td><td><code>03.09</code></td><td>03 脊髓</td><td>目的为减压 — 神经系统</td></tr>
+  <tr><td>椎间盘切除术</td><td><code>80.51</code></td><td>80 关节结构</td><td>切除间盘组织 — 骨科</td></tr>
+  <tr><td>脊柱融合术</td><td><code>81.0x</code></td><td>81 关节修补成形</td><td>稳定椎体结构 — 骨科</td></tr>
+  <tr><td>PVP 椎体成形术</td><td><code>81.65</code></td><td>81 关节修补成形</td><td>填充骨水泥 — 骨科</td></tr>
+  <tr><td>PKP 后凸成形术</td><td><code>81.66</code></td><td>81 关节修补成形</td><td>先撑开再填充 — 骨科</td></tr>
+  <tr style="background:var(--red-bg);"><td>PVP/PKP 误编</td><td>❌ 03.53</td><td>03 脊髓</td><td>03.53 = 脊柱骨折修补术 ≠ 椎体成形</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ PVP vs PKP 混淆是常见错误：</strong>
+  <p>PVP（81.65）：直接向椎体注入骨水泥，<strong>不撑开</strong>椎体</p>
+  <p>PKP（81.66）：先用球囊/网袋<strong>撑开</strong>塌陷椎体，再注入骨水泥（经皮椎体增强）</p>
+  <p>编码员必须读手术记录中是否出现"置入球囊扩张"、"先撑开椎体"、"形成空腔后再注入"等关键词。</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、类目04-05详解 ======== -->
+<h2><span class="icon">🔌</span> 五、类目 04：颅和周围神经的手术 + 类目 05：交感神经手术</h2>
+
+<h3>5.1 类目 04 核心：神经名称+术式的二维编码</h3>
+<p>类目 04 按<strong>术式类型</strong>组织亚目，但具体编码需要结合<strong>神经名称</strong>。常见的术式亚目对应关系：</p>
+
+<table>
+  <tr><th>亚目</th><th>术式</th><th>典型场景</th><th>主导词路径</th></tr>
+  <tr><td><code>04.0</code></td><td>颅和周围神经切断术</td><td>三叉神经切断、迷走神经切断</td><td>神经切断术→X神经</td></tr>
+  <tr><td><code>04.1</code></td><td>周围神经诊断性操作</td><td>神经活检、神经探查</td><td>活组织检查→神经</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>04.3</code></td><td>神经缝合术</td><td>周围神经断裂吻合（含神经移植）</td><td>缝合术→神经</td></tr>
+  <tr><td><code>04.4</code></td><td>神经松解术</td><td>腕管松解、肘管松解</td><td>松解术→神经</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>04.5</code></td><td>神经移植术</td><td>自体神经移植修复</td><td>移植术→神经</td></tr>
+  <tr><td><code>04.6</code></td><td>周围神经转位术</td><td>神经移位移接</td><td>转位术→神经</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>04.7</code></td><td>其他神经成形术</td><td>神经修复、神经套管</td><td>修补术→神经</td></tr>
+</table>
+
+<h3>5.2 神经刺激器——电极与脉冲发生器的分开编码</h3>
+<p>植入式神经刺激器（脑深部DBS / 脊髓SCS / 周围神经PNS）的编码是典型的<strong>"一套设备、两个编码"</strong>：</p>
+
+<pre>电极部分（作用在神经上）：
+  植入 → 04.92（周围神经）或 03.93（脊髓）或 02.93（颅内）
+  置换 → 与植入同码（索引交叉引回）
+  去除 → 04.93（周围神经）或同植入码
+
+脉冲发生器（作用在皮下/体表）：
+  植入/置换 → 86.94-86.98（皮肤和皮下组织）
+  去除 → 86.05（皮肤和皮下组织）</pre>
+
+<div class="note">
+  <strong>💡 为什么分两个系统编码？</strong>因为 ICD-9-CM-3 的编码轴心是<strong>解剖部位</strong>——电极作用于神经（类目 04），而脉冲发生器埋在胸壁皮下（类目 86）。手术是两个独立的解剖位置，各编各的。
+</div>
+
+<h3>5.3 腕管松解术——神经外科还是骨科？</h3>
+<p>"腕管综合征"虽然是手外科（骨科）常见病，但其手术的本质是<strong>松解正中神经</strong>，因此编码归属于神经系统 04 类目：</p>
+<pre>腕管松解术 → 04.43（正中神经松解术）
+肘管松解术 → 04.49（其他周围神经松解术，尺神经）</pre>
+
+<h3>5.4 类目 05：交感神经手术</h3>
+<p>类目 05 规模较小，主要适用于手汗症等交感神经功能亢进的手术：</p>
+<table>
+  <tr><th>编码</th><th>手术</th><th>适应症</th></tr>
+  <tr><td><code>05.21</code></td><td>蝶腭神经节切除术</td><td>丛集性头痛</td></tr>
+  <tr><td><code>05.23</code></td><td>颈交感神经切除术</td><td>上肢雷诺病</td></tr>
+  <tr><td><code>05.24</code></td><td>腰交感神经切除术</td><td>下肢动脉闭塞</td></tr>
+  <tr style="background:var(--accent-bg);"><td><code>05.29</code></td><td>胸腔镜胸交感神经切断术(ETS)</td><td>手汗症、面部多汗</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点深度解析：脑室引流 vs 脑内血肿引流——02.21 还是 01.39？</h2>
+
+<p>这是神经系统手术编码中<strong>混淆率最高</strong>的一组编码。"钻孔引流"四个字可能指向完全不同的编码，取决于<strong>钻到哪里、引流什么</strong>。</p>
+
+<h3>三码核心边界：</h3>
+
+<div class="flow-chart">
+  <p style="margin-bottom:12px;font-weight:700;color:var(--accent);">🔍 钻孔引流编码决策树</p>
+  <div class="flow-row">
+    <div class="flow-box">钻孔引流</div>
+  </div>
+  <div class="flow-row" style="font-size:13px;margin:2px 0;">↓ 看穿入位置和目标物质</div>
+  <div class="flow-row">
+    <div class="flow-box">进入<strong>脑室</strong><br>引流脑脊液(CSF)</div>
+    <div style="font-size:24px;margin:0 4px;">→</div>
+    <div class="flow-box" style="background:var(--green-bg);border-color:var(--green);">02.21<br>脑室外引流</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">进入<strong>脑实质</strong><br>引流血液/脓液</div>
+    <div style="font-size:24px;margin:0 4px;">→</div>
+    <div class="flow-box">01.39<br>脑的其他切开术</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">进入<strong>脊髓/椎管</strong><br>引流CSF/血液</div>
+    <div style="font-size:24px;margin:0 4px;">→</div>
+    <div class="flow-box">03.31<br>脊髓穿刺</div>
+  </div>
+</div>
+
+<h3>三码边界详细对比：</h3>
+
+<table>
+  <tr><th>维度</th><th><code>02.21</code> 脑室外引流装置</th><th><code>01.39</code> 脑的其他切开术</th><th><code>01.09</code> 颅的其他穿刺术</th></tr>
+  <tr><td>操作目标</td><td>脑室系统→CSF循环</td><td>脑实质→血肿腔/脓腔</td><td>单纯穿刺抽吸</td></tr>
+  <tr><td>引流物</td><td>脑脊液（可含血）</td><td>血液、脓液</td><td>血液</td></tr>
+  <tr><td>留置管</td><td>留置外引流管（EVD）</td><td>留置引流管（通常）</td><td>不留置或仅短暂抽吸</td></tr>
+  <tr><td>典型术式</td><td>额角/枕角穿刺置管外引流</td><td>开颅/钻孔血肿清除+引流</td><td>锥颅穿刺抽吸血肿</td></tr>
+  <tr><td>易错情形</td><td>基底节出血<strong>破入脑室</strong></td><td>脑内血肿<strong>未破入脑室</strong></td><td>与01.39边界模糊</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 核心决策逻辑——"引流物性质"是第一判断标准：</strong>
+  <p><strong>脑脊液(CSF) → 02.21</strong>：无论目标结构叫"钻孔引流"还是"脑室穿刺"，只要导出的主要是脑脊液 → 02.21</p>
+  <p><strong>血液/血肿 → 01.39</strong>：无论是钻孔还是开颅，只要清除的是脑内血肿 → 01.39</p>
+  <p><strong>二者同时 → 分别编码：</strong>脑内血肿清除 01.39 + 脑室外引流 02.21</p>
+</div>
+
+<h3>实战案例对比：</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 案例 A：脑室引流</h4>
+    <p>患者基底节出血破入脑室，急行"右侧脑室额角穿刺置管外引流术"。</p>
+    <p>手术记录："切开头皮，钻颅孔，穿刺进入右侧侧脑室前角，见淡血性脑脊液流出，置入引流管……"</p>
+    <p><strong>→ 02.21</strong>（脑室外引流装置置入）</p>
+    <p>理由：穿刺目标=脑室，引流物=脑脊液，留置=外引流管</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>⚠️ 案例 B：脑内血肿</h4>
+    <p>患者高血压脑出血，CT示右侧基底节血肿（未破入脑室），行"钻孔颅内血肿穿刺引流术"。</p>
+    <p>手术记录："钻孔后穿刺进入血肿腔，抽吸暗红色血凝块约40ml，留置引流管……"</p>
+    <p><strong>→ 01.39</strong>（脑的其他切开术）</p>
+    <p>理由：穿刺目标=血肿腔（脑实质），引流物=血凝块/血液</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题（部位识别+术式区分），后3题为进阶题（多编码组合+边界判断）。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 血肿清除部位匹配</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>将以下四种颅内血肿与正确的 ICD-9-CM-3 编码连线：</p>
+    <table>
+      <tr><th>血肿类型</th><th>备选编码</th></tr>
+      <tr><td>A. 急性硬膜外血肿清除</td><td>① 01.31</td></tr>
+      <tr><td>B. 慢性硬膜下血肿钻孔引流</td><td>② 01.24</td></tr>
+      <tr><td>C. 脑内血肿清除术</td><td>③ 02.21</td></tr>
+      <tr><td>D. 脑室出血脑室外引流</td><td>④ 01.39</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 连线：</strong> A→② | B→① | C→④ | D→③</p>
+        <p><strong>推理：</strong></p>
+        <p>A→<code>01.24</code>：硬膜外 → 颅骨切开术层级，01.24 其他颅骨切开术</p>
+        <p>B→<code>01.31</code>：硬膜下 → 脑膜切开层级，01.31 脑膜切开术（含引流）</p>
+        <p>C→<code>01.39</code>：脑实质内 → 01.39 脑的其他切开术</p>
+        <p>D→<code>02.21</code>：脑室内 → CSF循环系统 → 脑室外引流装置置入</p>
+        <p><strong>💡 口诀：</strong>"硬膜外走24，膜下出血走31，脑内走走39，脑室引流221。"</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 主导词选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>为以下手术操作选择正确的<strong>主导词</strong>和索引路径：</p>
+    <ol>
+      <li>脑室腹腔分流术（VPS）</li>
+      <li>腕管松解术</li>
+      <li>腰交感神经切除术</li>
+      <li>颈椎后路椎板切除减压术</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主导词与路径：</strong></p>
+        <p><strong>1. VPS：</strong>主导词→<strong>分流术</strong> → 脑室 → 腹腔 → <code>02.34</code>。注意不是"引流术"，VPS是永久性分流，不是临时外引流。</p>
+        <p><strong>2. 腕管松解：</strong>主导词→<strong>松解术</strong> → 神经 → 正中 → <code>04.43</code>。本质是神经操作，不是"腕管"操作。</p>
+        <p><strong>3. 腰交感神经切除：</strong>主导词→<strong>交感神经切除术</strong> → 腰的 → <code>05.24</code>。</p>
+        <p><strong>4. 椎板切除减压：</strong>主导词→<strong>减压术</strong> → 脊髓/椎管 → <code>03.09</code>。目的为减压，01-05神经系统类目。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · VPS分流管相关操作</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下三台手术的编码：</p>
+    <ol>
+      <li>"脑室腹腔分流管探查冲洗术"——分流管通畅，仅冲洗后放回</li>
+      <li>"脑室腹腔分流管腹腔端置换术"——腹腔端堵塞，更换腹腔端导管</li>
+      <li>"脑室腹腔分流术（VPS）"——首次置入全新分流系统</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. 探查冲洗 → <code>02.41</code></strong>（脑室分流管冲洗探查术）<br>👉 未更换部件，仅探查维护 → 不是 02.34</p>
+        <p><strong>2. 腹腔端置换 → <code>02.42</code></strong>（脑室分流管置换术）<br>👉 更换了分流管组件（任何一端），整体算置换</p>
+        <p><strong>3. 首次VPS → <code>02.34</code></strong>（脑室腹腔分流术）<br>👉 完整的分流系统初次置入</p>
+        <p><strong>💡 三码区分核心：</strong>02.34=初次置入 → 02.42=更换部件 → 02.41=仅探查不换件</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 去骨瓣减压+二期修补</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因重型颅脑损伤入院，行"右侧额颞顶去骨瓣减压+颅内血肿清除术"。术后3个月，患者恢复良好，再次入院行"右侧额颞顶颅骨缺损钛网修补术"。</p>
+    <p><strong>问题：</strong>两次住院的手术编码分别是什么？第二次手术如果用的是自体冷冻保存的骨瓣还纳（非钛网），编码是否相同？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一次住院（去骨瓣减压+血肿清除）：</strong></p>
+        <p>血肿位于硬膜下 → <code>01.31</code>（脑膜切开引流硬膜下血肿）</p>
+        <p>同时切除骨瓣（不还纳）→ 包含在 01.31 的"包括"范围中，不需另编骨瓣去除</p>
+        <p><strong>✅ 第二次住院（颅骨修补）：</strong></p>
+        <p>钛网修补 → <code>02.05</code>（颅骨板置入术）——人工材料</p>
+        <p>自体骨瓣还纳 → <code>02.03</code>（颅骨瓣成形术）——自体的、原来切除的骨瓣</p>
+        <p>自体骨移植修补 → <code>02.04</code>（颅骨骨移植术）——取自体其他部位的骨头</p>
+        <p><strong>💡 关键区分：</strong>02.03 = 原来拿走的那块放回去；02.05 = 用钛网等人工材料；02.04 = 从髂骨等取骨移植。材料不同，编码不同。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 脑室出血+血肿+分流全案</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者突发意识丧失，CT示"左侧基底节区脑出血破入脑室系统"。急诊行"左侧开颅脑内血肿清除术+双侧脑室外引流术"。术后5天拔除一侧引流管，但另一侧因脑积水持续存在，行"脑室腹腔分流术"。</p>
+    <p><strong>问题：</strong>请为此次住院的所有手术操作编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 全部手术编码：</strong></p>
+        <p><strong>① <code>01.39</code></strong> 脑内血肿清除术——血肿位于脑实质（基底节），开颅入路</p>
+        <p><strong>② <code>02.21</code></strong> 脑室外引流装置置入（双侧）——血肿破入脑室，行脑室穿刺外引流</p>
+        <p><strong>③ <code>02.34</code></strong> 脑室腹腔分流术（VPS）——脑积水持续，转为永久性分流</p>
+        <p><strong>💡 为什么三个都编？</strong></p>
+        <p>它们是三个<strong>独立目的</strong>的操作：血肿清除(治疗出血灶)、外引流(临时控制颅内压)、永久分流(解决脑积水)。不是"重复"操作，是<strong>序贯性的三个治疗方案</strong>。</p>
+        <p><strong>⚠️ 注意：</strong>①和②如果是在同一台急诊手术中完成的，编码顺序为主、次关系——一般认为 01.39 脑内血肿清除是<strong>核心手术</strong>（主操作），02.21 是附加引流。但 <strong>02.34 是独立择期操作</strong>，必须单独编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · PVP vs PKP 术式鉴别</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>阅读以下两段手术记录摘要，分别给出正确的 ICD-9-CM-3 编码：</p>
+    <table>
+      <tr><th>病例</th><th>手术记录关键描述</th></tr>
+      <tr>
+        <td>A</td>
+        <td>"透视引导下，经皮经椎弓根穿刺至L1椎体前1/3处。将<strong>球囊置入椎体</strong>，缓慢扩张至压力达250psi，<strong>椎体高度恢复</strong>后退出球囊。将骨水泥在糊状期注入椎体内……"</td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td>"透视引导下，经皮穿刺至T12椎体。将穿刺针送至椎体前中1/3交界处，<strong>直接注入</strong>骨水泥约4ml，边注入边退针……无球囊扩张，<strong>椎体高度无明显变化</strong>。"</td>
+      </tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 病例 A：<code>81.66</code></strong> 经皮椎体增强（PKP——后凸成形术）</p>
+        <p>关键证据："球囊置入"→"缓慢扩张"→"椎体高度恢复"→"再注入骨水泥"</p>
+        <p>→ 这就是 PKP 的核心特征：<strong>先扩张/撑开椎体，恢复高度后再注入骨水泥</strong>。</p>
+        <p><strong>✅ 病例 B：<code>81.65</code></strong> 经皮椎骨成形术（PVP——椎体成形术）</p>
+        <p>关键证据："直接注入骨水泥"→"边注入边退针"→"无球囊扩张"→"椎体高度无明显变化"</p>
+        <p>→ 这就是 PVP 的核心特征：<strong>不撑开椎体，直接注入骨水泥</strong>。</p>
+        <p><strong>💡 一句话区别：</strong>PKP比PVP多了一个"撑-退-填"的步骤——撑开椎体 → 退出球囊 → 填入骨水泥。编码员的"雷达词"就是手术记录中是否出现了"球囊"、"扩张"、"高度恢复"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>五类目按解剖：</strong>01颅脑切开→02颅脑分流/修补→03脊髓椎管→04周围神经→05交感神经</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>血肿清除部位轴心：</strong>硬膜外01.24 / 硬膜下01.31 / 脑内01.39 / 脑室02.21</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>钻孔引流决断：</strong>看穿入位置+引流物——CSF→02.21，血液→01.39</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>VPS三码体系：</strong>02.34首次置入 → 02.42换件 → 02.41仅探查不换</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>颅骨修补看材料：</strong>自体骨瓣02.03 / 自体移植02.04 / 人工材料02.05</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>椎管减压归03：</strong>目的为神经减压→03.0x；目的为稳定骨骼→81.0x骨科</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>PVP vs PKP：</strong>有无"球囊扩张→撑开椎体"是唯一区分标准（81.65 vs 81.66）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>神经刺激器分两码：</strong>电极(04/03类目) + 脉冲发生器(86类目)，各编各的</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 29 主题：心血管系统手术编码（35-39）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>心脏瓣膜手术（35.0-35.9）的编码轴心是什么？（二尖瓣/主动脉瓣/三尖瓣/肺动脉瓣）</li>
+    <li>冠状动脉旁路移植术(CABG)的编码要点——桥血管的来源（大隐静脉 vs 乳内动脉）影响编码吗？</li>
+    <li>心脏起搏器植入涉及哪几个独立编码？</li>
+    <li>血管手术中"球囊扩张"和"支架植入"在编码上是什么关系？</li>
+    <li>永久起搏器与临时起搏器的编码差异在哪里？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 28 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
