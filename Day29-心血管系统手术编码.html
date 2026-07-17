@@ -1,63 +1,1023 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>病案编码学习 - Day 29（2026年7月17日）</title>
-<style>:root{--bg:#f4f7fb;--card:#fff;--border:#e2e8f0;--text:#1a202c;--text2:#2d3748;--text3:#718096;--accent:#4f46e5;--accent-bg:#eef2ff;--accent-light:#e0e7ff;--warn:#92400e;--warn-bg:#fefce8;--warn-border:#fbbf24;--code-bg:#f1f5f9;--red:#ef4444;--red-bg:#fef2f2;--green:#10b981;--green-bg:#ecfdf5;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.1);--radius:12px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.85;max-width:920px;margin:0 auto;padding:0 24px 80px}.hero{background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#a855f7 100%);margin:0 -24px;padding:48px 32px 40px;color:#fff;border-radius:0 0 24px 24px}.hero .day-badge{display:inline-block;background:rgba(255,255,255,.2);padding:5px 16px;border-radius:20px;font-size:13px;font-weight:600;letter-spacing:.5px;backdrop-filter:blur(4px)}.hero h1{font-size:30px;margin:14px 0 8px;line-height:1.3}.hero .subtitle{color:rgba(255,255,255,.8);font-size:15px}h2{font-size:20px;margin:44px 0 18px;padding:14px 18px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);color:var(--accent);font-weight:700;display:flex;align-items:center;gap:10px;border-left:4px solid var(--accent)}h3{font-size:17px;margin:28px 0 12px;color:var(--text2);font-weight:700}.card{background:var(--card);border-radius:var(--radius);padding:18px 22px;margin:14px 0;font-size:14px;box-shadow:var(--shadow);border:1px solid var(--border)}.card.tip{background:var(--accent-bg);border-color:#c7d2fe}.card.warn{background:var(--warn-bg);border-color:var(--warn-border)}.card.info{background:#f0fdf4;border-color:#86efac}.mastery-table{margin:16px 0}.mastery-row{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;margin:6px 0;border-radius:8px;background:var(--card);border:1px solid var(--border);font-size:14px}.mastery-badge{display:inline-block;min-width:52px;text-align:center;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700;flex-shrink:0}.mastery-badge.l1{background:#fef2f2;color:#ef4444;border:1px solid #fecaca}.mastery-badge.l2{background:#fffbeb;color:#f59e0b;border:1px solid #fde68a}.mastery-badge.l3{background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0}.case{border-radius:var(--radius);margin:18px 0;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}.case-header{background:var(--card);padding:14px 20px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}.case-num{background:var(--accent);color:#fff;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}.case-tag{font-size:12px;padding:3px 10px;border-radius:10px;font-weight:600}.case-tag.practice{background:var(--accent-bg);color:var(--accent)}.case-tag.challenge{background:var(--warn-bg);color:var(--warn)}.case-body{padding:18px 22px;font-size:14px;background:var(--card)}details{margin-top:12px}details>summary{cursor:pointer;color:var(--accent);font-weight:600;padding:10px 14px;font-size:14px;background:var(--accent-bg);border-radius:8px;list-style:none}details>summary::before{content:'▶ ';font-size:11px}details[open]>summary::before{content:'▼ '}.answer-box{margin-top:10px;padding:16px 20px;background:var(--green-bg);border-radius:8px;font-size:14px;border-left:4px solid var(--green)}.key-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:14px 0}.key-item{background:var(--card);border-radius:10px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;font-size:14px;box-shadow:var(--shadow);border:1px solid var(--border)}.key-num{background:var(--accent);color:#fff;min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}th,td{border:1px solid var(--border);padding:10px 14px;text-align:left}th{background:var(--accent-bg);font-weight:700;color:var(--accent);font-size:13px}tr:hover{background:var(--accent-light)}.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.compare-col{border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:14px}.compare-col.good{background:var(--green-bg);border-color:#86efac}.compare-col.bad{background:var(--red-bg);border-color:#fecaca}.compare-col h4{margin:0 0 8px}.note{background:var(--accent-bg);border-left:4px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;padding:14px 20px;margin:14px 0;font-size:14px}.process-box{background:var(--accent-light);border:1px solid #c7d2fe;border-radius:10px;padding:20px 24px;margin:16px 0}.process-step{display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px dashed var(--border)}.process-step:last-child{border-bottom:none}.process-num{background:var(--accent);color:#fff;min-width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0}ul,ol{padding-left:24px;margin:10px 0;font-size:14px}li{margin:5px 0}.footer{text-align:center;color:var(--text3);font-size:13px;margin-top:60px;padding-top:20px;border-top:1px solid var(--border)}@media(max-width:600px){body{padding:0 12px 60px}.hero{margin:0 -12px;padding:32px 16px 28px}.hero h1{font-size:22px}.compare-row{grid-template-columns:1fr}.key-grid{grid-template-columns:1fr}}</style></head><body>
-<div class="hero"><div class="day-badge">Day 29 · 2026年7月17日 · 星期五</div><h1>心血管系统手术编码（35-39）</h1><div class="subtitle">心脏瓣膜入路三分法(闭合/开放/介入)、PCI支架DES vs BMS分水岭、CABG桥血管编码组合、起搏器三要素(腔数+频率+ICD)、心脏移植的"另编码"铁律</div></div>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #dc2626; --accent-bg: #fef2f2; --accent-light: #fee2e2;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --heart: #dc2626;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
 
-<h2><span class="icon">🎯</span> 今日掌握程度</h2>
-<div class="mastery-table">
-<div class="mastery-row"><span class="mastery-badge l1">必须掌握</span><span>心脏瓣膜手术入路三分法(35.0闭合/35.1开放/35.9介入)、PCI支架编码36.07(DES)vs36.06(BMS/BMS+涂层)、CABG桥血管组合编码(36.1x)、起搏器三要素(腔数+频率响应+是否ICD)</span></div>
-<div class="mastery-row"><span class="mastery-badge l2">应该理解</span><span>瓣膜成形(35.1x)与置换(35.2x)的编码差异、PCI另编码规则(血管数量00.40-00.43+治疗血管00.44)、CABG的36.15(单内乳)vs36.16(双内乳)vs36.17(腹网膜)自体移植物编码</span></div>
-<div class="mastery-row"><span class="mastery-badge l3">了解即可</span><span>心脏辅助装置37.6x、ECMO(39.65)、心脏移植37.51的另编码规则体系</span></div></div>
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #991b1b 0%, #dc2626 40%, #ef4444 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
 
-<h2><span class="icon">🫀</span> 核心知识点一：心脏瓣膜手术——入路决定编码</h2>
-<div class="card"><h3>心脏瓣膜手术编码 = 入路 + 术式 + 瓣膜位置 + 假体类型</h3>
-<table><tr><th>入路</th><th>成形术</th><th>置换术</th><th>手术方式</th></tr><tr><td>闭合性（非直视）</td><td>35.0x</td><td>—</td><td>闭式二尖瓣交界分离术(35.02)等，现代几乎淘汰</td></tr>
-<tr><td>开放性（直视下）</td><td>35.1x</td><td>35.2x</td><td>胸骨正中切口、体外循环下进行——最主流</td></tr>
-<tr><td>介入性（经皮）</td><td>35.96（球囊瓣膜成形）</td><td>35.05-35.08</td><td>TAVI/TAVR(经导管主动脉瓣置换)、MitraClip等</td></tr></table>
-<div class="card warn"><strong>⚠️ 核心陷阱：</strong>直视下瓣膜成形术≠瓣膜置换术。成形术修复自身瓣膜→35.1x；置换术使用人工瓣膜→35.2x。临床上"瓣膜成形+人工瓣环植入"仍然编码35.1x(成形类)，因为自身瓣膜未被替换。</div>
-<h3>开放性成形术35.1x：按部位+术式细分</h3>
-<table><tr><th>编码</th><th>术式</th></tr><tr><td>35.11</td><td>主动脉瓣成形术</td></tr><tr><td>35.12</td><td>二尖瓣成形术（含瓣环成形）</td></tr><tr><td>35.13</td><td>肺动脉瓣成形术</td></tr><tr><td>35.14</td><td>三尖瓣成形术</td></tr></table>
-<h3>开放性置换术35.2x：按部位+假体类型</h3>
-<table><tr><th>编码</th><th>术式</th><th>说明</th></tr><tr><td>35.21</td><td>主动脉瓣置换（生物瓣）</td><td>猪瓣/牛心包等组织瓣</td></tr><tr><td>35.22</td><td>主动脉瓣置换（机械瓣）</td><td>金属瓣膜</td></tr><tr><td>35.23</td><td>二尖瓣置换（生物瓣）</td><td></td></tr><tr><td>35.24</td><td>二尖瓣置换（机械瓣）</td><td></td></tr><tr><td>35.25</td><td>肺动脉瓣置换（生物瓣）</td><td></td></tr><tr><td>35.26</td><td>肺动脉瓣置换（机械瓣）</td><td></td></tr><tr><td>35.27</td><td>三尖瓣置换（生物瓣）</td><td></td></tr><tr><td>35.28</td><td>三尖瓣置换（机械瓣）</td><td></td></tr></table></div>
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
 
-<h2><span class="icon">🫀</span> 核心知识点二：PCI与支架——36.07 vs 36.06 一字千金</h2>
-<div class="card"><h3>PCI编码核心：DES vs 非DES</h3>
-<table><tr><th>编码</th><th>支架类型</th><th>关键判别</th></tr><tr><td>36.07</td><td>药物洗脱支架(DES)</td><td>含抗增殖药物（雷帕霉素/紫杉醇/依维莫司）并控释</td></tr><tr><td>36.06</td><td>非药物洗脱支架</td><td>裸金属支架(BMS)或药物涂层但非抗增殖（如肝素涂层/碳涂层）</td></tr></table>
-<div class="card tip"><strong>🔑 口诀：</strong>DEP→DES→36.07（Drug-Eluting Stent = 药物洗脱 = 36.07）。肝素涂层≠药物洗脱。</div>
-<h3>PCI必须的"另编码"——不编等于不完整</h3>
-<table><tr><th>另编码</th><th>内容</th><th>示例</th></tr><tr><td>00.40-00.43</td><td>置入血管支架数量</td><td>植入1个支架→00.45(单片)；植入2个→00.46；3个→00.47；4+→00.48</td></tr><tr><td>00.44</td><td>治疗血管数量</td><td>处理了2支冠脉血管→00.41（分叉病变另算）</td></tr><tr><td>00.66</td><td>PTCA(球囊扩张)</td><td>球囊预扩张→00.66(作为附加编码)</td></tr></table>
-<div class="note"><strong>📌 完整PCI编码示例：</strong>LAD植入1枚DES+LCX植入1枚DES → 36.07(主手术) + 00.46(2个支架) + 00.41(2支血管) + 00.45(左主干的介入→如有)</div></div>
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #fecaca; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
 
-<h2><span class="icon">🫀</span> 核心知识点三：CABG——桥血管决定编码</h2>
-<div class="card"><h3>冠状动脉搭桥(CABG) = 36.1x 桥血管类型编码</h3>
-<table><tr><th>编码</th><th>桥血管</th><th>临床场景</th></tr><tr><td>36.11</td><td>1根主动脉-冠状动脉桥</td><td>单支大隐静脉桥</td></tr><tr><td>36.12</td><td>2根主动脉-冠状动脉桥</td><td>2支大隐静脉桥</td></tr></table>
-<div class="card warn"><strong>⚠️ 误区澄清：</strong>使用内乳动脉(IMA)做桥≠36.11-36.14。IMA直接吻合到冠脉上，不走主动脉→编码在36.15-36.16系列。</div>
-<table><tr><th>编码</th><th>桥血管</th><th>说明</th></tr><tr><td>36.15</td><td>单侧内乳动脉-冠状动脉桥</td><td>LIMA→LAD 是最经典组合</td></tr><tr><td>36.16</td><td>双侧内乳动脉-冠状动脉桥</td><td>BIMA分别搭LAD和LCX/RCA</td></tr><tr><td>36.17</td><td>腹网膜动脉-冠状动脉桥</td><td>GEA作为备选桥血管</td></tr><tr><td>36.19</td><td>其他桥血管</td><td>桡动脉等非标准桥</td></tr></table>
-<div class="note"><strong>📌 混合桥血管编码规则：</strong>如果一台CABG同时使用LIMA(内乳动脉)+大隐静脉→需要分别编码。例：LIMA→LAD + AO→大隐静脉→RCA → <strong>36.15 + 36.11</strong>。</div></div>
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
 
-<h2><span class="icon">⚡</span> 核心知识点四：起搏器与ICD——三个要素决定编码</h2>
-<div class="card"><h3>起搏器编码三要素：腔数 + 频率响应 + 是否ICD</h3>
-<table><tr><th>编码</th><th>类型</th><th>模式</th></tr><tr><td>37.81</td><td>单腔起搏器（首次）</td><td>AAI/VVI</td></tr><tr><td>37.82</td><td>单腔起搏器（置换）</td><td>更换脉冲发生器</td></tr><tr><td>37.83</td><td>双腔起搏器（首次）</td><td>DDD/DDDR</td></tr><tr><td>37.85</td><td>双腔起搏器（置换）</td><td></td></tr><tr><td>37.94</td><td>ICD/CRT-D植入</td><td>除颤功能——权重最高</td></tr><tr><td>37.96</td><td>ICD/CRT-D置换</td><td></td></tr></table>
-<div class="card tip"><strong>🔑 关键区分：</strong>CRT-P(双室起搏)→37.83(同双腔)；CRT-D(双室起搏+除颤)→37.94。加"除颤"功能="D"→编码跳转到37.9x。</div></div>
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
 
-<h2><span class="icon">✍️</span> 案例练习</h2>
-<div class="case"><div class="case-header"><div class="case-num">1</div>瓣膜置换 <span class="case-tag practice">基础</span></div><div class="case-body"><p>患者在全麻体外循环下行胸骨正中切口手术，术中切除病变二尖瓣，植入27mm St.Jude机械瓣。请编码手术。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>35.24 二尖瓣置换术（机械瓣）</strong><br><strong>推理：</strong>①胸骨正中切口+体外循环→开放性(直视)；②切除病变瓣膜+植入人工瓣膜→置换术；③二尖瓣+机械瓣→35.24。</div></details></div></div>
-<div class="case"><div class="case-header"><div class="case-num">2</div>PCI支架 <span class="case-tag practice">基础</span></div><div class="case-body"><p>冠脉造影示LAD中段90%狭窄。行PCI术，于LAD植入1枚XIENCE Sierra药物洗脱支架(依维莫司)3.0×28mm。请编码手术+另编码。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>36.07 药物洗脱支架置入 + 00.45 单个支架 + 00.40 单支血管</strong><br><strong>推理：</strong>①依维莫司=抗增殖药物→DES→36.07；②1个支架→00.45；③仅处理LAD→单支→00.40。</div></details></div></div>
-<div class="case"><div class="case-header"><div class="case-num">3</div>CABG编码 <span class="case-tag practice">基础</span></div><div class="case-body"><p>患者行CABG术，术式：LIMA吻合至LAD，大隐静脉吻合至主动脉并搭桥至RCA、LCX。请编码手术。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>36.15 单侧内乳动脉-冠脉桥 + 36.12 双根主动脉-冠脉桥</strong><br><strong>推理：</strong>①LIMA→LAD→内乳动脉桥→36.15；②AO→大隐静脉→RCA+AO→大隐静脉→LCX=2根主动脉-冠脉桥→36.12。</div></details></div></div>
-<div class="case"><div class="case-header"><div class="case-num">4</div>TAVI编码 <span class="case-tag challenge">进阶</span></div><div class="case-body"><p>患者经股动脉入路行经导管主动脉瓣置换术(TAVI)，植入29mm Edwards SAPIEN 3生物瓣。请编码手术。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>35.05 经导管主动脉瓣置换术（生物瓣）</strong><br><strong>推理：</strong>①TAVI=经导管→介入性(非开放)；②主动脉瓣+生物瓣→35.05(transcatheter aortic valve)。如果是机械瓣→35.06。不需附加"心肺流转"等开放手术专属编码。<br><strong>避坑：</strong>不能看到"瓣膜置换"就编35.21——入路不同编码块不同。TAVI是35.05，开放AVR是35.21。</div></details></div></div>
-<div class="case"><div class="case-header"><div class="case-num">5</div>多支架PCI <span class="case-tag challenge">进阶</span></div><div class="case-body"><p>冠脉造影示三支病变：LAD植入2枚DES(D1+LAD中段)，LCX植入1枚DES，RCA植入1枚BMS。请编码全部手术编码。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>36.07 DES支架置入 + 36.06 BMS支架置入 + 00.48 4个支架 + 00.42 三支血管</strong><br><strong>推理：</strong>①DES→36.07+BMS→36.06，两码均需要；②4个支架(2+1+1)→00.48；③三支血管(LAD+LCX+RCA)→00.42。</div></details></div></div>
-<div class="case"><div class="case-header"><div class="case-num">6</div>起搏器升级 <span class="case-tag challenge">进阶</span></div><div class="case-body"><p>患者原已安装双腔起搏器，因电池耗竭行脉冲发生器置换术(Generator Change)，保留原电极导线。请编码手术。</p><details><summary>点击查看答案</summary><div class="answer-box"><strong>37.85 双腔起搏器置换（脉冲发生器）</strong><br><strong>推理：</strong>①仅换脉冲发生器→"置换"类(37.82/37.85/37.96)；②原为双腔→37.85。如果是更换电极导线→37.7x(导线置换，另编)。<br><strong>避坑：</strong>更换脉冲发生器≠更换整套起搏器系统——导丝不动=仅编置换码。</div></details></div></div>
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
 
-<h2><span class="icon">📋</span> 今日重点回顾</h2>
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #fecaca; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #fecaca; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: #ef4444; background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Wrapper ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #fecaca 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Step Number for PCI ===== */
+  .pci-step {
+    display: flex; align-items: center; gap: 10px; padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .pci-step:last-child { border-bottom: none; }
+  .pci-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .pci-code { font-family: "SF Mono","Cascadia Code",monospace; color: var(--accent); font-weight: 700; }
+
+  /* ===== Valve Tags ===== */
+  .valve-tag {
+    display: inline-block; padding: 3px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; margin: 2px 4px;
+  }
+  .valve-tag.a { background: #fee2e2; color: #dc2626; }
+  .valve-tag.m { background: #dbeafe; color: #2563eb; }
+  .valve-tag.p { background: #d1fae5; color: #059669; }
+  .valve-tag.t { background: #fef3c7; color: #d97706; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 29 · 2026年7月17日</div>
+  <h1>❤️ 心血管系统手术编码</h1>
+  <p class="subtitle">今日主题：ICD-9-CM-3 类目 35-39 —— 心脏瓣膜、冠脉、起搏器与血管手术</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:48.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 29 / 60 天（48.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（高频考点，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span><span>PCI支架编码：36.06（非药物洗脱）vs 36.07（药物洗脱）区分规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span><span>PCI完整编码五码组合规则（支架码→数量码→PTCA码→造影码→另编码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span><span>心脏瓣膜手术入路三分法：闭合性35.0、开放性35.1、经皮35.96</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span><span>起搏器编码：双腔37.83、单腔37.81-37.82、临时37.78、术中39.64</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span><span>体外循环辅助编码39.61的使用时机</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span><span>支架数量码00.45-00.48与治疗血管码00.40-00.43的区别和各自计数逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span><span>瓣膜置换成形术的正确分类路径（入路→瓣膜定位→假体类型→另编码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span><span>CRT-P（00.50）vs CRT-D（00.51）vs ICD（37.94）的功能区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span><span>"非药物洗脱"的编码陷阱：药物涂层支架≠药物洗脱支架</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（拓展视野，非考试重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span><span>先心病封堵术各类目编码对照（35.52/35.55/38.85）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span><span>主动脉内球囊反搏（IABP）37.61的临床应用场景</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span><span>类目38（血管切开切除闭合）与类目39（血管其他手术）的分界规则</span></div>
+    </div>
+  </details>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 板块1: 类目全景 ======== -->
+<h2><span class="icon">🗺️</span> 板块一：心血管系统手术（35-39）类目全景</h2>
+
+<h3>五类目结构速览</h3>
+<p>ICD-9-CM-3 第九章（<code>35-39</code>）覆盖心血管系统的所有手术操作。理解五大类目的边界，是避免"编进错类目"的第一步：</p>
+
+<table>
+  <tr><th>类目</th><th>范围</th><th>核心手术</th><th>关键编码示例</th></tr>
+  <tr>
+    <td><code>35</code></td>
+    <td>心脏瓣膜和间隔手术</td>
+    <td>瓣膜成形术、瓣膜置换术、间隔缺损修补术、球囊瓣膜成形术</td>
+    <td><code>35.21</code> 二尖瓣置换术（开放式）<br><code>35.52</code> 房间隔缺损伞堵修补</td>
+  </tr>
+  <tr>
+    <td><code>36</code></td>
+    <td>心脏血管手术</td>
+    <td>冠状动脉支架、CABG搭桥、PTCA球囊成形、冠脉斑块旋切</td>
+    <td><code>36.07</code> 药物洗脱支架置入<br><code>36.12</code> 主动脉-冠状动脉搭桥（两根）</td>
+  </tr>
+  <tr>
+    <td><code>37</code></td>
+    <td>心脏和心包的其他手术</td>
+    <td>起搏器置入、射频消融、心包穿刺、IABP</td>
+    <td><code>37.83</code> 双腔永久起搏器<br><code>37.34</code> 导管射频消融</td>
+  </tr>
+  <tr>
+    <td><code>38</code></td>
+    <td>血管的切开、切除和闭合</td>
+    <td>血管切开取栓、动脉内膜切除、血管结扎、血管切除吻合</td>
+    <td><code>38.12</code> 颈动脉内膜切除术<br><code>38.85</code> 动脉导管未闭结扎</td>
+  </tr>
+  <tr>
+    <td><code>39</code></td>
+    <td>血管其他手术</td>
+    <td>血管成形/修补、血管分流、静脉滤器、动静脉瘘</td>
+    <td><code>39.50</code> 球囊血管成形术（非冠脉）<br><code>39.61</code> 体外循环辅助</td>
+  </tr>
+</table>
+
+<h3>为什么重要？</h3>
+<p>心血管系统手术是中国住院病案中<span class="hl">手术量最大、编码复杂度最高、DRG入组影响最直接</span>的领域之一。一个PCI手术至少需要编<strong>5个码</strong>，一个瓣膜置换术可能需要<strong>3-4个码</strong>。编码缺失或错误将直接导致：</p>
+<ul>
+  <li><strong>入组错误</strong>：支架编码漏编36.07只编00.66 → 进入错误的ADRG</li>
+  <li><strong>权重丢失</strong>：药物洗脱支架编成非药物洗脱 → 权重差异可达30%+</li>
+  <li><strong>歧义病例（QY）</strong>：诊断与手术编码不匹配 → 无法入组</li>
+</ul>
+
+<h3>辅助手术的编码规则</h3>
+<div class="card tip">
+  <p><strong>体外循环（心肺转流）</strong><code>39.61</code>：当心血管手术使用体外循环辅助时，<span class="keyword-tag">必须另编码39.61</span>。注意：</p>
+  <ul>
+    <li>冠状动脉搭桥术（CABG）几乎都使用体外循环 → 必须附加<code>39.61</code></li>
+    <li>单纯PCI（经皮介入）通常不使用体外循环 → 不需要<code>39.61</code></li>
+    <li>某些微创直视手术（MIDCAB）可能不用体外循环 → 查看手术记录确认</li>
+  </ul>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 板块2: 心脏瓣膜手术 ======== -->
+<h2><span class="icon">🫀</span> 板块二：心脏瓣膜手术编码（35）</h2>
+
+<h3>核心分类轴心：三层嵌套决策</h3>
+<p>心脏瓣膜手术编码的本质是一个<strong>三层嵌套决策</strong>过程，每一层都不可跨过：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>确定手术入路（第一轴心）</h4>
+      <p>闭合性（非直视）35.0 → 开放性（直视下）35.1-35.2 → 经皮介入35.96</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>确定术式类型（成形 vs 置换）</h4>
+      <p>成形术（修复自身瓣膜）→ 置换术（用人工瓣膜替换）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>定位具体瓣膜 + 假体类型（仅置换时）</h4>
+      <p>主动脉瓣 / 二尖瓣 / 肺动脉瓣 / 三尖瓣 + 机械瓣 / 生物瓣</p>
+    </div>
+  </div>
+</div>
+
+<h3>瓣膜手术编码对照表</h3>
+
+<table>
+  <tr><th>手术</th><th>入路</th><th>编码</th><th>说明</th></tr>
+  <tr>
+    <td rowspan="3">二尖瓣成形术</td>
+    <td>闭合性</td><td><code>35.02</code></td><td>闭式二尖瓣交界分离术</td>
+  </tr>
+  <tr>
+    <td>开放性</td><td><code>35.12</code></td><td>直视下二尖瓣成形术</td>
+  </tr>
+  <tr>
+    <td>经皮球囊</td><td><code>35.96</code></td><td>经皮二尖瓣球囊成形术</td>
+  </tr>
+  <tr>
+    <td rowspan="2">主动脉瓣置换术</td>
+    <td>开放性</td><td><code>35.21</code> → 再区分机械瓣 vs 生物瓣</td><td>国临版细目：35.2101机械 / 35.2102生物</td>
+  </tr>
+  <tr>
+    <td>经导管</td><td><code>35.05</code></td><td>TAVI/TAVR 经导管主动脉瓣植入</td>
+  </tr>
+  <tr>
+    <td>三尖瓣成形术</td>
+    <td>开放性</td><td><code>35.14</code></td><td>直视下三尖瓣成形术</td>
+  </tr>
+  <tr>
+    <td>肺动脉瓣置换</td>
+    <td>开放性</td><td><code>35.25</code></td><td>——</td>
+  </tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确编码思路</h4>
+    <p>手术记录："全麻低温体外循环下，正中开胸，行二尖瓣机械瓣置换术"</p>
+    <p><strong>推导</strong>：正中开胸=开放性 → 二尖瓣=瓣膜定位 → 置换=术式 → 机械瓣=假体 → 体外循环</p>
+    <p>编码：<code>35.23</code>（开放式二尖瓣生物瓣置换）或<code>35.24</code>（开放式二尖瓣机械瓣置换）+ <code>39.61</code>（体外循环）</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 常见错误</h4>
+    <p>错误一：不看手术记录直接套"二尖瓣成形术"→ <code>35.12</code>，实际做了置换</p>
+    <p>错误二：将经皮球囊成形编为开放性 <code>35.12</code></p>
+    <p>错误三：编了置换术却不区分机械瓣/生物瓣</p>
+    <p>错误四：忘了加编体外循环 <code>39.61</code></p>
+  </div>
+</div>
+
+<div class="card warn">
+  <p><strong>⚠️ 关键提示</strong>：当一次手术同时涉及<strong>多个瓣膜</strong>时（如二尖瓣+主动脉瓣联合置换），各瓣膜需<strong>分别编码</strong>。例如"二尖瓣+主动脉瓣机械瓣置换"应编 <code>35.24</code> + <code>35.22</code> + <code>39.61</code>。</p>
+</div>
+
+<h3>瓣膜成形术 vs 置换术：什么时候做什么？</h3>
+<p>临床上，外科医生优先尝试成形术（修复自己的瓣膜），但病变严重时必须置换。编码员不能凭"瓣膜手术"四个字就想当然编码——必须阅读手术记录中关于<strong>是否切除自体瓣膜的描述</strong>：</p>
+<ul>
+  <li>保留自体瓣膜+缝合修复 → <strong>成形术</strong></li>
+  <li>切除自体瓣膜+植入人工瓣膜 → <strong>置换术</strong></li>
+  <li>球囊扩张瓣膜开口 → <strong>经皮球囊成形术</strong></li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ======== 板块3: 冠状动脉手术 ======== -->
+<h2><span class="icon">💉</span> 板块三：冠状动脉手术编码（36）</h2>
+
+<h3>PCI：一个支架，五个编码</h3>
+<p>经皮冠状动脉介入治疗（PCI）是心内科最常见的操作之一。一个完整的PCI手术编码不是孤立的 <code>36.07</code>，而是一套<strong>"五码组合"</strong>体系：</p>
+
+<div class="process-box">
+  <div class="pci-step">
+    <div class="pci-num">1</div>
+    <div>
+      <strong>支架编码（主码·必选）</strong>
+      <p>查主导词"插入-支架"，根据支架是否有药物洗脱属性选择：<br>
+      <span class="pci-code">36.07</span> 药物洗脱冠状动脉支架置入（DES）<br>
+      <span class="pci-code">36.06</span> 非药物洗脱冠状动脉支架置入（裸金属BMS/药物涂层非抗增殖类）</p>
+    </div>
+  </div>
+  <div class="pci-step">
+    <div class="pci-num">2</div>
+    <div>
+      <strong>治疗血管数量（附加码·必选）</strong>
+      <p>查主导词"另编码"，统计被治疗的血管支数：<br>
+      <span class="pci-code">00.40</span> 单支血管 / <span class="pci-code">00.41</span> 两支 / <span class="pci-code">00.42</span> 三支 / <span class="pci-code">00.43</span> 四支及以上</p>
+    </div>
+  </div>
+  <div class="pci-step">
+    <div class="pci-num">3</div>
+    <div>
+      <strong>置入支架总数量（附加码·必选）</strong>
+      <p>查主导词"另编码"，统计所有支架的总个数：<br>
+      <span class="pci-code">00.45</span> 1个 / <span class="pci-code">00.46</span> 2个 / <span class="pci-code">00.47</span> 3个 / <span class="pci-code">00.48</span> 4个及以上<br>
+      <span class="pci-code">00.44</span> 分叉血管操作（如有）</p>
+    </div>
+  </div>
+  <div class="pci-step">
+    <div class="pci-num">4</div>
+    <div>
+      <strong>PTCA球囊成形（另编码·必选）</strong>
+      <p>支架置入前通常先做球囊预扩张（PTCA）：<br>
+      <span class="pci-code">00.66</span> 经皮冠状动脉腔内血管成形术（PTCA）</p>
+    </div>
+  </div>
+  <div class="pci-step">
+    <div class="pci-num">5</div>
+    <div>
+      <strong>冠状动脉造影（附加码·必选）</strong>
+      <p>主导词查"动脉造影术"，区分导管技术：<br>
+      <span class="pci-code">88.55</span> 单导管技术 / <span class="pci-code">88.56</span> 双导管技术</p>
+    </div>
+  </div>
+</div>
+
+<div class="card info">
+  <p><strong>📋 完整实例</strong>：患者行PCI，于LAD（前降支）和LCX（回旋支）各置入1枚药物洗脱支架，共2枚，使用双导管冠状动脉造影。</p>
+  <p><strong>完整编码</strong>：<code>36.07</code> + <code>00.41</code>（治疗2支血管）+ <code>00.46</code>（置入2个支架）+ <code>00.66</code>（PTCA）+ <code>88.56</code>（双导管造影）= <strong>共5个码</strong></p>
+</div>
+
+<h3>支架类型的高频陷阱：药物涂层 ≠ 药物洗脱</h3>
+<table>
+  <tr><th>概念</th><th>英文</th><th>编码</th><th>本质区别</th></tr>
+  <tr>
+    <td><strong>药物洗脱支架</strong></td>
+    <td>DES (Drug-Eluting Stent)</td>
+    <td><code>36.07</code></td>
+    <td>含<strong>抗增殖药物</strong>（雷帕霉素/紫杉醇），缓慢释放<strong>抑制内膜增生</strong></td>
+  </tr>
+  <tr>
+    <td>裸金属支架</td>
+    <td>BMS (Bare Metal Stent)</td>
+    <td><code>36.06</code></td>
+    <td>纯金属，无任何药物涂层</td>
+  </tr>
+  <tr>
+    <td><strong>药物涂层支架</strong></td>
+    <td>Drug-Coated Stent</td>
+    <td><code>36.06</code></td>
+    <td>含<strong>肝素/碳涂层</strong>等抗凝/惰化材料，<strong>非抗增殖</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <p><strong>⚠️ 关键陷阱</strong>：看到"药物涂层"就编 <code>36.07</code> 是高频错误！必须区分：</p>
+  <ul>
+    <li>涂层是<strong>抗增殖药物</strong>（雷帕霉素、紫杉醇等）→ <code>36.07</code></li>
+    <li>涂层是<strong>肝素/碳涂层</strong>（抗凝/惰化，非抗增殖）→ <code>36.06</code></li>
+  </ul>
+  <p>不确定时，查阅手术记录中支架的品牌型号（如进口的XIENCE、Resolute → DES=36.07；国产的BuMA等需确认说明书）。</p>
+</div>
+
+<h3>CABG冠状动脉搭桥术编码（36.1x）</h3>
+
+<p>冠状动脉旁路移植术（CABG）的编码核心是<strong>桥血管来源</strong>和<strong>搭桥支数</strong>：</p>
+
+<table>
+  <tr><th>亚目</th><th>含义</th><th>典型场景</th></tr>
+  <tr><td><code>36.11</code></td><td>主动脉-冠状动脉搭桥，一根</td><td>单支血管搭桥（1根桥血管）</td></tr>
+  <tr><td><code>36.12</code></td><td>主动脉-冠状动脉搭桥，两根</td><td>两支血管各搭1根桥</td></tr>
+  <tr><td><code>36.13</code></td><td>主动脉-冠状动脉搭桥，三根</td><td>三支血管各搭1根桥</td></tr>
+  <tr><td><code>36.14</code></td><td>主动脉-冠状动脉搭桥，四根及以上</td><td>四支或更多</td></tr>
+  <tr><td><code>36.15</code></td><td>单侧乳内动脉-冠状动脉搭桥</td><td>LIMA→LAD</td></tr>
+  <tr><td><code>36.16</code></td><td>双侧乳内动脉-冠状动脉搭桥</td><td>BIMA搭桥</td></tr>
+  <tr><td><code>36.17</code></td><td>腹壁下动脉-冠状动脉搭桥</td><td>GEA搭桥</td></tr>
+  <tr><td><code>36.19</code></td><td>其他心脏血管搭桥</td><td>其他桥血管来源</td></tr>
+</table>
+
+<div class="note">
+  <p><strong>💡 编码提示</strong>：CABG搭桥的"支数"统计的是<strong>桥血管数量</strong>（graft count），不是搭桥目标血管数量。一根乳内动脉搭到LAD = <code>36.15</code>（单侧乳内动脉）。搭桥手术通常还需加编：</p>
+  <ul>
+    <li><code>39.61</code> 体外循环（CPB）——多数CABG使用</li>
+    <li>取大隐静脉桥血管时另编（<code>38.43</code>/<code>38.48</code>等）</li>
+  </ul>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 板块4: 起搏与消融 ======== -->
+<h2><span class="icon">⚡</span> 板块四：心脏起搏与消融手术编码（37）</h2>
+
+<h3>起搏器编码体系：四类场景 + 腔室区分</h3>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>分类轴心</th><th>临床应用场景</th></tr>
+  <tr>
+    <td><code>37.78</code></td>
+    <td>暂时性经静脉起搏器系统置入</td>
+    <td>临时·非手术场景</td>
+    <td>III度AVB急救、永久起搏前过渡、药物中毒</td>
+  </tr>
+  <tr>
+    <td><code>39.64</code></td>
+    <td>手术中心脏起搏器</td>
+    <td>临时·手术场景</td>
+    <td>心脏手术中/术后即刻预防性使用</td>
+  </tr>
+  <tr>
+    <td><code>37.81</code></td>
+    <td>首次单腔装置置入，未特指节律反应</td>
+    <td>永久·初次·单腔</td>
+    <td>病窦综合征（仅心房起搏）或慢性房颤+心室起搏</td>
+  </tr>
+  <tr>
+    <td><code>37.82</code></td>
+    <td>首次单腔装置置入，节律反应</td>
+    <td>永久·初次·单腔·频率应答</td>
+    <td>需要频率自适应（运动时心率提升）</td>
+  </tr>
+  <tr>
+    <td><code>37.83</code></td>
+    <td>首次置入双腔装置</td>
+    <td>永久·初次·双腔</td>
+    <td>房室顺序起搏——最常用类型</td>
+  </tr>
+  <tr>
+    <td><code>37.80</code></td>
+    <td>永久起搏器置入，类型未特指</td>
+    <td>永久·信息不足时无奈使用</td>
+    <td><strong>尽量避免——应查阅手术记录明确腔室</strong></td>
+  </tr>
+  <tr>
+    <td><code>37.94</code></td>
+    <td>植入型心脏转复除颤器（ICD）置入</td>
+    <td>除颤·非起搏</td>
+    <td>恶性室性心律失常一级/二级预防</td>
+  </tr>
+  <tr>
+    <td><code>00.50</code></td>
+    <td>双心室起搏器置入（CRT-P）</td>
+    <td>再同步·仅起搏</td>
+    <td>心衰+宽QRS+窦性心律</td>
+  </tr>
+  <tr>
+    <td><code>00.51</code></td>
+    <td>CRT + 除颤器置入（CRT-D）</td>
+    <td>再同步·起搏+除颤</td>
+    <td>心衰+宽QRS+猝死风险</td>
+  </tr>
+</table>
+
+<h3>临时起搏的两条平行编码线</h3>
+
+<div class="compare-row">
+  <div class="compare-col">
+    <h4><code>39.64</code> 手术中心脏起搏器</h4>
+    <p><strong>应用场景</strong>：心脏手术中或手术后即刻，为预防/处理心动过缓而使用</p>
+    <p><strong>特点</strong>：强调"伴随心脏手术"的即时场景，通常使用心外膜电极</p>
+    <p><strong>主导词</strong>：植入物-起搏器-心脏-手术中</p>
+  </div>
+  <div class="compare-col">
+    <h4><code>37.78</code> 暂时性经静脉起搏器</h4>
+    <p><strong>应用场景</strong>：非手术场景下的紧急或过渡起搏</p>
+    <p><strong>特点</strong>：独立操作，经颈内静脉/锁骨下静脉穿刺送入漂浮电极</p>
+    <p><strong>主导词</strong>：植入物-起搏器-心脏-暂时性经静脉</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <p><strong>⚠️ 常见混淆</strong>：一个心脏手术中使用的临时起搏器，是 <code>39.64</code> 而不是 <code>37.78</code>。两者的分水岭不是"是否临时"，而是<strong>"是否伴随心脏手术"</strong>。</p>
+</div>
+
+<h3>射频消融术（37.34）</h3>
+<p>导管射频消融治疗快速型心律失常的编码查找路径：</p>
+<pre>主导词：消融
+  -病损
+    --心脏
+      ---经周围循环置入导管 → 37.34</pre>
+<p>核查卷一：<code>37.34</code> 为"心脏病损的导管消融"。注意不包括手术切开心脏进行的消融（<code>37.33</code> 开放性消融）。</p>
+
+<hr class="section-divider">
+
+<!-- ======== 板块5: 血管手术 ======== -->
+<h2><span class="icon">🩸</span> 板块五：血管手术编码（38-39）</h2>
+
+<h3>类目38：血管的切开、切除和闭合</h3>
+<p>类目38以<strong>手术动作类型</strong>为第一轴心，以<strong>解剖部位</strong>为第二轴心（用第4位亚目区分）：</p>
+
+<table>
+  <tr><th>类目/亚目</th><th>手术类型</th><th>部位区分（第4位）</th></tr>
+  <tr>
+    <td><code>38.0</code></td>
+    <td>血管切开术</td>
+    <td rowspan="5">
+      .0 颅内血管<br>.1 头、面和颈部血管<br>.2 上肢血管<br>.3 下肢血管<br>.4 主动脉（对应.04/.14/.34等）<br>.5 肺动脉（对应.05等）<br>.6 腹部静脉<br>.7 上腔静脉<br>.8 下肢静脉
+    </td>
+  </tr>
+  <tr><td><code>38.1</code></td><td>动脉内膜切除术</td></tr>
+  <tr><td><code>38.2</code></td><td>血管诊断性操作</td></tr>
+  <tr><td><code>38.3</code></td><td>血管切除吻合术</td></tr>
+  <tr><td><code>38.8</code></td><td>血管其他手术闭合</td></tr>
+</table>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>颈动脉内膜切除术</h4>
+    <p><code>38.12</code></p>
+    <p>38.1（内膜切除）+ .2（头颈部血管）= 38.12</p>
+  </div>
+  <div class="example-item">
+    <h4>下肢动脉切开取栓术</h4>
+    <p><code>38.08</code></p>
+    <p>38.0（切开）+ .8（下肢动脉）= 38.08</p>
+  </div>
+  <div class="example-item">
+    <h4>动脉导管未闭结扎术</h4>
+    <p><code>38.85</code></p>
+    <p>38.8（闭合）+ .5（肺动脉/胸内血管）= 38.85</p>
+  </div>
+  <div class="example-item">
+    <h4>大隐静脉高位结扎+剥脱</h4>
+    <p><code>38.59</code> + <code>38.59</code></p>
+    <p>结扎38.8+下肢静脉.9=38.89，剥脱需另编码</p>
+  </div>
+</div>
+
+<h3>类目39：血管其他手术</h3>
+<p>类目39涵盖所有不属于38（切开/切除/闭合）的血管手术：</p>
+
+<table>
+  <tr><th>编码</th><th>手术</th><th>查找路径（主导词）</th></tr>
+  <tr><td><code>39.50</code></td><td>球囊血管成形术（非冠脉）</td><td>血管成形术</td></tr>
+  <tr><td><code>39.61</code></td><td>体外循环辅助</td><td>辅助-循环-体外</td></tr>
+  <tr><td><code>39.64</code></td><td>手术中心脏起搏器</td><td>植入物-起搏器-心脏-手术中</td></tr>
+  <tr><td><code>39.72</code></td><td>下腔静脉滤器置入</td><td>滤器-腔静脉</td></tr>
+  <tr><td><code>39.79</code></td><td>其他血管内修补术</td><td>修补术-血管-血管内</td></tr>
+  <tr><td><code>39.90</code></td><td>周围血管支架置入</td><td>插入-支架-周围动脉</td></tr>
+  <tr><td><code>39.95</code></td><td>血液透析动静脉瘘</td><td>分流-动静脉-用于透析</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 重难点深度解析 ======== -->
+<h2><span class="icon">🔬</span> 重难点深度解析：PCI "五码"真的一个都不能少吗？</h2>
+
+<div class="card">
+  <h3>问题还原：当手术记录"信息不完整"时怎么办？</h3>
+  <p>在实际编码工作中，最头疼的不是规则复杂，而是<strong>手术记录信息缺失</strong>——不写导管类型、不写支架品牌、不写是否做了PTCA预扩。但编码员不能因为"信息不全"就<strong>漏编</strong>：</p>
+</div>
+
+<h3>场景一：支架类型不明 → 36.06 还是 36.07？</h3>
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 常见错误</h4>
+    <p>手术记录只写"支架置入术"，不写品牌 → 编码员随意编 <code>36.07</code> 或 <code>36.06</code></p>
+    <p><strong>后果</strong>：如果实际是裸金属支架（BMS）却被编为 <code>36.07</code>（药物洗脱），DRG入组权重被抬高 → <strong>医保飞检中的高编高套风险</strong></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>1. 查找耗材条码/收费记录确认支架品牌型号</p>
+    <p>2. 对照品牌型号确认药物洗脱属性</p>
+    <p>3. 确实无法确认时，应按<strong>保守原则</strong>编 <code>36.06</code>（非药物洗脱），避免高编嫌疑</p>
+    <p>4. 同时记录质控备注：待确认支架类型</p>
+  </div>
+</div>
+
+<h3>场景二：PTCA预扩是否单独编码？</h3>
+<div class="card tip">
+  <p><strong>编码规则</strong>：支架置入术通常<strong>常规包含</strong>球囊预扩张（PTCA）这一步骤——先扩开狭窄，再放支架。ICD-9-CM-3官方编码要求<strong>另编码PTCA</strong>（<code>00.66</code>）。</p>
+  <p>但注意区分：</p>
+  <ul>
+    <li>✅ 常规支架置入前的球囊预扩 → 编<code>00.66</code></li>
+    <li>✅ 仅做球囊扩张不做支架（药物球囊DCB等） → <strong>只编</strong><code>00.66</code>，不编支架码</li>
+    <li>❌ 将PTCA省略不编 → 手术信息缺失，影响DRG权重计算</li>
+  </ul>
+</div>
+
+<h3>场景三：治疗血管数 vs 支架数的区别</h3>
+<table>
+  <tr><th>概念</th><th>编码范围</th><th>计数逻辑</th><th>实例</th></tr>
+  <tr>
+    <td>治疗血管数量</td>
+    <td><code>00.40-00.43</code></td>
+    <td>统计被干预的<strong>冠脉血管支数</strong>（LAD、LCX、RCA等）</td>
+    <td>LAD+LCX各治疗=2支→<code>00.41</code></td>
+  </tr>
+  <tr>
+    <td>置入支架总数量</td>
+    <td><code>00.45-00.48</code></td>
+    <td>统计置入的<strong>支架总个数</strong>（同一血管可能有多个支架）</td>
+    <td>LAD放2个+LCX放1个=共3个→<code>00.47</code></td>
+  </tr>
+</table>
+<div class="note">
+  <p><strong>💡 一句话记忆</strong>：<code>00.4x</code> 是"干了几个地方"，<code>00.4x+5</code>（即00.45-00.48）是"放了几个东西"。两者通常不等！</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">✏️</span> 案例练习（6题）</h2>
+
+<!-- 基础题 1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span class="case-tag practice">基础题</span>
+    <span>支架类型判断</span>
+  </div>
+  <div class="case-body">
+    <p>患者行冠状动脉支架置入术，手术记录描述：<em>"于前降支中段置入XIENCE Xpedition 3.0×28mm药物洗脱支架1枚"</em></p>
+    <p><strong>问题A</strong>：该支架应编 <code>36.06</code> 还是 <code>36.07</code>？为什么？</p>
+    <p><strong>问题B</strong>：如果手术记录改为"置入肝素涂层支架"，又该怎么编？</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>问题A</strong>：编 <code>36.07</code>。</p>
+        <p><strong>推理</strong>：XIENCE Xpedition 是雅培公司的药物洗脱支架（DES），其涂层为依维莫司（everolimus）——一种抗增殖药物，符合"药物洗脱"定义 → 编 <code>36.07</code>。</p>
+        <p><strong>问题B</strong>：编 <code>36.06</code>。</p>
+        <p><strong>推理</strong>：肝素涂层的作用是<strong>抗凝</strong>（防止血栓），不是<strong>抗增殖</strong>（抑制内膜增生）。ICD-9-CM-3区分支架类型的关键是"是否含抗增殖药物并控制释放"，肝素涂层不满足此条件 → 归类为非药物洗脱支架 <code>36.06</code>。这就是"药物涂层≠药物洗脱"的核心陷阱。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 基础题 2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span class="case-tag practice">基础题</span>
+    <span>起搏器类型判断</span>
+  </div>
+  <div class="case-body">
+    <p>三名患者分别行起搏器置入术，请判断编码：</p>
+    <p><strong>A</strong>：III度AVB患者，经右锁骨下静脉穿刺送入临时起搏电极至右心室，用于永久起搏器置入前的过渡治疗。</p>
+    <p><strong>B</strong>：病窦综合征患者，择期置入双腔永久起搏器（DDD模式），首次手术。</p>
+    <p><strong>C</strong>：二尖瓣置换术中，心脏停搏后心率缓慢，置入心外膜临时起搏导线。</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>A</strong>：编 <code>37.78</code>（暂时性经静脉起搏器系统置入）。</p>
+        <p><strong>推理</strong>：非手术场景下的独立紧急起搏操作 → 排除 <code>39.64</code>；经静脉穿刺 → <code>37.78</code>。</p>
+        <p><strong>B</strong>：编 <code>37.83</code>（首次置入双腔装置）。</p>
+        <p><strong>推理</strong>：首次永久起搏+双腔（心房+心室）→ <code>37.83</code>。单腔编码 <code>37.81</code>/<code>37.82</code> 仅用于仅植入一根电极导线的情况。</p>
+        <p><strong>C</strong>：编 <code>39.64</code>（手术中心脏起搏器）。</p>
+        <p><strong>推理</strong>：伴随心脏手术（瓣膜置换）中使用的临时起搏 → 这是 <code>39.64</code> 的典型适应场景，不能编 <code>37.78</code>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 基础题 3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span class="case-tag practice">基础题</span>
+    <span>瓣膜手术入路判断</span>
+  </div>
+  <div class="case-body">
+    <p>以下三段手术记录摘要，请分别判断瓣膜手术编码：</p>
+    <p><strong>A</strong>："全麻下，正中胸骨劈开，建立体外循环，阻断主动脉，切开右心房，经房间隔入路，直视下用成形环行二尖瓣成形术。"</p>
+    <p><strong>B</strong>："局麻下，经皮穿刺股静脉，送球囊导管至二尖瓣口，行球囊扩张成形术。"</p>
+    <p><strong>C</strong>："全麻下，左胸前外侧小切口（不劈胸骨），电视胸腔镜辅助下行二尖瓣成形术。"</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>A</strong>：<code>35.12</code>（直视下二尖瓣成形术）+ <code>39.61</code>（体外循环）</p>
+        <p><strong>推理</strong>：正中开胸+体外循环+直视下操作 → 开放性手术 → 35.1x系列。二尖瓣+成形术 → <code>35.12</code>。</p>
+        <p><strong>B</strong>：<code>35.96</code>（经皮瓣膜成形术——二尖瓣）</p>
+        <p><strong>推理</strong>：经皮穿刺+球囊扩张 → 介入手术 → 不适用35.0或35.1 → <code>35.96</code>。</p>
+        <p><strong>C</strong>：<code>35.12</code>（直视下二尖瓣成形术）</p>
+        <p><strong>推理</strong>：虽然是微创小切口，但依然是"直视下"进行瓣膜操作——胸腔镜提供的是视觉通道，不改变手术入路分类原则。关键是"是否直视瓣膜"，而非切口大小。</p>
+        <p><strong>编码提示</strong>：微创胸腔镜心脏手术仍然属于"开放性"（直视下）手术范畴，编码仍为35.1x，不能编为经皮介入35.96。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 进阶题 4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span class="case-tag challenge">进阶题</span>
+    <span>PCI完整编码推导</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"不稳定型心绞痛"行PCI手术，手术记录描述：</p>
+    <blockquote style="background:var(--code-bg);padding:10px 16px;border-radius:8px;margin:8px 0;font-style:italic;">
+      "经右桡动脉穿刺，采用双导管技术行冠状动脉造影。于LAD中段置入Resolute Integrity 3.5×24mm药物洗脱支架1枚，于LCX近段置入BioFreedom 3.0×18mm支架1枚，分别以球囊预扩后置入。"
+    </blockquote>
+    <p>请给出完整的编码组合（所有编码）。</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>完整编码</strong>（6个码）：<code>36.07</code> + <code>00.41</code> + <code>00.46</code> + <code>00.66</code> + <code>88.56</code></p>
+        <p><strong>推理过程</strong>：</p>
+        <ol>
+          <li><strong>支架编码</strong>：LAD用Resolute Integrity（美敦力DES，zotarolimus抗增殖）= <code>36.07</code>；LCX用BioFreedom（无聚合物Biolimus涂层支架，仍属DES）= <code>36.07</code>。两个都是药物洗脱 → <code>36.07</code> 够用，不需要分别编36.06和36.07。</li>
+          <li><strong>治疗血管数</strong>：LAD + LCX = <strong>2支</strong> → <code>00.41</code></li>
+          <li><strong>支架总数</strong>：LAD 1枚 + LCX 1枚 = <strong>2枚</strong> → <code>00.46</code></li>
+          <li><strong>PTCA</strong>：明确记录"以球囊预扩" → <code>00.66</code></li>
+          <li><strong>冠脉造影</strong>：双导管技术 → <code>88.56</code></li>
+        </ol>
+        <p><strong>共5个码</strong>（36.07作为主码只编一次，即使放了2个支架也是同一个36.07）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 进阶题 5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span class="case-tag challenge">进阶题</span>
+    <span>CABG + 瓣膜联合手术编码</span>
+  </div>
+  <div class="case-body">
+    <p>患者行心脏多联手术，手术记录摘要：</p>
+    <blockquote style="background:var(--code-bg);padding:10px 16px;border-radius:8px;margin:8px 0;font-style:italic;">
+      "全麻低温体外循环下，正中胸骨劈开。取大隐静脉，行主动脉-前降支、主动脉-对角支、主动脉-钝缘支三根冠状动脉旁路移植。同时行二尖瓣机械瓣置换术。"
+    </blockquote>
+    <p><strong>问题</strong>：请给出完整的编码组合。注意：是否需要另编码取大隐静脉的手术？</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>完整编码</strong>：</p>
+        <p><code>36.13</code>（主动脉-冠状动脉搭桥，三根）+ <code>35.24</code>（开放式二尖瓣机械瓣置换）+ <code>39.61</code>（体外循环）+ <code>38.43</code>（下肢静脉切除用作移植物）</p>
+        <p><strong>推理过程</strong>：</p>
+        <ol>
+          <li><strong>CABG</strong>：大隐静脉作为桥血管→主动脉-冠脉搭桥，搭了<strong>3根</strong>桥（前降支、对角支、钝缘支）→ <code>36.13</code></li>
+          <li><strong>瓣膜</strong>：正中开胸+直视下+二尖瓣+机械瓣置换 → <code>35.24</code></li>
+          <li><strong>体外循环</strong>：明确使用了体外循环 → <code>39.61</code></li>
+          <li><strong>取大隐静脉</strong>：ICD-9-CM-3规定，当取下肢静脉用于血管移植搭桥时，需另编码血管获取术 → <code>38.43</code>（下肢静脉切除）或 <code>38.48</code>（下肢静脉切除+置换）。考虑到该场景是取静脉用作移植物而非治疗静脉疾病，编 <code>38.43</code> 更准确。</li>
+        </ol>
+        <p><strong>共4个码</strong>。这是一个典型的"联合手术编码拼图"，每个操作都需独立体现。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 进阶题 6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span class="case-tag challenge">进阶题</span>
+    <span>先心病介入+起搏器综合编码</span>
+  </div>
+  <div class="case-body">
+    <p>患儿5岁，因"房间隔缺损 + 病态窦房结综合征"入院，行同期手术：</p>
+    <blockquote style="background:var(--code-bg);padding:10px 16px;border-radius:8px;margin:8px 0;font-style:italic;">
+      "经皮穿刺股静脉，行房间隔缺损封堵术（Amplatzer封堵器），同期经左侧锁骨下静脉穿刺置入单腔永久起搏器（VVI模式，无频率应答）。"
+    </blockquote>
+    <p>请给出完整编码，并说明编码决策的关键判断点。</p>
+    <details>
+      <summary>点击查看答案与推理</summary>
+      <div class="answer-box">
+        <p><strong>完整编码</strong>：<code>35.52</code>（房间隔缺损伞堵修补术）+ <code>37.81</code>（首次单腔装置置入，未特指节律反应）</p>
+        <p><strong>推理过程</strong>：</p>
+        <ol>
+          <li><strong>ASD封堵</strong>：经皮穿刺+封堵器修补房间隔缺损 → 属于<strong>闭合性</strong>心脏间隔修补术。主导词查"修补术-房间隔缺损-假体装置-闭合性"→ <code>35.52</code>（房间隔缺损伞堵修补术）。<strong>不是</strong>开放性修补 <code>35.51</code> 或 <code>35.61</code>。</li>
+          <li><strong>起搏器</strong>：永久性+首次+单腔（仅心室VVI）+无频率应答功能 → <code>37.81</code>。</li>
+          <li><strong>不需要体外循环编码</strong>：先心病介入封堵和起搏器置入均不涉及体外循环。</li>
+        </ol>
+        <p><strong>关键判断点</strong>：ASD封堵术的"闭合性"判断：只要不切开心脏、不在直视下操作，就属于闭合性（35.5x），<strong>不论经皮还是经胸小切口</strong>。如果手术记录描述为"直视下修补"（切开心房），则应编为开放性 <code>35.51</code>/<code>35.61</code>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 今日重点回顾 ======== -->
+<h2><span class="icon">📌</span> 今日重点回顾</h2>
 <div class="key-grid">
-<div class="key-item"><div class="key-num">1</div>瓣膜入路决定编码块：闭合35.0/开放35.1-35.2/介入35.0x/35.9</div>
-<div class="key-item"><div class="key-num">2</div>瓣膜成形35.1x(修复自身)≠置换35.2x(人工瓣)</div>
-<div class="key-item"><div class="key-num">3</div>PCI支架：DES=36.07 / 非DES(BMS/涂层)=36.06</div>
-<div class="key-item"><div class="key-num">4</div>PCI必须另编码：支架数量00.45-00.48+血管数量00.40-00.43</div>
-<div class="key-item"><div class="key-num">5</div>CABG：IMA桥36.15-36.16 / 主动脉-大隐静脉桥36.11-36.14</div>
-<div class="key-item"><div class="key-num">6</div>混合桥血管需分别编码(LIMA+SVG→36.15+36.11)</div>
-<div class="key-item"><div class="key-num">7</div>起搏器：腔数+频率响应+ICD三要素确定37.8x/37.9x</div>
-<div class="key-item"><div class="key-num">8</div>TAVI=35.05(介入) ≠ 35.21(开放AVR)</div></div>
-<h2><span class="icon">🔮</span> 明日预习</h2>
-<div class="card info"><p><strong>Day 30（7/18）：呼吸系统手术编码（30-34）</strong></p><ul><li>肺叶切除32.4、全肺切除32.5、胸腔引流34.0x的区别</li><li>支气管镜33.2x诊断性vs治疗性</li><li>胸腔镜(VATS)与传统开胸的编码有何不同？</li></ul></div>
-<div class="footer">病案编码 60 天系统学习 · Day 29 · 由 WorkBuddy 生成 · 2026年7月17日</div></body></html>
+  <div class="key-item"><div class="key-num">1</div><span>心血管系统手术覆盖<strong>5个类目</strong>（35-39）：瓣膜间隔→冠脉→心脏其他→血管切开→血管其他</span></div>
+  <div class="key-item"><div class="key-num">2</div><span>PCI支架：<strong>药物洗脱36.07</strong> vs <strong>非药物洗脱36.06</strong>，区别在于是否含抗增殖药物</span></div>
+  <div class="key-item"><div class="key-num">3</div><span>PCI完整编码至少<strong>5个码</strong>：支架+血管数+支架数+PTCA+造影</span></div>
+  <div class="key-item"><div class="key-num">4</div><span>瓣膜手术<strong>三层决策</strong>：入路（闭合/开放/介入）→ 术式（成形/置换）→ 瓣膜定位+假体类型</span></div>
+  <div class="key-item"><div class="key-num">5</div><span>临时起搏分水岭：伴随心脏手术→<strong>39.64</strong>，独立操作→<strong>37.78</strong></span></div>
+  <div class="key-item"><div class="key-num">6</div><span>搭桥术桥血管来源决定编码：大隐静脉CABG→36.1x，乳内动脉→36.15/36.16</span></div>
+  <div class="key-item"><div class="key-num">7</div><span>体外循环<strong>39.61</strong>：直视心脏手术必加，经皮介入不加</span></div>
+  <div class="key-item"><div class="key-num">8</div><span>CRT-P（00.50仅起搏）vs CRT-D（00.51起搏+除颤）vs ICD（37.94仅除颤）</span></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 明日预习 ======== -->
+<h2><span class="icon">🔭</span> 明日预习提示</h2>
+<div class="card info">
+  <p><strong>明日主题</strong>：Day 30 —— 呼吸系统手术编码（30-34）</p>
+  <p>类目30-34覆盖喉、气管、支气管、肺和胸壁手术，包括肺叶切除、胸腔引流、气管镜操作等。</p>
+  <p><strong>预习问题</strong>：</p>
+  <ol>
+    <li>肺叶切除术（32.4）和全肺切除术（32.5）的编码边界在哪里？</li>
+    <li>胸腔闭式引流术的主导词该怎么查？</li>
+    <li>支气管镜检查（33.21-33.27）的亚目如何通过"是否取活检/是否治疗"来区分？</li>
+  </ol>
+</div>
+
+<!-- ======== Footer ======== -->
+<div class="footer">
+  <p>📋 病案编码 60 天系统学习 · Day 29 · 心血管系统手术编码（35-39）</p>
+  <p>知识来源：艾登科技《心血管内科常见介入治疗的ICD-9-CM-3编码汇总》、付闪闪《冠状动脉介入手术编码的探讨》、《心血管系统手术.ppt》、病案编码案例库</p>
+  <p>2026年7月17日 · 编码标准：国临版 ICD-9-CM-3（2011版）</p>
+</div>
+
+</body>
+</html>
