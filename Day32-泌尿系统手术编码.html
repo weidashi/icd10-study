@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 32（2026年7月20日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '\25B6 '; font-size: 11px; }
+  details[open] > summary::before { content: '\25BC '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Decision Tree ===== */
+  .decision-tree {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    border: 1px solid var(--border); margin: 14px 0; overflow: hidden;
+  }
+  .dt-node {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    font-size: 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .dt-node:last-child { border-bottom: none; }
+  .dt-q {
+    background: var(--accent); color: #fff; min-width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .dt-arrow { color: var(--accent); font-weight: 700; margin: 0 6px; font-size: 13px; }
+  .dt-leaf { padding: 8px 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; margin-top: 6px; font-size: 13px; }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 32 · 2026年7月20日</div>
+  <h1>&#128300; 病案编码学习</h1>
+  <p class="subtitle">今日主题：泌尿系统与男性生殖手术编码（ICD-9-CM-3 类目 55-64）</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:53.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 32 / 60 天（53.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">&#127919;</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      &#128308; L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>55-64 十个类目码位范围和核心手术类型速记</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肾切除术三级细分：部分切除(55.4) vs 全肾切除(55.5) vs 根治性(55.51)</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>TURP(60.2x) vs 开放前列腺切除(60.3/60.4/60.5)的区分，入路决定编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>经尿道膀胱肿瘤电切 TURBT：单次(57.49) vs 重复操作(57.6x)</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>泌尿系结石手术编码三要素：部位 + 入路 + 是否碎石</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      &#128993; L2 应该理解（深入理解，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>尿流改道编码体系：回肠膀胱(56.51) vs 可控回肠膀胱(57.87) vs 原位新膀胱</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>根治性膀胱切除+尿流改道+淋巴结清扫的"多编码组合"规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>PCNL(55.04) vs ESWL(98.51) vs URS(56.0)——不同取石方式的编码边界</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>隐睾手术(62.5)与腹股沟疝修补(53.0x)的复合编码逻辑</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      &#128994; L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>肾移植手术编码(55.6x)——供体手术与受体手术分开编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>前列腺粒子植入近距离放疗(60.97)、阴茎假体植入(64.95)等非主流手术</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>男性绝育术(63.7x)——输精管结扎/切除术的码位位置</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>&#128161; 本日学习建议：</strong>55-64 是手术编码中"部位集中度最高"的十个连续类目——从肾到阴茎，一脉贯通。核心任务是掌握<strong>"入路决定编码"的轴心逻辑</strong>：同一个组织的切除/破坏，经尿道 vs 开放 vs 腹腔镜，编码完全不同。学完今天，拿到任何一份泌尿外科手术记录，你能在 5 秒内锁定正确的两个类目数字区间。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">&#128451;</span> 一、55-64 十类目全景速查——"从肾到阴茎，一码贯通"</h2>
+
+<p>ICD-9-CM-3 第55至64类目覆盖了<strong>整个泌尿系统和男性生殖系统</strong>的手术操作。这是手术编码中"部位递进最直观"的一段——从上到下、从内到外的逻辑非常清晰。按解剖层级自上而下为：</p>
+
+<table>
+  <tr><th>类目</th><th>解剖部位</th><th>核心手术</th><th>关键亚目</th><th>编码陷阱</th></tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>55</code></td><td><strong>肾</strong></td>
+    <td>肾切除术、肾造口术、肾活检、肾固定术</td>
+    <td>55.0诊断操作、55.3局部病损切除、55.4部分切除、55.5全肾切除</td>
+    <td>55.51 肾输尿管全切≠55.5</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>56</code></td><td><strong>输尿管</strong></td>
+    <td>输尿管镜检查/碎石、输尿管吻合、输尿管切除、尿流改道</td>
+    <td>56.0经尿道操作、56.1切开、56.2造口、56.4切除、56.5皮肤回肠吻合</td>
+    <td>56.51 回肠膀胱术是最常见尿流改道</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>57</code></td><td><strong>膀胱</strong></td>
+    <td>TURBT、膀胱部分/全切除、膀胱造口术、膀胱结石取出</td>
+    <td>57.0经尿道清除、57.3部分切除、57.6全切、57.4经尿道切除</td>
+    <td>57.49 TURBT≠57.6x 根治性全切</td>
+  </tr>
+  <tr>
+    <td><code>58</code></td><td><strong>尿道</strong></td>
+    <td>尿道切开、尿道扩张、尿道成形术、尿道狭窄手术</td>
+    <td>58.0切开、58.1尿道口切开、58.4修复、58.5狭窄松解</td>
+    <td>尿道狭窄扩张(58.6) vs 直视下切开(58.0)</td>
+  </tr>
+  <tr>
+    <td><code>59</code></td><td><strong>泌尿系统其他</strong></td>
+    <td>尿失禁手术(TVT/TOT)、腹膜后剥离、输尿管导管置入</td>
+    <td>59.3折叠术、59.5尿道固定术、59.6尿失禁修复、59.8导管</td>
+    <td>TVT吊带术编59.5x/59.7x</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>60</code></td><td><strong>前列腺</strong></td>
+    <td>TURP、开放前列腺切除、前列腺根治术、前列腺穿刺活检</td>
+    <td>60.1诊断、60.2 TURP、60.3-60.6开放切除</td>
+    <td>60.21 激光≠60.29 电切，区分能量源</td>
+  </tr>
+  <tr>
+    <td><code>61</code></td><td><strong>阴囊/睾丸鞘膜</strong></td>
+    <td>阴囊切开/切除、鞘膜翻转/切除术、阴囊成形</td>
+    <td>61.0切开引流、61.2鞘膜切除、61.4修复</td>
+    <td>附睾和睾丸手术不在此类目</td>
+  </tr>
+  <tr>
+    <td><code>62</code></td><td><strong>睾丸</strong></td>
+    <td>睾丸切除术/固定术、睾丸活检、睾丸假体植入</td>
+    <td>62.3单侧切除、62.4双侧切除、62.5固定术</td>
+    <td>62.5 隐睾固定术可能有腹股沟疝修补</td>
+  </tr>
+  <tr>
+    <td><code>63</code></td><td><strong>精索/附睾/输精管</strong></td>
+    <td>精索静脉曲张手术、附睾切除术、输精管结扎/吻合</td>
+    <td>63.0诊断、63.1精索静脉切除、63.4附睾切除、63.7输精管</td>
+    <td>精索静脉曲张高位结扎 63.1</td>
+  </tr>
+  <tr>
+    <td><code>64</code></td><td><strong>阴茎</strong></td>
+    <td>包皮环切、阴茎部分/全切、阴茎假体植入、阴茎成形</td>
+    <td>64.0包皮、64.2病损切除、64.3部分切、64.4修复、64.9其他</td>
+    <td>包皮环切因年龄/指征区分码位</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>&#128161; 记忆口诀：</strong>"5<strong>5</strong>肾，5<strong>6</strong>管，5<strong>7</strong>膀胱藏中间；5<strong>8</strong>尿道五<strong>9</strong>杂，<strong>60</strong>前列腺顶呱呱；<strong>61</strong>囊<strong>62</strong>蛋<strong>63</strong>索管，<strong>64</strong>阴茎在末端。"——按解剖从上到下，55=肾、56=输尿管、57=膀胱、58=尿道、59=泌尿杂项（跨组织操作如尿失禁悬吊）、60=前列腺、61=阴囊+鞘膜、62=睾丸、63=精索+附睾+输精管、64=阴茎。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">&#129531;</span> 二、肾手术编码（类目55）——"部分/全部/根治"三级细分法</h2>
+
+<h3>2.1 肾切除术的三条岔路口</h3>
+
+<p>肾切除术是泌尿外科最常见的大手术之一。ICD-9-CM-3 对肾切除做了极其精细的层级划分——<strong>从"只切病变部分"到"肾+输尿管+膀胱袖口一起切"</strong>，三级递进。编码员必须从手术记录中确认切除范围再选码。</p>
+
+<table>
+  <tr><th>层级</th><th>手术范围</th><th>编码</th><th>适用场景</th></tr>
+  <tr>
+    <td><strong>病损切除/肾部分切除</strong></td>
+    <td>只切除病变组织，保留大部分肾实质</td>
+    <td><code>55.3</code>（局部病损切除）<br><code>55.4</code>（肾部分切除）</td>
+    <td>肾囊肿去顶减压、小肾癌保肾手术（肾部分切除）、肾错构瘤剔除</td>
+  </tr>
+  <tr>
+    <td><strong>全肾切除术</strong></td>
+    <td>切除整个肾脏，但保留输尿管</td>
+    <td><code>55.51</code>（肾输尿管全切，含膀胱袖口）<br><code>55.52</code>（孤立肾切除）<br><code>55.53</code>（移植肾切除）<br><code>55.54</code>（双侧肾切除）</td>
+    <td>55.51 用于肾盂癌/输尿管癌（需全长输尿管切除含膀胱袖口）；55.52 仅剩一个肾且需切除的情况</td>
+  </tr>
+  <tr>
+    <td><strong>根治性肾切除术</strong></td>
+    <td>肾+肾周脂肪囊+Gerota筋膜+同侧肾上腺+区域淋巴结</td>
+    <td><code>55.5</code> + <code>40.59</code>（淋巴结清扫）</td>
+    <td>肾细胞癌（肾实质肿瘤），注意：<strong>不常规包含输尿管全长切除</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; 致命陷阱——55.51 的误用：</strong>"肾输尿管全切(55.51)"特指上尿路尿路上皮癌（UTUC）的根治术——肾盂癌/输尿管癌的手术必须将输尿管全长+膀胱袖口一并切除。但<strong>肾癌（肾实质肿瘤）的根治术不是 55.51</strong>！肾癌根治术应编 55.5x（肾全切）+ 附加编码。很多编码员看到"根治性肾切除"就机械套用 55.5101，这是严重错误。
+</div>
+
+<h3>2.2 肾切开取石：入路决定码位</h3>
+
+<p>肾结石手术的编码核心是"怎么进去"——不同入路对应不同编码：</p>
+
+<table>
+  <tr><th>手术方式</th><th>入路</th><th>编码</th><th>说明</th></tr>
+  <tr><td>PCNL（经皮肾镜碎石取石术）</td><td>经皮穿刺 → 肾实质</td><td><code>55.04</code>（含碎裂）<br><code>55.03</code>（不含碎裂）</td><td>最常用，需 B 超/X 线定位建立通道。伴超声/气压弹道/激光碎石→55.04</td></tr>
+  <tr><td>肾盂切开取石</td><td>开放/腹腔镜 → 肾盂</td><td><code>55.11</code>（肾盂切开取石）</td><td>适用于单纯肾盂结石，不进入肾实质</td></tr>
+  <tr><td>肾实质切开取石</td><td>开放 → 肾皮质切开</td><td><code>55.01</code>（肾切开取石）</td><td>大铸型结石、多发肾盏结石，需切开肾实质</td></tr>
+  <tr><td>ESWL（体外冲击波碎石）</td><td>体外 → 非侵入</td><td><code>98.51</code></td><td>注意：ESWL 不在 55 类目！属于"非手术操作"类目</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>&#128221; 编码核对口诀：</strong>"经皮肾镜看碎石（55.03/55.04），肾盂切开走 55.11，肾实质切 55.01，体外碎石飞 98.51。"——入路×碎石=编码。
+</div>
+
+<h3>2.3 其他高频肾手术速查</h3>
+
+<table>
+  <tr><th>手术</th><th>编码</th><th>要点</th></tr>
+  <tr><td>肾穿刺活检</td><td><code>55.23</code>（经皮肾活检） / <code>55.24</code>（开放肾活检）</td><td>95%以上是 55.23（经皮穿刺，B超引导）</td></tr>
+  <tr><td>肾造口术</td><td><code>55.02</code>（经皮）、<code>55.03</code>（开放）</td><td>肾造口分诊断性/治疗性，但编码一样</td></tr>
+  <tr><td>肾囊肿去顶减压</td><td><code>55.39</code>（腹腔镜）/<code>55.3</code>（开放）</td><td>属"局部病损切除"，注意腹腔镜入路扩展码</td></tr>
+  <tr><td>肾固定术</td><td><code>55.7</code></td><td>肾下垂悬吊，现在极少见</td></tr>
+  <tr><td>肾移植</td><td><code>55.6x</code></td><td>55.61 自体移植、55.69 其他/异体移植</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">&#128300;</span> 三、输尿管与膀胱手术编码（类目56-57）——"最复杂的枢纽区"</h2>
+
+<h3>3.1 输尿管结石处理：三种入路对照</h3>
+
+<p>输尿管结石手术是 56 类目最常见的应用场景。核心逻辑仍然是<strong>"入路 + 碎石 = 编码"</strong>：</p>
+
+<table>
+  <tr><th>手术方式</th><th>编码</th><th>路径描述</th></tr>
+  <tr><td>经尿道输尿管镜碎石(URS)</td><td><code>56.0</code>（经尿道输尿管梗阻去除）</td><td>经尿道→膀胱→输尿管口→输尿管腔内碎石</td></tr>
+  <tr><td>输尿管切开取石</td><td><code>56.2</code>（输尿管切开术）</td><td>开放/腹腔镜，切开输尿管取石后缝合</td></tr>
+  <tr><td>输尿管镜检（仅探查）</td><td><code>56.31</code>（内镜/输尿管镜检）</td><td>无取石操作，仅诊断性检查</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>&#10060; 错误：混淆 56.0 与 56.2</h4>
+    <p>临床写"输尿管镜碎石取石术"，编码员却查"切开"主导词 → 错编 56.2。</p>
+    <p><strong>56.2 是切开手术</strong>，输尿管镜是<strong>经自然腔道</strong>，不切开输尿管壁。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>&#9989; 正确：经尿道 = 56.0</h4>
+    <p>输尿管镜经尿道、膀胱、输尿管口进入腔内操作 → <code>56.0</code>。</p>
+    <p><strong>关键证据：</strong>手术记录描述"输尿管镜经尿道置入"即为 56.0 的决定性依据。</p>
+  </div>
+</div>
+
+<h3>3.2 尿流改道——编码员的噩梦？三步拆解法</h3>
+
+<p>尿流改道（urinary diversion）是编码 56-57 中最复杂的话题。当膀胱因肿瘤等被切除后，尿液需要新的流出路径。不同的改道方式对应不同编码，且常涉及<strong>多码组合</strong>。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>判断改道类型：可控 vs 不可控</h4>
+      <p>不可控（尿液持续引流至体外集尿袋）：如回肠膀胱术 → <code>56.51</code></p>
+      <p>可控（需要定时插管导尿）：如可控性回肠膀胱术 → <code>57.87</code></p>
+      <p>原位新膀胱（尿液从尿道自然排出）：如回肠原位新膀胱 → <code>57.87</code> + 肠吻合</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>识别所用的肠段和吻合方式</h4>
+      <p>回肠段 → 常用 <code>45.51</code>（回肠部分切除用于间置）做附加编码</p>
+      <p>结肠段 → 常用 <code>45.52</code>（结肠部分切除用于间置）</p>
+      <p>肠吻合恢复连续性 → 加编 <code>45.91</code>（小肠吻合）或 <code>45.94</code>（大肠吻合）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>组合输出：根治性膀胱切除+改道的完整编码</h4>
+      <p><strong>典型套餐：</strong>膀胱癌根治术 = <code>57.7x</code>（膀胱全切）+ <code>56.51</code>（回肠膀胱）+ <code>45.51</code>（回肠段切除）+ <code>40.59</code>（淋巴结清扫）+ <code>57.7x</code>（男性含前列腺精囊切除，女性含子宫附件切除）。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.3 膀胱肿瘤电切（TURBT）——编码频率最高的膀胱手术</h3>
+
+<p>TURBT（Transurethral Resection of Bladder Tumor）是 57 类目中使用频率最高的手术。编码为 <code>57.49</code>（经尿道膀胱病损切除术/膀胱颈电切术）。</p>
+
+<div class="card">
+  <p><strong>TURBT 的本质：</strong>经尿道途径，用电切镜切除膀胱内肿瘤组织——它不是"膀胱部分切除术"（57.6），也不是"全膀胱切除术"（57.7）。它是<strong>经自然腔道的腔内操作</strong>。</p>
+  <p style="margin-top:8px;"><strong>编码要点：</strong></p>
+  <ul>
+    <li>单次 TURBT → <code>57.49</code></li>
+    <li>TURBT 后出血止血术（二次手术）→ 如果仅是镜下电凝止血，仍编 <code>57.49</code>（以主要治疗目的为准）；如果是开放止血，另编相应编码</li>
+    <li>TURBT + 随机膀胱活检 → 活检 <code>57.33</code>（闭合性膀胱活检）作附加编码</li>
+    <li><strong>注意区分：</strong>57.6x 是膀胱部分切除术（开放/腹腔镜），切除全层膀胱壁；TURBT 仅切除黏膜及黏膜下层</li>
+  </ul>
+</div>
+
+<h3>3.4 膀胱切除术的三级体系</h3>
+
+<table>
+  <tr><th>手术</th><th>编码</th><th>范围</th></tr>
+  <tr><td>膀胱部分切除术</td><td><code>57.6</code></td><td>切除含病灶的部分膀胱壁，保留大部分膀胱</td></tr>
+  <tr><td>全膀胱切除术</td><td><code>57.71</code></td><td>全膀胱切除。女性可含子宫+附件；男性可含前列腺+精囊</td></tr>
+  <tr><td>根治性膀胱切除术</td><td><code>57.71</code> + 附加码</td><td>全膀胱 + 盆腔淋巴结清扫(40.59) + 尿道切除(58.3x)</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">&#129440;</span> 四、前列腺手术编码（类目60）——"能量源"决定一切</h2>
+
+<h3>4.1 TURP vs 开放前列腺切除——不能被混淆的编码红线</h3>
+
+<p>前列腺手术的编码选择取决于 <strong>三个维度</strong>：</p>
+<ol>
+  <li><strong>入路：</strong>经尿道 vs 开放 vs 腹腔镜</li>
+  <li><strong>切除范围：</strong>部分切除（前列腺增生剜除）vs 全切除（前列腺癌根治）</li>
+  <li><strong>能量源/工具：</strong>电刀(单极/双极/等离子) vs 激光(钬激光/绿激光/铥激光) vs 冷刀</li>
+</ol>
+
+<table>
+  <tr><th>亚目</th><th>手术方式</th><th>编码要点</th></tr>
+  <tr><td><code>60.21</code></td><td>TURP（经尿道前列腺电切/等离子电切）</td><td>最常见的BPH手术。国临版细分为单极/双极/等离子等</td></tr>
+  <tr><td><code>60.29</code></td><td>经尿道前列腺激光/其他消融</td><td>钬激光前列腺剜除(HoLEP)、绿激光汽化(PVP)、铥激光等</td></tr>
+  <tr><td><code>60.3</code></td><td>耻骨上前列腺切除术（开放）</td><td>经膀胱入路，打开膀胱后从膀胱内剜除增生腺体</td></tr>
+  <tr><td><code>60.4</code></td><td>耻骨后前列腺切除术（开放）</td><td>不经膀胱，直接在耻骨后间隙切开前列腺包膜剜除</td></tr>
+  <tr><td><code>60.5</code></td><td>根治性前列腺切除术</td><td>全前列腺+精囊切除+膀胱尿道吻合（用于前列腺癌）</td></tr>
+  <tr><td><code>60.61</code></td><td>经尿道前列腺部分切除术（二步法）</td><td>分期TURP的第二阶段操作</td></tr>
+  <tr><td><code>60.62</code></td><td>经会阴前列腺切除术</td><td>经会阴入路的开放手术，较少见</td></tr>
+</table>
+
+<h3>4.2 TURP 的编码陷阱——激光≠电切</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>&#10060; 常见错误一：激光 TURP 编成 60.21</h4>
+    <p>看到手术名称写"经尿道前列腺电切术"，没看清手术记录其实用的钬激光 → 错编 60.21。</p>
+    <p><strong>纠错：</strong>仔细阅读手术记录中的"使用器械"段落——激光是 60.29，电切环才是 60.21。</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>&#10060; 常见错误二：开放手术编成 60.21</h4>
+    <p>手术记录明确"耻骨上切口""切开膀胱""剜除增生腺体" → 这是 60.3，不是 60.21。</p>
+    <p><strong>纠错：</strong>有"切开膀胱"=开放手术=60.3，经尿道自然腔道=60.2。</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>&#128221; TURP 编码关键操作步骤：</strong>① 阅读手术记录 → ② 找到"入路"部分（经尿道置入电切镜 vs 下腹部正中切口）→ ③ 找到"器械/能量源"部分（电切环 vs 钬激光光纤 vs 绿激光）→ ④ 如果是前列腺癌，找到"切除范围"（是否包含精囊？膀胱颈是否吻合？）→ ⑤ 确定亚目和扩展码。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">&#129444;</span> 五、男性生殖系统（类目61-64）——部位精确辨</h2>
+
+<h3>5.1 阴囊与睾丸（61-62）</h3>
+
+<table>
+  <tr><th>手术</th><th>编码</th><th>口诀/陷阱</th></tr>
+  <tr><td>睾丸切除术（单侧）</td><td><code>62.3</code></td><td>前列腺癌去势治疗常用。注意左侧/右侧在扩展码中区分</td></tr>
+  <tr><td>睾丸切除术（双侧）</td><td><code>62.41</code></td><td><strong>不同于 62.3×2——双侧有单独的码！</strong>这是 DRG 分组的关键区别</td></tr>
+  <tr><td>隐睾固定术（睾丸下降固定术）</td><td><code>62.5</code></td><td>如同时行腹股沟疝修补，需加编 53.0x（疝修补）作附加编码</td></tr>
+  <tr><td>睾丸扭转复位</td><td><code>62.0</code>（睾丸切开术）<br>或编 62.5（固定术）</td><td>根据术中实际操作的侧重——仅复位=62.0，同时固定=62.5</td></tr>
+  <tr><td>睾丸鞘膜翻转/切除术</td><td><code>61.2</code></td><td>不是 62 类目！鞘膜属于阴囊层次(61)，睾丸本身是 62</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; 隐睾手术的高频陷阱：</strong>隐睾固定术(62.5)经常同时行腹股沟疝修补。手术记录中如果描述"打开腹股沟管""游离疝囊""高位结扎疝囊"，<strong>必须加编疝修补编码(53.0x)</strong>。漏编疝修补会导致 DRG 分组时手术权重降低，直接影响医院收入。
+</div>
+
+<h3>5.2 精索、附睾与输精管（63）</h3>
+
+<table>
+  <tr><th>手术</th><th>编码</th><th>说明</th></tr>
+  <tr><td>精索静脉曲张高位结扎术</td><td><code>63.1</code></td><td>腹腔镜入路可选 63.1 的腹腔镜扩展码</td></tr>
+  <tr><td>附睾切除术</td><td><code>63.4</code></td><td>慢性附睾炎、附睾结核等情况</td></tr>
+  <tr><td>输精管结扎术（男性绝育）</td><td><code>63.71</code>（结扎）/<code>63.72</code>（切除一段）</td><td>计划生育用途；注意仅在附睾手术的输精管吻合属于 63.82</td></tr>
+  <tr><td>输精管吻合术（复通）</td><td><code>63.82</code></td><td>绝育术后复通；从附睾到尿道的全程输精管吻合也可能是其他码</td></tr>
+</table>
+
+<h3>5.3 阴茎（64）</h3>
+
+<table>
+  <tr><th>手术</th><th>编码</th><th>说明</th></tr>
+  <tr><td>包皮环切术</td><td><code>64.0</code></td><td>不同指征（包茎/包皮过长/宗教）对应不同扩展码</td></tr>
+  <tr><td>阴茎部分切除术</td><td><code>64.2</code></td><td>阴茎癌的保留部分阴茎的治疗手段</td></tr>
+  <tr><td>阴茎全切术</td><td><code>64.3</code></td><td>阴茎癌广泛浸润时的治疗手段</td></tr>
+  <tr><td>阴茎假体植入</td><td><code>64.95</code></td><td>勃起功能障碍的手术治疗</td></tr>
+  <tr><td>阴茎成形术（尿道下裂修补等）</td><td><code>64.4x</code></td><td>先天性尿道下裂的整形修复</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">&#128293;</span> 六、重难点深度解析：根治性膀胱全切+尿流改道的"多码组合"——编码员终极考题</h2>
+
+<p>这是泌尿外科编码中<strong>最复杂、最容易漏码、DRG 权重影响最大</strong>的手术。我们以一个完整病例来拆解。</p>
+
+<h3>场景：膀胱癌根治术（男性）</h3>
+
+<blockquote style="background:var(--accent-bg);border-left:4px solid var(--accent);padding:14px 20px;border-radius:0 8px 8px 0;margin:14px 0;">
+  <strong>手术记录摘要：</strong>全麻下行腹腔镜根治性膀胱切除术+回肠膀胱术(Bricker)+盆腔淋巴结清扫术。术中切除全膀胱、前列腺、精囊，取末端回肠约 15cm 游离作尿流输出道，远端闭合，近端与双侧输尿管吻合，回肠远端行腹壁造口。盆腔闭孔、髂内、髂外淋巴结清扫。
+</blockquote>
+
+<h3>编码拆解——5码组合：</h3>
+
+<table>
+  <tr><th>步骤</th><th>操作内容</th><th>编码</th><th>主导词</th></tr>
+  <tr><td>①</td><td>全膀胱切除（含前列腺、精囊）</td><td><code>57.71</code></td><td>切除术 → 膀胱 → 根治性</td></tr>
+  <tr><td>②</td><td>回肠膀胱术(Bricker)——不可控尿流改道</td><td><code>56.51</code></td><td>改道术 → 泌尿系 → 回肠膀胱</td></tr>
+  <tr><td>③</td><td>回肠段切取（用于间置）</td><td><code>45.51</code></td><td>切除术 → 肠 → 小肠 → 用于间置</td></tr>
+  <tr><td>④</td><td>回肠吻合（恢复肠道连续性）</td><td><code>45.91</code></td><td>吻合术 → 小肠 → 小肠-小肠</td></tr>
+  <tr><td>⑤</td><td>盆腔淋巴结清扫</td><td><code>40.59</code></td><td>切除术 → 淋巴结 → 区域</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>&#9888;&#65039; "一个都不能少"——经常被漏掉的三个码：</strong><br>
+  ① <strong>漏编 45.51/45.91：</strong>编码员只编了 57.71+56.51，没注意到手术切取了一段肠管用作输出道。肠管切取+肠吻合是两个独立的实质性手术操作，必须编码。<br>
+  ② <strong>漏编 40.59：</strong>根治性手术的淋巴结清扫必须独立编码。漏掉淋巴结清扫 = 手术难度被低估 = DRG 分组降级。<br>
+  ③ <strong>错把 57.71 编成 57.79：</strong>男性根治性膀胱切除含前列腺精囊切除是 57.71；女性含子宫附件切除是 57.79——性别不同，编码不同。
+</div>
+
+<h3>两种常见尿流改道方式的编码对比：</h3>
+
+<table>
+  <tr><th>改道方式</th><th>编码</th><th>特征</th><th>可控性</th></tr>
+  <tr><td>Bricker（回肠膀胱术）</td><td><code>56.51</code></td><td>回肠一段，一端造口于腹壁，持续外引流</td><td>&#10060; 不可控</td></tr>
+  <tr><td>Kock pouch / Indiana pouch</td><td><code>57.87</code></td><td>可控性回肠/结肠膀胱，需定时插管导尿</td><td>&#9989; 可控</td></tr>
+  <tr><td>Studer / Hautmann（原位新膀胱）</td><td><code>57.87</code> + <code>45.51</code></td><td>用肠管制作储尿囊吻合至尿道残端，经尿道排尿</td><td>&#9989; 可控（原位）</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">&#9999;&#65039;</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 入路判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>为以下手术选择正确的ICD-9-CM-3编码：</p>
+    <ol>
+      <li>经尿道前列腺等离子电切术（双极）</li>
+      <li>经尿道膀胱肿瘤电切术（TURBT）</li>
+      <li>经皮肾镜超声碎石取石术（左肾）</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 答案：</strong></p>
+        <p><strong>1.</strong> <code>60.21</code>——经尿道入路+电切（等离子属于电切范畴）。主导词：切除术 → 前列腺 → 经尿道。</p>
+        <p><strong>2.</strong> <code>57.49</code>——经尿道入路+膀胱病损切除。注意：不是膀胱部分切除术(57.6)，TURBT 切的是黏膜和黏膜下层，不切全层。</p>
+        <p><strong>3.</strong> <code>55.04</code>——经皮入路+肾+含碎裂。主导词：碎石术 → 肾 → 经皮。注意超声碎石、气压弹道碎石、激光碎石都属于"含碎裂"，统一编 55.04；单纯的经皮肾镜探查(不碎石)才编 55.03。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 术式/范围区分</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下手术分别应编什么码？请区分"部分切除"和"全切除"。</p>
+    <p><strong>A.</strong> 腹腔镜右肾部分切除术（肾细胞癌，肿瘤直径 3cm，切除肿瘤及周边 0.5cm 正常肾组织）</p>
+    <p><strong>B.</strong> 腹腔镜右肾根治性切除术（肾细胞癌，肿瘤直径 7cm，切除右肾+肾周脂肪囊+Gerota 筋膜）</p>
+    <p><strong>C.</strong> 开放左肾输尿管全长切除术+膀胱袖口切除（肾盂尿路上皮癌）</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 答案：</strong></p>
+        <p><strong>A.</strong> <code>55.4</code>（肾部分切除术）。保留了大部分肾实质，仅切除肿瘤及周边少量正常组织。腹腔镜入路在扩展码中体现（如 55.402）。</p>
+        <p><strong>B.</strong> <code>55.51</code>（肾全切术）——注意！肾细胞癌的根治术 ≠ 55.51。肾癌根治术应编 55.5x（肾全切），而不需要用 55.51。55.51 特指<strong>肾+输尿管全长+膀胱袖口联合切除</strong>。肾癌虽叫"根治"但不常规切输尿管全长。</p>
+        <p><strong>C.</strong> <code>55.51</code>（肾输尿管全切+膀胱袖口）——<strong>这就是 55.51 的经典适应症</strong>。肾盂癌/输尿管癌的上尿路尿路上皮癌必须将引流系统的全长切除，防止残端复发。</p>
+        <p><strong>&#128161; 核心区分：</strong>肾癌(肾细胞癌)根治=55.5x，输尿管癌/肾盂癌根治=55.51。两种癌症的编码完全不同。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 部位归属判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下手术各属于 55-64 中的哪个类目？</p>
+    <table>
+      <tr><th>手术</th><th>你的答案</th></tr>
+      <tr><td>睾丸鞘膜翻转术</td><td>？</td></tr>
+      <tr><td>腹腔镜精索静脉曲张高位结扎术</td><td>？</td></tr>
+      <tr><td>耻骨后前列腺根治性切除术</td><td>？</td></tr>
+      <tr><td>膀胱切开取石术</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 答案：</strong></p>
+        <p><strong>睾丸鞘膜翻转术 → 61</strong>（阴囊和睾丸鞘膜）。鞘膜属于阴囊层次，不在 62（睾丸本身）。</p>
+        <p><strong>精索静脉曲张高位结扎术 → 63</strong>（精索/附睾/输精管）。精索静脉属于精索结构。</p>
+        <p><strong>耻骨后前列腺根治性切除术 → 60</strong>（前列腺）。耻骨后=开放入路(60.4)，根治性=全切(60.5)。手术记录里如果描述切除全前列腺+精囊+膀胱尿道吻合→根治性 60.5。</p>
+        <p><strong>膀胱切开取石术 → 57</strong>（膀胱）。切开取石=膀胱切开术(57.19)，不是经尿道清除(57.0)。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 能量源陷阱</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>三份 TURP 手术记录摘要如下，请分别给出正确编码并说明理由：</p>
+    <p><strong>A.</strong> "经尿道置入电切镜，以环状电切刀切除增生的前列腺组织，术中出血少……"</p>
+    <p><strong>B.</strong> "经尿道置入钬激光光纤，在前列腺包膜内将增生腺体分叶剜除，推入膀胱后以组织粉碎器粉碎取出……"（HoLEP）</p>
+    <p><strong>C.</strong> "下腹正中切口，切开膀胱，钝性剜除增生的前列腺腺体，缝扎止血……"</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 答案：</strong></p>
+        <p><strong>A.</strong> <code>60.21</code>——经尿道入路 + 电切环 = TURP（传统电切）。关键词："电切镜""环状电切刀"。</p>
+        <p><strong>B.</strong> <code>60.29</code>——经尿道入路 + 钬激光 = 经尿道激光前列腺切除术(HoLEP)。关键词："钬激光光纤""剜除"。即使是分叶剜除，因为是经尿道入路且使用激光能量源，属于 60.29 而非开放手术。</p>
+        <p><strong>C.</strong> <code>60.3</code>——开放入路 + 经膀胱 = 耻骨上前列腺切除术。关键词："下腹正中切口""切开膀胱"——这是决定性证据，说明是开放手术不是 TURP。</p>
+        <p><strong>&#128161; 三步口诀：</strong>一看入路(经尿道/开放/腹腔镜)→二看工具(电刀/激光/冷刀)→三看范围(部分/全切/根治)。三步对上了，编码就对上了。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 根治性膀胱切除全案编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男性，68岁，膀胱尿路上皮癌。行"腹腔镜根治性膀胱切除术+回肠膀胱术(Bricker)+盆腔淋巴结清扫术"。手术记录描述：切除全膀胱、前列腺、精囊；取末端回肠约15cm游离，远端行腹壁造口，近端与双侧输尿管分别吻合；回肠端端吻合恢复肠道连续性；清扫双侧闭孔、髂内、髂外淋巴结。</p>
+    <p><strong>问题：</strong>请给出完整的编码组合（列出所有应编的码），并说明每个码的依据。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 完整编码组合：</strong></p>
+        <table style="margin:8px 0;">
+          <tr><th>编码</th><th>操作</th><th>依据</th></tr>
+          <tr><td><code>57.71</code></td><td>根治性膀胱全切术</td><td>男性：全膀胱+前列腺+精囊切除</td></tr>
+          <tr><td><code>56.51</code></td><td>回肠膀胱术(Bricker)</td><td>取回肠段做皮肤造口的不可控尿流改道</td></tr>
+          <tr><td><code>45.51</code></td><td>回肠段切除（用于间置）</td><td>游离15cm回肠段用于尿流输出道</td></tr>
+          <tr><td><code>45.91</code></td><td>小肠端端吻合</td><td>回肠端端吻合恢复肠道连续性——实质手术必须编码</td></tr>
+          <tr><td><code>40.59</code></td><td>盆腔淋巴结清扫</td><td>闭孔+髂内+髂外淋巴结清扫——区域淋巴结切除术</td></tr>
+        </table>
+        <p><strong>&#128161; 为什么必须编 5 个码：</strong>ICD-9-CM-3 的类目 57.71 只表达"膀胱切除"这个动作本身。肠道操作(45.x)、尿流改道(56.x)、淋巴结清扫(40.x)均属于不同解剖系统的独立手术，必须分别编码。编码员常犯的错误是只编 57.71+56.51 而漏掉 45.51+45.91+40.59——这三个漏码会让 DRG 权重大幅降低。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 双侧操作与复合手术</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>场景 A：</strong>前列腺癌患者行"双侧睾丸切除术"（去势治疗）。<strong>编码是 62.3 吗？</strong></p>
+    <p><strong>场景 B：</strong>隐睾患儿行"右侧睾丸下降固定术"，术中探查发现合并右侧腹股沟斜疝，同时行疝囊高位结扎+修补术。<strong>应编几个码？分别是什么？</strong></p>
+    <p><strong>场景 C：</strong>肾盂癌患者行"左侧肾输尿管全长切除+膀胱袖口切除术(55.51)"，手术记录中还提到"经尿道电切镜探查膀胱无异常后行膀胱袖口切除"。<strong>膀胱镜检需要单独编码吗？</strong></p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>&#9989; 场景 A：</strong>不应该编 62.3！双侧睾丸切除术有独立编码 <code>62.41</code>。62.3 是单侧睾丸切除术。双侧 vs 单侧对于 DRG 分组有显著差异。同理，如果是左侧睾丸+右侧附睾切除，则需要分别编码 62.3 + 63.4。</p>
+        <p><strong>&#9989; 场景 B：</strong>最少编 2 个码——<code>62.5</code>（右侧睾丸下降固定术）+ <code>53.0x</code>（腹股沟疝修补术，如53.02/53.09等）。疝修补是独立的解剖学手术，必须单独编码。漏编疝修补是高频错误。</p>
+        <p><strong>&#9989; 场景 C：</strong>不需要单独编码。因为 55.51（肾输尿管全长切除+膀胱袖口）的操作本身就包含了对膀胱输尿管口的观察和处理。常规手术中的伴随镜检属于省略编码的范围。但如果是<strong>术前独立进行的诊断性膀胱镜检</strong>（有单独的手术报告），则需要编 57.32。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">&#9989;</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>55-64 十类目从上到下：</strong>肾(55)→输尿管(56)→膀胱(57)→尿道(58)→泌尿杂项(59)→前列腺(60)→阴囊/鞘膜(61)→睾丸(62)→精索(63)→阴茎(64)</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肾切除术三级：</strong>部分(55.4)→全肾(55.5x)→肾输尿管全切(55.51)；肾癌根治≠55.51</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>泌尿系结石三要素：</strong>部位+入路(经皮/经尿道/开放)+是否碎石，决定编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>TURP 看能量源：</strong>电切(60.21) vs 激光(60.29)，入路都是经尿道，区分在工具</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>膀胱全切+改道=5码组合：</strong>57.71+56.51+45.51+45.91+40.59，少一个都不完整</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>尿流改道分两大类：</strong>56.51(不可控回肠膀胱) vs 57.87(可控膀胱/原位新膀胱)</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>双侧睾丸切除有独立码：</strong>62.41(双侧)≠62.3×2(单侧)，DRG权重完全不同</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>隐睾固定+疝修补=分开编：</strong>62.5+53.0x，两个独立手术必须分别编码</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>&#128198; 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 33 主题：女性生殖系统手术编码（65-71）——子宫肌瘤、异位妊娠</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>类目 68（子宫）中，子宫肌瘤剔除术(68.29)和全子宫切除术(68.4-68.7)的编码边界在哪里？</li>
+    <li>异位妊娠手术（输卵管妊娠）应编在哪个类目？输卵管切除术 vs 输卵管开窗术编码有何不同？</li>
+    <li>卵巢切除术(65.x)中，单侧 vs 双侧 vs 单侧+输卵管(附件切除)的编码有什么区别？</li>
+    <li>女性盆腔淋巴结清扫术(40.59)在哪些妇科肿瘤手术中需要作为附加码？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 32 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
