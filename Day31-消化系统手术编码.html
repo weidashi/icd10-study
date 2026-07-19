@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 31（2026年7月19日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .arrow-down { font-size: 18px; color: var(--accent); font-weight: 700; }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Decision Tree ===== */
+  .decision-tree { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin: 16px 0; font-size: 14px; box-shadow: var(--shadow); }
+  .decision-node { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+  .decision-node .diamond { width: 0; height: 0; border: 8px solid transparent; border-bottom-color: var(--accent); position: relative; flex-shrink: 0; }
+  .decision-node .label { background: var(--accent-bg); padding: 4px 12px; border-radius: 4px; font-weight: 600; font-size: 13px; }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 31 · 2026年7月19日</div>
+  <h1>🔪 病案编码学习</h1>
+  <p class="subtitle">今日主题：消化系统手术编码（42-54）— 从食管到肛门，一刀一码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:51.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 31 / 60 天（51.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员高频场景，考试必考）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>42-54 十三个类目的码位范围和手术类型归属</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>胃切除术（43.5-43.9）"部分"vs"全部"的编码区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>阑尾切除术（47.0/47.1）腹腔镜 vs 开放的编码差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>胆囊切除术（51.2）腹腔镜胆囊切除 51.23 的编码规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肠切除（45.6）→ 吻合术（45.9/46.9）还是造口术（46.1）的判断</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入机制，避免组合错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>腹腔镜中转开腹的编码规则（按最终术式编码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>食管切除术的入路分类（经胸/经腹/胸腹联合）对编码的影响</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>胰十二指肠切除术（Whipple）的多码组合逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>疝修补术（53）"单侧/双侧""直疝/斜疝/复发"的分类轴心</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>胃减容术（减肥手术）44.95/44.96 的术式差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>腹腔镜胆囊切除术的历史演进（51.23 vs 51.24）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>内镜下逆行胰胆管造影术 ERCP（51.10）的编码归属</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>消化系统手术是腹部外科最常见的编码场景。42-54 覆盖了 13 个类目，看似繁多，但核心记忆口诀是"上（42食管）→ 中（43-44胃、45-46肠、47阑尾）→ 下（48直肠、49肛门）→ 脏器（50肝、51胆、52胰）→ 壁（53疝、54腹部其他）"。在此基础上，每个类目重点掌握"切除 vs 修复 vs 造口"的区分。
+</div>
+
+<!-- ======== 一、42-54 全景速览 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、42-54 类目全景速览 —— 消化系统手术的"路线图"</h2>
+
+<p>ICD-9-CM-3 中，消化系统手术被编排在 42-54 类目，按<strong>解剖顺序从上到下</strong>排列。这是编码查找时最重要的"第一眼"——先确定手术发生在哪个解剖部位，再进入对应的类目查找术式。</p>
+
+<table>
+  <tr><th>类目</th><th>码位范围</th><th>解剖部位</th><th>核心术式</th><th>高频场景</th></tr>
+  <tr>
+    <td><strong>42</strong></td><td>42.0-42.9</td><td>食管</td><td>食管切除术、食管吻合术、食管造口术</td><td>食管癌根治术（42.4）、食管静脉曲张结扎（42.91）</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>43</strong></td><td>43.0-43.9</td><td>胃切开术和切除术</td><td>胃切开术、胃切除术（部分/全部）</td><td>胃癌根治术、胃大部切除术</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>44</strong></td><td>44.0-44.9</td><td>胃的其他手术</td><td>胃造口术、胃吻合术、幽门成形术</td><td>胃造口（PEG）、胃空肠吻合</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>45</strong></td><td>45.0-45.9</td><td>肠切开术、切除术和吻合术</td><td>肠切开术、小肠/大肠切除术、肠吻合术</td><td>右半结肠切除（45.7）、乙状结肠切除（45.7）</td>
+  </tr>
+  <tr>
+    <td><strong>46</strong></td><td>46.0-46.9</td><td>肠的其他手术</td><td>肠造口术、肠修补术、肠松解术</td><td>结肠造口（46.1）、肠粘连松解（54.5）</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>47</strong></td><td>47.0-47.2</td><td>阑尾</td><td>阑尾切除术、阑尾引流术</td><td>阑尾炎手术（腹腔镜 47.01 / 开放 47.09）</td>
+  </tr>
+  <tr>
+    <td><strong>48</strong></td><td>48.0-48.7</td><td>直肠、直肠乙状结肠</td><td>直肠切除术、直肠固定术</td><td>直肠癌 Miles 术（48.5）、Dixon 术（48.6）</td>
+  </tr>
+  <tr>
+    <td><strong>49</strong></td><td>49.0-49.9</td><td>肛门</td><td>肛门切除术、痔切除术、肛门括约肌切开术</td><td>痔切除术（49.46）、肛瘘手术（49.1）</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>50</strong></td><td>50.0-50.9</td><td>肝脏</td><td>肝叶切除术、肝部分切除术、肝移植</td><td>肝癌肝叶切除（50.3）、肝移植（50.5）</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>51</strong></td><td>51.0-51.9</td><td>胆囊和胆道</td><td>胆囊切除术、胆总管切开术、胆道吻合术</td><td>腹腔镜胆囊切除（51.23）、胆总管探查（51.41）</td>
+  </tr>
+  <tr>
+    <td><strong>52</strong></td><td>52.0-52.9</td><td>胰腺</td><td>胰切除术、胰十二指肠切除术</td><td>Whipple 术（52.7）、胰体尾切除（52.5）</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><strong>53</strong></td><td>53.0-53.9</td><td>疝</td><td>腹股沟疝修补术、股疝修补术、切口疝修补术</td><td>腹股沟疝无张力修补（53.0-53.1）</td>
+  </tr>
+  <tr>
+    <td><strong>54</strong></td><td>54.0-54.9</td><td>腹部其他手术</td><td>剖腹探查术、腹膜粘连松解术、腹腔引流术</td><td>剖腹探查（54.11）、腹腔引流（54.19）</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 编码查找的顺序法则：</strong>消化系统手术的主导词通常是<strong>术式名称</strong>（如"切除术""造口术""吻合术""修补术"），而不是疾病名称。例如：胃大部切除术 → 主导词查"切除术"→ 修饰词"胃""部分"→ 索引指向 43.5-43.8。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、食管手术 (42) ======== -->
+<h2><span class="icon">🔺</span> 二、食管手术编码（42）—— 入路决定码位</h2>
+
+<h3>2.1 食管手术的三大分类轴心</h3>
+<p>食管手术的编码核心在于<strong>三个问题的回答</strong>：<strong>切了多少？</strong>（内镜黏膜切除 vs 食管切除）、<strong>从哪切的？</strong>（经胸 / 经腹 / 胸腹联合）、<strong>怎么接回去？</strong>（吻合术 vs 造口术）。这三个维度交叉决定了最终的编码。</p>
+
+<table>
+  <tr><th>手术描述</th><th>编码</th><th>说明</th></tr>
+  <tr><td>食管内镜黏膜切除术（EMR/ESD）</td><td><code>42.33</code></td><td>内镜下，仅切除黏膜层，不入胸腹腔</td></tr>
+  <tr><td>食管部分切除术</td><td><code>42.41</code></td><td>切除一段食管，不指定入路</td></tr>
+  <tr><td>胸腹联合食管切除术</td><td><code>42.42</code></td><td>同时经胸和经腹切口（Ivor-Lewis 径路）</td></tr>
+  <tr><td>食管切除术 NOS</td><td><code>42.40</code></td><td>未指定入路和范围，尽量避免</td></tr>
+  <tr><td>食管-胃吻合术（胸内）</td><td><code>42.51</code></td><td>食管近端与胃吻合在胸腔内</td></tr>
+  <tr><td>食管-胃吻合术（胸骨前）</td><td><code>42.52</code></td><td>食管残端与胃经胸骨前皮下隧道吻合</td></tr>
+  <tr><td>食管-肠吻合术</td><td><code>42.53</code></td><td>食管与小肠/结肠吻合（结肠代食管术）</td></tr>
+  <tr><td>食管造口术</td><td><code>42.11</code></td><td>颈部食管造口，用于进食困难</td></tr>
+  <tr><td>食管静脉曲张结扎术</td><td><code>42.91</code></td><td>内镜下套扎食管曲张静脉</td></tr>
+  <tr><td>食管扩张术</td><td><code>42.92</code></td><td>良性狭窄的内镜下球囊/探条扩张</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键区别：食管切除术 + 重建术是两码分离</strong><br>
+  食管癌根治术通常包括两个核心步骤：<strong>① 食管切除</strong>（42.4x）+ <strong>② 消化道重建</strong>（42.5x / 42.6x）。这两个步骤<strong>必须分别编码</strong>，不能混为一谈。<br><br>
+  例：胸内食管胃吻合术的 Ivor-Lewis 手术 → <code>42.42</code>（胸腹联合食管切除）+ <code>42.51</code>（胸内食管胃吻合）+ <code>42.62</code>（胸骨后食管胃吻合，如为颈部切口）
+</div>
+
+<h3>2.2 食管癌手术的经典编码组合</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>Ivor-Lewis 食管癌根治术</h4>
+    <p>经右胸+上腹两切口，切除胸段食管，行胸内食管胃吻合</p>
+    <p><strong>编码：</strong><code>42.42</code> + <code>42.51</code></p>
+    <p>（胸腹联合食管切除 + 胸内食管胃吻合）</p>
+  </div>
+  <div class="example-item">
+    <h4>McKeown 三切口食管癌根治术</h4>
+    <p>右胸+腹部+左颈部三切口，颈部食管胃吻合</p>
+    <p><strong>编码：</strong><code>42.42</code> + <code>42.62</code></p>
+    <p>（胸腹联合切除 + 胸骨前/颈部食管胃吻合）</p>
+  </div>
+  <div class="example-item">
+    <h4>结肠代食管术</h4>
+    <p>食管切除后用结肠代替食管进行消化道重建</p>
+    <p><strong>编码：</strong><code>42.41</code> + <code>42.53</code> + <code>45.52</code></p>
+    <p>（食管部分切除 + 食管肠吻合 + 结肠段间置）</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、胃手术 (43-44) ======== -->
+<h2><span class="icon">🫗</span> 三、胃手术编码（43-44）—— "切了多少"是核心问题</h2>
+
+<h3>3.1 胃切除术（43.5-43.9）的切除范围分级</h3>
+<p>胃手术编码的第一决定因素是<strong>切除范围</strong>——部分切除还是全部切除？部分切除中，是近端、远端还是袖状？这一维度的判断错误直接导致入错码。</p>
+
+<table>
+  <tr><th>术式</th><th>编码</th><th>切除范围</th><th>典型场景</th></tr>
+  <tr>
+    <td>近端胃部分切除术</td><td><code>43.5</code></td><td>切除贲门+胃底，保留幽门侧</td><td>贲门癌、胃底肿瘤</td>
+  </tr>
+  <tr>
+    <td>远端胃部分切除术</td><td><code>43.6</code></td><td>切除幽门+胃窦，保留贲门侧</td><td>胃窦癌（毕 I、毕 II 式）</td>
+  </tr>
+  <tr>
+    <td>胃袖状切除术（Sleeve）</td><td><code>43.89</code></td><td>沿胃大弯纵向切除 70-80% 胃体</td><td>减重手术</td>
+  </tr>
+  <tr>
+    <td>胃部分切除术 NOS</td><td><code>43.7</code></td><td>未明确近端/远端/袖状</td><td>尽量避免使用</td>
+  </tr>
+  <tr>
+    <td>全胃切除术</td><td><code>43.91</code></td><td>食管空肠吻合（Roux-en-Y 重建）</td><td>全胃癌、皮革胃</td>
+  </tr>
+  <tr>
+    <td>根治性胃切除术（未特指）</td><td><code>43.99</code></td><td>——</td><td>仅当无法确定切除范围时用</td>
+  </tr>
+</table>
+
+<h3>3.2 胃癌根治术的编码拆解</h3>
+<p>胃癌根治术 = <strong>胃切除（43.5-43.9）+ 淋巴结清扫（40.5x）+ 消化道重建（44.3x / 45.91）</strong>。三个要素缺一不可。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>胃切除（核心码）</h4>
+      <p>远端 → 43.6；近端 → 43.5；全胃 → 43.91</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>淋巴结清扫（附加码）</h4>
+      <p>区域淋巴结清扫 → 40.59（D1/D2 根治术）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>消化道重建（附加码）</h4>
+      <p>毕 I 式：胃十二指肠吻合 → 44.31<br>毕 II 式：胃空肠吻合 → 44.32<br>全胃 Roux-en-Y：食管空肠吻合 → 42.53</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见错误：把"根治性远端胃大部切除术"简化成 43.99</strong><br>
+  <span style="color:var(--red);">❌</span> 43.99 是"胃的其他切除术，未特指"——只能在没有更具体编码时使用<br>
+  <span style="color:var(--green);">✅</span> 正确做法：43.6（远端胃部分切除）+ 40.59（区域淋巴结清扫）+ 44.31（毕 I 式吻合）/ 44.32（毕 II 式吻合）
+</div>
+
+<h3>3.3 胃造口术（44.1）的分类</h3>
+
+<table>
+  <tr><th>编码</th><th>术式</th><th>说明</th></tr>
+  <tr><td><code>43.11</code></td><td>经皮内镜胃造口术（PEG）</td><td>内镜下经腹壁穿刺置管，最常用</td></tr>
+  <tr><td><code>43.19</code></td><td>其他胃造口术</td><td>开放手术、腹腔镜下胃造口</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四、肠手术 (45-46) ======== -->
+<h2><span class="icon">🌀</span> 四、肠手术编码（45-46）—— 切除后"接"还是"造"？</h2>
+
+<h3>4.1 肠切除术（45.0-45.8）+ 修复术（46.7, 46.8）</h3>
+<p>肠手术编码的关键决策逻辑在于：<strong>切除肠段后如何重建肠道连续性？</strong>这是最容易被忽视的编码环节。</p>
+
+<div class="flow-chart">
+  <p style="font-weight:700;margin-bottom:12px;font-size:15px;">肠切除术后编码决策树</p>
+  <div class="flow-row">
+    <div class="flow-box">肠段被切除（45.6/45.7）</div>
+  </div>
+  <div class="arrow-down">↓</div>
+  <div class="flow-row">
+    <div class="flow-box">是否一期吻合？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:var(--green);background:var(--green-bg);">✅ 端端/端侧/侧侧吻合<br>加编 45.9（肠吻合术）</div>
+    <div class="flow-box warn-step">❌ 造口术/Hartmann<br>加编 46.1（结肠造口）</div>
+  </div>
+  <div class="arrow-down">↓</div>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:var(--purple);background:#f5f3ff;">肠切除编码完整 = 45.6/45.7 + 45.9（吻合）/ 46.1（造口）</div>
+  </div>
+</div>
+
+<h3>4.2 肠手术类目速查表</h3>
+
+<table>
+  <tr><th>手术类别</th><th>编码</th><th>核心说明</th></tr>
+  <tr><td>小肠切开术</td><td><code>45.0</code></td><td>十二指肠切开取石、小肠切开减压</td></tr>
+  <tr><td>内镜小肠手术</td><td><code>45.1</code></td><td>胶囊内镜不算手术，仅用内镜治疗</td></tr>
+  <tr><td>小肠部分切除术</td><td><code>45.6</code></td><td>包括十二指肠、空肠、回肠的节段切除</td></tr>
+  <tr><td>大肠部分切除术</td><td><code>45.7</code></td><td>右半/横/左半/乙状结肠切除均归此类目</td></tr>
+  <tr><td>全结肠切除术</td><td><code>45.8</code></td><td>整个结肠切除，可保留直肠（回肠直肠吻合）或不保留（回肠造口）</td></tr>
+  <tr><td>肠吻合术（小肠-小肠）</td><td><code>45.91</code></td><td>小肠对端吻合，恢复连续性</td></tr>
+  <tr><td>肠吻合术（小肠-直肠）</td><td><code>45.92</code></td><td>全结肠切除后，回肠与直肠吻合（IPAA/J-pouch）</td></tr>
+  <tr><td>肠吻合术（大肠-大肠）</td><td><code>45.94</code></td><td>结肠-结肠吻合</td></tr>
+  <tr><td>结肠造口术</td><td><code>46.1</code></td><td>末端（46.11）/襻式（46.12）/暂时性造口</td></tr>
+  <tr><td>小肠造口术</td><td><code>46.2</code></td><td>回肠造口（46.20/46.22）</td></tr>
+  <tr><td>肠造口闭合术</td><td><code>46.5</code></td><td>造口还纳，恢复肠道连续性</td></tr>
+</table>
+
+<h3>4.3 右半结肠切除术的编码拆解</h3>
+<p>右半结肠癌根治术是消化外科最常见的手术之一，编码时必须区分：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>只编一个码 <code>45.73</code>（右半结肠切除术），忽略吻合术</p>
+    <p>→ 遗漏了回结肠吻合术（<code>45.93</code>），手术步骤不完整</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p><code>45.73</code>（右半结肠切除）+ <code>45.93</code>（小肠大肠吻合术—回结肠吻合）</p>
+    <p>→ 两个编码完整反映"切+接"的手术过程</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、阑尾+直肠肛门手术 (47-49) ======== -->
+<h2><span class="icon">📌</span> 五、阑尾手术（47）+ 直肠肛门手术（48-49）—— 镜头下的区别</h2>
+
+<h3>5.1 阑尾切除术（47.0）—— 腹腔镜 vs 开放</h3>
+<p>阑尾炎手术是最常见的外科急症手术。ICD-9-CM-3 将阑尾切除术明确区分为<strong>腹腔镜</strong>和<strong>开放</strong>两个独立亚目，区别仅仅在于入路——无论阑尾是否穿孔、单纯性还是化脓性，都不影响编码，<strong>入路决定码位</strong>。</p>
+
+<table>
+  <tr><th>编码</th><th>术式</th><th>说明</th></tr>
+  <tr><td><code>47.01</code></td><td>腹腔镜阑尾切除术</td><td>打孔器操作，3个小切口，最常用</td></tr>
+  <tr><td><code>47.09</code></td><td>其他阑尾切除术（开放）</td><td>右下腹 McBurney 切口或剖腹探查切口</td></tr>
+  <tr><td><code>47.11</code></td><td>腹腔镜附带阑尾切除术</td><td>做其他腹腔镜手术时顺便切掉阑尾</td></tr>
+  <tr><td><code>47.19</code></td><td>其他附带阑尾切除术</td><td>做其他开腹手术时顺便切掉阑尾</td></tr>
+  <tr><td><code>47.2</code></td><td>阑尾脓肿引流术</td><td>阑尾周围脓肿，只引流不切除阑尾</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 中转开腹的阑尾切除术编码：</strong>如果手术记录写着"腹腔镜探查 + 中转开腹阑尾切除术"，意思是<strong>最终术式是开放的</strong>——此时应编 <code>47.09</code>，而非 47.01。中转开腹的判断标准不是"一开始用了腹腔镜镜头"，而是<strong>"阑尾最终是用什么方式切除的"</strong>。
+</div>
+
+<h3>5.2 直肠切除术（48）—— Miles vs Dixon 的根本区别</h3>
+<p>直肠癌手术的两大经典术式编码差异，本质在于"是否保留肛门"：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>Miles 术（腹会阴联合直肠切除术）</h4>
+    <p><strong>编码：<code>48.5</code></strong></p>
+    <p>切除全部直肠 + 肛门，永久性结肠造口（46.1）</p>
+    <p><strong>关键：肛管一并切除，不保留肛门</strong> → 必须同时编码结肠造口术</p>
+  </div>
+  <div class="example-item">
+    <h4>Dixon 术（直肠前切除术、低位前切除LAR）</h4>
+    <p><strong>编码：<code>48.62</code> 或 <code>48.63</code></strong></p>
+    <p>切除部分直肠 + 乙状结肠，保留肛门，行结肠-直肠/肛管吻合</p>
+    <p><strong>关键：肛门保留</strong> → 不需造口（除非做预防性回肠造口）</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六、肝胆胰手术 (50-52) ======== -->
+<h2><span class="icon">🫁</span> 六、肝胆胰手术（50-52）—— 胆囊切除 + 胰腺的复合手术</h2>
+
+<h3>6.1 胆囊切除术（51.2）—— 最高频的普外手术编码</h3>
+<p>胆囊切除术是编码员最常遇到的手术之一。关键在于区分传统开放和腹腔镜，以及是否同时做了胆总管探查。</p>
+
+<table>
+  <tr><th>编码</th><th>术式</th><th>说明</th></tr>
+  <tr><td><code>51.21</code></td><td>其他部分胆囊切除术</td><td>胆囊次全切除，保留部分胆囊壁</td></tr>
+  <tr><td><code>51.22</code></td><td>胆囊切除术（开放）</td><td>传统开腹胆囊切除</td></tr>
+  <tr><td><code>51.23</code></td><td>腹腔镜胆囊切除术（LC）</td><td>金标准术式，4孔操作</td></tr>
+  <tr><td><code>51.24</code></td><td>腹腔镜胆囊部分切除术</td><td>LC术中因粘连/炎症只做次全切除</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 核心陷阱：胆囊切除 + 胆总管探查 ≠ 分离编码</strong><br>
+  如果手术记录为"腹腔镜胆囊切除 + 胆总管探查取石"，编码应为：<br>
+  <code>51.23</code>（腹腔镜胆囊切除）+ <code>51.41</code>（胆总管探查术，用于取石）+ <code>51.88</code>（内镜下胆总管结石取出术或经内镜括约肌切开取石术）<br>
+  注意：<strong>不能把胆总管切开取石和胆囊切除合并为一个编码</strong>——它们是独立的手术步骤。
+</div>
+
+<h3>6.2 肝脏手术（50）的分类</h3>
+
+<table>
+  <tr><th>编码</th><th>术式</th><th>说明</th></tr>
+  <tr><td><code>50.22</code></td><td>部分肝切除术</td><td>楔形切除、肝段切除（非解剖性）</td></tr>
+  <tr><td><code>50.3</code></td><td>肝叶切除术</td><td>右半肝、左半肝、右三叶等解剖性切除</td></tr>
+  <tr><td><code>50.0</code></td><td>肝活组织检查（经皮）</td><td>穿刺活检</td></tr>
+  <tr><td><code>50.5</code></td><td>肝移植术</td><td>原位肝移植（OLT）</td></tr>
+  <tr><td><code>50.61</code></td><td>肝破裂缝合术</td><td>外伤性肝破裂修补</td></tr>
+</table>
+
+<h3>6.3 胰腺手术（52）—— Whipple 术的编码组合</h3>
+<p>胰十二指肠切除术（Whipple / PPPD）是腹部外科最复杂的手术，涉及<strong>多个脏器的切除和重建</strong>。编码时必须分别列出每个手术步骤。</p>
+
+<pre>Whipple 术（标准胰十二指肠切除术）的完整编码：
+
+52.7    胰十二指肠切除术（核心术式）
+51.22   胆囊切除术（如同时切除）
+45.6-   十二指肠/空肠部分切除（已包含在52.7中，但详细可追加）
+45.91   胰空肠吻合术（胰腺残端与空肠吻合）
+51.37   胆管空肠吻合术（胆管残端与空肠吻合）
+44.32   胃空肠吻合术（胃残端与空肠吻合，消化道重建）</pre>
+
+<div class="note">
+  <strong>💡 Whipple 术编码提示：</strong>52.7 是胰十二指肠切除术的专用编码，已经暗含了十二指肠和部分空肠的切除。但消化道重建的各吻合口（胰肠、胆肠、胃肠）需要<strong>加编对应的吻合术编码</strong>。这是查码时最容易遗漏的部分。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 七、疝修补术 (53) ======== -->
+<h2><span class="icon">🩹</span> 七、疝修补术编码（53）—— 三维分类体系</h2>
+
+<h3>7.1 疝修补术的三大分类维度</h3>
+<p>疝修补术（53）是 ICD-9-CM-3 中分类最精细的类目之一。编码时必须同时回答三个问题：<strong>什么部位？</strong>（腹股沟 / 股 / 脐 / 切口 / 其他）<strong>单侧还是双侧？</strong><strong>直疝、斜疝还是复发疝？</strong></p>
+
+<table>
+  <tr><th>疝类型</th><th>单侧编码</th><th>双侧编码</th><th>关键判别</th></tr>
+  <tr>
+    <td>腹股沟斜疝（初次）</td><td><code>53.00</code></td><td><code>53.10</code></td><td>最常见；疝囊经腹股沟管内环突出</td>
+  </tr>
+  <tr>
+    <td>腹股沟直疝（初次）</td><td><code>53.01</code></td><td><code>53.11</code></td><td>疝囊经 Hesselbach 三角突出</td>
+  </tr>
+  <tr>
+    <td>腹股沟疝（未特指直/斜）</td><td><code>53.02</code></td><td><code>53.12</code></td><td>手术记录未区分</td>
+  </tr>
+  <tr>
+    <td>腹股沟复发疝</td><td><code>53.03</code></td><td><code>53.13</code></td><td>既往有同侧腹股沟疝修补史</td>
+  </tr>
+  <tr>
+    <td>股疝</td><td><code>53.21</code></td><td><code>53.22</code></td><td>经股管突出，女性多见</td>
+  </tr>
+  <tr>
+    <td>脐疝</td><td><code>53.41</code></td><td>——</td><td>脐部疝出</td>
+  </tr>
+  <tr>
+    <td>切口疝（腹壁疝）</td><td><code>53.51</code>/<code>53.59</code></td><td>——</td><td>术后切口处疝出</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 补片（Mesh）编码：</strong>使用合成补片修补疝时，<strong>不需要额外编码补片植入</strong>——疝修补术编码已经涵盖了补片的使用。但如果是生物补片或特殊的材料，需查阅 ICD-9-CM-3 类目表确认是否有附加编码要求。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 重难点解析 ======== -->
+<h2><span class="icon">💡</span> 八、重难点深度解析：腹腔镜 vs 开放 —— "中转开腹"的编码陷阱</h2>
+
+<h3>8.1 问题的本质</h3>
+<p>消化系统手术中，腹腔镜手术已经成为主流（如 LC 胆囊切除、腹腔镜阑尾切除、腹腔镜结直肠切除等）。但是当手术记录写着"腹腔镜探查，中转开腹X切除术"时，编码员常常犯一个致命的错误：<strong>把腹腔镜探查当作手术的一部分编码进去</strong>，或者<strong>犹豫不知道该编腹腔镜码还是开放码</strong>。</p>
+
+<h3>8.2 ICD-9-CM-3 的核心规则</h3>
+
+<div class="card">
+  <p><strong>中转开腹的编码铁律：</strong></p>
+  <p style="font-size:16px;text-align:center;margin:12px 0;color:var(--accent);font-weight:700;">
+    手术编码以<strong>最终完成的术式</strong>为准，不以<strong>初始意图或中途操作</strong>为准。
+  </p>
+  <p>换句话说：<strong>腹腔镜探查没有完成手术目标（切除、吻合等），只是"看了但没做"</strong>。真正完成手术的是开放入路——所以编码也应该是开放术式。</p>
+</div>
+
+<h3>8.3 转化规则——三步骤判断</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>看最终切了什么</h4>
+      <p>阑尾是在腹腔镜下切除的？→ 47.01。阑尾是转开腹后切除的？→ 47.09。<br><strong>不问"一开始用了腹腔镜看"，只问"最终是怎么切的"。</strong></p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>看"腹腔镜探查"是否单独编码</h4>
+      <p>腹腔镜探查本身如果仅仅是为了"看"（诊断性腹腔镜检查），而不进行任何治疗性操作，那么编码应为 <code>54.21</code>（腹腔镜检查）。<strong>但如果探查之后紧接着做了开放手术，不应单独编码 54.21</strong>——它只是"中转"过程的一部分。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>看有无"腹腔镜下操作"作为独立步骤</h4>
+      <p>如果腹腔镜下完成了一些操作（如分离粘连），然后因为安全原因转开腹完成切除——此时腹腔镜下分离粘连可加编 <code>54.51</code>（腹腔镜下腹膜粘连松解术），而切除部分用开放码。</p>
+    </div>
+  </div>
+</div>
+
+<h3>8.4 典型错误案例对比</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误编码</h4>
+    <p><strong>场景：</strong>腹腔镜探查 + 中转开腹胆囊切除术</p>
+    <p>编码：<code>51.23</code>（腹腔镜胆囊切除术）</p>
+    <p><strong>错误原因：</strong>胆囊不是在腹腔镜下切的——腹腔镜只是"看"了一下。编 51.23 是编了"没做的事情"。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p><strong>场景：</strong>腹腔镜探查 + 中转开腹胆囊切除术</p>
+    <p>编码：<code>51.22</code>（开放胆囊切除术）</p>
+    <p><strong>依据：</strong>最终术式是开放的，腹腔镜探查不单独编码（因为是中转过程的一部分，非独立诊断/治疗性操作）。</p>
+  </div>
+</div>
+
+<div class="compare-row" style="margin-top:16px;">
+  <div class="compare-col bad">
+    <h4>❌ 错误编码</h4>
+    <p><strong>场景：</strong>腹腔镜阑尾切除，术中因粘连分离困难，中转开腹阑尾切除</p>
+    <p>编码：<code>47.01</code>（腹腔镜阑尾切除）</p>
+    <p><strong>错误原因：</strong>腹腔镜下没有完成阑尾切除——最终是开放的。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p><strong>场景：同上</strong></p>
+    <p>编码：<code>47.09</code>（开放阑尾切除）+ <code>54.51</code>（腹腔镜下腹膜粘连松解术，如粘连松解主要发生在腹腔镜阶段）</p>
+    <p><strong>依据：</strong>切除用开放码，粘连松解如为腹腔镜下完成的操作可附加编码。</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">✏️</span> 九、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 类目归属判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请将以下手术归入正确的 ICD-9-CM-3 类目（只需给出类目码 42-54）：</p>
+    <ol>
+      <li>腹腔镜胆囊切除术</li>
+      <li>右半结肠切除术 + 回结肠吻合术</li>
+      <li>腹股沟斜疝无张力修补术（单侧，初次）</li>
+      <li>Miles 术（腹会阴联合直肠切除术）</li>
+      <li>全胃切除术 + Roux-en-Y 重建</li>
+      <li>肝左叶切除术</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 51（胆囊和胆道手术——腹腔镜胆囊切除 → <code>51.23</code>）</p>
+        <p><strong>2.</strong> 45（肠切除术——右半结肠切除 → <code>45.73</code> + 回结肠吻合 → <code>45.93</code>）</p>
+        <p><strong>3.</strong> 53（疝修补术——腹股沟斜疝单侧初次 → <code>53.00</code>）</p>
+        <p><strong>4.</strong> 48（直肠手术——腹会阴联合直肠切除 → <code>48.5</code>）+ 46.1（结肠造口）</p>
+        <p><strong>5.</strong> 43（胃切除术——全胃切除 → <code>43.91</code>）+ 42.53（食管空肠吻合）</p>
+        <p><strong>6.</strong> 50（肝叶切除术 → <code>50.3</code>）</p>
+        <p><strong>💡 核心技巧：</strong>先定位解剖部位 → 再找术式。消化系统手术的类目编号本身就是按解剖顺序排列的。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 胃切除范围判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>阅读以下手术记录片段，给出胃切除术的编码：</p>
+    <table>
+      <tr><th>场景</th><th>手术记录摘要</th><th>你的编码</th></tr>
+      <tr><td>A</td><td>"行远端胃大部切除术（毕 II 式），切除胃远端约 70%，残胃与空肠行侧侧吻合"</td><td>？</td></tr>
+      <tr><td>B</td><td>"行全胃切除术，食管残端与空肠行 Roux-en-Y 吻合"</td><td>？</td></tr>
+      <tr><td>C</td><td>"行近端胃次全切除术，保留幽门，食管残端与残胃吻合"</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 推理过程：</strong></p>
+        <p><strong>A → <code>43.6</code></strong>（远端胃部分切除术）：切除的是远端（幽门侧），属于远端胃切除。<br>附加编码：<code>44.32</code>（胃空肠吻合术—毕 II 式重建）。</p>
+        <p><strong>B → <code>43.91</code></strong>（全胃切除术）：整个胃被切除。<br>附加编码：<code>42.53</code>（食管空肠吻合术—Roux-en-Y 重建）。</p>
+        <p><strong>C → <code>43.5</code></strong>（近端胃部分切除术）：切除的是近端（贲门侧），保留幽门和部分胃。<br>附加编码：<code>42.51</code>（食管胃吻合术—胸内）或 <code>44.39</code>（食管残胃吻合，视吻合位置）。</p>
+        <p><strong>💡 口诀：</strong>近端→43.5，远端→43.6，全胃→43.91，不明确→43.7。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 阑尾切除入路判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者诊断为"急性化脓性阑尾炎"。手术记录描述如下：</p>
+    <p><em>① "全麻下行腹腔镜阑尾切除术，术中见阑尾肿胀、充血，根部完好，顺利切除阑尾"</em></p>
+    <p><em>② "全麻下行腹腔镜探查，术中见阑尾周围广泛粘连，分离困难，遂中转开腹，经右下腹 McBurney 切口行阑尾切除术"</em></p>
+    <p><em>③ "全麻下行剖腹探查，经右下腹切口切除阑尾，术中发现阑尾已穿孔，腹腔引流出脓液约 200ml"</em></p>
+    <p><strong>问题：</strong>三个场景的阑尾切除术编码分别是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 推理过程：</strong></p>
+        <p><strong>① → <code>47.01</code></strong>（腹腔镜阑尾切除术）：全程在腹腔镜下完成切除。腹腔镜入路。</p>
+        <p><strong>② → <code>47.09</code></strong>（开放阑尾切除术）：关键是"中转开腹……行阑尾切除术"——阑尾最终是通过 McBurney 切口<strong>开放切除的</strong>。腹腔镜只做了探查，没有完成切除。<br>可能附加：<code>54.51</code>（腹腔镜下腹膜粘连松解术，如腹腔镜阶段做了粘连分离）。</p>
+        <p><strong>③ → <code>47.09</code></strong>（开放阑尾切除术）+ <code>54.19</code>（腹腔引流术）：剖腹探查切口=开放入路。腹腔引流为独立步骤需额外编码。</p>
+        <p><strong>💡 核心教训：</strong>"腹腔镜"这个前缀不等于编码一定是腹腔镜编码。判断标准是<strong>最终完成的术式入路</strong>。中转开腹→开放码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 结直肠癌手术全套编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者诊断为"直肠癌（距肛缘 5cm）"，手术记录：</p>
+    <p><em>"全麻下行腹会阴联合直肠癌根治术（Miles 术），切除全部直肠、肛管及部分乙状结肠，清扫肠系膜下动脉根部淋巴结。左下腹行永久性乙状结肠单腔造口。手术顺利。"</em></p>
+    <p><strong>问题：</strong>请给出完整的 ICD-9-CM-3 手术编码列表，并说明每个编码对应的手术步骤。注意 Miles 术和 Dixon 术的根本区别。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>① <code>48.5</code>（腹会阴联合直肠切除术 / Miles 术）——核心术式，包括切除直肠+肛管</p>
+        <p>② <code>46.11</code>（永久性结肠造口术，末端造口）——乙状结肠单腔造口</p>
+        <p>③ <code>40.59</code>（区域淋巴结清扫术）——肠系膜下动脉根部淋巴结清扫</p>
+        <p><strong>Miles vs Dixon 根本区别：</strong></p>
+        <table>
+          <tr><th>特征</th><th>Miles（48.5）</th><th>Dixon（48.62/48.63）</th></tr>
+          <tr><td>肛门</td><td>切除，不保留</td><td>保留</td></tr>
+          <tr><td>造口</td><td>永久性结肠造口（46.1）</td><td>一般不需要（可能做预防性回肠造口）</td></tr>
+          <tr><td>适应证</td><td>距肛缘 &lt;5cm 的低位直肠癌</td><td>距肛缘 5-15cm 的中高位直肠癌</td></tr>
+          <tr><td>吻合</td><td>不做吻合（造口）</td><td>结肠-直肠/肛管吻合（45.94）</td></tr>
+        </table>
+        <p><strong>💡 本题反映了临床手术的核心逻辑：</strong>Miles 术 = 切除直肠+肛门（48.5）+ 永久造口（46.1）。编码必须完整反映这两个独立步骤。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · Whipple 术六码组合</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"胰头癌"行胰十二指肠切除术（Whipple 术）。手术记录描述：</p>
+    <p><em>"切除胰头、十二指肠、远端胃（约40%）、胆囊、胆总管下段。消化道重建：胰腺残端与空肠行端侧吻合（胰肠吻合）、胆总管残端与空肠行端侧吻合（胆肠吻合）、残胃与空肠行端侧吻合（胃肠吻合）——形成 Child 消化道重建序列。"</em></p>
+    <p><strong>问题：</strong>该 Whipple 术需要编几个码？分别是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码（至少 6 个码）：</strong></p>
+        <p>① <code>52.7</code>（胰十二指肠切除术）——核心术式，包括切除胰头和十二指肠</p>
+        <p>② <code>43.6</code>（远端胃部分切除术）——切除远端胃约 40%</p>
+        <p>③ <code>51.22</code>（胆囊切除术）——开放入路切除胆囊</p>
+        <p>④ <code>52.96</code>（胰空肠吻合术）——胰腺残端与空肠端侧吻合</p>
+        <p>⑤ <code>51.37</code>（胆管空肠吻合术）——胆总管残端与空肠吻合</p>
+        <p>⑥ <code>44.32</code>（胃空肠吻合术）——残胃与空肠吻合（毕 II 式重建）</p>
+        <p><strong>💡 Whipple 术编码口诀："胰头十二指肠→52.7，胃切→43.6，胆切→51.22，三口吻合→胰52.96+胆51.37+胃44.32"</strong></p>
+        <p><strong>常见遗漏：</strong>只编了 52.7，忘记了胆囊切除和三个吻合口的重建编码——这是 Whipple 术编码的最高频错误。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 疝修补术双侧判断 + 胆囊中转开腹</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>请分别为以下两个独立病例给出手术编码：</p>
+    <p><strong>病例A：</strong>患者行"全麻下双侧腹股沟疝无张力修补术"。术中明确记录：右侧为腹股沟斜疝（初次），左侧为腹股沟直疝（初次），均使用补片。</p>
+    <p><strong>病例B：</strong>患者行"腹腔镜胆囊切除术"，术中因 Calot 三角严重粘连无法安全分离，中转开腹行胆囊切除术+胆总管探查取石。记录显示：胆囊经开放入路完整切除，胆总管切开取出 2 枚结石，T 管引流。</p>
+    <p><strong>问题：</strong>分别给出两个病例的完整编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 病例A（双侧腹股沟疝修补）：</strong></p>
+        <p>ICD-9-CM-3 规定双侧疝修补使用专门的<strong>双侧编码</strong>，不能分开编两个单侧码。</p>
+        <p>① <code>53.10</code>（双侧腹股沟疝修补术，一侧斜疝初次）——右侧斜疝初次</p>
+        <p>② <code>53.11</code>（双侧腹股沟疝修补术，一侧直疝初次）——左侧直疝初次</p>
+        <p>但是，当双侧疝类型不同时（一侧斜疝+一侧直疝），按"更具体"原则，每侧都应归类：</p>
+        <p><strong>实际编码实践中</strong>，如果 ICD-9-CM-3 的双侧编码不能同时反映两侧不同类型，编码方可以分侧编码——<code>53.00</code>（右侧斜疝）+ <code>53.01</code>（左侧直疝）。</p>
+        <p>更稳妥的做法是核对所在版本类目表 53.1 的"包括"注释。如果双侧编码仅支持同类型双侧，则使用组合：<code>53.12</code>（双侧腹股沟疝未特指直/斜，作为妥协方案）。<strong>关键原则：优先使用双侧编码，只有当双侧编码无法准确描述时才考虑分侧编码。</strong></p>
+        <p><strong>✅ 病例B（中转开腹胆囊切除+胆总管探查）：</strong></p>
+        <p>① <code>51.22</code>（开放胆囊切除术）——最终是开放的，不是腹腔镜。按前文规则，中转开腹→开放码。</p>
+        <p>② <code>51.41</code>（胆总管探查术，用于取石）——切开胆总管取石</p>
+        <p>③ <code>51.88</code>（内镜下胆总管结石取出术——如胆道镜辅助取石）</p>
+        <p><strong>💡 本题综合考核两个高频陷阱：</strong>（1）疝修补的双侧编码有专门的分类轴心，不能图方便就编两个单侧码；（2）中转开腹的胆囊切除必须以最终入路为准，腹腔镜探查阶段不单独编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 重点回顾 ======== -->
+<h2><span class="icon">✅</span> 十、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>42-54 十三个类目：</strong>按解剖顺序从上到下排列——食管→胃→肠→阑尾→直肠肛门→肝→胆→胰→疝→腹部其他</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>胃切除（43.5-43.9）：</strong>核心判断是切除范围——近端43.5 / 远端43.6 / 全胃43.91 / 不明确43.7</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肠切除后必须判断"接还是造"：</strong>一期吻合→加编 45.9；造口术→加编 46.1/46.2</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>阑尾切除（47.0）：</strong>入路决定码位——腹腔镜 47.01 / 开放 47.09。中转开腹→编开放码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>中转开腹铁律：</strong>最终术式入路决定编码。腹腔镜探查非独立治疗性操作不单独编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>胆囊切除（51.2）：</strong>腹腔镜 51.23 / 开放 51.22。如加胆总管探查→ 51.41 独立编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Whipple 术（52.7）≠ 一个编码：</strong>需加胃切43.6+胆切51.22+三口吻合52.96/51.37/44.32</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>疝修补（53）双侧有专用码：</strong>优先使用双侧编码，不能随便用两个单侧码代替</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 32 主题：泌尿系统与男性生殖手术编码（55-64）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>肾切除术（55.5）中"根治性肾切除"和"单纯肾切除"的编码区别是什么？</li>
+    <li>经尿道前列腺电切术（TURP）编码是多少？绿激光和钬激光的编码一样吗？</li>
+    <li>膀胱全切 + 回肠代膀胱术（Bricker 术）需要编几个码？</li>
+    <li>睾丸固定术和睾丸切除术分别归入哪个类目？</li>
+    <li>输尿管镜碎石术（URS）和经皮肾镜碎石术（PCNL）的编码逻辑有何不同？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 31 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
