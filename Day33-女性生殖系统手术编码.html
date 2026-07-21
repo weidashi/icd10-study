@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 33（2026年7月21日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #db2777; --accent-bg: #fdf2f8; --accent-light: #fce7f3;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #db2777 0%, #ec4899 50%, #f472b6 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #fbcfe8; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #f9a8d4; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #f9a8d4; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #fce7f3 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 33 · 2026年7月21日</div>
+  <h1>女性生殖系统手术编码</h1>
+  <p class="subtitle">ICD-9-CM-3 类目 65-71 —— 卵巢·输卵管·子宫·宫颈·阴道·外阴</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:55%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 33 / 60 天（55%） · 第三阶段：手术操作编码</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试+编码高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>子宫切除术范围分级（次全 68.3 / 全切 68.4 / 广泛 68.6）及入路区分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>子宫肌瘤剔除术 68.29 vs 子宫次全切 68.3 的本质区别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>异位妊娠输卵管切除术 66.62 与输卵管开窗术 66.01 的选择</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>65/66 类目中"残留/孤立"卵巢或输卵管的双侧编码规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>65-71 七个类目的码位范围和手术归属</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（边界判断避免错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>腹腔镜与开腹手术的编码映射规则（54.21/54.4 附加码 vs 独立码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>宫颈锥切术 67.2x 各亚目的区别（冷刀/LEEP/激光）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>双侧输卵管结扎 66.2x vs 66.3x — 入路不同，编码不同</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>剖宫产同时切除子宫肌瘤的手术编码逻辑</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>阴道成形术（70.6x）和膀胱膨出修补术（70.50-70.51）的编码归属</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>外阴手术 71 类目的细分场景（前庭大腺、阴蒂、会阴切开缝合）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>卵巢移位术（65.7x）的保生育功能编码</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>65-71 覆盖女性盆腔绝大部分手术，其中子宫切除（68.3-68.7）和附件手术（65-66）是绝对高频考点。重点关注"子宫肌瘤剔除 vs 子宫切除"这一最常见的编码分歧。
+</div>
+
+<!-- ======== 一：65-71 全景速查 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、65-71 七类目全景速查</h2>
+
+<p>ICD-9-CM-3 第十一章"产科操作"实际包含两类：分娩相关操作（72-75）和<strong>女性生殖系统非产科手术（65-71）</strong>。今天集中学习后者——这是妇科编码员的日常工作核心。</p>
+
+<table>
+  <tr><th>类目</th><th>器官/主题</th><th>核心手术</th><th>关键编码</th></tr>
+  <tr>
+    <td><code>65</code></td>
+    <td><strong>卵巢</strong></td>
+    <td>卵巢切除术、卵巢囊肿剔除术、卵巢活检、输卵管卵巢切除术（联合切除）</td>
+    <td>65.0-65.9</td>
+  </tr>
+  <tr>
+    <td><code>66</code></td>
+    <td><strong>输卵管</strong></td>
+    <td>输卵管切除术、输卵管造口/吻合术、输卵管结扎术、输卵管通液术</td>
+    <td>66.0-66.9</td>
+  </tr>
+  <tr>
+    <td><code>67</code></td>
+    <td><strong>宫颈</strong></td>
+    <td>宫颈锥切术（冷刀/LEEP/激光）、宫颈环扎术、宫颈息肉切除术</td>
+    <td>67.0-67.6</td>
+  </tr>
+  <tr>
+    <td><code>68</code></td>
+    <td><strong>子宫</strong></td>
+    <td>子宫切除术（全切/次全/广泛）、子宫肌瘤剔除术、诊断性刮宫、宫腔镜</td>
+    <td>68.0-68.9</td>
+  </tr>
+  <tr>
+    <td><code>69</code></td>
+    <td><strong>子宫附属结构</strong></td>
+    <td>人工流产、羊膜腔穿刺、子宫韧带手术</td>
+    <td>69.0-69.9</td>
+  </tr>
+  <tr>
+    <td><code>70</code></td>
+    <td><strong>阴道</strong></td>
+    <td>阴道成形术、阴道缝合术、阴道后穹隆穿刺、膀胱膨出修补</td>
+    <td>70.0-70.9</td>
+  </tr>
+  <tr>
+    <td><code>71</code></td>
+    <td><strong>外阴</strong></td>
+    <td>外阴切除术、前庭大腺囊肿造口术、会阴缝合术、阴蒂手术</td>
+    <td>71.0-71.2</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 类目记忆口诀：</strong>6→5卵巢6卵管，7宫颈8子宫；9是附属，10是阴道，11外阴。65+1=66（下一类目），"卵巢输卵管紧相连，子宫宫颈挨着编"。
+</div>
+
+<!-- ======== 二：卵巢手术65 ======== -->
+<hr class="divider">
+<h2><span class="icon">🥚</span> 二、卵巢手术（65）——单双侧、残留/孤立、囊肿剔除</h2>
+
+<h3>2.1 卵巢手术的编码轴心</h3>
+<p>65 类目按<strong>手术范围</strong>（单/双/部分/全部）+ <strong>入路</strong> 两个轴心分类。核心手术分四大类：</p>
+
+<table>
+  <tr><th>编码范围</th><th>手术类型</th><th>说明</th><th>典型场景</th></tr>
+  <tr>
+    <td><code>65.01-65.09</code></td><td><strong>卵巢切开/切开引流</strong></td><td>卵巢脓肿切开、卵巢探查</td><td>卵巢脓肿切开引流</td>
+  </tr>
+  <tr>
+    <td><code>65.2-65.3</code></td><td><strong>卵巢楔形切除/部分切除/囊肿剔除</strong></td><td>保留卵巢功能的部分切除</td><td>卵巢囊肿剥除（巧克力囊肿）</td>
+  </tr>
+  <tr>
+    <td style="background:var(--accent-bg);"><code>65.3-65.6</code></td><td><strong>卵巢切除术（单/双）</strong></td><td>全部切除卵巢</td><td>卵巢癌根治术中的附件切除</td>
+  </tr>
+  <tr>
+    <td><code>65.7-65.9</code></td><td>卵巢修补/移位/其他</td><td>卵巢缝合、扭转复位、移位术</td><td>卵巢扭转复位</td>
+  </tr>
+</table>
+
+<h3>2.2 卵巢切除术的精细化编码</h3>
+<p>单侧 vs 双侧的分界线非常清晰——但同时，一条核心规则影响深远：<span class="hl"><strong>"残留/孤立"卵巢/输卵管的切除 = 应编在双侧亚目下。</strong></span></p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景1：首次手术</h4>
+    <p>左卵巢巧克力囊肿 → 行左卵巢切除术<br>编码：<code>65.39</code>（单侧卵巢切除术）</p>
+    <p style="font-size:12px;color:var(--text3);">术前双侧卵巢完整</p>
+  </div>
+  <div class="example-item">
+    <h4>场景2："残留"卵巢</h4>
+    <p>既往因卵巢癌行右附件切除术，现因复发切除残留左卵巢<br>编码：<strong><code>65.51</code></strong>（双侧卵巢切除术）或 <strong><code>65.61</code></strong></p>
+    <p style="font-size:12px;color:var(--red);">⚠️ 对侧既往已切除 → 本次切除的"孤立"卵巢 = 视为"完成双侧切除"</p>
+  </div>
+  <div class="example-item">
+    <h4>场景3：双侧同时切除</h4>
+    <p>因子宫内膜癌行子宫全切+双附件切除术<br>编码：<code>68.4</code> + <code>65.61</code>（双侧卵巢切除术）</p>
+    <p style="font-size:12px;color:var(--text3);">双附件=双侧卵巢+双侧输卵管</p>
+  </div>
+</div>
+
+<h3>2.3 卵巢囊肿剔除术的陷阱：囊肿 vs 肿瘤</h3>
+<p>编码员经常被问到：卵巢巧克力囊肿剔除和卵巢良性肿瘤剔除，编码一样吗？</p>
+
+<table>
+  <tr><th>场景</th><th>手术描述</th><th>编码</th><th>推理依据</th></tr>
+  <tr>
+    <td>卵巢囊肿剔除</td><td>腹腔镜左卵巢巧克力囊肿剥除术</td><td><code>65.25</code></td><td>主导词"囊肿切除术"→卵巢，保留卵巢组织</td>
+  </tr>
+  <tr>
+    <td>卵巢良性肿瘤剔除</td><td>左卵巢畸胎瘤剥除术</td><td><code>65.29</code></td><td>主导词"切除术"→卵巢→病损/局部</td>
+  </tr>
+  <tr>
+    <td>卵巢楔形切除</td><td>多囊卵巢楔形切除术</td><td><code>65.22</code></td><td>楔形切除 = 手术形状决定的局部切除</td>
+  </tr>
+  <tr>
+    <td>卵巢全切</td><td>左卵巢浆液性囊腺癌，左附件切除术</td><td><code>65.49</code></td><td>附件的卵巢部分=全卵巢切除</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 核心陷阱——"附件切除术"的编码拆分：</strong>临床写"附件切除术"= 卵巢切除 + 输卵管切除，是两个独立的编码。不能用一个码代替两者。编码员必须把"附件切除"拆为 <code>65.x</code>（卵巢）+ <code>66.x</code>（输卵管），并根据单/双侧选择正确的亚目。
+</div>
+
+<!-- ======== 三：输卵管手术66 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔗</span> 三、输卵管手术（66）——异位妊娠、结扎与复通</h2>
+
+<h3>3.1 输卵管手术编码全景</h3>
+
+<table>
+  <tr><th>编码</th><th>手术</th><th>主导词</th><th>临床场景</th></tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>66.01</code></td><td>输卵管造口术（开窗术）</td><td>造口术</td><td>异位妊娠行输卵管开窗取胚、保留生育功能</td>
+  </tr>
+  <tr>
+    <td><code>66.02</code></td><td>输卵管吻合术</td><td>吻合术</td><td>结扎术后复通</td>
+  </tr>
+  <tr>
+    <td><code>66.21/66.22</code></td><td>双侧输卵管结扎/切断（内镜）</td><td>结扎术</td><td>腹腔镜下绝育术</td>
+  </tr>
+  <tr>
+    <td><code>66.3x</code></td><td>双侧输卵管结扎/切断（其他入路）</td><td>结扎术</td><td>剖宫产术中同时行结扎</td>
+  </tr>
+  <tr style="background:var(--accent-bg);">
+    <td><code>66.4x</code></td><td>单侧输卵管切除术</td><td>输卵管切除术</td><td>异位妊娠破裂、输卵管积脓</td>
+  </tr>
+  <tr>
+    <td><code>66.5x</code></td><td>双侧输卵管切除术</td><td>输卵管切除术</td><td>子宫内膜癌分期手术、双侧输卵管积水</td>
+  </tr>
+  <tr>
+    <td><code>66.6x</code></td><td>输卵管切除术（其他/未特指）</td><td></td><td>含输卵管部分切除术</td>
+  </tr>
+</table>
+
+<h3>3.2 异位妊娠手术——输卵管切除 vs 开窗取胚</h3>
+
+<p>异位妊娠 90% 以上发生在输卵管。对于<strong>未破裂的输卵管异位妊娠</strong>，手术编码有两个截然不同的方向：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 全部切除（破坏生育功能）</h4>
+    <p><strong>手术：</strong>患侧输卵管切除术（Salpingectomy）</p>
+    <p><strong>编码：</strong><code>66.4x</code>（单侧）或 <code>66.5x</code>（双侧）</p>
+    <p><strong>适用：</strong>输卵管破裂大出血、已无生育需求、输卵管严重破坏</p>
+    <p style="font-size:12px;color:var(--red);">注意：一旦切除，该侧永久丧失生育功能</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 保留输卵管（保育选择）</h4>
+    <p><strong>手术：</strong>输卵管开窗取胚术（Salpingostomy）</p>
+    <p><strong>编码：</strong><code>66.01</code>（输卵管造口术）</p>
+    <p><strong>适用：</strong>未破裂、要求保留生育功能、对侧输卵管正常</p>
+    <p style="font-size:12px;color:var(--green);">保留输卵管结构，术后 hCG 需监测至正常</p>
+  </div>
+</div>
+
+<div class="card info">
+  <strong>📋 异位妊娠编码提示：</strong>疾病编码应使用 O00.x（异位妊娠），手术编码根据实际术式选 66.01 或 66.4x。二者完全不同——开窗是"部分操作"，切除是"全器官切除"。<strong>必须看手术记录的术式描述，不能仅凭"异位妊娠手术"这个笼统诊断。</strong>
+</div>
+
+<h3>3.3 输卵管结扎术——入路决定编码</h3>
+
+<p>66.2x 和 66.3x 的分界线就是<strong>入路</strong>：</p>
+<ul>
+  <li><code>66.21</code>：腹腔镜下双侧输卵管结扎术（内镜入路）</li>
+  <li><code>66.22</code>：腹腔镜下双侧输卵管切断术</li>
+  <li><code>66.31</code>：其他入路双侧输卵管结扎术（开腹/阴式/剖宫产术中）</li>
+  <li><code>66.32</code>：其他入路双侧输卵管切断术</li>
+</ul>
+
+<div class="card tip">
+  <strong>🔑 记忆要点——"残留/孤立"输卵管：</strong>和卵巢规则相同。既往已切除一侧输卵管，本次切除另一侧 = 应编 <code>66.5x</code>（双侧输卵管切除术），因为术后状态等同"双侧全切"。
+</div>
+
+<!-- ======== 四：子宫手术68 ======== -->
+<hr class="divider">
+<h2><span class="icon">🏛️</span> 四、子宫手术（68）——最核心的编码决策</h2>
+
+<p>子宫手术是 65-71 类目中<strong>编码量最大、DRG 权重最高、争议最多</strong>的部分。核心区分三个维度：<strong>切除范围</strong>（保留/不保留宫颈）+ <strong>入路</strong>（经腹/经阴/腹腔镜）+ <strong>术式</strong>（全切/次全/广泛）。</p>
+
+<h3>4.1 子宫切除术分级体系</h3>
+
+<table>
+  <tr><th>手术类型</th><th>编码</th><th>切除范围</th><th>保留</th><th>典型指征</th></tr>
+  <tr>
+    <td><strong>子宫次全切除术</strong></td>
+    <td><code>68.3</code></td>
+    <td>子宫体</td>
+    <td><strong>宫颈</strong></td>
+    <td>子宫肌瘤（排除宫颈病变）、产后出血</td>
+  </tr>
+  <tr>
+    <td><strong>子宫全切术（经腹）</strong></td>
+    <td><code>68.4</code></td>
+    <td>子宫体+宫颈</td>
+    <td>阴道顶端</td>
+    <td>子宫肌瘤、子宫腺肌症、CIN III</td>
+  </tr>
+  <tr>
+    <td><strong>子宫全切术（经阴道）</strong></td>
+    <td><code>68.5</code></td>
+    <td>子宫体+宫颈</td>
+    <td>阴道顶端</td>
+    <td>子宫脱垂、无盆腔手术史</td>
+  </tr>
+  <tr>
+    <td><strong>广泛性子宫全切术（经腹）</strong></td>
+    <td><code>68.6</code></td>
+    <td><strong>子宫+宫颈+宫旁组织+部分阴道</strong></td>
+    <td>—</td>
+    <td>宫颈癌 IB1-IIA 期、子宫内膜癌 II 期</td>
+  </tr>
+  <tr>
+    <td><strong>广泛性子宫全切术（经阴道）</strong></td>
+    <td><code>68.7</code></td>
+    <td><strong>子宫+宫颈+宫旁组织+部分阴道</strong></td>
+    <td>—</td>
+    <td>宫颈癌（特定入路）</td>
+  </tr>
+</table>
+
+<h3>4.2 子宫肌瘤剔除术 68.29 ——最常见的编码分歧</h3>
+
+<p><strong>子宫肌瘤剔除术 ≠ 子宫切除</strong>，这是编码员最需要清楚的边界。肌瘤剔除术只切除肌瘤病灶，<span class="hl">保留完整子宫</span>，编码为 <code>68.29</code>（子宫病损切除术）。</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 子宫肌瘤剔除术（Myomectomy）</h4>
+    <p><strong>编码：</strong><code>68.29</code>（子宫病损切除术）</p>
+    <p><strong>手术范围：</strong>切除肌瘤组织，保留子宫体和宫颈</p>
+    <p><strong>入路：</strong>可经腹、腹腔镜或宫腔镜</p>
+    <p><strong>指征：</strong>有生育需求、希望保留子宫</p>
+    <p><strong>疾病编码：</strong>D25.x（子宫平滑肌瘤，按部位细分）</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 子宫次全切（Subtotal Hysterectomy）</h4>
+    <p><strong>编码：</strong><code>68.3</code>（子宫次全切除术）</p>
+    <p><strong>手术范围：</strong>切除整个子宫体（保留宫颈）</p>
+    <p><strong>入路：</strong>通常经腹或腹腔镜</p>
+    <p><strong>指征：</strong>无生育需求、多发性肌瘤、月经过多</p>
+    <p><strong>疾病编码：</strong>同 D25.x</p>
+  </div>
+</div>
+
+<h3>4.3 腹腔镜下子宫切除——入路编码的两种策略</h3>
+
+<p>腹腔镜子宫切除的编码在不同地区的编码规则中有差异：</p>
+
+<table>
+  <tr><th>策略</th><th>编码方式</th><th>示例</th></tr>
+  <tr>
+    <td><strong>策略A：主码标明术式+入路独立</strong></td>
+    <td>腹腔镜辅助阴式子宫全切使用独立码位</td>
+    <td><code>68.51</code> LAVH（腹腔镜辅助阴式子宫切除术）</td>
+  </tr>
+  <tr>
+    <td><strong>策略B：主码用术式+附加腹腔镜码</strong></td>
+    <td>子宫切除编码不变，附加腹腔镜检查码</td>
+    <td><code>68.4</code> + <code>54.21</code>（腹腔镜检查）</td>
+  </tr>
+  <tr>
+    <td><strong>策略C：国临版扩展码</strong></td>
+    <td>国临版将腹腔镜入路体现在扩展码中</td>
+    <td><code>68.49003</code> 腹腔镜子宫全切除术</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 实操提醒：</strong>实际工作中以国临版扩展码为准。编码员需要从手术记录中提取三个关键信息来精确定位：<strong>① 切除范围</strong>（子宫体/子宫体+宫颈/广泛）、<strong>② 入路</strong>（开腹/经阴道/腹腔镜/腹腔镜辅助阴式）、<strong>③ 是否同时切除附件</strong>（需并编 65.x/66.x）。
+</div>
+
+<h3>4.4 诊断性刮宫与宫腔镜</h3>
+
+<table>
+  <tr><th>编码</th><th>操作</th><th>说明</th></tr>
+  <tr><td><code>68.12</code></td><td>宫腔镜检查</td><td>纯诊断性，无治疗操作</td></tr>
+  <tr><td><code>68.16</code></td><td>宫腔镜检查+活检</td><td>宫腔镜下取内膜/息肉活检</td></tr>
+  <tr><td><code>69.01</code></td><td>扩张和刮宫术（D&C）</td><td>非产科性诊断性刮宫</td></tr>
+  <tr><td><code>69.02</code></td><td>扩张和刮宫术（产后/流产）</td><td>产后或流产后清宫</td></tr>
+  <tr><td><code>68.29</code></td><td>宫腔镜下子宫病损切除术</td><td>宫腔镜息肉切除、黏膜下肌瘤电切</td></tr>
+</table>
+
+<!-- ======== 五：宫颈67 + 阴道70 + 外阴71 ======== -->
+<hr class="divider">
+<h2><span class="icon">📋</span> 五、宫颈（67）、阴道（70）、外阴（71）手术速查</h2>
+
+<h3>5.1 宫颈锥切术（67.2x）——冷刀 vs LEEP vs 激光</h3>
+
+<table>
+  <tr><th>编码</th><th>术式</th><th>工具</th><th>特点</th></tr>
+  <tr><td><code>67.20</code></td><td>宫颈锥切术（未特指）</td><td>—</td><td>不推荐使用，应明确术式</td></tr>
+  <tr><td><code>67.21</code></td><td>冷刀锥切术（CKC）</td><td>手术刀</td><td>切缘清晰、病理判断准确、出血较多</td></tr>
+  <tr><td><code>67.22</code></td><td>宫颈环形电切术（LEEP）</td><td>电圈</td><td>门诊可做、出血少、可能存在热损伤影响切缘判断</td></tr>
+  <tr><td><code>67.23</code></td><td>激光锥切术</td><td>激光</td><td>精准但设备成本高</td></tr>
+</table>
+
+<h3>5.2 宫颈环扎术——产科 vs 妇科</h3>
+<p>宫颈环扎术编码为 <code>67.5x</code>（经腹）或 <code>67.6x</code>（经阴道）。注意：环扎术用于<strong>宫颈机能不全</strong>的妊娠患者时，疾病编码归入 O 章（O34.3），但手术编码仍在 67 类目。</p>
+
+<h3>5.3 阴道手术速查</h3>
+<table>
+  <tr><th>编码</th><th>手术</th></tr>
+  <tr><td><code>70.50</code></td><td>膀胱膨出修补术（前壁修补）</td></tr>
+  <tr><td><code>70.51</code></td><td>直肠膨出修补术（后壁修补）</td></tr>
+  <tr><td><code>70.62</code></td><td>阴道成形术（人工阴道）</td></tr>
+  <tr><td><code>70.71</code></td><td>阴道后穹隆穿刺</td></tr>
+  <tr><td><code>70.79</code></td><td>阴道缝合术（撕裂伤）</td></tr>
+</table>
+
+<h3>5.4 外阴手术速查</h3>
+<table>
+  <tr><th>编码</th><th>手术</th></tr>
+  <tr><td><code>71.22</code></td><td>前庭大腺囊肿造口术（Bartholin 囊肿）</td></tr>
+  <tr><td><code>71.24</code></td><td>前庭大腺囊肿切除术</td></tr>
+  <tr><td><code>71.61</code></td><td>单侧外阴切除术</td></tr>
+  <tr><td><code>71.62</code></td><td>双侧外阴切除术</td></tr>
+  <tr><td><code>71.71</code></td><td>会阴缝合术</td></tr>
+</table>
+
+<!-- ======== 六：重难点——子宫切除范围的三阶判断 ======== -->
+<hr class="divider">
+<h2><span class="icon">💡</span> 六、重难点深度解析：子宫切除范围——手术记录里的"暗语"</h2>
+
+<p>在 ICD-9-CM-3 中，子宫切除术的编码取决于<strong>切除范围</strong>，而临床医师书写的手术名称经常含糊不清。编码员必须从手术记录中"解码"真实的切除范围。以下是从轻到重的三阶判断：</p>
+
+<h3>第一阶：子宫肌瘤剔除 (Myomectomy) ≠ 子宫切除</h3>
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">🔍</div>
+    <div class="process-content">
+      <h4>关键鉴别点</h4>
+      <p><strong>肌瘤剔除：</strong>手术记录会出现"沿肌瘤包膜分离""完整剥出肌瘤组织""缝合子宫肌层"。</p>
+      <p><strong>子宫切除：</strong>手术记录会出现"切断子宫动脉""切断圆韧带/主韧带/骶韧带""切除子宫"。</p>
+      <p>肌瘤剔除后子宫仍完整存在；子宫切除后子宫不存在。</p>
+    </div>
+  </div>
+</div>
+
+<h3>第二阶：次全切 (68.3) vs 全切 (68.4/68.5)——一道"颈"线</h3>
+<p>这是最高频的编码错误之一。医生说"做了子宫切除"，编码员需要追问：<strong>宫颈切没切？</strong></p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 次全切除：保留了宫颈</h4>
+    <p>手术记录关键词："于子宫峡部水平切断""保留宫颈""宫颈残端""将子宫体自宫颈分离"</p>
+    <p><strong>编码：</strong><code>68.3</code></p>
+    <p>患者术后仍有宫颈，需要继续做宫颈癌筛查（巴氏涂片）。</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 全切除：宫颈也切了</h4>
+    <p>手术记录关键词："于阴道穹隆处环切""切除子宫及宫颈""宫颈连同子宫整块切除"</p>
+    <p><strong>编码：</strong><code>68.4</code>（经腹）/ <code>68.5</code>（经阴道）</p>
+    <p>术后不需要再做宫颈癌筛查。</p>
+  </div>
+</div>
+
+<h3>第三阶：全切 (68.4) vs 广泛性全切 (68.6)——多切了多少？</h3>
+<p>"广泛性" = 在全切的基础上，额外切除<strong>宫旁组织（主韧带、宫骶韧带）+ 阴道上段 2-3cm + 盆腔淋巴结</strong>。这是恶性肿瘤的根治性手术，编码完全不同。</p>
+
+<table>
+  <tr><th>项目</th><th>全切（68.4）</th><th>广泛全切（68.6）</th></tr>
+  <tr><td>手术名称</td><td>全子宫切除术（Total Hysterectomy）</td><td>广泛性全子宫切除术（Radical Hysterectomy / Wertheim 手术）</td></tr>
+  <tr><td>子宫</td><td>✔ 切除</td><td>✔ 切除</td></tr>
+  <tr><td>宫颈</td><td>✔ 切除</td><td>✔ 切除</td></tr>
+  <tr><td>宫旁组织</td><td>✘ 保留</td><td>✔<strong> 切除</strong></td></tr>
+  <tr><td>阴道</td><td>✘ 仅切除穹隆</td><td>✔<strong> 切除上1/3或2-3cm</strong></td></tr>
+  <tr><td>盆腔淋巴结</td><td>✘ 不做</td><td>✔<strong> 常规清扫（另编 40.5x）</strong></td></tr>
+  <tr><td>适应症</td><td>良性疾病（肌瘤、腺肌症）</td><td>宫颈癌、子宫内膜癌 II 期</td></tr>
+</table>
+
+<h3>剖宫产+肌瘤剔除的编码逻辑</h3>
+<p>这是一类特殊的组合手术场景：剖宫产术中同时发现子宫肌瘤，行肌瘤剔除术。此时手术编码应为：<code>74.x</code>（剖宫产）+ <code>68.29</code>（子宫肌瘤剔除术）。<strong>不能把剖宫产时的子宫切口缝合和肌瘤剔除混淆为同一次子宫操作。</strong></p>
+
+<hr class="section-divider">
+
+<h3>"附件切除术"的完整编码拆解——行业标准实践</h3>
+<p>根据《输卵管及卵巢切除术的 ICD-9-CM-3 编码案例分析》（柯雅君等，2024），完整的附件切除应拆解为：</p>
+
+<pre>临床诊断：双侧附件切除术（Bilateral Adnexectomy）
+
+编码拆解：
+├── 65.61  双侧卵巢切除术 (Bilateral Oophorectomy)
+├── 66.51  双侧输卵管切除术 (Bilateral Salpingectomy)
+
+注：如果同时行子宫全切 → 另加 68.4</pre>
+
+<div class="card warn">
+  <strong>⚠️ 不能把"附件切除"简单编为一个码：</strong>附件 = 卵巢 + 输卵管，是两个独立器官。同理，"双附件切除术" = 65.61 + 66.51，两个都必须编。缺少任何一个都将导致 DRG 入组不准确。
+</div>
+
+<!-- ======== 七：案例练习 ======== -->
+<hr class="divider">
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 类目归属</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下手术选择正确的 ICD-9-CM-3 类目：</p>
+    <ol>
+      <li>腹腔镜下左卵巢囊肿剔除术</li>
+      <li>经腹全子宫切除术</li>
+      <li>宫颈冷刀锥切术</li>
+      <li>前庭大腺囊肿造口术</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 类目 <code>65</code>，卵巢囊肿剔除 = 65.25（腹腔镜入路体现在扩展码中）</p>
+        <p><strong>2.</strong> 类目 <code>68</code>，经腹全子宫切除 = <code>68.4</code></p>
+        <p><strong>3.</strong> 类目 <code>67</code>，冷刀锥切 = <code>67.21</code>（冷刀）、<code>67.22</code>（LEEP）、<code>67.23</code>（激光）</p>
+        <p><strong>4.</strong> 类目 <code>71</code>，前庭大腺囊肿造口 = <code>71.22</code></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 子宫手术二选一</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者 35 岁，诊断"多发性子宫平滑肌瘤"，希望保留生育功能。手术记录："腹腔镜下沿肌瘤包膜完整剥除肌瘤3枚，最大径5cm，缝合子宫肌层，保留子宫和双侧附件。"</p>
+    <p><strong>问题：</strong>手术编码应选 68.29 还是 68.3？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 应选：</strong><code>68.29</code>（子宫病损切除术 / 子宫肌瘤剔除术）</p>
+        <p><strong>❌ 不能选：</strong><code>68.3</code>（子宫次全切除术）</p>
+        <p><strong>🔍 判断依据：</strong>手术记录明确写了"保留子宫"和"缝合子宫肌层"，说明子宫体未被切除——肌瘤剔除术仅切除肌瘤病灶，保留完整的子宫体+宫颈。子宫次全切除（68.3）需要切除整个子宫体。</p>
+        <p><strong>💡 核心区别：</strong>肌瘤剔除 = 病灶级操作；子宫次全切 = 器官级操作。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 异位妊娠编码选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者 28 岁，因"停经 45 天，阴道少量流血"入院。B 超提示"右输卵管异位妊娠（未破裂型）"。患者有生育需求。手术行"腹腔镜下右输卵管开窗取胚术"。</p>
+    <p><strong>问题：</strong>手术编码选什么？如果患者无生育需求且术中见输卵管破裂出血，改为"右输卵管切除术"，编码又是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 情景A（保育）：</strong><code>66.01</code>（输卵管造口术/开窗取胚术）</p>
+        <p>手术只是切开输卵管取出胚胎组织，保留输卵管结构。主导词"造口术"。"开窗取胚"本质是在输卵管上做切口取胚后再缝合，ICD-9-CM-3 归入输卵管造口术。</p>
+        <p><strong>✅ 情景B（切除）：</strong><code>66.4x</code>（单侧输卵管切除术）</p>
+        <p>完整切除右侧输卵管。主导词"输卵管切除术"。</p>
+        <p><strong>💡 疾病编码：</strong>两种情景的疾病编码都是 O00.1（输卵管妊娠）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 残留/孤立规则</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者 55 岁，既往 5 年前因"左卵巢囊肿"行左附件切除术。本次因"右侧卵巢囊肿（病理：浆液性囊腺瘤）"入院，行"右卵巢切除术"。</p>
+    <p><strong>问题：</strong>本次的手术编码应该使用单侧还是双侧亚目？请结合"残留/孤立"规则解释。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong>应使用 <strong>双侧卵巢切除术</strong> 的编码，即 <code>65.51</code> 或 <code>65.61</code>（取决于具体入路和术式）。</p>
+        <p><strong>🔍 规则推导：</strong>根据 ICD-9-CM-3 编码规则，"残留/孤立"的输卵管及卵巢切除应编码在相应的<strong>双侧全部切除</strong>的亚目中。其逻辑是：</p>
+        <ol>
+          <li>5 年前已切除左卵巢 → 术前只剩右侧"孤立卵巢"</li>
+          <li>本次切除右侧卵巢 → 术后状态 = 双侧卵巢均已切除</li>
+          <li>编码反映的是<strong>术后状态</strong>，而非单次手术的范围</li>
+        </ol>
+        <p><strong>⚠️ 常见错误：</strong>新人容易只看本次手术记录写"右卵巢切除"就编单侧码 65.39，忽略既往手术史对分类的影响。</p>
+        <p><strong>💡 同样规则适用于输卵管。</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 附件切除拆解</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者 48 岁，诊断"子宫内膜癌 I 期"。手术记录："经腹广泛性全子宫切除术 + 双侧附件切除术 + 盆腔淋巴结清扫术"。</p>
+    <p><strong>问题：</strong>请给出完整的手术编码组合（应包含几个码？分别是什么？）</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码组合（至少 5 个码）：</strong></p>
+        <p>① <code>68.6</code> —— 广泛性经腹全子宫切除术（完全符合"子宫内膜癌 I 期"的标准术式）</p>
+        <p>② <code>65.61</code> —— 双侧卵巢切除术（"双侧附件"=卵巢×2）</p>
+        <p>③ <code>66.51</code> —— 双侧输卵管切除术（"双侧附件"=输卵管×2）</p>
+        <p>④ <code>40.52</code> —— 盆腔淋巴结根治性清扫术</p>
+        <p><strong>🔍 推理过程：</strong></p>
+        <ol>
+          <li>"广泛性"关键字 → 68.6（不是 68.4）</li>
+          <li>"双侧附件" → 必须拆为卵巢 65.61 + 输卵管 66.51</li>
+          <li>"盆腔淋巴结清扫" → 40.52（根治性清扫，区别于 40.59 区域清扫）</li>
+        </ol>
+        <p><strong>⚠️ 常见漏编：</strong>把"双侧附件切除术"只编成一个码，漏掉卵巢或输卵管其中之一。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 剖宫产+肌瘤剔除组合</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某产妇 32 岁，因"臀位"行剖宫产术。术中探查发现"子宫前壁浆膜下肌瘤（约 4cm）"，同时行子宫肌瘤剔除术。</p>
+    <p><strong>问题：</strong>手术编码应包含哪几个码？剖宫产的子宫切口和肌瘤剔除能不能合并为一个操作？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码：</strong></p>
+        <p>① <code>74.1</code> —— 低位子宫下段剖宫产术（主操作）</p>
+        <p>② <code>68.29</code> —— 子宫肌瘤剔除术（额外操作）</p>
+        <p><strong>🔍 判断依据：</strong></p>
+        <ol>
+          <li>剖宫产的子宫切口（子宫下段横切口）≠ 肌瘤剔除（子宫体前壁），是两个不同部位的操作。</li>
+          <li>肌瘤剔除需要额外的分离、剥除和缝合过程，是独立的手术步骤。</li>
+          <li><strong>不能合并：</strong>两者的目的完全不同——剖宫产切口是为了取出胎儿，肌瘤剔除是为了切除病灶。</li>
+        </ol>
+        <p><strong>💡 但是注意：</strong>如果肌瘤恰好位于子宫下段切口处、且在分离胎儿娩出过程中"顺便"剔除了肌瘤（无额外分离步骤），则不应另编 68.29——这种情况极少见，需要手术记录明确描述。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八：今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>65-71 七类目口诀：</strong>65 卵 66 管 67 颈 68 宫——"卵巢输卵管紧相连学"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>子宫切除三级：</strong>次全68.3(留宫颈)→全切68.4/68.5(去宫颈)→广泛68.6/68.7(去宫旁+阴道)</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肌瘤剔除 ≠ 子宫切除：</strong>68.29 保留子宫，68.3 切除子宫体——看手术记录中有没有保留子宫</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>"附件切除术"必拆：</strong>附件 = 卵巢(65.x) + 输卵管(66.x)，两个码缺一不可</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>残留/孤立规则：</strong>对侧既往已切除 → 本次切除"孤立"器官 → 编码在双侧亚目</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>异位妊娠编码：</strong>开窗保留(66.01) vs 切除(66.4x)，须看手术记录确定术式</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>剖宫产+肌瘤剔除：</strong>74.x + 68.29，两个独立操作，不能合并</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九：明日预习 ======== -->
+<h2><span class="icon">📅</span> 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 34 主题：肌肉骨骼系统手术编码（76-84）——骨折、清创、关节</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>骨折手术编码的核心轴心是什么？（部位+固定方式+开放/闭合？）</li>
+    <li>骨折切开复位内固定（ORIF）和闭合复位有什么区别？编码如何区分？</li>
+    <li>关节置换术（髋81.51-81.52、膝81.54）的编码要点有哪些？</li>
+    <li>清创术（86.22/86.28）在什么情况下不能作为主操作编码？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 33 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
