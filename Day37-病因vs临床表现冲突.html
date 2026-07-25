@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 37（2026年7月25日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* Decision tree */
+  .decision-tree {
+    background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px 20px; margin: 16px 0; font-size: 13px;
+  }
+  .tree-node {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .tree-question {
+    background: var(--accent); color: #fff; padding: 10px 24px;
+    border-radius: 20px; font-weight: 700; font-size: 14px; text-align: center;
+  }
+  .tree-answer {
+    background: #fff; border: 2px solid var(--green); padding: 8px 18px;
+    border-radius: 8px; font-weight: 700; color: var(--green);
+  }
+  .tree-answer.wrong {
+    border-color: var(--red); color: var(--red);
+  }
+  .tree-branch {
+    display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+  }
+  .tree-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .tree-label {
+    font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 4px;
+  }
+  .tree-label.yes { background: var(--green-bg); color: var(--green); }
+  .tree-label.no { background: var(--red-bg); color: var(--red); }
+
+  .severity-scale {
+    display: flex; align-items: center; gap: 0; margin: 16px 0;
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .severity-level {
+    flex: 1; padding: 12px 8px; text-align: center; font-size: 13px;
+    color: #fff; font-weight: 600;
+  }
+  .severity-level.sev1 { background: #10b981; }
+  .severity-level.sev2 { background: #4f46e5; }
+  .severity-level.sev3 { background: #f59e0b; }
+  .severity-level.sev4 { background: #ef4444; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+    .tree-branch { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 37 · 2026年7月25日</div>
+  <h1>⚔️ 病案编码学习</h1>
+  <p class="subtitle">今日主题：多诊断冲突 —— 病因 vs 临床表现（冠心病 vs 心梗等）</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:61.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 37 / 60 天（61.67%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">第四阶段核心课——病因 vs 临床表现的冲突决策，是主诊断选择中最高频的难点：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频、编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>冠心病（I25）vs 急性心梗（I21）的五步决策法——"严重表现优先"</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>病因 vs 临床表现的三大判断维度：治疗重心、资源消耗、病情紧急程度</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>ICD-10 有合并编码时必须合并，不可拆分编两个码（如 I11.x、K80.x）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免隐性错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>高血压→高血压性心脏病 I11.x 的因果关系建立路径和触发条件</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>脑血管病中 I65-I66（闭塞/狭窄）vs I63（脑梗死）vs I69（后遗症）的三阶段时间线</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肝硬化 K74 vs 食管静脉曲张 I85 的"谁因谁果"和星剑号双重分类</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DRG/DIP 视角下的"病因 vs 表现"选择如何影响分组权重</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>国际编码对比：不同国家对"冠心病+心梗"的主诊断选择差异</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>这一天是整个主诊断选择体系中最"烧脑"的一课。核心心法只有一句话——<strong>"谁导致了本次住院，谁做主角；谁消耗了最多资源，谁做主诊断。"</strong> 不要被"病因最大"的朴素直觉骗了。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🧭</span> 一、核心问题：为什么病因不能自动做主诊断？</h2>
+
+<h3>1.1 一个让你重新思考的场景</h3>
+
+<div class="card">
+  <p>患者因"胸闷、胸痛6小时"急诊入院，心电图+心肌酶确诊为<strong>急性非ST段抬高型心肌梗死</strong>。患者同时有<strong>"冠状动脉粥样硬化性心脏病"</strong>（冠心病）病史3年。出院诊断上，临床医生写了两个诊断：①冠心病；②急性非ST段抬高型心肌梗死。</p>
+  <p style="margin-top:8px;"><strong>编码员的灵魂拷问：</strong>冠心病是"根"（病因），心梗是"果"（表现）。主诊断写哪个？</p>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 直觉派 → I25.103（冠心病）</h4>
+    <p>理由："冠心病是根本原因，所有问题都源于冠脉粥样硬化"<br>"临床诊断第一个写的就是冠心病"<br>"没有冠心病就不会有心梗"</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 规则派 → I21.401（急性NSTEMI）</h4>
+    <p>理由："急性心梗是本次住院的直接原因"<br>"所有医疗资源（心电监护、抗凝、双抗、急诊PCI）都围绕着心梗"<br>"急性心梗是冠心病的<span class='hl'>急性严重表现</span>，不是常规慢病管理"</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键认知纠正：</strong>ICD-10 和病历书写规范<strong>不要求</strong>主诊断必须是"病因"。主诊断的选择标准是<strong>"本次住院的主要原因"</strong>——而这个"原因"可以是病因，也可以是临床表现，取决于哪个更直接、更紧急、更消耗资源。
+</div>
+
+<h3>1.2 病因优先 vs 表现优先 —— 决策的三个轴</h3>
+
+<p>当诊断列表里既有"慢性病因"又有"急性表现"时，以下三个维度帮你做决定：</p>
+
+<table>
+  <tr><th>决策维度</th><th>核心问题</th><th>病因优先的场景</th><th>表现优先的场景</th></tr>
+  <tr>
+    <td><strong>治疗重心</strong></td>
+    <td>本次住院的治疗重心在哪里？</td>
+    <td>住院主要为了控制慢性病因（如调血糖、降血压、抗病毒）</td>
+    <td>住院主要是抢救急性表现（溶栓、急诊手术、重症监护）</td>
+  </tr>
+  <tr>
+    <td><strong>资源消耗</strong></td>
+    <td>医疗资源（费用、时间、人力）主要消耗在哪个问题上？</td>
+    <td>治疗资源的绝对大头用于病因治疗</td>
+    <td>ICU、监护、手术、急救药品全部指向临床表现</td>
+  </tr>
+  <tr>
+    <td><strong>紧急程度</strong></td>
+    <td>本次入院的直接原因是什么？</td>
+    <td>择期入院处理慢性病因，临床表现是附带问题</td>
+    <td>急诊入院处理急性表现，慢性病因仅作为背景病史</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 一句话口诀：</strong>急性表现压倒慢性病因、直接原因压倒间接原因、治疗靶点压倒背景病史。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">💔</span> 二、冠心病 I25 vs 心梗 I21 —— 头部冲突的完整拆解</h2>
+
+<h3>2.1 冠心病编码体系全貌</h3>
+
+<p>冠心病在 ICD-10 中横跨多个类目，准确编码的前提是<strong>先搞清楚"这个病人在哪个阶段"</strong>：</p>
+
+<pre>冠心病编码的临床阶段 × ICD-10 对应关系：
+
+I25.1   动脉粥样硬化性心脏病（稳定型冠心病）→ 常规管理阶段
+I20.x   心绞痛（含不稳定型）→ 缺血但未梗死
+I21.x   急性心肌梗死（STEMI/NSTEMI）→ 急性缺血→坏死
+I22.x   再发性心肌梗死 → 28天内第二次心梗
+I23.x   急性心梗的近期并发症 → 梗死后4周内的并发病
+I24.x   其他急性缺血性心脏病 → 冠脉血栓未致梗死等
+I25.2   陈旧性心肌梗死 → 梗死后超过28天
+I25.8   其他慢性缺血性心脏病 → 无症状心肌缺血等
+I25.5   缺血性心肌病 → 慢性心衰型</pre>
+
+<h3>2.2 冠心病 + 心梗同时存在 → 五步决策法</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>判断本次住院的直接原因</h4>
+      <p>入院方式（急诊 vs 择期）、主诉（胸痛 vs 复查）、病程记录的核心描述是什么？</p>
+      <p><strong>急诊入院+胸痛+心肌酶升高 → 心梗是直接原因。</strong></p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>分析治疗资源的去向</h4>
+      <p>是否使用了抗凝/抗血小板？是否做了急诊PCI/溶栓？是否在心内科监护室？</p>
+      <p><strong>凡是进入心梗诊疗路径（双抗+抗凝+PCI/溶栓）→ 心梗主诊断。</strong></p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>核对 ICD-10 是否有"不包括"排除</h4>
+      <p>冠心病 I25 类目下没有明确"不包括"心梗。心梗 I21 类目下有大量细分亚目。</p>
+      <p><strong>不存在互斥——两个码可以同时出现在首页，但主诊断位置只能放一个。</strong></p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>应用"三最"原则中的"最严重"</h4>
+      <p>最严重 ≠ 死亡率最高，而是<strong>"本次住院最需要紧急处理的那个问题"</strong>。</p>
+      <p><strong>心梗急性期处理远重于冠心病慢病管理 → 心梗更严重。</strong></p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content">
+      <h4>最终编码方案</h4>
+      <p><strong>主诊断：I21.x（具体亚目根据STEMI/NSTEMI、部位确定）</strong></p>
+      <p><strong>其他诊断：I25.1xx（冠心病，作为慢性基础病因记录）</strong></p>
+      <p>例如：I21.401（急性NSTEMI）+ I25.103（冠状动脉粥样硬化性心脏病）</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.3 常见易混淆场景速查</h3>
+
+<table>
+  <tr><th>临床场景</th><th>❌ 错误主诊</th><th>✅ 正确主诊</th><th>判断依据</th></tr>
+  <tr>
+    <td>冠心病+急性前壁STEMI，急诊入院行急诊PCI</td>
+    <td>I25.103 冠心病</td>
+    <td>I21.0 急性前壁心梗</td>
+    <td>急诊PCI的所有资源围绕心梗</td>
+  </tr>
+  <tr>
+    <td>冠心病+心绞痛，择期入院行冠脉造影</td>
+    <td>I25.103 冠心病</td>
+    <td>I20.x 心绞痛（按亚型）</td>
+    <td>不稳定心绞痛也是"急性表现"，但不如心梗紧急</td>
+  </tr>
+  <tr>
+    <td>冠心病（陈旧心梗病史），入院行糖尿病管理</td>
+    <td>I25.2 陈旧心梗</td>
+    <td>E11.x 糖尿病+并发症</td>
+    <td>本次住院重心是糖尿病，冠心病仅为病史</td>
+  </tr>
+  <tr>
+    <td>冠心病+心衰，入院行心衰对症治疗</td>
+    <td>I25.103 冠心病</td>
+    <td>I50.x 心力衰竭</td>
+    <td>本次住院直接原因是心衰失代偿</td>
+  </tr>
+  <tr>
+    <td>稳定性冠心病，择期入院行PCI</td>
+    <td>I21.x 心梗</td>
+    <td>I25.1 冠心病</td>
+    <td>无急性心梗证据，仅是稳定冠心病做择期介入</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🩸</span> 三、高血压 → 高血压性心脏病 —— 因果关系的建立</h2>
+
+<h3>3.1 I10 vs I11 vs I13 的三层递进</h3>
+
+<p>高血压编码的冲突点不是"病因vs表现"，而是<strong>"是否有充分证据支持高血压引起了靶器官损害"</strong>。很多编码员看到"高血压+心衰"就直接编 I11.0，这是严重的过度归因。</p>
+
+<table>
+  <tr><th>编码</th><th>含义</th><th>触发条件</th><th>错误示例</th></tr>
+  <tr>
+    <td><code>I10</code></td>
+    <td>原发性高血压（无并发症）</td>
+    <td>高血压未导致心脏/肾脏损害</td>
+    <td>把"高血压+冠心病"编成I11.x——冠心病原因可能是动脉粥样硬化而非高血压</td>
+  </tr>
+  <tr>
+    <td><code>I11.0</code></td>
+    <td>高血压性心脏病伴心力衰竭</td>
+    <td>临床明确记录"高血压性心脏病"或心衰+高血压且无其他心脏病因</td>
+    <td>高血压患者出现心衰但不一定是"高血压性"——需排除冠心病、瓣膜病、心肌病等</td>
+  </tr>
+  <tr>
+    <td><code>I11.9</code></td>
+    <td>高血压性心脏病不伴心力衰竭</td>
+    <td>高血压导致左室肥厚等心脏结构改变但无心衰症状</td>
+    <td>仅有高血压病史+心脏超声正常的，不能上I11</td>
+  </tr>
+  <tr>
+    <td><code>I12.x</code></td>
+    <td>高血压性肾病</td>
+    <td>临床明确"高血压性肾病"或肾损害由高血压直接导致</td>
+    <td>高血压+糖尿病肾病——应优先考虑糖尿病肾病（E11.2）</td>
+  </tr>
+  <tr>
+    <td><code>I13.x</code></td>
+    <td>高血压性心肾联合损害</td>
+    <td>同时满足I11+I12的条件</td>
+    <td>仅凭诊断写的"高血压3级"不够</td>
+  </tr>
+</table>
+
+<h3>3.2 I11.x 因果关系的三大证据链</h3>
+
+<div class="card warn">
+  <p><strong>⚠️ 核心规则：</strong>I11.x（高血压性心脏病）是一个<strong>因果推断编码</strong>——它隐含着"高血压导致了心脏病"的判断。编码员不能自己推断因果关系，必须有<strong>临床证据支撑</strong>。</p>
+</div>
+
+<table>
+  <tr><th>证据链</th><th>具体要求</th><th>来源</th></tr>
+  <tr>
+    <td>① 临床诊断明确记录</td>
+    <td>医生写了"高血压性心脏病"或"高血压心脏病"的诊断名称</td>
+    <td>出院诊断 / 病程记录</td>
+  </tr>
+  <tr>
+    <td>② 影像学证据</td>
+    <td>心脏超声提示"左室肥厚""向心性重构"等高血压心脏损害特征</td>
+    <td>心脏超声报告</td>
+  </tr>
+  <tr>
+    <td>③ 排除其他病因</td>
+    <td>无重度主动脉瓣狭窄、无肥厚型心肌病、无冠心病导致的缺血性心肌病</td>
+    <td>冠脉造影 / 超声等</td>
+  </tr>
+</table>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>✅ 应该用 I11.0 的场景</h4>
+    <p>患者高血压病史20年，超声提示左室肥厚、舒张功能减退，临床诊断"高血压性心脏病，心功能III级"。冠脉CTA未见明显狭窄。</p>
+    <p><strong>证据充分：</strong>长期高血压+特征性心脏改变+排除冠心病 → I11.0 适用</p>
+  </div>
+  <div class="example-item">
+    <h4>❌ 不应该用 I11.0 的场景</h4>
+    <p>患者高血压病史5年，因急性前壁心梗入院，合并心衰。临床诊断"冠心病、急性心梗、心衰、高血压"。</p>
+    <p><strong>心衰由心梗导致，非高血压导致 → </strong>应编 I21.0（主）+ I50.x（心衰）+ I10（高血压），而非 I11.0</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🧠</span> 四、脑血管病中的"病因vs表现"——I65-I66 vs I63 vs I69</h2>
+
+<h3>4.1 脑血管病三阶段模型</h3>
+
+<p>脑血管病是最容易出现"病因vs表现"编码混乱的领域之一。核心原则是按<strong>时间线+影像证据</strong>来确定编码阶段：</p>
+
+<div class="severity-scale">
+  <div class="severity-level sev1">阶段一<br><strong>血管病变期</strong><br>I65-I66<br>闭塞/狭窄</div>
+  <div class="severity-level sev2">阶段二<br><strong>急性梗死期</strong><br>I63<br>急性脑梗死</div>
+  <div class="severity-level sev3">阶段三<br><strong>恢复期</strong><br>I69<br>后遗症</div>
+  <div class="severity-level sev4">阶段四<br><strong>再发</strong><br>I63<br>新发梗死</div>
+</div>
+
+<table>
+  <tr><th>编码</th><th>含义</th><th>何时使用</th><th>要注意什么</th></tr>
+  <tr>
+    <td><code>I65-I66</code></td>
+    <td>脑动脉闭塞/狭窄（未引起梗死）</td>
+    <td>影像显示血管狭窄但DWI阴性，无急性梗死灶；或TIA发作</td>
+    <td>一旦发生梗死，通常不应再用 I65/I66 作为主诊断</td>
+  </tr>
+  <tr>
+    <td><code>I63</code></td>
+    <td>脑梗死（急性期）</td>
+    <td>DWI 阳性，有明确的急性梗死灶；本次住院直接处理此次梗死</td>
+    <td>需明确梗死原因亚型（血栓性/栓塞性/未特指）</td>
+  </tr>
+  <tr>
+    <td><code>I69</code></td>
+    <td>脑血管病后遗症</td>
+    <td>梗死发生超过1年或进入慢性后遗症期；本次住院为康复或其他不相关原因</td>
+    <td>I69 后面需要跟后遗症具体表现（如偏瘫、言语障碍等）</td>
+  </tr>
+</table>
+
+<h3>4.2 经典冲突场景：颈内动脉重度狭窄 + 急性脑梗死</h3>
+
+<div class="card">
+  <p><strong>场景：</strong>患者因"突发右侧肢体无力3小时"入院，急诊CTA示左侧颈内动脉起始部重度狭窄（约90%），MRI-DWI示左侧大脑半球多发急性梗死灶。</p>
+  <p><strong>临床诊断：</strong>①急性脑梗死；②左侧颈内动脉重度狭窄</p>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ I65.2（颈内动脉狭窄）</h4>
+    <p>"狭窄是病因，堵塞了才梗死"<br>"不处理狭窄以后还会梗死"<br><strong>问题：</strong>本次住院的直接原因是急性脑梗死（表现），治疗核心是溶栓/取栓，不是择期做CEA/CAS</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ I63.xxx（急性脑梗死）</h4>
+    <p>"住院治疗的直接对象是卒中本身"<br>"NIHSS评分、溶栓时间窗、监护——所有决策围绕梗死"<br>"狭窄作为其他诊断保留 I65.201"</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 判断口诀：</strong>DWI 阳性 = 梗死阶段 → I63；仅 CTA 狭窄 + DWI 阴性 → I65/I66（或G45 TIA）。<strong>影像决定一切，不要猜。</strong>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🫁</span> 五、更多病因vs表现冲突场景速查</h2>
+
+<table>
+  <tr><th>冲突场景</th><th>病因（不优先）</th><th>表现（应优先）</th><th>决策关键点</th></tr>
+  <tr>
+    <td>肝硬化 + 食管静脉曲张出血</td>
+    <td>K74.6 肝硬化</td>
+    <td>I85.0† + K74.6 (I98.2*)</td>
+    <td>食管静脉曲张出血是<strong>肝硬化的直接并发症</strong>，且是急诊入院原因。但注意星剑号——K74.6†是剑号、I98.2*是星号，主诊断位置放 K74.6†</td>
+  </tr>
+  <tr>
+    <td>糖尿病 + 糖尿病酮症酸中毒</td>
+    <td>E11.9 糖尿病</td>
+    <td>E11.1 糖尿病伴酮症酸中毒</td>
+    <td>酮症酸中毒是糖尿病的急性代谢并发症，E11.1 本身就是"病因+表现"的合并编码</td>
+  </tr>
+  <tr>
+    <td>胆石症 + 急性胆囊炎</td>
+    <td>K80.x 胆石症</td>
+    <td>K80.x 胆石症伴胆囊炎</td>
+    <td>K80 类目本身就是合并编码！K80.0（结石+急性胆囊炎）> K81.0（急性胆囊炎单独），两者不要分开编</td>
+  </tr>
+  <tr>
+    <td>COPD + 急性下呼吸道感染</td>
+    <td>J44.9 COPD</td>
+    <td>J44.0 COPD伴急性下呼吸道感染</td>
+    <td>J44.0 是 COPD+急性感染的合并编码，应优先于分别编 J44.9+J22</td>
+  </tr>
+  <tr>
+    <td>房颤 + 脑栓塞</td>
+    <td>I48 房颤</td>
+    <td>I63.4 脑栓塞</td>
+    <td>脑栓塞是急性卒中事件，消耗ICU/溶栓资源；房颤作为"栓塞来源"编为其他诊断</td>
+  </tr>
+  <tr>
+    <td>肿瘤 + 骨转移疼痛</td>
+    <td>C34 肺癌</td>
+    <td>C79.5 骨继发恶性肿瘤</td>
+    <td>住院目的如果是处理骨转移（放疗止痛/手术固定），应以转移灶驱动的主诊断。但肿瘤章规则按"原发优先"时需注意</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">💡</span> 重难点深度解析：I13.2 多编码冲突的决策陷阱</h2>
+
+<p>这是本科最经典的"三层诊断嵌套"场景——一个病人同时有<strong>高血压+心脏病+肾病</strong>三项诊断，编码时面临 I13.2 的合并编码问题。</p>
+
+<h3>场景设定：</h3>
+
+<div class="card">
+  <p>患者，男，62岁，因"胸闷气短伴双下肢水肿1周"入院。</p>
+  <p><strong>既往史：</strong>高血压病史18年，糖尿病病史10年，冠心病（支架术后3年）。</p>
+  <p><strong>本次检查：</strong>心脏超声——左室肥厚，EF 38%，左室舒张功能减退。肾功能——肌酐 286μmol/L，eGFR 22mL/min，尿蛋白+++。冠脉CTA——原支架通畅，未见新发狭窄。</p>
+  <p><strong>临床诊断：</strong>①慢性心力衰竭；②高血压3级（极高危）；③慢性肾脏病4期；④冠心病（支架术后）；⑤2型糖尿病</p>
+</div>
+
+<h3>决策拆解：</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">①</div>
+    <div class="process-content">
+      <h4>首先要问：心衰是谁导致的？</h4>
+      <p>心脏超声提示左室肥厚（高血压心脏病的特征性改变），冠脉支架通畅（排除缺血性心肌病），无心瓣膜病证据。</p>
+      <p><strong>结论：</strong>心衰由高血压导致 → 可以建立"高血压性心脏病"的因果关系 → I11.0 适用。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">②</div>
+    <div class="process-content">
+      <h4>再问：肾病是谁导致的？</h4>
+      <p>患者有糖尿病（E11），肾病也可能是"糖尿病肾病"（E11.2† N08.3*）。但eGFR仅22mL/min+高血压18年，高血压性肾损害不能排除。</p>
+      <p><strong>结论：</strong>在糖尿病和高血压同时存在时，ICD-10 的编码规则是——<strong>如果两者都可能是肾病的原因，临床无明确结论时，按高血压-肾病关联编码</strong>。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">③</div>
+    <div class="process-content">
+      <h4>最后问：用什么合并编码？</h4>
+      <p>同时满足 I11（高血压性心脏病）+ I12（高血压性肾病）→ 应使用 <strong>I13.x（高血压性心肾联合损害）</strong>。</p>
+      <p>I13.0 = 伴心衰 + 肾病 → I13.0 适用。</p>
+    </div>
+  </div>
+</div>
+
+<h3>最终编码方案：</h3>
+
+<table>
+  <tr><th>位置</th><th>编码</th><th>含义</th></tr>
+  <tr><td style="background:var(--accent-bg);"><strong>主诊断</strong></td><td><code>I13.0</code></td><td>高血压性心肾联合损害伴心力衰竭</td></tr>
+  <tr><td>其他诊断</td><td><code>I25.2</code></td><td>陈旧性心肌梗死（支架术后，已>4周）</td></tr>
+  <tr><td>其他诊断</td><td><code>E11.9</code></td><td>2型糖尿病（无并发症的证据在此编码中使用）</td></tr>
+  <tr><td>其他诊断</td><td><code>Z95.5</code></td><td>冠状动脉支架植入术后状态</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 最常见的错误：</strong>把"高血压 I10 + 慢性心衰 I50.9 + 慢性肾脏病 N18.4"拆成三个码分别编。这既不符合ICD-10的合并编码原则，也会导致DRG入组偏差（I13.0 可能入MDCF循环系统组，而拆开编可能散落各处）。<strong>I13.x是强制合并编码——不要拆！</strong>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">✏️</span> 案例练习（共6题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 病因vs表现判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下场景中，主诊断应选"病因"还是"表现"？简述理由：</p>
+    <table>
+      <tr><th>场景</th><th>入院方式</th><th>治疗焦点</th><th>你的判断</th></tr>
+      <tr><td>A.冠心病+急性STEMI</td><td>急诊120</td><td>急诊PCI+双抗+监护</td><td>？</td></tr>
+      <tr><td>B.高血压+脑出血</td><td>急诊昏迷</td><td>开颅血肿清除+降压</td><td>？</td></tr>
+      <tr><td>C.肝硬化+腹水</td><td>门诊入院</td><td>利尿+限钠+补充白蛋白</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A 答案：</strong>主诊断选 I21.x（急性STEMI）。理由：急诊入院+120转运+急诊PCI——<strong>所有医疗资源全部指向急性心梗，心梗是本次住院的"直接原因"</strong>。</p>
+        <p><strong>✅ B 答案：</strong>主诊断选 I61.x（脑出血）。理由：虽然高血压是病因，但开颅血肿清除术的<strong>手术适应症是脑出血本身</strong>，且入院直接原因是昏迷（脑出血导致），非高血压慢病管理。</p>
+        <p><strong>✅ C 答案：</strong>主诊断选 K74.6（肝硬化）。理由：本例腹腔积液是肝硬化的直接病理后果（门脉高压→腹水），<strong>腹水本身是肝硬化的组成部分，不是独立的"表现"需要单列为主诊断</strong>。住院治疗的重心也是肝硬化的综合管理。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 合并编码识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下哪种情况<strong>必须使用合并编码</strong>？（可多选）</p>
+    <ol type="A">
+      <li>高血压 + 慢性心力衰竭</li>
+      <li>胆石症 + 急性胆囊炎</li>
+      <li>冠心病 + 急性心肌梗死</li>
+      <li>2型糖尿病 + 糖尿病肾病</li>
+      <li>慢性阻塞性肺疾病 + 肺炎</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 正确答案：A, B, D, E 都应用合并编码。C 不能用合并编码。</strong></p>
+        <p><strong>A（I11.0）：</strong>高血压性心脏病伴心衰 = I11.0（ICD-10 提供了 I11 类目作为高血压+心脏病的合并编码）</p>
+        <p><strong>B（K80.0）：</strong>胆石症伴急性胆囊炎 = K80.0（K80 类目本身就是结石+胆囊炎的合并编码体系）</p>
+        <p><strong>D（E11.2† N08.3*）：</strong>糖尿病肾病有 E11.2+N08.3* 的星剑号合并编码</p>
+        <p><strong>E（J44.0）：</strong>COPD伴急性下呼吸道感染 = J44.0（J44 类目内有明确的"伴急性感染"亚目）</p>
+        <p><strong>C（❌）：</strong>冠心病 I25 + 急性心梗 I21 不能合并——ICD-10 没有"冠心病伴心梗"的合并编码。应分别编码，I21 为主，I25 为其他诊断。</p>
+        <p><strong>💡 核心心法：</strong>能否合并，不看"临床上有没有关系"，而是看<strong>ICD-10 有没有提供合并编码条目</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 高血压因果关系判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"活动后气促3月"入院。心脏超声提示"左室射血分数35%，左室向心性肥厚"。临床诊断：①慢性心力衰竭；②高血压3级；③冠心病。</p>
+    <p>冠脉CTA显示：左前降支中段30%狭窄（非梗死相关病变）。</p>
+    <p><strong>问题：</strong>该患者的心衰应该归因于高血压（I11.0）还是冠心病（I25.5 缺血性心肌病）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 归因于高血压 → I11.0（高血压性心脏病伴心力衰竭）</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <p>① 超声提示"左室向心性肥厚"——这是<strong>高血压心脏病的典型形态学特征</strong>，区别于缺血性心肌病的"节段性室壁运动异常 + 局部变薄"。</p>
+        <p>② 冠脉狭窄仅30%（<50%不属于血流动力学意义的狭窄），<strong>不足以引起缺血性心肌病</strong>。</p>
+        <p>③ 满足 I11.x 的三大证据链中的第②条（影像学特征性改变）和第③条（排除其他心脏病因）。</p>
+        <p><strong>✅ 编码：</strong>主诊断 I11.0（高血压性心脏病伴心衰）+ 其他诊断 I10（高血压）+ 其他诊断 I25.1（冠心病，非心衰病因）</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 冠心病+心梗+心衰组合冲突</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者急诊入院，诊断为：①急性广泛前壁心肌梗死；②急性左心衰竭（Killip III级）；③冠心病（三支病变）；④高血压2级。</p>
+    <p>入院后急诊行CAG（冠脉造影）+前降支PCI（药物洗脱支架1枚）。</p>
+    <p><strong>问题：</strong>请按照完整的编码规则给出主诊断及其他诊断编码方案，并说明每一步的推导依据。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案：</strong></p>
+        <p><strong>主诊断：</strong><code>I21.0</code>（急性前壁心肌梗死）</p>
+        <p><strong>推理：</strong>急诊入院+急诊PCI——急性心梗是本次住院的"最直接原因"和"最大资源消耗点"。超过冠心病和心衰。</p>
+        <p><strong>其他诊断：</strong></p>
+        <p>② <code>I50.1</code>（急性左心衰竭）——心梗的直接并发症，Killip III级 = 急性肺水肿。与 I21.0 的因果关系明确（心梗→心衰），非高血压或冠心病所致。</p>
+        <p>③ <code>I25.103</code>（冠状动脉粥样硬化性心脏病，三支病变）——心梗的"土壤"，作为其他诊断记录。</p>
+        <p>④ <code>I10</code>（原发性高血压2级）——心梗的危险因素，但既不是本次入院原因，也未在本案例中证明是心衰的主要原因。</p>
+        <p><strong>⚠️ 容易犯的错误：</strong>不要编 I11.0（高血压性心脏病伴心衰）——因为心衰的原因明确是心梗，不是高血压。也不要编成主诊断 I50.1——虽然急性心衰很紧急，但"有明确病因的并发症"在"三最"原则中让位于病因本身。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 肝硬化+静脉曲张出血的星剑号</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"呕血、黑便2小时"急诊入院。急诊胃镜提示：食管静脉曲张破裂出血（重度），镜下套扎止血。既往病史：乙肝后肝硬化（Child-Pugh B级），脾功能亢进。</p>
+    <p><strong>问题：</strong>请给出完整的诊断编码（含星剑号），并说明主诊断位置放哪个码？为什么这个场景用了"星剑号"但主诊断却要放"病因"的剑号？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码方案：</strong></p>
+        <p><strong>主诊断：</strong><code>K74.6†</code>（肝硬化，剑号——病因码）</p>
+        <p><strong>附加诊断：</strong><code>I98.2*</code>（食管静脉曲张，分类于他处的疾病——星号，表现码）</p>
+        <p>另需加 <code>I85.0</code> 吗？<strong>不需要</strong>——I85.0 是"原发性"食管静脉曲张伴出血，而本例静脉曲张由肝硬化引起，属于继发性，应使用星剑号 K74.6† + I98.2*。</p>
+        <p><strong>🤔 为什么这个场景"表现优先"的判断失效了？</strong></p>
+        <p>这是一个关键的例外情况。虽然食管静脉曲张出血是本次急诊入院的直接原因（呕血→急诊胃镜→套扎），按"直接原因优先"的逻辑似乎应该把 I85.0 放主诊断位置。</p>
+        <p><strong>但 ICD-10 星剑号系统的硬性规则是：剑号（†）永远做主诊断，星号（*）只能做附加诊断。</strong>星剑号的设计哲学是：<strong>在根本病因明确的疾病表现上，用病因码驱动统计和DRG分组。</strong></p>
+        <p>因此：K74.6† 做主诊断 → DRG 入肝病组；如果错把表现码 I85.0 放主诊 → 入消化道出血组 → 权重不同，编码错误。</p>
+        <p><strong>💡 这揭示了一条重要规则：</strong>星剑号系统在"表现优先"的常规判断之上，附加了一个更高级的约束——<strong>当 ICD-10 已建立星剑号配对时，病因码必须做主诊断</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 多诊断冲突综合决策</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，男，72岁。因"突发右侧肢体无力伴言语含糊2小时"急诊入院。</p>
+    <p><strong>入院查体：</strong>NIHSS 12分，右侧上下肢肌力2级。</p>
+    <p><strong>急诊检查：</strong>头颅CT平扫——未见出血；CTA——左侧大脑中动脉M1段闭塞；MRI-DWI——左侧基底节区急性梗死灶。心电图——心房颤动（快室率）。</p>
+    <p><strong>治疗：</strong>rt-PA静脉溶栓（发病2.5小时，在窗内），后转入卒中单元监护。</p>
+    <p><strong>既往史：</strong>高血压病史20年，2型糖尿病10年，房颤病史3年（未规范抗凝），冠心病（陈旧性下壁心梗）。</p>
+    <p><strong>出院诊断：</strong>①急性脑梗死；②心房颤动；③高血压3级；④2型糖尿病；⑤冠心病（陈旧性心梗）</p>
+    <p><strong>问题：</strong>请确定主诊断，并给出<strong>所有诊断的完整编码</strong>，说明推导过程和关键判断节点。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码方案（6码）：</strong></p>
+        <table>
+          <tr><th>序号</th><th>编码</th><th>含义</th><th>依据</th></tr>
+          <tr><td style="background:var(--accent-bg);">主诊</td><td><code>I63.4</code></td><td>脑栓塞（心源性）</td><td>DWI阳性+房颤=心源性栓塞型脑梗死</td></tr>
+          <tr><td>其他1</td><td><code>I48</code></td><td>心房颤动</td><td>本次卒中的"病因"——房颤栓子脱落；作为其他诊断保留</td></tr>
+          <tr><td>其他2</td><td><code>I10</code></td><td>原发性高血压3级</td><td>卒中危险因素，但非本次直接原因</td></tr>
+          <tr><td>其他3</td><td><code>E11.9</code></td><td>2型糖尿病</td><td>同上</td></tr>
+          <tr><td>其他4</td><td><code>I25.2</code></td><td>陈旧性心肌梗死</td><td>>28天，病史记录</td></tr>
+          <tr><td>其他5</td><td><code>Z92.3</code></td><td>长期使用抗凝药（未规范）</td><td>房颤未规范抗凝是卒中的重要背景信息</td></tr>
+        </table>
+        <p><strong>🔥 关键判断节点：</strong></p>
+        <p><strong>① 主诊断为什么是 I63.4 而不是 I48（房颤）？</strong>房颤是"栓子来源"= 病因，但急性卒中消耗了本次住院的<strong>全部急救资源</strong>（溶栓+卒中单元）。I63.4 是直接原因+表现最严重+资源消耗最大。</p>
+        <p><strong>② I63.4 vs I63.5（未特指）？</strong>CTA+心脏听诊/心电图证实房颤→心源性栓塞→选择 I63.4（脑栓塞），而非 I63.5（其他原因）或 I63.9（未特指）。<strong>有证据就要用最精确的亚目。</strong></p>
+        <p><strong>③ 为什么高血压（I10）不和心脏病关联？</strong>本案例没有证据表明高血压导致了具体的心脏损害（无左室肥厚超声描述、无心衰表现）——I11/I13 不适用。</p>
+        <p><strong>④ 为什么不是 I11.x 而是 I10 + 分别编？</strong>因为没有"高血压性心脏病"的临床证据。高血压在这一场景中仅为卒中危险因素。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">✅</span> 今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-num">1</div><div><strong>核心原则：</strong>"病因"不自动等于"主诊断"——谁导致本次住院+谁消耗最多资源，谁做主诊断</div></div>
+  <div class="key-item"><div class="key-num">2</div><div><strong>冠心病 vs 心梗：</strong>I21（急性心梗）压倒 I25（冠心病）——除非住院目的就是处理慢性冠心病</div></div>
+  <div class="key-item"><div class="key-num">3</div><div><strong>高血压 I11：</strong>因果关系必须有三大证据链（诊断命名+影像+排除其他），不能"看着像"就合并</div></div>
+  <div class="key-item"><div class="key-num">4</div><div><strong>脑血管三阶段：</strong>DWI 决定编码阶段——阳性=I63（梗死）、阴性+狭窄=I65/I66、慢性=I69</div></div>
+  <div class="key-item"><div class="key-num">5</div><div><strong>ICD-10 有合并编码就必须合并：</strong>K80（胆石症）、I11/I13（高血压心脏病/肾病）、J44.0（COPD+感染）</div></div>
+  <div class="key-item"><div class="key-num">6</div><div><strong>星剑号铁律：</strong>即使"表现"是急诊入院原因，剑号（†）仍然做主诊断、星号（*）只能附加</div></div>
+  <div class="key-item"><div class="key-num">7</div><div><strong>决策三维度：</strong>治疗重心 × 资源消耗 × 紧急程度——三者交叉验证，不要单看某一维</div></div>
+  <div class="key-item"><div class="key-num">8</div><div><strong>不要"拆码"：</strong>能用合并编码却拆成多个独立编码 → DRG入组偏差 → 医保飞检扣分</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 38 主题：住院目的导向——治疗、检查、放化疗的主诊断选择</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>以"检查"为目的住院，主诊断怎么写？"怀疑XX待查"能作为主诊断吗？</li>
+    <li>肿瘤放化疗入院，什么时候用 Z51.0（放疗）/ Z51.1（化疗）做主诊断，什么时候用肿瘤本身？</li>
+    <li>康复科入院的编码与急性期入院有什么本质不同？</li>
+    <li>多次住院的患者，第二次住院是否要沿用首次住院的诊断？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 37 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
