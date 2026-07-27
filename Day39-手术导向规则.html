@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 39（2026年7月27日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Decision Matrix ===== */
+  .matrix-table { margin: 16px 0; }
+  .matrix-table td { text-align: center; padding: 8px 10px; }
+  .matrix-table .match { background: var(--green-bg); color: var(--green); font-weight: 700; }
+  .matrix-table .mismatch { background: var(--red-bg); color: var(--red); font-weight: 700; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 39 · 2026年7月27日</div>
+  <h1>📚 主诊断选择 —— 手术导向规则</h1>
+  <p class="subtitle">今日主题：有手术时，主诊断必须与手术匹配 —— 告别 QY 歧义病例</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 39 / 60 天（65%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员日常核心技能）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>手术导向规则的核心逻辑：主诊断 = "为什么要做这个手术"</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>DRG分组两步走（MDC由主诊断→ADRG由主手术）及QY产生机制</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>四种不能做主诊断的"状态码"：Z90/Z47/Z48/Z98系列</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避开隐形陷阱）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>"因症入院、择优手术"场景的主诊断两难：症状码vs手术目的码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>内科诊断+外科手术=QY的底层逻辑：MDC内无对应外科ADRG</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z编码做主诊断的三种特殊例外情形（Z51放化疗、Z42整形重建等）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>医保结算清单与病案首页在主诊断选择上的差异场景</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>多地医保局对QY病例的具体扣款政策和申诉流程</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>这是主诊断选择专题中最具"实战杀伤力"的一讲。QY（歧义病例）是DRG分组中最让编码员头疼的问题之一——表面上看编码都没错，但主诊断与主手术不匹配，导致入组失败、医保结算打折。今天要形成条件反射：<strong>看到手术，先问"谁为谁而做"</strong>。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🧩</span> 一、手术导向规则的底层逻辑 —— 不是"手术治了什么"而是"为什么手术"</h2>
+
+<h3>1.1 DRG分组器是怎么走的</h3>
+<p>要理解为什么诊断和手术必须匹配，先要搞清楚DRG分组器的工作流。分组不是"一次性判断"，而是两步递进：</p>
+
+<div class="flow-chart">
+  <p style="font-weight:700;margin-bottom:8px;color:var(--accent);">DRG 分组两步走</p>
+  <div class="flow-row">
+    <div class="flow-box">第1步<br>主诊断 → MDC</div>
+    <span style="font-size:20px;">→</span>
+    <div class="flow-box">第2步<br>主手术 → ADRG</div>
+    <span style="font-size:20px;">→</span>
+    <div class="flow-box warn-step">不匹配 → QY</div>
+  </div>
+  <p style="font-size:12px;color:var(--text3);margin-top:12px;">MDC = 主要诊断大类（如MDCF-循环系统、MDCE-呼吸系统）<br>ADRG = 核心疾病诊断相关组（如FB1-冠脉搭桥、EJ1-胸部大手术）</p>
+</div>
+
+<p><strong>关键点：</strong>主诊断决定了病例进入哪个MDC"池子"，然后分组器在<strong>这个池子里</strong>找主手术对应的外科ADRG。如果池子里根本没有这个手术对应的外科组——恭喜，QY了。</p>
+
+<h3>1.2 QY是怎么诞生的——经典案例解剖</h3>
+<p>以下这个案例是呼吸内科最经典的手术导向陷阱：</p>
+
+<div class="card warn">
+  <p><strong>病例：</strong>患者因"胸腔积液"住院，入院后行"胸腔闭式引流术"。出院时：</p>
+  <p>主诊断：<code>J94.804</code> 胸腔积液</p>
+  <p>主手术：<code>34.0401</code> 胸腔闭式引流术</p>
+  <p><strong>结果：DRG分组器判定 QY（歧义病例）</strong></p>
+</div>
+
+<p>为什么会QY？拆解分组路径：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>J94.804 → MDCE（呼吸系统）</h4>
+      <p>J94属于第X章"呼吸系统疾病"，分组器将病例扔进MDCE。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>34.0401 → 在MDCE内找外科ADRG → 找不到！</h4>
+      <p>34.04（胸腔闭式引流术）在MDCE的外科ADRG分组中，通常只与"气胸（J93）"或"脓胸（J86）"等<strong>需要引流治疗的急症</strong>匹配。单独的"胸腔积液（J94.8）"在MDCE中不包含对应的外科组。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>分组器结论：QY</h4>
+      <p>主诊断进了呼吸内科池子，主手术在这个内科池子找不到外科组→入组失败，掉进QY。</p>
+    </div>
+  </div>
+</div>
+
+<h3>1.3 正确解法：让主诊断"带领"手术找到对口ADRG</h3>
+
+<p>胸腔积液的病因决定了一切。同样的"胸腔闭式引流"，不同病因的匹配结果是：</p>
+
+<table>
+  <tr><th>场景</th><th>正确主诊断</th><th>主手术</th><th>是否QY</th><th>原因</th></tr>
+  <tr>
+    <td>结核性胸膜炎导致积液</td>
+    <td><code>A16.5</code> 结核性胸膜炎</td>
+    <td>34.0401</td>
+    <td style="color:var(--green);font-weight:700;">✅ 匹配</td>
+    <td>A16.5进MDCA（感染），34.04能找到对应外科组</td>
+  </tr>
+  <tr>
+    <td>肺癌胸膜转移导致积液</td>
+    <td><code>C78.2</code> 胸膜继发恶性肿瘤</td>
+    <td>34.0401</td>
+    <td style="color:var(--green);font-weight:700;">✅ 匹配</td>
+    <td>C78.2进MDCJ（肿瘤），34.04能找到对应外科组</td>
+  </tr>
+  <tr>
+    <td>肺炎旁积液</td>
+    <td><code>J18.9</code> 肺炎（病原体未特指）</td>
+    <td>34.0401</td>
+    <td style="color:var(--red);font-weight:700;">⚠️ 需谨慎</td>
+    <td>J18为内科诊断，可能需要明确积液的病因和性质</td>
+  </tr>
+  <tr>
+    <td>纯漏出性胸腔积液、病因不明</td>
+    <td><code>J94.804</code> 胸腔积液</td>
+    <td>34.0401</td>
+    <td style="color:var(--red);font-weight:700;">❌ QY</td>
+    <td>J94.8在MDCE没有外科ADRG，手术没"家"</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 核心原则：</strong>有手术时，主诊断必须回答"这个手术的临床理由是什么"。胸腔引流管放进去，不是因为"有积液"这么简单——是因为<strong>结核</strong>导致的积液、<strong>肿瘤</strong>导致的积液、还是<strong>气胸</strong>？<strong>病因 = 主诊断的锚。</strong>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🚫</span> 二、"状态码"不能做主诊断 —— Z90/Z47/Z48/Z96 四大禁区</h2>
+
+<p>手术导向规则的第一道防线：判断哪些诊断天生不能做主诊断。</p>
+
+<h3>2.1 四大状态码禁区速查表</h3>
+
+<table>
+  <tr><th>编码系列</th><th>含义</th><th>常见例子</th><th>为什么不能做主诊断</th><th>应该用什么替代</th></tr>
+  <tr>
+    <td><code>Z90.-</code></td>
+    <td>后天性器官缺失（术后状态）</td>
+    <td>Z90.000x016 后天性颅骨缺损<br>Z90.710 后天性子宫缺失</td>
+    <td>是"已发生的结果"，不是本次住院治疗的"理由"</td>
+    <td>Z42.- 整形重建的随诊医疗<br>或直接以手术目的的诊断</td>
+  </tr>
+  <tr>
+    <td><code>Z47.-</code></td>
+    <td>骨科术后随诊（取内固定）</td>
+    <td>Z47.001 取除骨折内固定装置</td>
+    <td>Z47本身是一种"术后状态/随诊"，按规范不能做主诊断</td>
+    <td>保留原骨折诊断（如S72.301股骨干骨折）<br>或以"内固定存留"为目的</td>
+  </tr>
+  <tr>
+    <td><code>Z48.-</code></td>
+    <td>其他手术后随诊（换药、拆线）</td>
+    <td>Z48.0 手术后伤口换药</td>
+    <td>纯粹的过程性管理，非独立诊断实体</td>
+    <td>原手术疾病诊断</td>
+  </tr>
+  <tr>
+    <td><code>Z96/Z98</code></td>
+    <td>体内植入物/手术后状态</td>
+    <td>Z96.6 骨科关节植入物<br>Z98.8 其他手术后状态</td>
+    <td>植入物和状态的"存在"不是疾病</td>
+    <td>以手术目的为核心（如Xxx.x关节置换术后松动）</td>
+  </tr>
+</table>
+
+<h3>2.2 颅骨修补的经典主诊断陷阱</h3>
+
+<div class="card warn">
+  <p><strong>病例：</strong>患者6个月前因外伤行去骨瓣减压术，现入院行"颅骨修补术"。</p>
+  <p><strong>陷阱编码：</strong></p>
+  <p>主诊断：<code>Z90.000x016</code> 后天性颅骨缺损</p>
+  <p>主手术：<code>02.06</code> 颅骨成形术</p>
+  <p><strong>→ 结果：QY</strong></p>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 为什么 Z90 不行？</h4>
+    <p>Z90属于"后天性器官缺失状态"——你只是告诉分组器"病人少了一块颅骨"。</p>
+    <p>分组器想：颅骨缺损是神经外科的问题（MDCB），但02.06颅骨成形术在这个MDC中找不到匹配的ADRG → QY。</p>
+    <p><strong>根本问题：Z90是"已有结果"，不是"本次要解决问题"。</strong></p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确编码</h4>
+    <p>主诊断应选择反映"入院目的"的编码。如果为整形重建目的：</p>
+    <p>主诊断：原发伤病的后遗症/随诊编码</p>
+    <p>或 <code>T90.2</code> 颅骨骨折后遗症</p>
+    <p>主手术：<code>02.06</code> 颅骨成形术</p>
+    <p><strong>核心：主诊断要传达"为什么要做手术"，而不是"现在缺什么"。</strong></p>
+  </div>
+</div>
+
+<h3>2.3 Z47 术后取内固定的正解</h3>
+
+<p>骨折术后取内固定（钢板、螺钉）是骨科最常见的"手术导向"场景。</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误</h4>
+    <p>主诊断：Z47.001 取除骨折内固定装置</p>
+    <p>主手术：78.62 胫骨内固定装置取出术</p>
+    <p><strong>→ QY</strong></p>
+    <p>Z47是"术后随诊"性质的编码，不能做主诊断</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>主诊断：S82.201 胫骨干骨折（原骨折诊断）</p>
+    <p>主手术：78.62 胫骨内固定装置取出术</p>
+    <p><strong>→ 匹配入组</strong></p>
+    <p>主诊断用原骨折码，表达了"因骨折接受内固定取出"的逻辑链</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 口诀：</strong>取内固定，诊断写骨折；颅骨修补，诊断写后遗症/原伤；换药拆线，诊断写原手术病。永远不要用Z状态码做主诊断——除非是Z51.x放化疗（唯一例外，Day 38已讲）。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔗</span> 三、诊断-手术匹配的"三段论"推理法</h2>
+
+<p>掌握了"状态码禁区"之后，下一个问题是：对于可以做主诊断的疾病码，它和手术能匹配吗？怎么判断？</p>
+
+<h3>3.1 三段论推理框架</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>诊断是不是本次手术的"临床理由"？</h4>
+      <p>手术记录里有没有提到这个诊断是手术指征？病程中医生有没有写"因XX行YY手术"？如果诊断和手术之间在医院文书中没有因果关系链，大概率不匹配。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>诊断的MDC池子里有没有这个手术的ADRG？</h4>
+      <p>这是最"技术"的一步。翻阅DRG分组方案或使用分组器查询：输入诊断码和手术码，看是否能分出外科组。MDC内必须有该手术对应的外科ADRG。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>多个候选诊断，哪个最能"带飞"手术？</h4>
+      <p>如果患者同时有多个诊断且都做了手术，选与资源消耗最大的手术匹配的那个诊断。优先保证最大的手术不QY——因为它权重最高。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.2 常见"诊断-手术不匹配"场景排查表</h3>
+
+<table>
+  <tr><th>临床场景</th><th>常见错误主诊断</th><th>主手术</th><th>正确主诊断</th><th>为什么错</th></tr>
+  <tr>
+    <td>胆总管结石 LC+ERCP</td>
+    <td><code>K80.5</code> 胆总管结石</td>
+    <td>51.23 腹腔镜胆囊切除术</td>
+    <td><code>K80.1</code> 胆囊结石伴胆囊炎</td>
+    <td>K80.5在消化MDC中有ERCP外科组，但LC（切胆囊）的手术目的应是胆囊病变</td>
+  </tr>
+  <tr>
+    <td>急性阑尾炎合并腹膜炎</td>
+    <td><code>K65.0</code> 急性腹膜炎</td>
+    <td>47.01 腹腔镜阑尾切除术</td>
+    <td><code>K35.3</code> 急性阑尾炎伴局限性腹膜炎</td>
+    <td>腹膜炎是阑尾炎的并发症，主诊断应是原发病阑尾炎</td>
+  </tr>
+  <tr>
+    <td>前列腺增生行TURP</td>
+    <td><code>R33</code> 尿潴留</td>
+    <td>60.29 经尿道前列腺电切</td>
+    <td><code>N40</code> 前列腺增生</td>
+    <td>R33是症状码，有明确病因时不能用；N40才是TURP的手术指征</td>
+  </tr>
+  <tr>
+    <td>胃癌术后吻合口狭窄行球扩</td>
+    <td><code>K91.8</code> 消化系统术后其他疾患</td>
+    <td>46.85 食管狭窄扩张术</td>
+    <td><code>C16.9</code> 胃癌（原肿瘤诊断）</td>
+    <td>K91.8在消化MDC中可能无外科组；肿瘤术后并发症应以原肿瘤驱动</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🔄</span> 四、多手术场景下的主诊断排序策略</h2>
+
+<p>住院期间做了多个手术，主诊断只能有一个——怎么选？</p>
+
+<h3>4.1 排序黄金法则</h3>
+
+<div class="card">
+  <p><strong>优先级递减：</strong></p>
+  <ol>
+    <li><strong>权重最高原则：</strong>与DRG权重最高的手术匹配的诊断优先——因为高权重手术的入组正确性对医保结算影响最大。</li>
+    <li><strong>手术指征明确原则：</strong>手术记录中明确写到"因XX行YY手术"的，XX就是匹配目标。</li>
+    <li><strong>资源消耗最多原则：</strong>如果多手术权重接近，选消耗住院资源最多的那个手术对应的诊断。</li>
+  </ol>
+</div>
+
+<h3>4.2 实际案例：一人两手术</h3>
+
+<div class="card tip">
+  <p><strong>病例：</strong>患者入院，行两种手术——</p>
+  <ul>
+    <li>冠脉造影+PCI（00.66 PTCA+36.07 冠状药物洗脱支架植入）——针对 I25.101 冠心病</li>
+    <li>下肢静脉曲张高位结扎+剥脱术（38.59）——针对 I83.901 下肢静脉曲张</li>
+  </ul>
+  <p><strong>思考：</strong>主诊断选 I25.101 还是 I83.901？</p>
+</div>
+
+<details style="margin:6px 0;">
+  <summary style="cursor:pointer;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #c7d2fe;">
+    ▶ 点击查看分析
+  </summary>
+  <div style="padding:10px 14px;">
+    <table>
+      <tr><th>方案</th><th>主诊断</th><th>主手术</th><th>DRG权重（估算）</th><th>结果</th></tr>
+      <tr>
+        <td>A</td>
+        <td>I25.101 冠心病</td>
+        <td>36.07 冠状药物洗脱支架植入</td>
+        <td>~3.5（FM1组）</td>
+        <td style="color:var(--green);font-weight:700;">✅ 正确</td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td>I83.901 下肢静脉曲张</td>
+        <td>38.59 下肢静脉剥脱术</td>
+        <td>~0.8（FJ1组）</td>
+        <td style="color:var(--red);font-weight:700;">❌ 权重低亏钱</td>
+      </tr>
+    </table>
+    <p><strong>结论：</strong>选A。<code>I25.101</code>配<code>36.07</code>入FM1冠脉支架组，权重远高于静脉曲张手术。静脉曲张手术编码作为其他手术填在第二行。</p>
+  </div>
+</details>
+
+<hr class="divider">
+
+<!-- ======== 五、重难点解析 ======== -->
+<h2><span class="icon">🔬</span> 五、重难点深度解析：症状入院→手术诊断的"诊断升级"困境</h2>
+
+<p>这是手术导向规则中最微妙的场景——患者以症状入院，住院后发现了需要手术的真实病因，但医生出院诊断仍写症状。</p>
+
+<div class="card warn">
+  <h3 style="margin-top:0;color:var(--red);">典型案例："右上腹痛"→腹腔镜胆囊切除术</h3>
+  <p><strong>病程还原：</strong></p>
+  <ol>
+    <li>患者因"右上腹痛2天"入院</li>
+    <li>B超提示：胆囊多发结石、胆囊壁增厚</li>
+    <li>行腹腔镜胆囊切除术（LC）</li>
+    <li>术后病理：慢性胆囊炎急性发作，胆囊结石</li>
+    <li>出院诊断医生写："右上腹痛"</li>
+  </ol>
+  <p><strong>问题：</strong>主诊断用 R10.101（右上腹痛）还是 K80.101（胆囊结石伴慢性胆囊炎）？</p>
+</div>
+
+<h3>分析框架：三个QA自检</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">Q1</div>
+    <div class="process-content">
+      <h4>住院期间明确了病因吗？</h4>
+      <p><strong>明确。</strong>B超+病理都给出了确切诊断：胆囊结石、胆囊炎。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">Q2</div>
+    <div class="process-content">
+      <h4>手术是为这个病因做的吗？</h4>
+      <p><strong>是。</strong>LC的手术指征正是胆囊结石伴胆囊炎。手术记录会写"因慢性胆囊炎急性发作行胆囊切除术"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">Q3</div>
+    <div class="process-content">
+      <h4>用病因诊断和手术能匹配入组吗？</h4>
+      <p><strong>能。</strong>K80.101（消化MDC）+ 51.23（LC）= 顺利入HC2胆囊切除术组。</p>
+      <p>如果用R10.101（症状码）+ 51.23 = R码在MDC中有对应外科组吗？大概率QY。</p>
+    </div>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 用症状做主诊断</h4>
+    <p>主诊断：<code>R10.101</code> 右上腹痛</p>
+    <p>主手术：<code>51.23</code> 腹腔镜胆囊切除术</p>
+    <p><strong>→ R10属于MDC（症状体征），51.23在症状体征MDC中没有对应外科组 → QY</strong></p>
+    <p>而且违反"有确诊不能用症状"的基础规则。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 用确诊病因做主诊断</h4>
+    <p>主诊断：<code>K80.101</code> 胆囊结石伴慢性胆囊炎</p>
+    <p>主手术：<code>51.23</code> 腹腔镜胆囊切除术</p>
+    <p><strong>→ K80进MDCG（消化系统），51.23匹配HC2 → 分组成功</strong></p>
+    <p>同时遵守"确诊替代症状"的三最原则。</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 深层教训：</strong>"因症入院、对因手术"是最常见的编码冲突场景。编码员的职责是：<strong>把医生出院诊断中的"症状名"升级为"病理名"</strong>——只要病历中有检查/病理证据支持。这不是"篡改诊断"，而是"术语清洗+主诊断规则"的正确应用。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 状态码判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下诊断中，哪些<strong>不能</strong>做主诊断？为什么？</p>
+    <ol>
+      <li>Z90.000x016 后天性颅骨缺损 — 入院行颅骨修补术</li>
+      <li>K80.101 胆囊结石伴慢性胆囊炎 — 入院行LC</li>
+      <li>Z47.001 取除骨折内固定装置 — 入院取胫骨内固定</li>
+      <li>N40 前列腺增生 — 入院行TURP</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 不能做主诊断的：</strong>① Z90.000x016、③ Z47.001</p>
+        <p><strong>① Z90.000x016 后天性颅骨缺损：</strong>属于"状态码"——颅骨缺损是历史事实，不是本次住院的治疗目标。本次住院的目标是"颅骨修补重建"。应使用后遗症编码或原伤编码。</p>
+        <p><strong>③ Z47.001 取除骨折内固定装置：</strong>Z47系列是术后随诊性质，按规范不能做主诊断。应使用原骨折诊断（如S82.201）。</p>
+        <p><strong>✅ 能做主诊断的：</strong>② K80.101 和 ④ N40 —— 两者是明确的疾病诊断，且是手术的直接指征，与手术匹配。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 诊断-手术匹配</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下各组"主诊断 + 主手术"组合，哪些会产生QY？</p>
+    <table>
+      <tr><th>组</th><th>主诊断</th><th>主手术</th><th>QY？</th></tr>
+      <tr><td>A</td><td>J94.804 胸腔积液</td><td>34.0401 胸腔闭式引流术</td><td>？</td></tr>
+      <tr><td>B</td><td>R10.101 右上腹痛</td><td>51.23 腹腔镜胆囊切除术</td><td>？</td></tr>
+      <tr><td>C</td><td>I25.101 冠心病</td><td>36.07 冠状药物洗脱支架植入</td><td>？</td></tr>
+      <tr><td>D</td><td>K80.101 胆囊结石伴胆囊炎</td><td>51.23 腹腔镜胆囊切除术</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：QY。</strong>J94.804进MDCE（呼吸内科），34.0401在MDCE中找不到对应的外科ADRG。胸腔积液编码时需明确病因（结核？肿瘤？），用病因为主诊断。</p>
+        <p><strong>✅ B：QY。</strong>R10.101是症状码，在有明确病因（胆囊结石）的情况下不能用。用R症状码+外科手术=必QY。</p>
+        <p><strong>✅ C：匹配。</strong>I25.101进MDCF（循环系统），36.07+00.66 PCI完整编码匹配FM1冠脉支架组。</p>
+        <p><strong>✅ D：匹配。</strong>K80.101进MDCG（消化系统），51.23匹配HC2胆囊切除术组。这是最标准的匹配模板。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 术语清洗+手术匹配</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>医生出院诊断写入以下内容，患者均做了手术。请判断每个诊断是否需要清洗升级，并给出正确的主诊断方向：</p>
+    <table>
+      <tr><th>医生写</th><th>手术</th><th>清洗判断</th></tr>
+      <tr><td>"肚子疼"</td><td>阑尾切除术</td><td>？</td></tr>
+      <tr><td>"取钢板"</td><td>胫骨钢板取出术</td><td>？</td></tr>
+      <tr><td>"胸闷"</td><td>冠脉支架植入</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ "肚子疼" → 急性阑尾炎：</strong>"肚子疼"是症状，做了阑尾切除说明有确定的"阑尾炎"诊断。清洗为 K35.x（急性阑尾炎），与 47.01 匹配。</p>
+        <p><strong>✅ "取钢板" → 胫骨骨折：</strong>"取钢板"不是一个诊断。本次入院目的虽然是"取"，但不宜直接写Z47。主诊断应写原骨折 S82.201（胫骨干骨折），手术写 78.62（内固定取出术）。</p>
+        <p><strong>✅ "胸闷" → 冠心病：</strong>"胸闷"是症状，做了冠脉支架说明冠脉有明确狭窄。清洗为 I25.101（冠心病），与 36.07 PCI支架匹配。</p>
+        <p><strong>💡 核心逻辑：</strong>术语清洗+手术匹配规则，一箭双雕——既给出了标准诊断，又确保了分组正确。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 多手术场景</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病例：</strong>患者52岁女性，因"月经量增多2年、腹痛1月"入院。</p>
+    <ul>
+      <li>B超：子宫多发肌瘤，最大直径5cm；胆囊结石</li>
+      <li>同时行两种手术：腹腔镜子宫肌瘤剔除术（68.29）+ 腹腔镜胆囊切除术（51.23）</li>
+      <li>出院诊断：1.子宫多发平滑肌瘤 2.胆囊结石伴慢性胆囊炎</li>
+    </ul>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>两个手术分别对应什么诊断？</li>
+      <li>主诊断应该选哪个？为什么？</li>
+      <li>另一个诊断和手术怎么处理？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ (1) 手术-诊断对应关系：</strong></p>
+        <p>68.29 腹腔镜子宫肌瘤剔除术 → <code>D25.9</code> 子宫平滑肌瘤</p>
+        <p>51.23 腹腔镜胆囊切除术 → <code>K80.101</code> 胆囊结石伴慢性胆囊炎</p>
+        <p><strong>✅ (2) 主诊断选谁？</strong>需要比较两种方案的DRG分组和权重：</p>
+        <table style="margin:8px 0;">
+          <tr><th>方案</th><th>主诊断</th><th>主手术</th><th>入组</th><th>权重</th></tr>
+          <tr><td>A</td><td>D25.9 子宫肌瘤</td><td>68.29 肌瘤剔除</td><td>NF1 子宫肌瘤手术组</td><td>~1.5</td></tr>
+          <tr><td>B</td><td>K80.101 胆囊结石</td><td>51.23 LC</td><td>HC2 胆囊切除术组</td><td>~1.2</td></tr>
+        </table>
+        <p><strong>✅ 选择方案A：</strong>D25.9+68.29权重更高，主诊断选子宫肌瘤。K80.101和51.23分别作为其他诊断和其他手术。</p>
+        <p><strong>✅ (3) 次要手术的处理：</strong></p>
+        <p>其他诊断第2行：K80.101 胆囊结石伴慢性胆囊炎</p>
+        <p>其他手术第2行：51.23 腹腔镜胆囊切除术</p>
+        <p>两组诊断-手术都要完整编码，只是首页排序区分主次。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 颈动脉支架的MDC归属</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病例：</strong>68岁男性，DSA显示颈内动脉C6段（眼段）重度狭窄85%，行"颈内动脉支架植入术"。</p>
+    <p>出院诊断：颈内动脉狭窄</p>
+    <p>但！问题是——颈内动脉属于"入颅前"还是"颅内"？这决定了主诊断该用 I65.2（入颅前动脉狭窄）还是 I66.8（颅内动脉狭窄），二者导致不同的MDC和手术编码：</p>
+    <ul>
+      <li>I65.2 → MDCF（循环系统）→ 手术编码 00.63（颈动脉支架）</li>
+      <li>I66.8 → MDCB（神经系统）→ 手术编码 00.65（颅内血管支架）</li>
+    </ul>
+    <p><strong>问题：</strong>C6段（眼段）应该归入哪一类？主诊断和主手术各是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 关键知识点——颈内动脉分段：</strong></p>
+        <p>颈内动脉从颈总动脉分叉到进入颅腔，分7段：C1（颈段）→ C2（岩段）→ C3（破裂孔段）→ C4（海绵窦段）→ C5（床突段）→ C6（眼段）→ C7（交通段）。</p>
+        <p><strong>C5-C6-C7 均位于颅内！</strong>颈内动脉在进入海绵窦（C4）之后即进入颅腔。</p>
+        <p><strong>✅ 正确答案：</strong></p>
+        <p>主诊断：<code>I66.8</code> 其他颅内动脉的闭塞和狭窄（C6段属于颅内段）</p>
+        <p>主手术：<code>00.65</code> 经皮颅内血管支架置入术</p>
+        <p><strong>注意陷阱：</strong>很多编码员看到"颈内动脉"就下意识用 I65.2（入颅前动脉），但C5-C7段的解剖位置在颅内！诊断和手术编码都应使用"颅内"对应码，否则又是QY——因为 I65.2进的MDCF池子里没有 00.65 这个颅内手术码。</p>
+        <p><strong>💡 延伸：</strong>C1-C2段（颅外段）→ I65.2 + 00.63；C5-C7段（颅内段）→ I66.8 + 00.65。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 综合判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>病例：</strong>患者因"间断性胸闷、气短"入院。心内科检查：</p>
+    <ul>
+      <li>冠脉CTA：左前降支（LAD）中段狭窄约75%</li>
+      <li>心电图：非特异性ST-T改变</li>
+      <li>超声：左心室射血分数 LVEF 55%，未见节段性室壁运动异常</li>
+    </ul>
+    <p>行冠脉造影+PCI（LAD植入药物洗脱支架1枚）。</p>
+    <p>出院诊断医师写："胸闷"。手术记录写："因冠心病、LAD重度狭窄，行PCI术"。</p>
+    <p><strong>问题：请给出完整的主诊断+主手术编码，以及"胸闷"怎么处理。</strong></p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 分析：</strong></p>
+        <p><strong>第一步 · 症状→病因升级：</strong>"胸闷"是R码症状，住院期间CTA明确了冠脉狭窄（有机性病因且有PCI手术），必须升级为病因诊断。</p>
+        <p><strong>第二步 · 病因诊断确定：</strong>CTA显示LAD中段75%狭窄 → <code>I25.101</code> 冠状动脉粥样硬化性心脏病（三支中明确LCX，LAD狭窄是AS表现，非孤立性心梗）。</p>
+        <p><strong>第三步 · 诊断-手术MDC匹配：</strong>I25.101 → MDCF（循环系统）。PCI编码组合：</p>
+        <ul>
+          <li><code>36.07</code> 冠状药物洗脱支架植入</li>
+          <li><code>00.66</code> PTCA（经皮冠状动脉腔内成形术）</li>
+          <li><code>00.45</code> 一根血管操作</li>
+        </ul>
+        <p>I25.101 + 36.07 → 匹配FM1组（冠脉支架），无误。</p>
+        <p><strong>✅ 最终首页方案：</strong></p>
+        <p>主诊断：<code>I25.101</code> 冠状动脉粥样硬化性心脏病</p>
+        <p>主手术：<code>36.07</code> 冠状药物洗脱支架植入</p>
+        <p>其他手术：<code>00.66</code> PTCA、<code>00.45</code> 一根血管</p>
+        <p>"胸闷"作为入院时的症状不必单独编码——病因已明确，症状被病因吸收。</p>
+        <p><strong>💡 如果胸闷未消失且持续存在</strong>（出院时仍有主诉），作为其他诊断加编 <code>R07.4</code>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>手术导向核心：</strong>主诊断必须回答"手术的临床理由"，不是"手术治了什么"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>QY产生机制：</strong>主诊断进MDC→主手术在MDC中找不到外科ADRG→QY</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z90/Z47/Z48/Z96</strong>四大状态码不能做主诊断（Z51放化疗除外）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>取内固定写骨折：</strong>Z47不能做主诊断，用原骨折诊断驱动手术</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>症状码+外科手术=QY：</strong>R码在相应MDC中没有外科ADRG</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>多手术选权重最高：</strong>让最大的手术匹配入组，次要手术编其他</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三段论检查：</strong>临床理由→MDC找池子→匹配ADRG，三步缺一不可</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>"因症入院对因手术"：</strong>必须升级为病理诊断，不能留症状码</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 40 主题：并发症编码 —— T80-T88 操作并发症的分类逻辑</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>T80-T88 覆盖了哪些类型的操作后并发症？感染、机械性、出血各有对应的哪一块？</li>
+    <li>操作并发症编码时，主诊断选原发病还是并发症？什么时候并发症做主诊断？</li>
+    <li>术后感染（T81.4）和手术部位感染（SSI）是否完全等同？怎么区分？</li>
+    <li>"植入物排斥反应"（T82-T85系列）的编码需要哪些额外信息？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 39 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版</p>
+</div>
+
+</body>
+</html>
