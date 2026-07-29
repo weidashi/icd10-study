@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 41（2026年7月29日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .hero::after { content: ''; position: absolute; bottom: -40px; left: 30%; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.05); }
+  .hero .day-badge { display: inline-block; background: rgba(255,255,255,.2); color: #fff; padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px; backdrop-filter: blur(4px); }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 { font-size: 20px; margin: 44px 0 18px; padding: 14px 18px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); color: #dc2626; font-weight: 700; display: flex; align-items: center; gap: 10px; border-left: 4px solid #dc2626; }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card.accent { border-left: 4px solid #dc2626; }
+  .card.warn { border-left: 4px solid var(--warn-border); background: var(--warn-bg); }
+  .card.green { border-left: 4px solid var(--green); background: var(--green-bg); }
+  .card.red { border-left: 4px solid var(--red); background: var(--red-bg); }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-row .col { background: var(--card); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .compare-row .col.correct { border-left: 3px solid var(--green); } .compare-row .col.wrong { border-left: 3px solid var(--red); }
+  .compare-row .col h5 { font-size: 13px; margin-bottom: 6px; font-weight: 700; }
+  .mastery-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .mastery-table th { background: #fef2f2; color: #dc2626; padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; }
+  .mastery-table td { padding: 10px 14px; border-top: 1px solid var(--border); }
+  .mastery-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .mastery-badge.l1 { background: #fef2f2; color: #dc2626; } .mastery-badge.l2 { background: #fefce8; color: #b45309; } .mastery-badge.l3 { background: #ecfdf5; color: #059669; }
+  .case { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 14px; }
+  .case .case-tag { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+  .case .case-tag.practice { background: #eef2ff; color: var(--accent); } .case .case-tag.challenge { background: var(--red-bg); color: var(--red); }
+  .case details { margin-top: 12px; }
+  .case summary { cursor: pointer; color: #dc2626; font-weight: 600; font-size: 13px; }
+  .case .answer-box { background: var(--green-bg); border-radius: 8px; padding: 14px 16px; margin-top: 8px; font-size: 13px; border: 1px solid #a7f3d0; }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item { background: var(--card); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+  .key-item .key-num { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; background: #fef2f2; color: #dc2626; border-radius: 6px; font-size: 11px; font-weight: 700; margin-right: 6px; }
+  .process { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 14px 18px; background: var(--card); border-radius: var(--radius); margin: 14px 0; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 13px; }
+  .process .step { padding: 5px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; }
+  .process .step.s1 { background: #fef2f2; color: #dc2626; } .process .step.s2 { background: #fefce8; color: #b45309; } .process .step.s3 { background: #ecfdf5; color: #059669; } .process .step.s4 { background: #eef2ff; color: #4f46e5; }
+  .process .arr { color: var(--text3); font-weight: 700; }
+  .code-block { background: var(--code-bg); border-radius: 8px; padding: 12px 16px; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; line-height: 1.7; margin: 10px 0; border: 1px solid var(--border); overflow-x: auto; }
+  .footer { text-align: center; margin-top: 60px; padding: 24px; font-size: 12px; color: var(--text3); border-top: 1px solid var(--border); }
+  .footer a { color: var(--accent); }
+  .hierarchy { margin: 14px 0; }
+  .hierarchy .h-row { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+  .hierarchy .h-box { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; background: var(--accent-bg); color: var(--accent); }
+  .hierarchy .h-box.pri { background: #fef2f2; color: #dc2626; }
+  .hierarchy .h-arr { color: var(--text3); font-size: 16px; }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 20px 28px; }
+    .compare-row { grid-template-columns: 1fr; }
+    h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="day-badge">📅 Day 41 · 2026年7月29日</span>
+  <h1>损伤编码：外因编码（V01-Y98）+ 部位+性质组合</h1>
+  <div class="subtitle">损伤编码的三件套——部位、性质、外因——缺一不可</div>
+</div>
+
+<!-- 掌握程度 -->
+<h2><span class="icon">🎯</span>今日知识点掌握程度</h2>
+<table class="mastery-table">
+  <tr><th>等级</th><th>知识点</th><th>要求</th></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>损伤编码的"部位+性质"双轴索引法</td><td>能从主导词和修改词准确定位 S/T 编码</td></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>外因编码 V01-Y98 的整体架构和优先级</td><td>运输事故、跌倒、中毒、暴力等各类路径</td></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>外因编码永远不能作为主要诊断的原则</td><td>V/W/X/Y 只能作为附加编码</td></tr>
+  <tr><td><span class="mastery-badge l2">🟡 应该理解</span></td><td>多部位损伤的主诊断选择与严重度排序</td><td>颅内出血 > 颅骨骨折 > 内脏损伤 > 骨折 > 浅表损伤</td></tr>
+  <tr><td><span class="mastery-badge l2">🟡 应该理解</span></td><td>场所编码（Y92）、活动编码（Y93）、状态编码（Y99）的使用</td><td>只在初次就诊时附加这些编码</td></tr>
+  <tr><td><span class="mastery-badge l3">🟢 了解即可</span></td><td>迟发效应（后遗症）的外因编码规则</td><td>Y85-Y89 的使用场景和限制</td></tr>
+</table>
+
+<!-- 核心知识点1 -->
+<h2><span class="icon">📖</span>知识点一：损伤编码的双轴结构</h2>
+
+<h3>一、是什么：部位（S00-S99）+ 性质（骨折/脱位/开放性/闭合性）</h3>
+<p>第十九章的损伤编码采用<strong>双轴分类法</strong>：第一轴是<strong>损伤部位</strong>（头颈、躯干、上肢、下肢等），第二轴是<strong>损伤性质</strong>（骨折、脱位、扭伤、开放性伤口、浅表损伤等）。编码时需同时确定部位和性质。</p>
+
+<div class="card accent">
+  <h4>📍 部位编码索引（S00-S99）</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse; margin-top:8px;">
+    <tr style="background:#fef2f2;"><th style="padding:6px 10px; text-align:left;">编码范围</th><th style="padding:6px 10px; text-align:left;">部位</th><th style="padding:6px 10px; text-align:left;">高频损伤</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S00-S09</td><td style="padding:6px 10px; border-top:1px solid var(--border);">头部</td><td style="padding:6px 10px; border-top:1px solid var(--border);">头皮裂伤、颅骨骨折、脑震荡</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S10-S19</td><td style="padding:6px 10px; border-top:1px solid var(--border);">颈部</td><td style="padding:6px 10px; border-top:1px solid var(--border);">颈椎骨折、颈部开放性伤口</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S20-S29</td><td style="padding:6px 10px; border-top:1px solid var(--border);">胸部</td><td style="padding:6px 10px; border-top:1px solid var(--border);">肋骨骨折、气胸、肺挫伤</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S30-S39</td><td style="padding:6px 10px; border-top:1px solid var(--border);">腹部、下背、腰椎和骨盆</td><td style="padding:6px 10px; border-top:1px solid var(--border);">肝破裂、骨盆骨折、腰椎骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S40-S49</td><td style="padding:6px 10px; border-top:1px solid var(--border);">肩和上臂</td><td style="padding:6px 10px; border-top:1px solid var(--border);">锁骨骨折、肱骨骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S50-S59</td><td style="padding:6px 10px; border-top:1px solid var(--border);">肘和前臂</td><td style="padding:6px 10px; border-top:1px solid var(--border);">桡骨远端骨折、尺骨骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S60-S69</td><td style="padding:6px 10px; border-top:1px solid var(--border);">腕和手</td><td style="padding:6px 10px; border-top:1px solid var(--border);">掌骨骨折、手指截断</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S70-S79</td><td style="padding:6px 10px; border-top:1px solid var(--border);">髋和大腿</td><td style="padding:6px 10px; border-top:1px solid var(--border);">股骨颈骨折、股骨干骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S80-S89</td><td style="padding:6px 10px; border-top:1px solid var(--border);">膝和小腿</td><td style="padding:6px 10px; border-top:1px solid var(--border);">胫腓骨骨折、髌骨骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">S90-S99</td><td style="padding:6px 10px; border-top:1px solid var(--border);">踝和足</td><td style="padding:6px 10px; border-top:1px solid var(--border);">踝关节骨折、跖骨骨折</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">T00-T07</td><td style="padding:6px 10px; border-top:1px solid var(--border);">多部位损伤</td><td style="padding:6px 10px; border-top:1px solid var(--border);">双侧上肢骨折、多发伤</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">T08-T14</td><td style="padding:6px 10px; border-top:1px solid var(--border);">未特指部位的损伤</td><td style="padding:6px 10px; border-top:1px solid var(--border);">未特指部位的骨折</td></tr>
+  </table>
+</div>
+
+<h3>二、为什么重要：损害严重度判定 + DRG分组的核心变量</h3>
+<p>一份准确的损伤编码直接决定 DRG 入组——例如有严重合并症并发症（MCC/CC）的创伤 vs 单纯性骨折，DRG权重可能相差数倍。同时，<strong>多处损伤的主诊断选择</strong>是最容易失分的环节——编码员必须按"最严重→次严重"排序，而不是按"最先发生→后发生"。编码的准确性是DRG分组的生命线，损伤编码与DRG付费的关联度极高，5%以上的编码差异可能导致DRG组别变化。</p>
+
+<h3>三、怎么用：三步编码法</h3>
+<div class="process">
+  <span class="step s1">① 确定损伤性质</span><span class="arr">→</span>
+  <span class="step s2">② 查找部位编码</span><span class="arr">→</span>
+  <span class="step s3">③ 附加外因编码</span><span class="arr">→</span>
+  <span class="step s4">④ 场所/活动/状态</span>
+</div>
+
+<!-- 核心知识点2 -->
+<h2><span class="icon">📖</span>知识点二：外因编码 V01-Y98 的架构</h2>
+
+<h3>整体架构：四大层次</h3>
+
+<div class="hierarchy">
+  <div class="h-row">
+    <span class="h-box pri">V01-V99 运输事故</span>
+  </div>
+  <div class="h-row" style="margin-left:20px;">
+    <span class="h-box">V01-V09 行人</span><span class="h-box">V10-V19 骑自行车者</span><span class="h-box">V20-V29 摩托车</span><span class="h-box">V40-V49 轿车乘员</span>
+  </div>
+  <div class="h-row">
+    <span class="h-box pri">W00-X59 其他意外损伤外因</span>
+  </div>
+  <div class="h-row" style="margin-left:20px;">
+    <span class="h-box">W00-W19 跌倒</span><span class="h-box">W20-W49 无生命机械力</span><span class="h-box">W50-W64 有生命机械力</span><span class="h-box">W65-W74 意外淹溺</span>
+    <span class="h-box">X00-X09 火和火焰</span><span class="h-box">X10-X19 热和烫伤</span><span class="h-box">X20-X29 有毒动物/植物</span>
+  </div>
+  <div class="h-row">
+    <span class="h-box pri">X60-X84 故意自害</span><span class="h-box pri">X85-Y09 加害（袭击）</span>
+  </div>
+  <div class="h-row">
+    <span class="h-box pri">Y10-Y34 意图不确定</span><span class="h-box pri">Y35-Y36 依法处置和战争</span>
+    <span class="h-box pri">Y40-Y84 医疗并发症外因</span><span class="h-box pri">Y85-Y89 后遗症</span>
+  </div>
+  <div class="h-row">
+    <span class="h-box pri">Y90-Y98 附加因素（场所/活动/状态）</span>
+  </div>
+</div>
+
+<h3>⚡ 黄金规则：外因编码永远不能作为主要诊断</h3>
+<div class="card red">
+  <strong>任何以 V、W、X、Y 开头的编码都只能作为附加编码使用。</strong>如果主要诊断为 S00-T98，必须在病案首页的"损伤、中毒外部原因"栏填写对应的外因编码。这是 ICD-10 的硬性规定，任何违反此规则的编码都是无效的。
+</div>
+
+<!-- 核心知识点3 -->
+<h2><span class="icon">📖</span>知识点三：运输事故编码（V01-V99）</h2>
+<p>运输事故编码的核心是<strong>当事人身份</strong>——行人？骑行者？轿车乘客？摩托车驾驶员？不同身份对应不同的 V 编码。</p>
+
+<div class="card accent">
+  <h4>🚗 运输事故编码关键变量</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse;">
+    <tr style="background:#fef2f2;"><th style="padding:6px 10px; text-align:left;">变量</th><th style="padding:6px 10px; text-align:left;">含义</th><th style="padding:6px 10px; text-align:left;">编码影响</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">当事人身份</td><td style="padding:6px 10px; border-top:1px solid var(--border);">行人/骑行者/驾驶员/乘客</td><td style="padding:6px 10px; border-top:1px solid var(--border);">决定 V 亚目组（V01-V89）</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">交通/非交通</td><td style="padding:6px 10px; border-top:1px solid var(--border);">公共道路 vs 私人领域</td><td style="padding:6px 10px; border-top:1px solid var(--border);">亚目第四位 .0-.5 vs .6-.9</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">碰撞对象</td><td style="padding:6px 10px; border-top:1px solid var(--border);">行人/自行车/汽车/固定物体</td><td style="padding:6px 10px; border-top:1px solid var(--border);">决定具体的细目编码</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">车辆类型</td><td style="padding:6px 10px; border-top:1px solid var(--border);">轿车/卡车/摩托车/三轮车</td><td style="padding:6px 10px; border-top:1px solid var(--border);">决定 V 大类（V30-V79）</td></tr>
+  </table>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 交通性 vs 非交通性：</strong>交通性事故发生在<strong>公共道路</strong>上（包括高速公路、城市道路等机动车辆通行的道路）。<strong>非交通性</strong>事故发生在私人停车场、私家车道、农田、工厂内部等非公共道路区域。两者的 V 编码不同，且会影响保险/工伤/法律路径。<br><br>
+  <strong>正例：</strong>在高速公路上轿车撞护栏 → 交通性（V40-V49 中的 .4/.5 亚目）<br>
+  <strong>反例：</strong>在自家车库倒车时撞墙 → 非交通性（V40-V49 中的 .0 亚目）
+</div>
+
+<!-- 核心知识点4 -->
+<h2><span class="icon">📖</span>知识点四：跌倒编码（W00-W19）</h2>
+
+<div class="card">
+  <h4>🔍 跌倒编码亚目速查</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse;">
+    <tr style="background:#fef2f2;"><th style="padding:6px 10px; text-align:left;">编码</th><th style="padding:6px 10px; text-align:left;">跌倒类型</th><th style="padding:6px 10px; text-align:left;">典型场景</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W00</td><td style="padding:6px 10px; border-top:1px solid var(--border);">同一平面滑倒、绊倒</td><td style="padding:6px 10px; border-top:1px solid var(--border);">在冰上滑倒、被地毯绊倒</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W01</td><td style="padding:6px 10px; border-top:1px solid var(--border);">同一平面跌倒</td><td style="padding:6px 10px; border-top:1px solid var(--border);">被他人碰撞后跌倒</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W06</td><td style="padding:6px 10px; border-top:1px solid var(--border);">从床上跌落</td><td style="padding:6px 10px; border-top:1px solid var(--border);">住院患者坠床</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W10</td><td style="padding:6px 10px; border-top:1px solid var(--border);">从楼梯或台阶上跌落</td><td style="padding:6px 10px; border-top:1px solid var(--border);">下楼时踩空</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W11</td><td style="padding:6px 10px; border-top:1px solid var(--border);">从梯子上跌落</td><td style="padding:6px 10px; border-top:1px solid var(--border);">装修时从人字梯摔下</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);">W13</td><td style="padding:6px 10px; border-top:1px solid var(--border);">从建筑物跌落</td><td style="padding:6px 10px; border-top:1px solid var(--border);">从阳台坠落</td></tr>
+  </table>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 编码时注意：</strong>如果跌倒发生在冰面上，除了跌倒编码（W00），还需要附加 <strong>X37（暴露于暴风雪、雪崩和其他冰/雪灾害中）</strong>如果跌倒是由于自然灾害引起的。日常冰面滑倒通常只用 W00，不附加 X37。
+</div>
+
+<!-- 核心知识点5 -->
+<h2><span class="icon">📖</span>知识点五：中毒意图——T编码自带意图信息</h2>
+
+<div class="card accent">
+  <p style="font-size:13px;">在 ICD-10 中，<strong>中毒的意图信息直接嵌入 T36-T65 编码的第六位字符</strong>：<br>
+  <strong>第六位=0：</strong>未特指<br>
+  <strong>第六位=1：</strong>意外中毒<br>
+  <strong>第六位=2：</strong>故意自害（需另附自伤编码 T14.91）<br>
+  <strong>第六位=3：</strong>加害（袭击）<br>
+  <strong>第六位=4：</strong>意图不确定<br><br>
+  因此，中毒不需要另附 V/W/X/Y 外因编码——意图已经在 T 编码中体现。</p>
+</div>
+
+<div class="compare-row">
+  <div class="col correct">
+    <h5 style="color:var(--green);">✅ 中毒编码（T36-T50）</h5>
+    <p style="font-size:12px;">意图在第六位，<strong>不需要另附外因编码</strong></p>
+  </div>
+  <div class="col wrong">
+    <h5 style="color:var(--red);">❌ 损伤编码（S00-T35）</h5>
+    <p style="font-size:12px;">不包含意图信息，<strong>必须附加外因编码</strong></p>
+  </div>
+</div>
+
+<!-- 核心知识点6 -->
+<h2><span class="icon">📖</span>知识点六：Y92-Y99 附加编码——场所/活动/状态</h2>
+
+<div class="card green">
+  <h4>🏠 场所（Y92）、活动（Y93）和状态（Y99）编码</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse;">
+    <tr style="background:#ecfdf5;"><th style="padding:6px 10px; text-align:left;">类别</th><th style="padding:6px 10px; text-align:left;">编码范围</th><th style="padding:6px 10px; text-align:left;">示例</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>Y92 发生场所</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y92.0-Y92.9</td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y92.0 家中、Y92.61 工地、Y92.23 学校</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>Y93 受伤时活动</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y93.0-Y93.9</td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y93.0 行走跑步、Y93.5 体育活动、Y93.6 球类</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>Y99 外部原因状态</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y99.0-Y99.9</td><td style="padding:6px 10px; border-top:1px solid var(--border);">Y99.0 有偿工作、Y99.1 军事活动、Y99.8 休闲</td></tr>
+  </table>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 重要限制：</strong>Y92、Y93、Y99 <strong>只在初次就诊时使用</strong>（对应损伤编码的第7位字符=A）。在后续就诊（D）或后遗症就诊（S）中<strong>不应附加</strong>这些编码。<br><br>
+  携带 Y92/Y93/Y99 到 D 或 S 的就诊中会导致编码错误，可能触发理赔拒绝或审核问题。
+</div>
+
+<!-- 重难点深度解析 -->
+<h2><span class="icon">🔬</span>重难点深度解析：多部位损伤主诊断选择</h2>
+
+<div class="card accent">
+  <p style="font-size:14px;">车祸创伤患者往往有多处损伤。排列诊断的<strong>严重度分层</strong>直接决定了 DRG 入组——编码顺序错误可能导致权重偏差。</p>
+</div>
+
+<h3>严重度排序（由高到低）</h3>
+<div class="process" style="background:var(--red-bg); border-color:var(--red);">
+  <span class="step s1">① 颅内出血</span><span class="arr">→</span>
+  <span class="step s1">② 颅内损伤</span><span class="arr">→</span>
+  <span class="step s2">③ 颅骨骨折</span><span class="arr">→</span>
+  <span class="step s2">④ 内脏损伤</span>
+</div>
+<div class="process" style="background:var(--warn-bg); border-color:var(--warn-border); margin-top:-6px;">
+  <span class="step s2">⑤ 骨折</span><span class="arr">→</span>
+  <span class="step s3">⑥ 脱位</span><span class="arr">→</span>
+  <span class="step s3">⑦ 开放性伤口</span><span class="arr">→</span>
+  <span class="step s3">⑧ 浅表损伤</span>
+</div>
+
+<div class="card warn">
+  <strong>⚡ 同级排序口诀：</strong><br>
+  "动脉 > 神经 > 肌腱"（内部损伤同级时）<br>
+  "大骨优先"（多处骨折时，股骨 > 胫腓骨 > 肱骨 > 尺桡骨）<br>
+  "同一部位，严重覆盖轻微"（同一位置的骨折覆盖该位置的浅表伤口——不再单独编码浅表损伤）
+</div>
+
+<!-- 案例练习 -->
+<h2><span class="icon">✍️</span>案例练习</h2>
+
+<div class="case">
+  <span class="case-tag practice">📝 基础题 1</span>
+  <p><strong>患者在湿滑的浴室地面滑倒，导致右桡骨远端闭合性骨折。请给出全部编码（损伤+外因+场所）。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：S52.5（桡骨远端骨折）</strong><br>
+      <strong>外因编码：W01.0（同一平面滑倒、绊倒和跌倒，在家中）</strong><br>
+      <strong>场所编码：Y92.0（家中）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 部位在"肘和前臂"→ S50-S59 → S52（前臂骨折）<br>
+      ② 桡骨远端 → S52.5<br>
+      ③ 跌倒 → W00-W19 → W01（同一平面跌倒）<br>
+      ④ 场所在家中浴室 → Y92.0（家中）<br>
+      ⑤ 初次就诊 → 附加 Y92
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag practice">📝 基础题 2</span>
+  <p><strong>行人被轿车撞伤，发生左侧股骨干骨折。请给出外因编码。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>损伤编码：S72.3（股骨干骨折）</strong><br>
+      <strong>外因编码：V03.1（行人在与轿车碰撞中受伤，交通性事故）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 当事人身份 → 行人 → V01-V09<br>
+      ② 被轿车撞伤 → V03（行人与轿车碰撞）<br>
+      ③ 发生在道路上 → 交通性 → 亚目第四位 .1<br>
+      ④ 如果发生在停车场 → 非交通性 → V03.0
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag practice">📝 基础题 3</span>
+  <p><strong>患者因口服过量安眠药（地西泮）自杀入院，出现昏迷。给出全部编码。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：T42.4（苯二氮䓬类中毒，故意自害）</strong><br>
+      <strong>其他诊断：R40.2（昏迷）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 中毒编码 → T42（镇癫痫药、镇静催眠药）<br>
+      ② 地西泮是苯二氮䓬类 → T42.4<br>
+      ③ 意图是故意自害 → 第六位=2 → T42.4 的第六位2<br>
+      ④ <strong>不需要另附外因编码</strong>——意图已在 T 编码中体现<br>
+      ⑤ 临床表现（昏迷）作为附加诊断编码<br>
+      ⑥ 注意：与损伤不同，中毒使用"表现后编码"规则，即中毒编码优先，表现编码在后
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 1</span>
+  <p><strong>患者骑摩托车在高速公路上与轿车碰撞，造成：1) 硬脑膜外血肿 2) 左侧锁骨骨折 3) 头皮浅表擦伤。请排列所有诊断编码及外因编码。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：S06.4（创伤性硬脑膜外血肿）</strong><br>
+      <strong>其他诊断1：S42.0（锁骨骨折）</strong><br>
+      <strong>其他诊断2：S00.0（头皮浅表损伤 — 但注意：如果与骨折同一部位，可不单独编码）</strong><br>
+      <strong>外因编码：V23.4（摩托车驾驶员在与轿车碰撞中受伤，交通性）</strong><br>
+      <strong>场所编码：Y92.41（高速公路）【初次就诊】</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 严重度排序：颅内血肿 > 骨折 > 浅表损伤<br>
+      ② 当事人身份：摩托车驾驶员 → V20-V29<br>
+      ③ 与轿车碰撞 → V23.x<br>
+      ④ 交通性 → V23.4<br>
+      ⑤ 如果头皮擦伤与颅骨损伤在同一区域（都是头部），通常不单独编码浅表损伤<br>
+      <strong>核心考点：</strong>"颅内出血 > 颅内损伤 > 颅骨骨折 > 内脏损伤 > 骨折 > 开放性伤口 > 浅表损伤"的排序规则。硬脑膜外血肿是最严重的，因此作为主诊断。
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 2</span>
+  <p><strong>工人在建筑工地从脚手架上摔落，造成腰椎压缩性骨折 L1。请给出全部编码，特别注意区分工伤与非工伤的编码差异。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>损伤编码：S32.0（腰椎骨折）</strong><br>
+      <strong>外因编码：W12（从脚手架上跌落）</strong><br>
+      <strong>场所编码：Y92.61（工业建筑和施工区域）</strong><br>
+      <strong>活动编码：Y93.H9（建筑和施工作业）</strong><br>
+      <strong>状态编码：Y99.0（有偿工作活动）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 从脚手架跌落 → W12（从脚手架上跌落）<br>
+      ② 场所 → Y92.61（工业建筑区域，不是 Y92.0 家中）<br>
+      ③ 活动 → Y93.H9（建筑施工作业）<br>
+      ④ 状态 → Y99.0（有偿工作）——这直接决定了是工伤<br>
+      <strong>工伤 vs 非工伤：</strong>Y99.0 是区分"工伤"和"非工伤"的关键编码。如果是在家中装修（无偿），则使用 Y93.H9 但状态编码应为 Y99.8（休闲活动）而非 Y99.0。
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 3</span>
+  <p><strong>蛇咬伤导致中毒，伤口在右脚踝。请给出正确的损伤编码和中毒编码（这是损伤+中毒的交叉考点）。</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：T63.0（蛇毒中毒）</strong><br>
+      <strong>其他诊断1：S91.1（踝部开放性伤口 — 咬伤）</strong><br>
+      <strong>外因编码：W59.0（与无毒蛇接触 — 但这里需要适用 X20 有毒动物咬伤）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 这里有两个问题：中毒 + 局部组织损伤<br>
+      ② 中毒 → T63.0（蛇毒中毒，意外）→ 意图在第六位<br>
+      ③ 局部伤口 → S91.1（踝部开放性伤口）<br>
+      ④ 是谁咬的？→ X20（有毒蛇和蜥蜴的咬伤）作为外因<br>
+      <strong>核心考点：</strong>中毒T编码 + 局部损伤S编码 + 外因X编码——"三联编码"模式。毒性效应（中毒）编码优于局部损伤编码。注意区分 W59（无毒动物咬伤）和 X20（有毒动物咬伤）——两者编码路径不同。
+    </div>
+  </details>
+</div>
+
+<!-- 今日重点回顾 -->
+<h2><span class="icon">📋</span>今日重点回顾</h2>
+<div class="key-grid">
+  <div class="key-item"><span class="key-num">1</span> 损伤编码是"部位+性质"双轴结构，必须同时体现两者</div>
+  <div class="key-item"><span class="key-num">2</span> 外因编码（V/W/X/Y）永远只能作为附加编码，不能作为主要诊断</div>
+  <div class="key-item"><span class="key-num">3</span> 运输事故按当事人身份（行人/骑车/汽车乘客）分类，交通/非交通影响亚目选择</div>
+  <div class="key-item"><span class="key-num">4</span> 中毒不需要另附外因编码——意图信息已嵌入 T36-T65 第六位</div>
+  <div class="key-item"><span class="key-num">5</span> Y92/Y93/Y99 只在初次就诊时使用，后续就诊不要附加</div>
+  <div class="key-item"><span class="key-num">6</span> 多部位损伤按严重度排序：颅内出血 > 内脏 > 骨折 > 伤口 > 浅表</div>
+  <div class="key-item"><span class="key-num">7</span> Y99.0 = 工伤（有偿工作活动），区分于 Y99.8 休闲活动</div>
+  <div class="key-item"><span class="key-num">8</span> 跌倒 W00-W19 按"从什么上摔"细分，不是按"摔成什么样"</div>
+</div>
+
+<!-- 明日预习 -->
+<h2><span class="icon">🔮</span>明日预习提示</h2>
+<div class="card accent">
+  <h4>Day 42：烧伤与腐蚀伤编码 — 部位+深度+面积三维编码</h4>
+  <p style="font-size:13px;">烧伤编码是损伤编码中最特殊的子类，需要<strong>三个维度</strong>同时体现：烧伤部位（T20-T25/T29-T32）、烧伤深度（I度/II度/III度）和烧伤体表面积。编码时需注意特指部位的烧伤（T20-T25）和未特指部位/多部位烧伤（T29-T32）的不同路径。</p>
+  <p style="font-size:13px; color:var(--accent); margin-top:8px;"><strong>预习问题：</strong>为什么烧伤的"九分法"计算体表面积直接影响编码选择？多处不同深度的烧伤应该如何排列诊断？</p>
+</div>
+
+<div class="footer">
+  由 WorkBuddy 自动生成 · <a href="index.html">返回目录</a> · 2026年7月29日 · Day 41/60<br>
+  下一课：Day 42 — 烧伤与腐蚀伤编码
+</div>
+
+</body>
+</html>

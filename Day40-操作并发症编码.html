@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 40（2026年7月28日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .hero::after { content: ''; position: absolute; bottom: -40px; left: 30%; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.05); }
+  .hero .day-badge { display: inline-block; background: rgba(255,255,255,.2); color: #fff; padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: .5px; backdrop-filter: blur(4px); }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 { font-size: 20px; margin: 44px 0 18px; padding: 14px 18px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent); }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; font-size: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card.accent { border-left: 4px solid var(--accent); }
+  .card.warn { border-left: 4px solid var(--warn-border); background: var(--warn-bg); }
+  .card.green { border-left: 4px solid var(--green); background: var(--green-bg); }
+  .card.red { border-left: 4px solid var(--red); background: var(--red-bg); }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-row .col { background: var(--card); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .compare-row .col.correct { border-left: 3px solid var(--green); } .compare-row .col.wrong { border-left: 3px solid var(--red); }
+  .compare-row .col h5 { font-size: 13px; margin-bottom: 6px; font-weight: 700; }
+  .mastery-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .mastery-table th { background: var(--accent-bg); color: var(--accent); padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; }
+  .mastery-table td { padding: 10px 14px; border-top: 1px solid var(--border); }
+  .mastery-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .mastery-badge.l1 { background: #fef2f2; color: #dc2626; } .mastery-badge.l2 { background: #fefce8; color: #b45309; } .mastery-badge.l3 { background: #ecfdf5; color: #059669; }
+  .case { background: var(--card); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 14px; }
+  .case .case-tag { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+  .case .case-tag.practice { background: var(--accent-bg); color: var(--accent); } .case .case-tag.challenge { background: var(--red-bg); color: var(--red); }
+  .case details { margin-top: 12px; }
+  .case summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 13px; }
+  .case .answer-box { background: var(--green-bg); border-radius: 8px; padding: 14px 16px; margin-top: 8px; font-size: 13px; border: 1px solid #a7f3d0; }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item { background: var(--card); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 13px; line-height: 1.6; }
+  .key-item .key-num { display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; background: var(--accent-bg); color: var(--accent); border-radius: 6px; font-size: 11px; font-weight: 700; margin-right: 6px; }
+  .process { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 14px 18px; background: var(--card); border-radius: var(--radius); margin: 14px 0; box-shadow: var(--shadow); border: 1px solid var(--border); font-size: 13px; }
+  .process .step { padding: 5px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; }
+  .process .step.s1 { background: #eef2ff; color: #4f46e5; } .process .step.s2 { background: #ecfdf5; color: #059669; } .process .step.s3 { background: #fefce8; color: #b45309; } .process .step.s4 { background: #fef2f2; color: #dc2626; }
+  .process .arr { color: var(--text3); font-weight: 700; }
+  .code-block { background: var(--code-bg); border-radius: 8px; padding: 12px 16px; font-family: 'SF Mono', Consolas, Monaco, monospace; font-size: 12px; line-height: 1.7; margin: 10px 0; border: 1px solid var(--border); overflow-x: auto; }
+  .footer { text-align: center; margin-top: 60px; padding: 24px; font-size: 12px; color: var(--text3); border-top: 1px solid var(--border); }
+  .footer a { color: var(--accent); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 20px 28px; }
+    .compare-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="day-badge">📅 Day 40 · 2026年7月28日</span>
+  <h1>并发症编码：T80-T88 操作并发症的分类逻辑</h1>
+  <div class="subtitle">明确"并发症"与"原发疾病"的边界，掌握操作后并发症的分组与编码规则</div>
+</div>
+
+<!-- 掌握程度 -->
+<h2><span class="icon">🎯</span>今日知识点掌握程度</h2>
+<table class="mastery-table">
+  <tr><th>等级</th><th>知识点</th><th>要求</th></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>T80-T88 各大类的分类架构与包含范围</td><td>能准确判断一个并发症该归入哪一类</td></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>操作并发症与原有疾病并发症的区分逻辑</td><td>能区分"继发疾病"与"操作所致并发症"</td></tr>
+  <tr><td><span class="mastery-badge l1">⚫ 必须掌握</span></td><td>假体/植入物并发症的特殊编码路径</td><td>T82-T85 各类植入物的亚目选择</td></tr>
+  <tr><td><span class="mastery-badge l2">🟡 应该理解</span></td><td>移植排斥反应的编码规则与 T86 使用场景</td><td>区分移植物抗宿主病 vs 排斥反应</td></tr>
+  <tr><td><span class="mastery-badge l2">🟡 应该理解</span></td><td>手术并发症与医疗差错（Y60-Y84）的编码边界</td><td>何时需附加外因编码说明</td></tr>
+  <tr><td><span class="mastery-badge l3">🟢 了解即可</span></td><td>麻醉并发症的特殊编码处理</td><td>T88.2-T88.5 的细分使用</td></tr>
+</table>
+
+<!-- 核心知识点1 -->
+<h2><span class="icon">📖</span>知识点一：T80-T88 的整体分类架构</h2>
+
+<h3>一、是什么：T80-T88 在 ICD-10 中的定位</h3>
+<p>ICD-10 第十九章"损伤、中毒和外因的某些其他后果（S00-T98）"中的 <strong>T80-T88</strong> 专门收纳<strong>手术和医疗操作后未在别处分类的并发症</strong>。这块内容在病案首页中经常被编码员忽视——要么漏编"操作后并发症"这个诊断，要么错误地将原有疾病的自然进展当作操作并发症来编码。</p>
+
+<div class="card accent">
+  <h4>📌 T80-T88 分类速查表</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse; margin-top:8px;">
+    <tr style="background:var(--accent-bg);"><th style="padding:8px 12px; text-align:left;">编码范围</th><th style="padding:8px 12px; text-align:left;">内容</th><th style="padding:8px 12px; text-align:left;">典型场景</th></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T80</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">输注、输血和治疗性注射后的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">输血反应、输液后发热、空气栓塞</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T81</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">操作后并发症，不可归类在他处者</td><td style="padding:8px 12px; border-top:1px solid var(--border);">术后出血、伤口裂开、缝线反应</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T82</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">心脏和血管假体装置、植入物和移植物的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">起搏器感染、支架内血栓、人工瓣膜故障</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T83</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">泌尿生殖系统假体装置、植入物和移植物的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">导尿管阻塞、子宫内避孕器穿孔</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T84</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">内部矫形外科假体装置、植入物和移植物的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">人工关节松动、钢板断裂、骨移植物感染</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T85</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">其他内部假体装置、植入物和移植物的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">人工晶体脱位、胆道支架堵塞、乳房假体破裂</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T86</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">器官和组织的移植失败和排斥反应</td><td style="padding:8px 12px; border-top:1px solid var(--border);">肾移植排斥反应、骨髓移植GvHD</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T87</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">再附着和截断术所特有的并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">断肢再植后循环障碍、截肢残端神经瘤</td></tr>
+    <tr><td style="padding:8px 12px; border-top:1px solid var(--border);"><strong>T88</strong></td><td style="padding:8px 12px; border-top:1px solid var(--border);">手术和医疗操作后未在别处分类的其他并发症</td><td style="padding:8px 12px; border-top:1px solid var(--border);">麻醉并发症、操作后休克、意外穿刺</td></tr>
+  </table>
+</div>
+
+<h3>二、为什么重要：并发症编码的临床与医保意义</h3>
+<p>并发症编码直接关系到 <strong>DRG/DIP 分组</strong>——有并发症/合并症的诊断会显著影响权重和支付标准。同时，T80-T88 的准确编码是<strong>医疗质量评价</strong>的重要数据来源：卫健委通过这类编码监测手术安全性和医疗差错发生率。</p>
+
+<h3>三、怎么用：分类路径四步法</h3>
+<div class="process">
+  <span class="step s1">① 确认是操作后并发症</span><span class="arr">→</span>
+  <span class="step s2">② 定位主要临床表现</span><span class="arr">→</span>
+  <span class="step s3">③ 看是否涉及植入物</span><span class="arr">→</span>
+  <span class="step s4">④ 选择对应 T80-T88 亚目</span>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 避坑指南：</strong>不要把原有疾病自然发生的并发症（如糖尿病患者出现神经病变）编码为"操作并发症"。操作并发症必须是在<strong>接受医疗操作之后才出现</strong>，并且与操作存在合理的因果关系。<br><br>
+  <strong>正例：</strong>甲状腺切除术后发生伤口感染 → T81.4（操作后伤口感染）<br>
+  <strong>反例：</strong>糖尿病患者入院时已有糖尿病足溃疡 → 应编码 E11.6（糖尿病性足溃疡），而非 T80-T88
+</div>
+
+<!-- 核心知识点2 -->
+<h2><span class="icon">📖</span>知识点二：T81 — 操作后并发症（最常见组）</h2>
+<p>T81 是 T80-T88 中使用频率最高的亚目组，收录了<strong>各类手术操作后发生的、没有特定器官假体/植入物相关的并发症</strong>。编码员需要根据并发症的临床表现选择正确的亚目。</p>
+
+<div class="card accent">
+  <h4>🔍 T81 核心亚目速查</h4>
+  <table style="width:100%; font-size:13px; border-collapse:collapse;">
+    <tr style="background:var(--accent-bg);"><th style="padding:6px 10px; text-align:left;">亚目</th><th style="padding:6px 10px; text-align:left;">含义</th><th style="padding:6px 10px; text-align:left;">注意点</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T81.0</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">出血和血肿，不可归类在他处者</td><td style="padding:6px 10px; border-top:1px solid var(--border);">术后切口内血肿、浆液肿</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T81.1</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">操作中和操作后休克</td><td style="padding:6px 10px; border-top:1px solid var(--border);">需要 T88.6（过敏性休克）时区分</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T81.2</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">操作中的意外穿刺和撕裂</td><td style="padding:6px 10px; border-top:1px solid var(--border);">消化道穿孔、输尿管损伤等</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T81.3</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">手术伤口裂开</td><td style="padding:6px 10px; border-top:1px solid var(--border);">腹部切口裂开、内脏膨出</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T81.4</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">操作后感染，不可归类在他处者</td><td style="padding:6px 10px; border-top:1px solid var(--border);">切口感染、腹腔脓肿</td></tr>
+  </table>
+</div>
+
+<h3>关键区分：并发症 vs 原有疾病表现</h3>
+<div class="compare-row">
+  <div class="col correct">
+    <h5 style="color:var(--green);">✅ 属于操作并发症（T81）</h5>
+    <ul style="font-size:12px; padding-left:16px; line-height:2;">
+      <li>术后切口血肿</li>
+      <li>术中意外损伤临近器官</li>
+      <li>术后腹壁切口裂开</li>
+      <li>术后肺炎（明确与手术相关）</li>
+      <li>缝合线导致的炎症反应</li>
+    </ul>
+  </div>
+  <div class="col wrong">
+    <h5 style="color:var(--red);">❌ 不属于操作并发症</h5>
+    <ul style="font-size:12px; padding-left:16px; line-height:2;">
+      <li>肿瘤术后复发（原有疾病进展）</li>
+      <li>糖尿病的肾病变（糖尿病并发症）</li>
+      <li>术前即存在的肺部感染</li>
+      <li>入院时已发生的压疮</li>
+      <li>化疗药物引起的骨髓抑制（药物不良反应）</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 核心知识点3 -->
+<h2><span class="icon">📖</span>知识点三：假体/植入物并发症（T82-T85）</h2>
+
+<h3>分类逻辑：先定位植入物位置，再定并发症类型</h3>
+<p>T82-T85 的分类<strong>按植入物所在的解剖系统</strong>划分，而不是按并发症的临床表现。例如：心脏起搏器感染 → T82.7（心脏和血管假体装置感染），而不是直接在 T81 中找"感染"。</p>
+
+<div class="card">
+  <h4>📍 植入物编码选址决策树</h4>
+  <p style="font-size:13px;">
+    <strong>Step 1：</strong>植入物在哪个系统？<br>
+    &nbsp;&nbsp;&nbsp;→ 心脏/血管 → <strong>T82</strong><br>
+    &nbsp;&nbsp;&nbsp;→ 泌尿/生殖 → <strong>T83</strong><br>
+    &nbsp;&nbsp;&nbsp;→ 骨科/矫形 → <strong>T84</strong><br>
+    &nbsp;&nbsp;&nbsp;→ 其他内部假体（眼科、消化道等）→ <strong>T85</strong><br>
+    <strong>Step 2：</strong>发生了什么类型的并发症？<br>
+    &nbsp;&nbsp;&nbsp;→ 机械性（松动、断裂、脱位、故障）→ 对应亚目 .0-.3<br>
+    &nbsp;&nbsp;&nbsp;→ 感染/炎症 → 对应亚目 .5-.7<br>
+    &nbsp;&nbsp;&nbsp;→ 栓塞/血栓 → 对应亚目 .8<br>
+    &nbsp;&nbsp;&nbsp;→ 其他 → 对应亚目 .8 或 .9<br>
+  </p>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 高频错误：</strong>将"人工髋关节置换术后假体周围骨折"编码为 S72.0（股骨骨折）——这是<strong>错误的</strong>！正确编码应为 <strong>T84.0（内部矫形外科假体装置的机械性并发症）</strong>，因为这属于假体本身的并发症而非原发性骨折。原发性骨折和假体周围骨折在病案首页有完全不同的编码和治疗逻辑。
+</div>
+
+<!-- 核心知识点4 -->
+<h2><span class="icon">📖</span>知识点四：器官移植并发症（T86）</h2>
+<p>T86 专门处理器官/组织移植后的<strong>失败和排斥反应</strong>，是移植患者再入院时的高频编码。需要注意的是 —— T86 只编码排斥/失败本身，如果出现了排斥导致的继发问题（如肾功能衰竭），需另编码相应的临床表现。</p>
+
+<div class="card green">
+  <h4>🔄 移植排斥编码要点</h4>
+  <p style="font-size:13px;">
+    <strong>T86.0：</strong>骨髓移植排斥反应<br>
+    <strong>T86.1：</strong>肾移植失败和排斥反应<br>
+    <strong>T86.2：</strong>心脏移植失败和排斥反应<br>
+    <strong>T86.3：</strong>心肺移植失败和排斥反应<br>
+    <strong>T86.4：</strong>肝移植失败和排斥反应<br>
+    <strong>T86.8：</strong>其他移植器官和组织失败和排斥反应<br><br>
+    <strong>换位思考：</strong>移植物抗宿主病（GVHD）是骨髓移植后特有的并发症——供体免疫细胞攻击受者组织，这与普通排斥反应方向相反。GVHD 编码为 T86.0 附加详细临床表现编码。
+  </p>
+</div>
+
+<!-- 核心知识点5 -->
+<h2><span class="icon">📖</span>知识点五：T88 — 其他操作后并发症</h2>
+<p>T88 是 <strong>T80-T87 都放不下的"兜底组"</strong>，收录以下典型情况：</p>
+
+<div class="card">
+  <table style="width:100%; font-size:13px; border-collapse:collapse;">
+    <tr style="background:var(--accent-bg);"><th style="padding:6px 10px; text-align:left;">亚目</th><th style="padding:6px 10px; text-align:left;">内容</th></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.0</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">免疫接种后感染</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.1</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">免疫接种后其他并发症</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.2</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">麻醉引起的休克</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.3</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">麻醉引起的恶性高热</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.5</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">麻醉的其他并发症</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.6</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">正确使用的药物或药剂引起过敏性休克</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.7</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">药物或药剂引起的未特指不良效应</td></tr>
+    <tr><td style="padding:6px 10px; border-top:1px solid var(--border);"><strong>T88.8</strong></td><td style="padding:6px 10px; border-top:1px solid var(--border);">其他特指的手术和医疗操作并发症</td></tr>
+  </table>
+</div>
+
+<!-- 重难点深度解析 -->
+<h2><span class="icon">🔬</span>重难点深度解析：T80-T88 的"不可归类在他处"逻辑</h2>
+
+<div class="card accent">
+  <p style="font-size:14px;">
+    <strong>核心理念：</strong>T80-T88 的标题中反复出现"不可归类在他处者"（not elsewhere classified，NEC）。这意味着——<strong>如果并发症在其他章节已有更确切的编码位置，就不能用 T80-T88</strong>。
+  </p>
+</div>
+
+<h3>SENDO原则（并发症编码决策：优先其他章，再考虑T章）</h3>
+<div class="process">
+  <span class="step s1">① 其他章节有确切位置吗？</span><span class="arr">→</span>
+  <span class="step s2">② 是疾病自然进展？</span><span class="arr">→</span>
+  <span class="step s3">③ 涉及假体/植入物？</span><span class="arr">→</span>
+  <span class="step s4">④ 用T81/T88兜底</span>
+</div>
+
+<p>经典案例：术后发生<strong>深静脉血栓</strong>，编码为 I80.2（下肢深静脉血栓），而不是 T81 中的并发症。为什么？因为 I80 是"静脉血栓"的确切章节位置，而 T81 是"其他不可归类并发症"——遵循 NEC 原则，I80 优先级高于 T81。</p>
+
+<div class="compare-row">
+  <div class="col wrong">
+    <h5 style="color:var(--red);">❌ 常见错误</h5>
+    <p style="font-size:12px;">术后发生急性肾衰竭 → 编码 T81.8<br>错误原因：急性肾衰竭已有 N17 的确切位置</p>
+  </div>
+  <div class="col correct">
+    <h5 style="color:var(--green);">✅ 正确做法</h5>
+    <p style="font-size:12px;">术后发生急性肾衰竭 → 编码 N17.9 + T81.8（操作后急性肾衰竭）<br>主诊断：N17.9；附加：操作并发症</p>
+  </div>
+</div>
+
+<!-- 案例练习 -->
+<h2><span class="icon">✍️</span>案例练习</h2>
+
+<!-- 基础题 -->
+<div class="case">
+  <span class="case-tag practice">📝 基础题 1</span>
+  <p><strong>患者行腹腔镜胆囊切除术后第3天，出现切口红肿、渗液，细菌培养阳性。</strong>请问：该并发症的 ICD-10 编码是什么？</p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>编码：T81.4（操作后伤口感染）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 确认是操作后并发症：腹腔镜术后第3天出现的切口感染<br>
+      ② 不涉及假体/植入物（胆囊切除一般不放植入物）<br>
+      ③ 临床表现是感染，且无其他章节的确切位置（感染发生在手术切口，而非特定的器官感染）<br>
+      ④ 选择 T81.4 "操作后感染，不可归类在他处者"<br>
+      <strong>附加编码：</strong>Y60-Y84 系列中如果有明确的医疗差错证据（如术中无菌操作违规），可附加 Y62.0
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag practice">📝 基础题 2</span>
+  <p><strong>患者行全髋关节置换术后2年，出现人工关节松动，需行翻修手术。</strong>请问主要编码？</p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>编码：T84.0（内部矫形外科假体装置的机械性并发症 — 关节假体松动）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 假体位于骨科系统 → 定位到 T84<br>
+      ② 并发症类型是"机械性"→ 松动属于 T84.0<br>
+      ③ 不能用 S73 等骨折编码，因为这不是原发性损伤而是假体并发症<br>
+      <strong>关键区分：</strong>如果患者因摔倒导致假体周围骨折（不是单纯松动），则编码 T84.0（假体松动）+ 外因编码（摔倒），而不是骨折编码
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag practice">📝 基础题 3</span>
+  <p><strong>肾移植术后1个月，患者出现急性排斥反应。请问编码？</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>编码：T86.1（肾移植失败和排斥反应）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 器官移植并发症 → 定位到 T86<br>
+      ② 肾移植 → T86.1<br>
+      ③ 无需在 T81/T88 中寻找"排斥反应"的对应编码，T86 已专门覆盖移植排斥<br>
+      <strong>附加信息：</strong>如排斥反应导致急性肾衰竭，另编码 N17.9
+    </div>
+  </details>
+</div>
+
+<!-- 进阶题 -->
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 1</span>
+  <p><strong>患者住院行胃癌根治术，术中因意外穿刺导致脾脏损伤，立即行脾修补术。</strong>请排列所有相关编码。</p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：C16.9 胃癌</strong><br>
+      <strong>其他诊断 1：T81.2（操作中的意外穿刺和撕裂 — 脾脏损伤）</strong><br>
+      <strong>其他诊断 2：S36.0（脾损伤）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 主诊断仍是胃癌（入院目的）<br>
+      ② 术中意外穿刺 → T81.2（操作并发症 — 意外穿刺）<br>
+      ③ 脾脏损伤是意外穿刺的后果，也需编码 S36.0<br>
+      ④ 是否需要 Y60-Y84 医疗差错编码？如果意外穿刺是手术固有风险而非可避免的差错，通常不需要附加<br>
+      <strong>高价值洞察：</strong>多编码场景——既要编码并发症本身（T81.2），也要编码导致的损伤（S36.0），还要保留原发疾病（C16.9）作为主诊断。这是考场上最容易被坑的"三联编码"！
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 2</span>
+  <p><strong>冠脉支架植入术后3个月，患者发生支架内血栓形成，再次入院。如何编码？</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>主要诊断：T82.8（心脏和血管假体装置、植入物和移植物的其他特指并发症 — 支架内血栓形成）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① 植入物在心脏/血管系统 → T82<br>
+      ② 并发症为血栓 → 查 T82.8（其他特指并发症）<br>
+      ③ 不能用 I21（心肌梗死）——因为血栓的根源是支架而不是冠脉粥样硬化<br>
+      ④ 不能用 I74（动脉栓塞）——这是假体来源的血栓<br>
+      <strong>深度分析：</strong>支架内血栓有独特的编码路径。这是"植入物并发症"和"心血管疾病"交叉的高频考点。编码时应查主导词"并发症—假体装置—心脏—特指的"。
+    </div>
+  </details>
+</div>
+
+<div class="case">
+  <span class="case-tag challenge">⚡ 进阶题 3</span>
+  <p><strong>白内障术后，患者出现人工晶体脱位，视力下降。问编码选择？为什么不能用 H27.1（晶状体脱位）？</strong></p>
+  <details>
+    <summary>点击查看答案</summary>
+    <div class="answer-box">
+      <strong>编码：T85.2（其他内部假体装置的机械性并发症 — 人工晶体脱位）</strong><br><br>
+      <strong>推理过程：</strong><br>
+      ① H27.1 是"自然晶状体脱位"，而患者是人工晶体——这是人造装置而非天然器官<br>
+      ② 假体并发症 → T85（其他内部假体装置）<br>
+      ③ 机械性并发症（脱位）→ T85.2<br>
+      <strong>核心考点：</strong>编码员必须区分"自然器官疾病"和"人工装置的并发症"。两者虽然临床表现相似（都是"看不清"），但 ICD-10 编码路径完全不同。主导词应查"并发症—假体装置—眼内的"。
+    </div>
+  </details>
+</div>
+
+<!-- 今日重点回顾 -->
+<h2><span class="icon">📋</span>今日重点回顾</h2>
+<div class="key-grid">
+  <div class="key-item"><span class="key-num">1</span> T80-T88 是"不可归类在他处"的操作并发症，遵循NEC原则——其他章节有确切编码的优先</div>
+  <div class="key-item"><span class="key-num">2</span> T81 是最常用的操作后并发症组，按临床表现（出血、感染、裂开等）选择亚目</div>
+  <div class="key-item"><span class="key-num">3</span> T82-T85 按植入物位置分类——先定位解剖系统，再看并发症类型</div>
+  <div class="key-item"><span class="key-num">4</span> T86 专门处理器官移植排斥反应，注意GVHD与普通排斥的区别</div>
+  <div class="key-item"><span class="key-num">5</span> 术后深静脉血栓 → I80，不用T81（I80有确切位置）</div>
+  <div class="key-item"><span class="key-num">6</span> 假体周围骨折 → T84.0，不用S72（不是原发性骨折）</div>
+  <div class="key-item"><span class="key-num">7</span> 术中意外损伤 → T81.2 + 损伤部位的具体编码（双编码）</div>
+  <div class="key-item"><span class="key-num">8</span> T88是兜底组，收麻醉并发症、过敏性休克、免疫接种并发症等杂项</div>
+</div>
+
+<!-- 明日预习 -->
+<h2><span class="icon">🔮</span>明日预习提示</h2>
+<div class="card accent">
+  <h4>Day 41：损伤编码 — 外因编码（V01-Y98）+ 部位+性质组合</h4>
+  <p style="font-size:13px;">损伤编码的"三件套"：<strong>部位编码（S/T）+ 外因编码（V/W/X/Y）+ 发生场所/活动编码</strong>。明天的核心挑战是外因编码的层次结构——运输事故、跌倒、中毒、暴力伤害等各有不同的 V-Y 分类路径。</p>
+  <p style="font-size:13px; color:var(--accent); margin-top:8px;"><strong>预习问题：</strong>为什么外因编码（V01-Y98）永远不能作为主要诊断？运输事故中"交通性"和"非交通性"的边界在哪里？</p>
+</div>
+
+<div class="footer">
+  由 WorkBuddy 自动生成 · <a href="index.html">返回目录</a> · 2026年7月28日 · Day 40/60<br>
+  下一课：Day 41 — 损伤编码：外因编码（V01-Y98）+ 部位+性质组合
+</div>
+
+</body>
+</html>
