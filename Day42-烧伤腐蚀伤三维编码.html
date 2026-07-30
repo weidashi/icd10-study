@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 42（2026年7月30日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f59e0b 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #ea580c);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 42 · 2026年7月30日</div>
+  <h1>🔥 病案编码学习</h1>
+  <p class="subtitle">今日主题：烧伤与腐蚀伤编码 —— 部位 + 深度 + 面积三维编码体系（T20-T32）</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 42 / 60 天（70%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">烧伤编码是损伤章中最复杂的一类，需要同时掌握"部位—深度—面积"三个维度的编码规则：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心编码规则，考试和实战高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>T20-T25 部位编码九区划分（头颈/躯干/上肢/腕手/下肢/踝足）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>.0/.1/.2/.3 深度亚目编码规则（一度/二度/三度/腐蚀伤）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>多部位烧伤主诊断选择的核心规则——"深度优先，面积次之"四层法则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>T31 面积附加编码的百分比区间匹配规则</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>外因编码（V01-Y98）必须作为附加编码，不能单独做主诊断</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>烧伤诊断四要素：类型+部位+深度+面积，缺一不可</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>T29 多部位兜底编码的使用条件和限制</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>呼吸道烧伤（T27）在多部位烧伤中的主诊断优先级</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>烧伤并发症的编码处理（T79.x 创伤后并发症）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>烧伤外科诊断三部分结构（烧伤诊断+并发症诊断+并存病诊断）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>中国新九分法与Wallace九分法的差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>烧伤后残余创面的编码（Z48.0/T79.x 相关）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>烧伤编码是 ICD-10 损伤章中最具"三维性"的编码体系——它要求编码员同时处理部位、深度、面积三个轴心，再叠加外因编码。今天的学习重点是建立"深度优先→面积次之"的决策本能，并记住 T31 的百分比每一格。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、烧伤编码体系总览 —— 三维编码为什么这么复杂？</h2>
+
+<h3>1.1 烧伤的特殊性：多维度损伤描述</h3>
+<p>与普通损伤（骨折、脱位）的单维度描述不同，烧伤/腐蚀伤是一个需要<strong>三维定位</strong>的特殊损伤类别：</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">维度1</div>
+    <div class="stat-label">部位 (Site)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">T20-T25 / T26-T28</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">维度2</div>
+    <div class="stat-label">深度 (Depth)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">.0 一度 / .1 二度 / .2 三度</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">维度3</div>
+    <div class="stat-label">面积 (TBSA %)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">T31 / T32 附加编码</div>
+  </div>
+</div>
+
+<p><strong>为什么这么复杂？</strong>因为烧伤的严重程度由三个因素共同决定：<strong>深度</strong>决定了病理损伤层级（表皮→真皮→全层），<strong>面积</strong>决定了全身反应程度（体液丢失、感染风险），<strong>部位</strong>决定了功能影响和特殊治疗需求（面部、呼吸道、手）。三个因素缺一不可。</p>
+
+<div class="card tip">
+  <strong>临床诊断规范要求：</strong>一份完整且规范的烧伤临床诊断必须包含四项核心要素——<strong>烧伤类型 + 具体部位 + 深度 + 体表总面积</strong>。例如："火焰烧伤面颈部及双上肢，III度，体表总面积 18%"。如果临床诊断缺少任一要素，编码员必须回翻病程记录补全信息。
+</div>
+
+<h3>1.2 T20-T32 编码体系全景图</h3>
+
+<table>
+  <tr><th>码位范围</th><th>分类内容</th><th>编码角色</th><th>备注</th></tr>
+  <tr>
+    <td><code>T20-T25</code></td>
+    <td><strong>体表烧伤/腐蚀伤（按部位分类）</strong></td>
+    <td>主诊断编码范围</td>
+    <td>部位+深度为核心轴心</td>
+  </tr>
+  <tr>
+    <td><code>T26-T28</code></td>
+    <td>眼和内部器官烧伤/腐蚀伤</td>
+    <td>主诊断或附加诊断</td>
+    <td>T26 眼、T27 呼吸道、T28 其他内部器官</td>
+  </tr>
+  <tr>
+    <td><code>T29</code></td>
+    <td>多部位烧伤/腐蚀伤（未特指）</td>
+    <td>兜底主诊断</td>
+    <td>前三级规则均无法确定时使用</td>
+  </tr>
+  <tr>
+    <td><code>T30</code></td>
+    <td>未特指部位的烧伤/腐蚀伤</td>
+    <td>临时代码</td>
+    <td>信息不完整时临时使用，应尽量避免</td>
+  </tr>
+  <tr>
+    <td><code>T31</code></td>
+    <td><strong>按体表烧伤面积分类</strong></td>
+    <td>附加编码（必须填）</td>
+    <td>9个百分比区间，从 &lt;10% 到 ≥90%</td>
+  </tr>
+  <tr>
+    <td><code>T32</code></td>
+    <td><strong>按体表腐蚀伤面积分类</strong></td>
+    <td>附加编码（必须填）</td>
+    <td>与T31结构相同，但仅用于腐蚀伤</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 重要区别：</strong>"烧伤"(Burn)和"腐蚀伤"(Corrosion)是两个不同的概念。烧伤由<strong>热力</strong>（火焰、热液、高温气体等）引起；腐蚀伤由<strong>化学物质</strong>（酸、碱等）引起。ICD-10 虽然将它们放在同一码段（T20-T32）中，但<strong>深度编码的第四位含义不同</strong>：烧伤用 .0/.1/.2，腐蚀伤用 .3（未特指深度）。电击伤也归类在烧伤范畴内，按烧伤规则编码。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🗺️</span> 二、部位编码（T20-T25）—— 九个身体区域的精确划分</h2>
+
+<h3>2.1 六类目九区部位表</h3>
+
+<table>
+  <tr><th>类目</th><th>身体部位</th><th>涵盖范围</th><th>排除注意</th></tr>
+  <tr>
+    <td><code>T20</code></td>
+    <td><strong>头和颈</strong></td>
+    <td>头皮、面部（任何部分）、耳、眼区、鼻、唇、颈部</td>
+    <td>不包括内部器官烧伤（T26-T28）</td>
+  </tr>
+  <tr>
+    <td><code>T21</code></td>
+    <td><strong>躯干</strong></td>
+    <td>胸壁、腹壁、背（任何部分）、臀部、会阴、生殖器（外部）</td>
+    <td>不包括腹股沟（属于髋部 T24）</td>
+  </tr>
+  <tr>
+    <td><code>T22</code></td>
+    <td><strong>肩和上肢</strong>（除腕和手）</td>
+    <td>肩、臂、前臂、腋窝、肘</td>
+    <td><strong>不包括腕和手（T23）</strong></td>
+  </tr>
+  <tr>
+    <td><code>T23</code></td>
+    <td><strong>腕和手</strong></td>
+    <td>腕部、手掌、手指（包括拇指）、指甲</td>
+    <td>注意与 T22 的精确分界</td>
+  </tr>
+  <tr>
+    <td><code>T24</code></td>
+    <td><strong>髋和下肢</strong>（除踝和足）</td>
+    <td>髋部、大腿、小腿、膝、腹股沟区域</td>
+    <td><strong>不包括踝和足（T25）</strong></td>
+  </tr>
+  <tr>
+    <td><code>T25</code></td>
+    <td><strong>踝和足</strong></td>
+    <td>踝部、足跟、足底、足趾</td>
+    <td>注意与 T24 的精确分界</td>
+  </tr>
+</table>
+
+<h3>2.2 腕手与踝足的精确分界——最容易出错的地方</h3>
+<p>ICD-10 对"腕/手"和"踝/足"有精确的解剖分界，但很多编码员凭直觉判断，导致部位编码错误。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>腕 vs 前臂的分界</h4>
+    <p>腕关节（桡腕关节）及以远 → <code>T23</code></p>
+    <p>腕关节近端（前臂）→ <code>T22</code></p>
+    <p><strong>口诀：</strong>"腕归手，踝归足"——腕部及以上属于上肢（T22），腕部及以下属于手（T23）</p>
+  </div>
+  <div class="example-item">
+    <h4>踝 vs 小腿的分界</h4>
+    <p>踝关节（距小腿关节）及以远 → <code>T25</code></p>
+    <p>踝关节近端（小腿）→ <code>T24</code></p>
+    <p><strong>口诀：</strong>外踝/内踝水平线以上=小腿(T24)，以下=踝足(T25)</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见错误：</strong>前臂远端烧伤（靠近腕部但未过腕关节）被错误编入 T23。正确做法是：<strong>只要损伤未跨过腕关节线，仍属于 T22</strong>。同理，累及腕手两个区域的烧伤应编入 T23（以最远端为准）。
+</div>
+
+<h3>2.3 多部位烧伤涉及多个 T20-T25 类目时怎么处理？</h3>
+<p>这是一个核心实战问题。当一个烧伤同时涉及多个部位类目（如面部 T20 + 前臂 T22 + 大腿 T24），编码员需要为<strong>每个涉及的具体部位分别编码</strong>，然后根据"深度优先→面积次之"的规则选择主诊断。</p>
+
+<pre>示例：火焰烧伤面部（II度，3%）+ 右前臂（III度，4%）+ 左大腿（II度，5%）
+
+编码清单：
+  主诊断：T22.201  右前臂 III度烧伤  ← 深度最重（III度）
+  附加：  T20.101  面部 II度烧伤
+  附加：  T24.101  左大腿 II度烧伤
+  附加：  T31.1    烧伤面积10-19%  （3%+4%+5%=12%）
+  附加：  X09.9    暴露于未特指的火焰（外因编码）</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔬</span> 三、深度编码——一度 / 二度 / 三度的核心区分</h2>
+
+<h3>3.1 三度四分法的编码对应</h3>
+
+<table>
+  <tr><th>临床分度</th><th>损伤层次</th><th>临床表现</th><th>第四位码</th><th>ICD-10 名称</th></tr>
+  <tr>
+    <td><strong>I度</strong></td>
+    <td>仅表皮浅层</td>
+    <td>红斑、干燥、轻微疼痛、无疱</td>
+    <td><code>.0</code></td>
+    <td>一度烧伤（红斑性）</td>
+  </tr>
+  <tr>
+    <td><strong>浅II度</strong></td>
+    <td>表皮+真皮浅层</td>
+    <td>水疱大、基底潮红、剧痛</td>
+    <td rowspan="2"><code>.1</code></td>
+    <td rowspan="2">二度烧伤（水疱、表皮坏死）</td>
+  </tr>
+  <tr>
+    <td><strong>深II度</strong></td>
+    <td>表皮+真皮深层</td>
+    <td>水疱小、基底红白相间、痛觉迟钝</td>
+  </tr>
+  <tr>
+    <td><strong>III度</strong></td>
+    <td>全层皮肤+皮下组织</td>
+    <td>焦痂、蜡白或碳化、痛觉消失</td>
+    <td><code>.2</code></td>
+    <td>三度烧伤（全层皮肤坏死）</td>
+  </tr>
+  <tr>
+    <td>腐蚀伤</td>
+    <td>化学物质所致</td>
+    <td>深度难以确定</td>
+    <td><code>.3</code></td>
+    <td>腐蚀伤（未特指深度）</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 临床诊断的一个重要陷阱：</strong>临床上常将深II度和III度合并为"深度烧伤"，但在 ICD-10 编码中，II度统一用 <code>.1</code>，III度统一用 <code>.2</code>。<strong>不要因为临床写了"深度烧伤"就跳到 .2——必须确认是三度还是深二度。</strong>
+</div>
+
+<h3>3.2 腐蚀伤（Chemical Corrosion）的编码差异</h3>
+<p>腐蚀伤由强酸、强碱等化学物质引起，其编码与热力烧伤有重要差异：</p>
+
+<table>
+  <tr><th>对比维度</th><th>热力烧伤 (Burn)</th><th>腐蚀伤 (Corrosion)</th></tr>
+  <tr><td>ICD-10 类目</td><td>T20-T32（相同）</td><td>T20-T32（相同）</td></tr>
+  <tr><td>深度第四位码</td><td>.0 一度、.1 二度、.2 三度</td><td><strong>.3 腐蚀伤（未特指深度）</strong></td></tr>
+  <tr><td>面积编码</td><td>T31</td><td><strong>T32</strong>（腐蚀伤专用面积码）</td></tr>
+  <tr><td>外因编码</td><td>X00-X19（热力/火焰等）</td><td><strong>X40-X49</strong>（有毒物质意外中毒/暴露）</td></tr>
+  <tr><td>临床特点</td><td>损伤边界清晰</td><td>持续渗透、损伤边界模糊、深度难判断</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 关键记忆点：</strong>腐蚀伤的深度亚目永远是 <code>.3</code>，不论临床描述为"一度腐蚀伤""二度腐蚀伤"还是"三度腐蚀伤"。这是因为化学损伤的深度本身难以用传统的三度四分法精确界定——腐蚀物可能持续渗透加重损伤。面积编码也必须用 <code>T32</code> 而非 <code>T31</code>。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">📐</span> 四、面积编码（T31/T32）—— 9个百分比区间精准匹配</h2>
+
+<h3>4.1 T31 烧伤面积百分比编码表</h3>
+<p>T31 是必须填写的附加编码，用于描述烧伤面积占体表总面积（TBSA）的百分比。它有9个区间，<strong>每个区间的边界必须记牢</strong>：</p>
+
+<table>
+  <tr><th>T31 编码</th><th>烧伤面积（TBSA %）</th><th>记忆口诀</th></tr>
+  <tr><td><code>T31.0</code></td><td>＜10%</td><td>一个手掌以内</td></tr>
+  <tr><td><code>T31.1</code></td><td>10% - 19%</td><td>一个上肢的力量</td></tr>
+  <tr><td><code>T31.2</code></td><td>20% - 29%</td><td>两个上肢</td></tr>
+  <tr><td><code>T31.3</code></td><td>30% - 39%</td><td>三成体表被烧</td></tr>
+  <tr><td><code>T31.4</code></td><td>40% - 49%</td><td>接近半身</td></tr>
+  <tr><td><code>T31.5</code></td><td>50% - 59%</td><td>超过半身</td></tr>
+  <tr><td><code>T31.6</code></td><td>60% - 69%</td><td>重大烧伤</td></tr>
+  <tr><td><code>T31.7</code></td><td>70% - 79%</td><td>严重烧伤</td></tr>
+  <tr><td><code>T31.8</code></td><td>80% - 89%</td><td>危重烧伤</td></tr>
+  <tr><td><code>T31.9</code></td><td>≥90%</td><td>极危重烧伤</td></tr>
+</table>
+
+<h3>4.2 T31 的三个附加维度——不仅看百分比</h3>
+<p>T31 编码不只是"总烧伤面积X% → 对应编码"这么简单。ICD-10 中 T31 的亚目实际包含<strong>两个维度</strong>：总面积百分比 + 其中三度烧伤所占百分比。但国临版在病案首页填报中通常以总面积百分比为编码依据。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例1：面积 15%</h4>
+    <p>烧伤总面积 15% → <code>T31.101</code></p>
+    <p>10%-19% 区间，属于第2档</p>
+  </div>
+  <div class="example-item">
+    <h4>例2：面积 25%</h4>
+    <p>烧伤总面积 25% → <code>T31.201</code></p>
+    <p>20%-29% 区间，属于第3档</p>
+  </div>
+  <div class="example-item">
+    <h4>例3：面积 38%</h4>
+    <p>烧伤总面积 38% → <code>T31.301</code></p>
+    <p>30%-39% 区间，属于第4档</p>
+    <p style="color:var(--red);"><strong>注意：38% 在 30%-39% 区间，不是 40% 那一档</strong></p>
+  </div>
+</div>
+
+<h3>4.3 中国新九分法——临床计算 TBSA 的标准工具</h3>
+<p>编码员不需要自己计算烧伤面积（这是临床医生的工作），但<strong>必须理解九分法的原理</strong>，才能审核临床诊断中的面积描述是否合理：</p>
+
+<table>
+  <tr><th>身体部位</th><th>成人占比</th><th>儿童差异</th></tr>
+  <tr><td>头颈部</td><td>9%（1×9）</td><td>9+(12-年龄)% —— 儿童头部比例更大</td></tr>
+  <tr><td>双上肢</td><td>18%（2×9）</td><td>不变</td></tr>
+  <tr><td>躯干（含会阴）</td><td>27%（3×9）</td><td>不变</td></tr>
+  <tr><td>双下肢（含臀部）</td><td>46%（5×9+1）</td><td>46-(12-年龄)% —— 儿童下肢比例更小</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>编码员实用技巧：</strong>收到烧伤面积百分比后，用九分法快速验算——例如医生写"头颈+右上肢烧伤，面积约 18%"，对照九分法：头颈 9% + 单侧上肢(半) 9% = 18%，数据自洽。如果医生写"双上肢烧伤 20%"，而九分法双上肢=18%，则说明描述有问题，应回电确认。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🎯</span> 五、多部位烧伤主诊断选择 —— "深度优先→面积次之"四层法则</h2>
+
+<p>这是烧伤编码中最核心的实战决策规则。当患者同时有多个部位的烧伤时，主诊断选择遵循严格的四层递进逻辑：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>第一层：深度优先 —— 取深度最严重的部位</h4>
+      <p>不同深度烧伤时，<strong>以深度最严重部位的诊断编码为主要诊断</strong>，即使该部位面积小于其他浅度部位。</p>
+      <p><strong>推理依据：</strong>烧伤深度直接决定治疗方案和预后——III度需要切痂植皮，II度可能保守治疗。这就是为什么深度权重高于面积。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>第二层：面积次之 —— 同等深度时取面积最大的部位</h4>
+      <p>所有烧伤部位均为同一深度时，<strong>以烧伤面积最大的具体部位的诊断编码为主要诊断</strong>。</p>
+      <p><strong>判断逻辑：</strong>深度相同 = 治疗优先级相同 → 面积越大的部位消耗医疗资源越多（换药量、住院天数）→ 更能反映本次住院的核心负担。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第三层：危害优先 —— 取健康危害最大/主要治疗的部位</h4>
+      <p>深度和面积均无法直接比较时，<strong>取对患者健康危害最大或本次住院主要治疗的部位</strong>。</p>
+      <p><strong>特殊规则：</strong>涉及呼吸道烧伤（T27）时，<strong>呼吸道烧伤的编码可以优先于体表烧伤做主诊断</strong>，因为呼吸道烧伤直接威胁生命。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>第四层：T29 兜底 —— 以上均无法明确时</h4>
+      <p>当深度、面积、危害程度均无法比较出最优先的部位时，使用 <code>T29</code> 类目兜底编码作为主诊断。</p>
+      <p><strong>注意：</strong>T29 是兜底方案，<strong>不应</strong>在有明确深度差异时使用。它只适用于"实在分不出轻重"的极端情况。</p>
+    </div>
+  </div>
+</div>
+
+<h3>5.1 实战演示——深度差异场景</h3>
+
+<div class="card">
+  <h4>📋 病例：多部位不同深度烧伤</h4>
+  <p>患者双上肢火焰烧伤，其中<strong>右上肢 III度（面积 5%）</strong>，<strong>左上肢 II度（面积 9%）</strong>，总面积 14%。</p>
+
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col bad">
+      <h4>❌ 错误做法</h4>
+      <p>主诊断编 <code>T22.101</code>（左上肢II度烧伤）——因为面积更大（9%）</p>
+      <p style="color:var(--red);margin-top:8px;">违反了"深度优先"原则</p>
+    </div>
+    <div class="compare-col good">
+      <h4>✅ 正确做法</h4>
+      <p>主诊断编 <code>T22.201</code>（右上肢III度烧伤）——因为深度更重（III度 > II度）</p>
+      <p style="color:var(--green);margin-top:8px;">遵守"深度优先，面积次之"</p>
+    </div>
+  </div>
+
+  <pre>完整编码清单：
+主诊断：T22.201  右上肢 III度烧伤
+附加：  T22.101  左上肢 II度烧伤
+附加：  T31.101  烧伤面积10%-19%
+附加：  X09.9    暴露于未特指的火焰（外因）</pre>
+</div>
+
+<h3>5.2 实战演示——深度相同场景</h3>
+
+<div class="card">
+  <h4>📋 病例：多部位同深度烧伤</h4>
+  <p>患者热液烫伤，<strong>躯干前壁 II度（面积 12%）</strong> 和 <strong>右大腿 II度（面积 6%）</strong>，总面积 18%。</p>
+
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col good">
+      <h4>✅ 正确做法</h4>
+      <p>深度相同（都是 II度），看面积：躯干 12% > 大腿 6%</p>
+      <p><strong>主诊断：</strong><code>T21.101</code> 躯干 II度烧伤</p>
+      <p><strong>附加：</strong><code>T24.101</code> 右大腿 II度烧伤</p>
+    </div>
+    <div class="compare-col bad">
+      <h4>❌ 错误做法</h4>
+      <p>主诊断随意选 T24.101（大腿）——没有理由</p>
+      <p>虽然都是 II度，但躯干面积更大，消耗资源更多</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">⚡</span> 六、外部原因编码 —— 烧伤外因（X00-X19）与腐蚀伤外因（X40-X49）</h2>
+
+<h3>6.1 烧伤相关外因编码速查</h3>
+
+<table>
+  <tr><th>外因类目</th><th>描述</th><th>典型场景</th></tr>
+  <tr><td><code>X00</code></td><td>暴露于房屋或建筑结构中的无控制性火焰</td><td>住宅火灾、建筑火灾</td></tr>
+  <tr><td><code>X01</code></td><td>暴露于房屋或建筑结构外的无控制性火焰</td><td>野外火灾</td></tr>
+  <tr><td><code>X02</code></td><td>暴露于房屋或建筑结构中的有控制性火焰</td><td>壁炉、火炉烧伤</td></tr>
+  <tr><td><code>X03</code></td><td>暴露于房屋或建筑结构外的有控制性火焰</td><td>篝火</td></tr>
+  <tr><td><code>X04</code></td><td>暴露于高度易燃材料的点燃</td><td>汽油、酒精点燃</td></tr>
+  <tr><td><code>X08</code></td><td>暴露于其他特指的烟、火和火焰</td><td>烧烤、烟花</td></tr>
+  <tr><td><code>X09</code></td><td><strong>暴露于未特指的烟、火和火焰</strong></td><td>火焰烧伤未明确来源</td></tr>
+  <tr><td><code>X10</code></td><td>接触热饮料、食物和烹调油</td><td>热汤烫伤</td></tr>
+  <tr><td><code>X11</code></td><td>接触热的自来水</td><td>水龙头烫伤</td></tr>
+  <tr><td><code>X12</code></td><td>接触其他热液体</td><td>热水瓶、水蒸气</td></tr>
+  <tr><td><code>X19</code></td><td>接触其他和未特指的热和烫物质</td><td>热金属、暖气片</td></tr>
+</table>
+
+<h3>6.2 外因编码的核心规则</h3>
+
+<div class="card warn">
+  <strong>三条铁律：</strong><br>
+  ① 外因编码（V01-Y98）<strong>永远只能是附加编码</strong>，不能作为主要诊断单独使用<br>
+  ② 每一位损伤编码（S00-T98）对应的外因编码，应选择与损伤机制<strong>最特异的</strong>类目——能用 X00（建筑内火灾）就不要用 X09（未特指火焰）<br>
+  ③ 腐蚀伤的外因编码应查<strong>X40-X49</strong>（有毒物质的意外中毒及暴露），而非 X00-X19（热力/火焰）
+</div>
+
+<h3>6.3 烧伤诊断完整性核对清单</h3>
+
+<div class="process-box">
+  <p style="font-weight:700;margin-bottom:12px;">编码员拿到一份烧伤病历后，应按以下顺序逐项检查：</p>
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content"><h4>致伤原因</h4><p>是否有明确的外因描述？（火焰/热液/化学物/电击）→ 确定外因编码类目</p></div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content"><h4>部位</h4><p>有多个部位时逐一列出，精确到 T20-T25 中哪一个类目 → 决定部位编码</p></div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content"><h4>深度</h4><p>每个部位的深度（I/II/III度）是否明确？→ 决定 .0/.1/.2/.3 亚目</p></div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content"><h4>面积</h4><p>总面积百分比是否记录？→ 决定 T31/T32 附加编码</p></div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content"><h4>主诊断决策</h4><p>多部位？→ 按四层法则选主诊断 → 其他部位为附加 → 有无内部器官烧伤？→ 有呼吸道烧伤优先</p></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 七、重难点深度解析：呼吸道烧伤为什么能"越级"做主诊断？</h2>
+
+<h3>7.1 场景设定</h3>
+<p>患者火焰烧伤<strong>面部+颈部+前胸 II度（总面积 15%）</strong>，同时伴有<strong>吸入性呼吸道烧伤</strong>。</p>
+<p>按常规"深度优先→面积次之"规则，主诊断应该在体表烧伤部位中选——面颈胸都是 II度，面积最大的是前胸（约 8%）。但这里有一个<strong>更高优先级的特殊规则</strong>。</p>
+
+<h3>7.2 呼吸道烧伤的特殊性</h3>
+
+<table>
+  <tr><th>为什么呼吸道烧伤可以"插队"？</th><th>病理生理学依据</th></tr>
+  <tr>
+    <td>① <strong>直接威胁生命</strong></td>
+    <td>呼吸道水肿可在数小时内导致气道阻塞、窒息——这是烧伤早期死亡的主要原因之一</td>
+  </tr>
+  <tr>
+    <td>② <strong>治疗优先级最高</strong></td>
+    <td>任何烧伤患者到达急诊后，首先评估的就是气道（Airway）——A-B-C 原则的 A 排在首位</td>
+  </tr>
+  <tr>
+    <td>③ <strong>消耗医疗资源最大</strong></td>
+    <td>呼吸道烧伤需要气管插管/切开、呼吸机支持、纤维支气管镜检查——这些操作的费用和资源消耗远超体表清创换药</td>
+  </tr>
+  <tr>
+    <td>④ <strong>决定住院天数和预后</strong></td>
+    <td>呼吸道烧伤的愈合周期长，并发症多（感染、ARDS），是决定住院总费用的关键因素</td>
+  </tr>
+</table>
+
+<h3>7.3 决策对比</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 机械套用"深度优先"</h4>
+    <p>主诊断：<code>T21.101</code> 躯干 II度烧伤</p>
+    <p>附加：T20.1、T27.x（呼吸道烧伤）</p>
+    <p style="color:var(--red);margin-top:8px;"><strong>问题：</strong>将危及生命的呼吸道烧伤放在附加诊断位置，DRG分组时可能入到轻型烧伤组，与实际医疗资源消耗严重不匹配</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 呼吸道烧伤优先</h4>
+    <p>主诊断：<code>T27.x</code> 呼吸道烧伤</p>
+    <p>附加：T20.1、T21.1、T31.1</p>
+    <p style="color:var(--green);margin-top:8px;"><strong>优势：</strong>反映最危重的临床问题，DRG分组合理，能准确体现治疗强度和资源消耗</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 呼吸道烧伤做主诊断的条件：</strong>
+  <ol style="margin-top:8px;">
+    <li>必须有明确的临床证据（支气管镜检查、血气分析、影像学）</li>
+    <li>入院时即存在或入院后短期内出现的<strong>急性</strong>呼吸道损伤</li>
+    <li>本次住院的主要治疗方向围绕呼吸道管理展开</li>
+  </ol>
+  <p style="margin-top:8px;"><strong>注意：</strong>如果呼吸道烧伤轻微（仅咽部灼伤、无气道水肿），且体表烧伤面积很大（>30%）需要大面积手术，体表烧伤仍然应该做主诊断。</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 八、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 单部位烧伤编码推导</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"开水烫伤右前臂，浅II度，面积2%"</strong></p>
+    <p>请给出完整的编码推导过程（主导词 → 索引 → 核对卷一）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 主导词：</strong>烧伤（Burn）或烫伤（Scald）→ 在第三卷索引中查找"烧伤"</p>
+        <p><strong>✅ 第二步 · 查索引：</strong>烧伤 → 上肢 → 前臂 → 二度 → 索引指向 <code>T22.1</code>（肩和上肢二度烧伤）</p>
+        <p><strong>✅ 第三步 · 核对卷一：</strong>T22 "肩和上肢的烧伤和腐蚀伤，除外腕和手"，T22.1 "二度"。右前臂属于肩和上肢范围（腕以上），匹配无误。</p>
+        <p><strong>✅ 附加编码：</strong>面积 2%，属于 &lt;10% → <code>T31.001</code></p>
+        <p><strong>✅ 外因编码：</strong>热液烫伤 → <code>X11.9</code>（接触热的自来水）或 <code>X12.9</code>（接触其他热液体）</p>
+        <p style="margin-top:8px;"><strong>最终编码：</strong><code>T22.101</code> + <code>T31.001</code> + <code>X12.900x001</code></p>
+        <p><strong>💡 注意：</strong>"浅II度"属于II度范畴，编码用 .1 亚目，不能因为有个"浅"字就编到一度(.0)。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 腐蚀伤深度编码陷阱</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"硫酸腐蚀伤右手及腕部，临床判断为深II度，面积3%"</strong></p>
+    <p><strong>问题：</strong>深度亚目应该编 .1（二度）还是 .3（腐蚀伤未特指深度）？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong>编 <code>.3</code>——腐蚀伤（未特指深度），<strong>不是</strong> .1（二度烧伤）。</p>
+        <p><strong>✅ 推理过程：</strong></p>
+        <ol>
+          <li>致伤原因是硫酸（化学物质），不是热力 → 属于<strong>腐蚀伤</strong>（Corrosion），不是烧伤（Burn）</li>
+          <li>ICD-10 规定腐蚀伤的深度亚目为 <code>.3</code>，不区分一度/二度/三度</li>
+          <li>即使临床描述为"深II度"，腐蚀伤的深度仍编 <code>.3</code></li>
+        </ol>
+        <p><strong>✅ 最终编码：</strong><code>T23.301</code>（腕和手腐蚀伤）+ <code>T32.001</code>（腐蚀伤面积&lt;10%）+ <code>X49.9</code>（未特指化学物质意外暴露）</p>
+        <p><strong>💡 关键教训：</strong>致伤物的属性决定了编码路径——是热力就走 .0/.1/.2 三度路线，是化学物就走 .3 腐蚀伤路线。<strong>两条路线不交叉。</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · T31 面积区间匹配</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下每个烧伤总面积选择正确的 T31 编码：</p>
+    <ol>
+      <li>总面积 9%</li>
+      <li>总面积 10%</li>
+      <li>总面积 29%</li>
+      <li>总面积 30%</li>
+      <li>总面积 90%</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 9% → <code>T31.0</code>（＜10%）——注意边界值9%在"小于10%"区间内</p>
+        <p><strong>2.</strong> 10% → <code>T31.1</code>（10%-19%）——边界值10%应归入下一档</p>
+        <p><strong>3.</strong> 29% → <code>T31.2</code>（20%-29%）——29%仍在此区间</p>
+        <p><strong>4.</strong> 30% → <code>T31.3</code>（30%-39%）——30%进入下一档</p>
+        <p><strong>5.</strong> 90% → <code>T31.9</code>（≥90%）——90%及以上均为T31.9</p>
+        <p><strong>💡 边界记忆口诀：</strong>"含下不含上，十为下一档"——即 [10%, 20%) 属于 T31.1，10% 正好落在边界上时归入 T31.1 而非 T31.0。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 多部位不同深度——主诊断决策</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>火焰烧伤患者，伤情如下：</p>
+    <ul>
+      <li><strong>面部 II度</strong>，面积 3%</li>
+      <li><strong>躯干前壁 III度</strong>，面积 8%</li>
+      <li><strong>右上肢 II度</strong>，面积 6%</li>
+      <li><strong>总面积 17%</strong></li>
+    </ul>
+    <p><strong>问题：</strong>主诊断应该编哪个部位？请列出完整的编码清单。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断决策：</strong></p>
+        <p>按四层法则：</p>
+        <ul>
+          <li>第一层（深度优先）：面部(II度) vs 躯干(III度) vs 右上肢(II度) → <strong>躯干 III度 胜出</strong>（III度 > II度）</li>
+          <li>即使右上肢 II度面积 6% > 躯干 III度面积 8%… 等等，这里躯干III度面积8%比右上肢II度面积6%更大，而且深度更重，无论如何都是躯干做主诊断</li>
+        </ul>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：T21.201  躯干 III度烧伤
+附加：  T20.101  面部 II度烧伤
+附加：  T22.101  右上肢 II度烧伤
+附加：  T31.101  烧伤面积10%-19%
+附加：  X09.9    暴露于未特指的火焰</pre>
+        <p><strong>💡 注意：</strong>面部烧伤虽然面积最小，但由于面部属于特殊部位（涉及美观和功能），在"深度优先"规则下它仍是附加诊断。但如果本例中面部也是III度，则需要在面部和躯干都是III度的前提下进入第二层——看面积，躯干8%>面部3%，躯干仍是主诊断。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 呼吸道烧伤 vs 体表烧伤——主诊断冲突</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>建筑火灾患者：</p>
+    <ul>
+      <li><strong>吸入性呼吸道烧伤</strong>（支气管镜确认气道黏膜充血水肿，喉头水肿明显）</li>
+      <li><strong>躯干+双上肢 II度烧伤</strong>，总面积 25%</li>
+    </ul>
+    <p>入院后行气管切开+呼吸机支持+体表清创换药。</p>
+    <p><strong>问题：</strong>主诊断应该选呼吸道烧伤（T27）还是体表烧伤（T21/T22）？请给出完整推理。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 选择呼吸道烧伤 T27 作为主诊断。</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>呼吸道烧伤有明确的临床证据（支气管镜 + 喉头水肿）</li>
+          <li>入院后首要治疗围绕呼吸道管理（气管切开+呼吸机）</li>
+          <li>呼吸道烧伤直接威胁生命，相当于四层法则中"第三层：危害优先"的触发条件</li>
+          <li>虽然体表烧伤面积 25% 不小，但临床危急程度和资源消耗低于呼吸道烧伤</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：T27.x    呼吸道烧伤
+附加：  T21.101  躯干 II度烧伤
+附加：  T22.101  双上肢 II度烧伤
+附加：  T31.201  烧伤面积20%-29%
+附加：  X00.9    暴露于建筑结构内无控制性火焰</pre>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 完整烧伤编码综合推导</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者因"汽油桶爆炸致全身多处烧伤"收入院。详细伤情：</p>
+    <ul>
+      <li>面部 II度烧伤，面积 4%</li>
+      <li>躯干前壁+背部 II度烧伤，面积 15%</li>
+      <li>右上肢 III度烧伤，面积 5%</li>
+      <li>左大腿 II度烧伤，面积 7%</li>
+      <li><strong>烧伤总面积：31%</strong></li>
+    </ul>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>请按四层法则确定主诊断</li>
+      <li>列出全部编码（包含所有附加诊断 + T31 + 外因）</li>
+      <li>本例外因编码应该用 X04（易燃材料点燃）还是 X09（未特指火焰）？为什么？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1. 主诊断决策：</strong></p>
+        <ul>
+          <li>面部(II度)、躯干(II度)、左大腿(II度) vs 右上肢(III度)</li>
+          <li>第一层（深度优先）：右上肢 III度 > 所有 II度部位 → <strong>主诊断：右上肢</strong></li>
+        </ul>
+        <p><strong>✅ 2. 完整编码清单：</strong></p>
+        <pre>主诊断：T22.201  右上肢 III度烧伤
+附加：  T21.101  躯干 II度烧伤  （面积最大15%）
+附加：  T20.101  面部 II度烧伤
+附加：  T24.101  左大腿 II度烧伤
+附加：  T31.301  烧伤面积30%-39%
+附加：  X04.9    暴露于高度易燃材料的点燃</pre>
+        <p><strong>✅ 3. 外因选择：</strong>用 <code>X04</code>（高度易燃材料点燃），<strong>不是</strong> X09（未特指火焰）。</p>
+        <p><strong>推理：</strong>外因编码规则要求选择最特异的类目。本例明确为"汽油桶爆炸"—汽油属于高度易燃材料（ignition of highly flammable material），X04 精确匹配。用 X09 属于"能特指而不用特指"，违反了外因编码的特异性原则。</p>
+        <p><strong>💡 综合要点：</strong></p>
+        <ul>
+          <li>深度决定主诊断：III度＞II度，哪怕II度躯干面积15%远超III度上肢面积5%</li>
+          <li>面积决定T31：总面积31%→30%-39%区间</li>
+          <li>外因要精准：汽油=高度易燃材料=X04</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九 ======== -->
+<h2><span class="icon">✅</span> 九、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>诊断四要素：</strong>类型+部位+深度+面积，缺一不可</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>部位九分区：</strong>T20头颈/T21躯干/T22上肢/T23腕手/T24下肢/T25踝足</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>深度三档：</strong>.0一度 /.1二度 /.2三度；腐蚀伤统一用 .3</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>面积T31九档：</strong>＜10%起每10%一档，≥90%为T31.9</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>主诊断四层法则：</strong>深度优先→面积次之→危害优先→T29兜底</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>呼吸道烧伤可越级：</strong>生命威胁最高，可取代体表烧伤做主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>外因必须填：</strong>永远作为附加编码，选最特异的类目</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>腐蚀伤两条铁律：</strong>.3深度 + T32面积，不走烧伤的 .0/.1/.2 和 T31 路线</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 43 主题：肿瘤主诊断选择——确诊/治疗/复查/终末期</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>肿瘤患者以"化疗"为主入院时，主诊断编什么？是肿瘤本身还是 Z51.1？</li>
+    <li>肿瘤确诊和临床诊断在编码上有什么差异？（C vs D 的区别）</li>
+    <li>恶性肿瘤终末期患者的住院目的通常是什么？主诊断应该如何反映？</li>
+    <li>肿瘤复查（Z08）和肿瘤随诊（Z09）有什么区别？各自的使用场景是什么？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 42 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
