@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 34（2026年7月22日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #d97706 0%, #ea580c 50%, #dc2626 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #ea580c);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 34 · 2026年7月22日</div>
+  <h1>🦴 肌肉骨骼系统手术编码</h1>
+  <p class="subtitle">骨折、清创、关节 —— ICD-9-CM-3 第三阶段手术操作编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:56.7%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 34 / 60 天（56.7%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 一 ======== -->
+<h2><span class="icon">📖</span> 一、ICD-9-CM-3 肌肉骨骼系统手术章节结构（76-84）</h2>
+
+<p>肌肉骨骼系统手术是 ICD-9-CM-3（手术操作分类）第三阶段的学习重点。类目 76-84 覆盖从<strong>面骨</strong>到<strong>截肢</strong>的全部骨骼与软组织手术，其中<strong>骨折复位与内固定（79）</strong>、<strong>关节置换（81）</strong>是临床与 DRG 分组的绝对核心。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">79</div>
+    <div class="stat-label">核心类目：骨折复位与固定</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">闭合/切开 × 内固定</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">81</div>
+    <div class="stat-label">关节置换与脊柱融合</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">81.51/81.52/81.54</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">78</div>
+    <div class="stat-label">内固定装置操作</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">置入78.5 / 取出78.6</div>
+  </div>
+</div>
+
+<table>
+  <tr><th>类目</th><th>章节内容</th><th>典型操作 / 细目</th><th>编码重点</th></tr>
+  <tr>
+    <td><code>76</code></td>
+    <td><strong>面骨和关节手术</strong></td>
+    <td>颌骨切开、面骨骨折复位（76.7x）</td>
+    <td>面骨骨折复位走 76 章，不走 79 章</td>
+  </tr>
+  <tr>
+    <td><code>77</code></td>
+    <td><strong>骨的其他手术</strong>（切除、活检、截骨）</td>
+    <td>骨活检 77.4x、骨切除术 77.6x、截骨术 77.3x</td>
+    <td>骨清创属 77.6x，与软组织清创（86.2x）区分</td>
+  </tr>
+  <tr>
+    <td><code>78</code></td>
+    <td><strong>骨的其他手术</strong>（内固定装置操作）</td>
+    <td>置入 78.5x、取出 78.6x、调整 78.7x</td>
+    <td>与骨折复位+内固定（79.1x/79.3x）严格区分</td>
+  </tr>
+  <tr>
+    <td><code>79</code></td>
+    <td><strong>骨折和脱位的复位和固定</strong>（核心）</td>
+    <td>闭合复位 79.0x/79.1x，切开复位 79.2x/79.3x，脱位复位 79.7x/79.8x</td>
+    <td>四象限矩阵是本日最重要的考点</td>
+  </tr>
+  <tr>
+    <td><code>80</code></td>
+    <td><strong>关节结构手术</strong>（切开、镜检）</td>
+    <td>关节切开术 80.1x、关节镜检查 80.2x</td>
+    <td>关节镜探查常与关节内操作合并编码</td>
+  </tr>
+  <tr>
+    <td><code>81</code></td>
+    <td><strong>关节修复和整形</strong>（置换、融合）</td>
+    <td>全髋 81.51、半髋 81.52、全膝 81.54、脊柱融合 81.0x</td>
+    <td>翻修术需查「翻修/修订」主导词</td>
+  </tr>
+  <tr>
+    <td><code>82-83</code></td>
+    <td><strong>手部 / 其他肌腱筋膜手术</strong></td>
+    <td>手部肌腱修复 82.8x、肌腱转移 83.7x</td>
+    <td>手部专属手术走 82，其他肢体走 83</td>
+  </tr>
+  <tr>
+    <td><code>84</code></td>
+    <td><strong>肌肉骨骼系统其他手术</strong>（截肢、假体）</td>
+    <td>截肢术 84.0x-84.1x、假体安装 84.4x</td>
+    <td>截肢需明确部位和水平（大腿/小腿/趾）</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>章节结构记忆法：</strong>76 管脸 → 77 管骨本身 → 78 管骨里的"装置" → 79 管骨折复位（内容最重）→ 80 管关节"开刀看看" → 81 管关节"换掉修好" → 82/83 管肌腱筋膜 → 84 管截肢装假肢。由浅入深、由局部到整体。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🎯</span> 二、骨折手术编码四象限矩阵（核心）</h2>
+
+<p>骨折复位与固定是整个章节的<strong>最高频考点</strong>。核心逻辑是「两轴四象限」：横轴看<strong>复位方式</strong>（闭合 vs 切开），纵轴看<strong>有无内固定</strong>。两个维度相乘，得到四个编码家族：</p>
+
+<div class="flow-chart">
+  <p style="font-weight:700;margin-bottom:12px;">四象限矩阵 —— 79 类目编码骨架</p>
+  <div class="flow-row">
+    <div class="flow-box">闭合复位 + 无内固定 → <code>79.0x</code></div>
+    <div class="flow-box">闭合复位 + 有内固定 → <code>79.1x</code></div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">切开复位 + 无内固定 → <code>79.2x</code></div>
+    <div class="flow-box">切开复位 + 有内固定 → <code>79.3x</code>（ORIF）</div>
+  </div>
+</div>
+
+<table class="matrix-table">
+  <tr><th style="width:120px;">复位方式 ↓</th><th>无内固定</th><th>有内固定</th></tr>
+  <tr>
+    <td>闭合复位</td>
+    <td><code>79.0x</code><br><span style="font-size:12px;color:var(--text3);">手法复位 + 石膏/牵引</span></td>
+    <td><code>79.1x</code><br><span style="font-size:12px;color:var(--text3);">闭合复位 + 经皮穿针/髓内钉</span></td>
+  </tr>
+  <tr>
+    <td>切开复位</td>
+    <td><code>79.2x</code><br><span style="font-size:12px;color:var(--text3);">手术切开复位，仅内固定外的稳定</span></td>
+    <td><code>79.3x</code><br><span style="font-size:12px;color:var(--text3);"><strong>切开复位内固定（ORIF）</strong>，最常见</span></td>
+  </tr>
+</table>
+
+<h3>2.1 部位用第5位细目区分</h3>
+<p>79 类目的前四位确定「复位方式 + 内固定」，<strong>第5位细分具体部位</strong>。以下是临床最高频的几个：</p>
+
+<table>
+  <tr><th>部位</th><th>闭合+无内固定</th><th>闭合+内固定</th><th>切开+无内固定</th><th>切开+内固定（ORIF）</th></tr>
+  <tr><td>肱骨</td><td><code>79.01</code></td><td><code>79.11</code></td><td><code>79.21</code></td><td><code>79.31</code></td></tr>
+  <tr><td>桡尺骨（前臂）</td><td><code>79.02</code></td><td><code>79.12</code></td><td><code>79.22</code></td><td><code>79.32</code></td></tr>
+  <tr><td>股骨</td><td><code>79.05</code></td><td><code>79.15</code></td><td><code>79.25</code></td><td><code>79.35</code></td></tr>
+  <tr><td>胫骨腓骨</td><td><code>79.06</code></td><td><code>79.16</code></td><td><code>79.26</code></td><td><code>79.36</code></td></tr>
+  <tr><td>腕骨掌骨</td><td><code>79.03</code></td><td><code>79.13</code></td><td><code>79.23</code></td><td><code>79.33</code></td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 第5位细目最易混淆：</strong>股骨是 <code>.5</code>（79.35/79.36 极易被误写为 79.35/79.36——注意股骨为 <code>.5</code>，胫腓骨为 <code>.6</code>）。临床常写「股骨颈骨折」，其细目仍是股骨 <code>.5</code>，不要因为"颈"字就找其他细目。
+</div>
+
+<div class="note">
+  <strong>💡 关键记忆：</strong>第5位细目与解剖部位一一对应：1 肱骨、2 桡尺骨、3 腕骨掌骨、4 指骨、5 股骨、6 胫腓骨、7 跗骨跖骨、8 趾骨。<strong>记住"5股6胫"</strong>即可覆盖绝大多数考试与实战场景。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔬</span> 三、编码规则要点 —— 四步走流程</h2>
+
+<p>拿到一份骨折手术记录，按以下四步顺序推进，可避免 90% 的错误：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>第一步：判断复位方式 —— 闭合 vs 切开（决定前两位）</h4>
+      <p>手术记录中是否<strong>切开皮肤/暴露骨折断端</strong>？手法复位+外固定=闭合（79.0x/79.1x）；切开暴露骨折端=切开（79.2x/79.3x）。</p>
+      <p><strong>口诀：</strong>"切没切开"决定 79.0/79.1 与 79.2/79.3 之分水岭。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>第二步：判断有无内固定（决定第3位 .0/.1/.2/.3）</h4>
+      <p>术中是否置入<strong>钢板、螺钉、髓内钉、克氏针</strong>等内固定物？有内固定则编码落在 .1 或 .3；无内固定落在 .0 或 .2。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第三步：定位部位细目（第5位）</h4>
+      <p>根据骨折的具体解剖部位（肱骨/前臂/股骨/胫腓骨等），从第5位细目中选出对应的 <code>.1</code> 至 <code>.8</code>。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>第四步：核对附加操作 —— 内固定取出等另编码</h4>
+      <p>本次手术中如有<strong>内固定取出</strong>（二次手术拆除钢板/螺钉）另编 <code>78.6x</code>；内固定调整另编 <code>78.7x</code>。与"置入"（78.5x）严格区分。</p>
+    </div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>完整示例推导：</strong>「股骨干骨折，行切开复位钢板螺钉内固定术」→ ①切开=79.2/79.3 → ②有内固定=.3 → ③股骨细目=.5 → <strong>最终编码 79.35</strong>。再叠加术中如同时做了内固定取出（取旧钢板）则加 78.65。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">⚙️</span> 四、内固定装置编码 —— 78 类目 vs 79 类目</h2>
+
+<p>内固定装置的操作（置入/取出/调整）集中在 78 类目，但<strong>与骨折复位叠加时优先级最高的是 79 类目</strong>。这是编码员最容易"重复编码"或"漏编"的地方。</p>
+
+<table>
+  <tr><th>编码</th><th>操作</th><th>典型场景</th><th>是否与79叠加</th></tr>
+  <tr>
+    <td><code>78.5x</code></td>
+    <td><strong>内固定装置置入（不伴骨折复位）</strong></td>
+    <td>单纯置入髓内钉/钢板加强稳定，术中未做复位</td>
+    <td>否——本身即完整编码</td>
+  </tr>
+  <tr>
+    <td><code>78.6x</code></td>
+    <td><strong>内固定装置取出</strong></td>
+    <td>骨折愈合后二期取出钢板螺钉</td>
+    <td>否——独立操作，单编</td>
+  </tr>
+  <tr>
+    <td><code>78.7x</code></td>
+    <td><strong>内固定装置调整</strong></td>
+    <td>内固定位置不良的再调整</td>
+    <td>否——独立操作</td>
+  </tr>
+  <tr>
+    <td><code>79.1x</code></td>
+    <td><strong>闭合复位 + 内固定</strong></td>
+    <td>闭合复位经皮髓内钉/克氏针固定</td>
+    <td><strong>是——本身就是复位+内固定的组合</strong></td>
+  </tr>
+  <tr>
+    <td><code>79.3x</code></td>
+    <td><strong>切开复位 + 内固定（ORIF）</strong></td>
+    <td>切开复位钢板螺钉固定（最常见）</td>
+    <td><strong>是——本身就是复位+内固定的组合</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 铁律：骨折复位 + 内固定时，只编 79.1x/79.3x，不另编 78.5x。</strong>
+  <p style="margin-top:6px;">79.1x 和 79.3x 已经"包含"了内固定装置的置入。若再叠加 78.5x 就构成<strong>重复编码</strong>。只有当术中<strong>未行复位</strong>而单纯置入内固定（如防旋髓内钉预防性置入）时，才编 78.5x。</p>
+</div>
+
+<h3>4.1 实战辨析</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景 A：切开复位钢板内固定</h4>
+    <p>术式：切开暴露骨折端 → 复位 → 钢板螺钉固定</p>
+    <p>编码：<code>79.3x</code>（ORIF）</p>
+    <p style="color:var(--green);"><strong>不另编 78.5x</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>场景 B：单纯内固定置入</h4>
+    <p>术式：骨折已自行对位，仅置入髓内钉维持稳定</p>
+    <p>编码：<code>78.5x</code></p>
+    <p style="color:var(--green);"><strong>因未复位，归 78 类目</strong></p>
+  </div>
+  <div class="example-item">
+    <h4>场景 C：二期取出内固定</h4>
+    <p>术式：骨折愈合后拆除原钢板螺钉</p>
+    <p>编码：<code>78.6x</code></p>
+    <p style="color:var(--green);"><strong>独立操作，单编</strong></p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🦿</span> 五、关节置换编码 —— 81 类目</h2>
+
+<p>关节置换是 81 类目的核心，也是 DRG 分组的"明星手术"。需准确区分<strong>全置换 vs 部分置换</strong>、<strong>初次 vs 翻修</strong>。</p>
+
+<table>
+  <tr><th>编码</th><th>手术名称</th><th>关键鉴别点</th></tr>
+  <tr>
+    <td><code>81.51</code></td>
+    <td><strong>全髋关节置换</strong></td>
+    <td>髋臼+股骨头一并置换（THA）</td>
+  </tr>
+  <tr>
+    <td><code>81.52</code></td>
+    <td><strong>部分髋关节置换（半髋）</strong></td>
+    <td>仅置换股骨头（如股骨颈骨折人工股骨头置换）</td>
+  </tr>
+  <tr>
+    <td><code>81.54</code></td>
+    <td><strong>全膝关节置换</strong></td>
+    <td>股骨+胫骨+髌骨关节面置换（TKA）</td>
+  </tr>
+  <tr>
+    <td><code>81.56</code></td>
+    <td><strong>踝关节置换</strong></td>
+    <td>全踝置换，相对少见</td>
+  </tr>
+  <tr>
+    <td><code>81.80</code></td>
+    <td><strong>其他全关节置换</strong></td>
+    <td>肩、肘等非髋膝踝的置换</td>
+  </tr>
+</table>
+
+<h3>5.1 翻修术编码 —— 查「翻修」或「修订」</h3>
+<p>关节置换翻修术（二次置换）在 ICD-9-CM-3 中须查找<strong>「翻修」或「修订」(Revision)</strong>主导词，而非直接套用初次置换编码：</p>
+
+<div class="card tip">
+  <p><strong>示例：</strong>全髋关节置换术后假体松动，行翻修术 → 查索引「翻修」→ 关节置换术（全）→ <code>00.70</code>（髋关节置换翻修，股骨/髋臼组成部分）或按版本细则编码。</p>
+  <p style="margin-top:6px;"><strong>关键动作：</strong>凡手术记录出现"翻修""修正""重新置换"，一律先查「翻修」主导词，确认是否存在专门细目，再决定编码。</p>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见错误：</strong>把翻修术直接编成初次置换 81.51。翻修与初次置换的编码不同（国临版多为 <code>00.70-00.73</code> 系列或查索引确认），混编将直接导致 DRG 分组错误。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">🧹</span> 六、清创术编码 —— 软组织 vs 骨的区分</h2>
+
+<p>清创术（Debridement）是开放性骨折、感染创面处理的高频操作。编码的<strong>第一要务是区分清创的层次</strong>：皮肤软组织 vs 骨。</p>
+
+<table>
+  <tr><th>编码</th><th>操作内容</th><th>适用场景</th></tr>
+  <tr>
+    <td><code>86.22</code></td>
+    <td><strong>皮肤清创（开放性伤口的清创）</strong></td>
+    <td>开放性伤口切除坏死皮肤、去除异物、冲洗</td>
+  </tr>
+  <tr>
+    <td><code>86.28</code></td>
+    <td><strong>其他清创</strong></td>
+    <td>非开放性伤口的清创、感染创面刮除（非皮肤类）</td>
+  </tr>
+  <tr>
+    <td><code>77.6x</code></td>
+    <td><strong>骨清创（局部骨切除术）</strong></td>
+    <td>骨感染、骨髓炎清除死骨、开放骨折骨端处理</td>
+  </tr>
+</table>
+
+<h3>6.1 清创 vs 换药 —— 一字之差，编码天壤之别</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 清创（需编码）</h4>
+    <p><strong>定义：</strong>切除失活组织、去除异物、敞开或扩大创面</p>
+    <p><strong>关键词：</strong>清创、扩创、坏死组织切除</p>
+    <p><strong>编码：</strong><code>86.22</code> / <code>86.28</code> / <code>77.6x</code></p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 换药（不编码）</h4>
+    <p><strong>定义：</strong>更换敷料、清洗创面、常规换药</p>
+    <p><strong>关键词：</strong>换药、更换敷料、清洁创面</p>
+    <p><strong>编码：</strong><strong>不编码</strong>——属常规护理操作</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 判断原则：</strong>是否有<strong>组织切除/去除异物</strong>这一实质性操作？仅"换药""换纱布"属于护理处置，<strong>不编码</strong>；凡涉及"清创、扩创、切除坏死组织"则必须编码。开放性骨折常同时行软组织清创（86.22）+ 骨折 ORIF（79.3x）→ 两个编码都要给出。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，后2题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 闭合复位髓内钉固定</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"左股骨颈骨折，行闭合复位髓内钉内固定术"</strong></p>
+    <p>请给出完整的编码推导过程。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 复位方式：</strong>「闭合复位」→ 前两位为 <code>79.1</code> 或 <code>79.0</code></p>
+        <p><strong>✅ 第二步 · 内固定有无：</strong>「髓内钉内固定」→ 有内固定 → 落在 <code>79.1</code>（闭合+内固定），而非 79.0（闭合无内固定）</p>
+        <p><strong>✅ 第三步 · 部位细目：</strong>股骨 → 第5位 <code>.5</code></p>
+        <p><strong>✅ 最终编码：</strong><code>79.15</code>（股骨闭合复位伴内固定）</p>
+        <p><strong>💡 注意：</strong>「髓内钉」属于内固定装置，但此处内固定已包含在 79.15 中，<strong>不另编 78.5x</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 切开复位钢板内固定</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"胫腓骨骨折，行切开复位钢板内固定术"</strong></p>
+    <p>请给出正确的四象限定位与编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 复位方式：</strong>「切开复位」→ 前两位为 <code>79.2</code> 或 <code>79.3</code></p>
+        <p><strong>✅ 第二步 · 内固定有无：</strong>「钢板内固定」→ 有内固定 → 落在 <code>79.3</code>（切开+内固定，即 ORIF）</p>
+        <p><strong>✅ 第三步 · 部位细目：</strong>胫腓骨 → 第5位 <code>.6</code></p>
+        <p><strong>✅ 最终编码：</strong><code>79.36</code>（胫骨腓骨切开复位伴内固定）</p>
+        <p><strong>💡 注意：</strong>「钢板」同样是内固定，编码已含在 79.36 中，不得再编 78.5x。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 全膝关节置换</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"右膝关节骨性关节炎，行全膝关节置换术"</strong></p>
+    <p><strong>问题：</strong>手术编码应编什么？若为二次翻修手术，编码如何处理？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 手术编码：</strong><code>81.54</code>（全膝关节置换，TKA）</p>
+        <p><strong>✅ 编码推导：</strong>手术操作编码与疾病诊断编码（M17 骨关节炎）分开处理。置换类型为"全膝"→ 81.54；若为"单髁/部分置换"则需查具体细目，不可想当然。</p>
+        <p><strong>✅ 翻修场景：</strong>若术式为全膝关节置换术后假体松动行<strong>翻修术</strong> → 查主导词<strong>「翻修」/「修订」(Revision)</strong>，按索引给出翻修编码（国临版常见 <code>00.70-00.73</code> 系列对应膝翻修，具体以卷三核对为准），<strong>不得直接编 81.54</strong>。</p>
+        <p><strong>💡 要点：</strong>初次置换与翻修术编码不同——翻修是独立的主导词路径，这是 81 类目最隐蔽的考点。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 开放性骨折清创 + ORIF</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"开放性胫骨骨折，急诊行清创术 + 切开复位钢板内固定术"</strong></p>
+    <p><strong>问题：</strong>本次手术应编哪几个编码？清创与复位内固定是什么关系？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 手术编码（两个）：</strong></p>
+        <p>① 骨折 ORIF：<code>79.36</code>（胫骨腓骨切开复位伴内固定）</p>
+        <p>② 清创术：<code>86.22</code>（开放性伤口皮肤清创）</p>
+        <p><strong>✅ 编码关系：</strong>清创术与骨折复位内固定是<strong>两项独立的操作</strong>，须分别编码、同时给出。</p>
+        <p><strong>✅ 辨析要点：</strong></p>
+        <ul>
+          <li>若清创涉及骨端（如清除死骨/骨皮质碎片）→ 骨清创编 <code>77.6x</code>，而非 86.22</li>
+          <li>79.36 已含内固定置入，不得再编 78.5x</li>
+          <li>若记录仅"换药/冲洗创面"而未切除组织 → 不编清创编码</li>
+        </ul>
+        <p><strong>💡 最终编码清单：</strong><code>79.36</code> + <code>86.22</code></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八 ======== -->
+<h2><span class="icon">⚠️</span> 八、易错点对比 —— 正确 vs 错误</h2>
+
+<h3>8.1 复位方式混淆（闭合 vs 切开）</h3>
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>手法复位+石膏 → <code>79.0x</code></p>
+    <p>切开暴露骨折端复位 → <code>79.2x/79.3x</code></p>
+    <p><strong>判据：</strong>手术记录是否切开皮肤暴露骨折端</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误</h4>
+    <p>把"切开复位钢板内固定"编成 <code>79.16</code>（闭合+内固定）</p>
+    <p style="color:var(--red);">原因：只记内固定、漏判复位方式，导致复位方式轴错位</p>
+  </div>
+</div>
+
+<h3>8.2 内固定遗漏或重复编码</h3>
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>ORIF（切开复位+钢板）→ 只编 <code>79.3x</code></p>
+    <p>二期取出钢板 → 单编 <code>78.6x</code></p>
+    <p><strong>原则：</strong>79.x 已含内固定置入，不叠加 78.5x</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误</h4>
+    <p>ORIF 后<strong>再叠加 78.5x</strong>（重复编码）</p>
+    <p>或复位+内固定却漏编成 <code>79.2x</code>（遗漏内固定维度）</p>
+  </div>
+</div>
+
+<h3>8.3 清创 vs 换药混淆</h3>
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>开放性伤口清创（切除坏死组织）→ <code>86.22</code></p>
+    <p>骨髓炎清除死骨 → <code>77.6x</code></p>
+    <p>常规换药 → <strong>不编码</strong></p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误</h4>
+    <p>把"换药、更换敷料"编成 <code>86.22</code></p>
+    <p style="color:var(--red);">换药属护理操作，不产生手术编码</p>
+  </div>
+</div>
+
+<h3>8.4 部位细目错编</h3>
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确</h4>
+    <p>股骨颈骨折 → 股骨细目 <code>.5</code> → <code>79.35</code></p>
+    <p>胫腓骨 → 细目 <code>.6</code> → <code>79.36</code></p>
+    <p><strong>口诀：</strong>"5股6胫"</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误</h4>
+    <p>把胫腓骨 ORIF 编成 <code>79.35</code>（错用股骨细目 .5）</p>
+    <p>把股骨编成 <code>79.36</code>（错用胫腓骨细目 .6）</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九 ======== -->
+<h2><span class="icon">✅</span> 九、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>四象限矩阵：</strong>闭合无固定79.0x/闭合有固定79.1x/切开无固定79.2x/切开有固定79.3x（ORIF）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>细目口诀：</strong>"5股6胫"——股骨细目.5、胫腓骨.6，先定轴再定位</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>复位决定前两位：</strong>闭合79.0/79.1，切开79.2/79.3；看是否切开皮肤暴露骨折端</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>内固定不重复：</strong>复位+内固定只编79.x，不叠编78.5x；取出/调整另编78.6x/78.7x</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>关节置换：</strong>全髋81.51/半髋81.52/全膝81.54/踝81.56；翻修查「翻修/修订」主导词</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>清创三码：</strong>皮肤清创86.22/其他86.28/骨清创77.6x；换药不编码</div></div>
+</div>
+
+<div class="note">
+  <strong>💡 一句话总结：</strong>骨折手术先判"闭合还是切开"，再判"有没有内固定"，四象限定位后用"5股6胫"对部位细目——三个维度一步都不能省。
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 35 主题：其他诊断性和治疗性操作编码（87-99）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>诊断性操作（87-90 影像、内镜、诊断性操作）与治疗性操作在编码上的核心区别是什么？</li>
+    <li>透析（39.95）、化疗（99.25）、输血（99.0x）等治疗性操作的主次顺序如何安排？</li>
+    <li>内镜检查（如胃镜 45.13、结肠镜 45.23）做镜检同时取活检，该如何编码？</li>
+    <li>导管操作（如中心静脉置管 38.93、导尿 57.94）的常见编码陷阱有哪些？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 34 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 手术操作分类 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>

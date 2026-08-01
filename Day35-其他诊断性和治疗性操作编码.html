@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 35（2026年7月23日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #4f46e5 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #6366f1);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 35 · 2026年7月23日</div>
+  <h1>🔥 病案编码学习</h1>
+  <p class="subtitle">今日主题：其他诊断性和治疗性操作编码（87-99）—— 介入、透析、内镜 · 第三阶段收官</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:58.3%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 35 / 60 天（58.3%）</p>
+</div>
+
+<hr class="divider">
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>今天是第三阶段（手术操作编码 Day26-35）的收官日，主题为 ICD-9-CM-3 第16章"其他诊断性和治疗性操作"（87-99）。这部分涵盖介入手术、透析、内镜、放疗、化疗、输血、心肺复苏等日常高频操作，特点是<strong>编码分散、易混淆</strong>。今天的学习重点是掌握章节整体结构，记住关键操作的具体码位，并掌握"介入操作三步编码法"这一实战利器。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、ICD-9-CM-3 第15-16章结构（87-99）—— 章节全景图</h2>
+
+<h3>1.1 章节定位：最后一章的"大杂烩"</h3>
+<p>编码 87-99 属于 ICD-9-CM-3 的<strong>第16章：其他诊断性和治疗性操作</strong>。与前几章按系统部位分类不同，本章按<strong>操作性质和目的</strong>分类，涵盖了内科治疗操作、诊断技术、康复理疗等各类非手术性操作。这一章是编码员工作中最容易混淆的部分，因为很多操作（如内镜、活检）同时存在诊断性和治疗性两个目的，码位散落在各章。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">87-91</div>
+    <div class="stat-label">诊断性操作</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">放射线/超声/显微/活检</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">92-99</div>
+    <div class="stat-label">治疗性操作</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">放疗/理疗/插管/输血</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">39.95</div>
+    <div class="stat-label">血液透析（例外）</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">不在本章，在循环系统章</div>
+  </div>
+</div>
+
+<h3>1.2 87-99 全章速览表</h3>
+
+<table>
+  <tr><th>编码段</th><th>分类名称</th><th>主要内容</th><th>编码角色</th></tr>
+  <tr>
+    <td><code>87</code></td>
+    <td>诊断性放射线检查（X线）</td>
+    <td>胸部、腹部、骨骼、消化道钡餐/钡灌肠等 X 线平片和造影</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>88</code></td>
+    <td>其他诊断性放射线和相关技术</td>
+    <td>CT、MRI、超声、血管造影、胆道造影等</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>89</code></td>
+    <td>诊断性超声</td>
+    <td>超声心动图、腹部超声、产科超声等</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>90</code></td>
+    <td>显微检查和培养</td>
+    <td>组织学、细胞学检查，细菌/真菌培养及药敏试验</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>91</code></td>
+    <td>其他诊断性操作</td>
+    <td>各种穿刺、活检、功能测定、内窥镜检查归类</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>92</code></td>
+    <td>放射治疗</td>
+    <td>远距离放疗、近距离放疗、立体定向放疗、放射性同位素治疗</td>
+    <td>治疗性</td>
+  </tr>
+  <tr>
+    <td><code>93</code></td>
+    <td>物理治疗和康复</td>
+    <td>运动疗法、理疗（电疗/热疗/光疗）、言语治疗、康复训练</td>
+    <td>治疗性</td>
+  </tr>
+  <tr>
+    <td><code>94</code></td>
+    <td>精神科相关操作</td>
+    <td>心理测验、心理咨询、精神科治疗（电休克等）</td>
+    <td>诊断/治疗</td>
+  </tr>
+  <tr>
+    <td><code>95</code></td>
+    <td>眼科和耳鼻喉诊断</td>
+    <td>视力检查、眼底检查、听力测试、前庭功能检查等</td>
+    <td>诊断性</td>
+  </tr>
+  <tr>
+    <td><code>96</code></td>
+    <td>非手术性插管和冲洗</td>
+    <td>胃管置入、导尿、灌洗、机械通气（96.7x）</td>
+    <td>治疗性</td>
+  </tr>
+  <tr>
+    <td><code>97</code></td>
+    <td>非手术性取出和去除</td>
+    <td>取出体内引流管、敷料、缝线等</td>
+    <td>治疗性</td>
+  </tr>
+  <tr>
+    <td><code>98</code></td>
+    <td>非手术性去除</td>
+    <td>去除体内异物（经自然腔道或切口）、结石等</td>
+    <td>治疗性</td>
+  </tr>
+  <tr>
+    <td><code>99</code></td>
+    <td>其他非手术性操作</td>
+    <td>化疗、输血、注射、心肺复苏、光疗、血液净化</td>
+    <td>治疗性</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>💡 记忆框架：</strong>本章可记为"<strong>先诊断后治疗</strong>"两大板块——87-91 是"看"（怎么检查），92-99 是"治"（怎么处理）。诊断性操作按<strong>技术手段</strong>分类（X线/CT/MRI/超声/显微），治疗性操作按<strong>治疗性质</strong>分类（放疗/理疗/插管/去除/其他）。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🔬</span> 二、诊断性操作编码表（87-91）</h2>
+
+<h3>2.1 常用诊断性操作码位速查</h3>
+
+<table>
+  <tr><th>操作类型</th><th>编码</th><th>说明</th></tr>
+  <tr>
+    <td><strong>X线检查</strong></td>
+    <td><code>87.x</code></td>
+    <td>按部位区分（胸片87.4x、腹部87.6x、骨骼87.x）</td>
+  </tr>
+  <tr>
+    <td><strong>CT检查</strong></td>
+    <td><code>88.3x</code></td>
+    <td>按部位区分（头颅88.31、腹部88.38、胸部88.33）</td>
+  </tr>
+  <tr>
+    <td><strong>MRI检查</strong></td>
+    <td><code>88.9x</code></td>
+    <td>按部位区分（脑88.91、脊柱88.93、四肢88.95）</td>
+  </tr>
+  <tr>
+    <td><strong>超声检查</strong></td>
+    <td><code>88.7x</code></td>
+    <td>腹部 <code>88.71</code>、心脏 <code>88.72</code>（超声心动图）</td>
+  </tr>
+  <tr>
+    <td><strong>血管造影</strong></td>
+    <td><code>88.4x-88.5x</code></td>
+    <td>冠脉 <code>88.55</code>、脑血管 <code>88.41</code>、肝动脉 <code>88.47</code></td>
+  </tr>
+  <tr>
+    <td><strong>内镜检查</strong></td>
+    <td>各章节散布</td>
+    <td>胃镜 <code>42.2x</code>、结肠镜 <code>45.2x</code>、支气管镜 <code>33.2x</code></td>
+  </tr>
+  <tr>
+    <td><strong>穿刺活检</strong></td>
+    <td>各章节散布</td>
+    <td>肝穿 <code>50.11</code>、肾穿 <code>55.23</code></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 本节最重要的规则——内镜和活检编码不在本章：</strong>虽然 91.x 名义上是"其他诊断性操作"，但<strong>消化道内镜、呼吸道内镜、穿刺活检的编码都散落在各系统章节中</strong>（胃镜在 42 章、结肠镜在 45 章、支气管镜在 33 章），因为 ICD-9-CM-3 采用"按系统器官部位"的分类原则。编码时<strong>必须按操作部位去相应章节查找</strong>，不能想当然在 87-99 章找内镜编码。
+</div>
+
+<h3>2.2 内镜"目的决定码位"——诊断与治疗分道扬镳</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 诊断性内镜（查看为主）</h4>
+    <p>胃镜（诊断）→ <code>42.23</code></p>
+    <p>结肠镜（诊断）→ <code>45.23</code></p>
+    <p>支气管镜（诊断）→ <code>33.22</code></p>
+    <p style="color:var(--green);margin-top:8px;">目的：检查、观察、取材</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>✅ 治疗性内镜（操作为主）</h4>
+    <p>胃镜（治疗/止血等）→ <code>42.29</code> 类</p>
+    <p>结肠镜（息肉切除）→ <code>45.42</code></p>
+    <p>支气管镜（介入治疗）→ <code>33.2x</code> 相应亚目</p>
+    <p style="color:var(--green);margin-top:8px;">目的：切除、止血、扩张、取异物</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">💉</span> 三、治疗性操作编码表（92-99）</h2>
+
+<h3>3.1 常用治疗性操作码位速查</h3>
+
+<table>
+  <tr><th>操作类型</th><th>编码</th><th>说明</th></tr>
+  <tr>
+    <td><strong>放射治疗</strong></td>
+    <td><code>92.0x-92.3x</code></td>
+    <td>远距离（外照射）/近距离（内照射）/立体定向放疗</td>
+  </tr>
+  <tr>
+    <td><strong>化疗灌注</strong></td>
+    <td><code>99.25</code></td>
+    <td>全身或区域性化疗（静脉/动脉灌注）</td>
+  </tr>
+  <tr>
+    <td><strong>输血</strong></td>
+    <td><code>99.0x</code></td>
+    <td>全血 <code>99.03</code>、红细胞 <code>99.04</code>、血小板 <code>99.05</code></td>
+  </tr>
+  <tr>
+    <td><strong>血液透析</strong></td>
+    <td><code>39.95</code></td>
+    <td>体外透析（注意：<strong>不在本章</strong>，在循环系统章）</td>
+  </tr>
+  <tr>
+    <td><strong>腹膜透析</strong></td>
+    <td><code>54.98</code></td>
+    <td>腹膜腔内透析（在消化系统腹膜章）</td>
+  </tr>
+  <tr>
+    <td><strong>物理治疗</strong></td>
+    <td><code>93.3x</code></td>
+    <td>运动疗法、康复训练</td>
+  </tr>
+  <tr>
+    <td><strong>心肺复苏</strong></td>
+    <td><code>99.60-99.63</code></td>
+    <td>胸外按压99.60、心肺复苏99.63 等</td>
+  </tr>
+  <tr>
+    <td><strong>机械通气</strong></td>
+    <td><code>96.7x</code></td>
+    <td>持续 <code>96.71</code>、间歇 <code>96.72</code>（非手术性插管章）</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>💡 三个"不在本章"的例外（考试高频陷阱）：</strong>
+  <ol style="margin-top:8px;">
+    <li><strong>血液透析 39.95</strong> —— 在循环系统操作章（39章），因为动静脉通路属于血管操作范畴</li>
+    <li><strong>腹膜透析 54.98</strong> —— 在消化系统章（54章腹膜操作）</li>
+    <li><strong>血液净化（血浆置换等）99.7x</strong> —— 虽在 99 章，但需区分透析与血浆置换的不同码位</li>
+  </ol>
+  <p style="margin-top:8px;">这三个例外说明：<strong>操作编码的归类"优先看系统部位，再看操作性质"</strong>，与 ICD-9-CM-3 的整体分类学原则一致。</p>
+</div>
+
+<h3>3.2 化疗编码的细分——不只是 99.25</h3>
+<p><code>99.25</code> 是化疗灌注的统称，但实际操作中需根据<strong>给药方式</strong>区分码位：</p>
+
+<table>
+  <tr><th>给药方式</th><th>编码</th><th>场景示例</th></tr>
+  <tr><td>抗肿瘤化疗药物静脉输注</td><td><code>99.25</code></td><td>全身化疗（乳腺癌、肺癌等）</td></tr>
+  <tr><td>区域性动脉灌注化疗</td><td><code>99.25</code>（需另编码动脉置管/造影）</td><td>肝动脉灌注化疗（肝癌）</td></tr>
+  <tr><td>鞘内注射化疗</td><td>按穿刺部位编码（如03.31 腰椎穿刺+注射）</td><td>白血病中枢预防</td></tr>
+  <tr><td>膀胱内灌注化疗</td><td><code>99.25</code>（灌注途径）或按腔内操作编码</td><td>膀胱癌术后灌注</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 化疗编码铁律：</strong>肿瘤患者行化疗时，主诊断必须是<strong>肿瘤本身（C00-D48）</strong>，化疗操作 99.25 作为<strong>手术操作栏目的编码</strong>填报，不能把 Z51.1（肿瘤化疗医疗照顾）当作主诊断——除非本次住院<strong>仅</strong>为化疗而收治且无肿瘤诊断记录等特殊情况（按国临版规则以肿瘤为主诊断）。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🧭</span> 四、编码规则要点 —— 四条核心规则</h2>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>诊断性 vs 治疗性：同一部位、不同目的、不同编码</h4>
+      <p>同一部位的内镜操作，因目的不同编码不同：胃镜诊断性检查 42.23 vs 胃镜治疗性操作 42.29 系列；结肠镜诊断 45.23 vs 息肉切除 45.42。</p>
+      <p><strong>判定依据：</strong>手术记录中是否有"切除、止血、扩张、支架、异物取出"等治疗性动词。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>入路决定编码：经皮 / 经导管 / 开放性</h4>
+      <p>同一种治疗，入路不同编码不同。如血管成形：经皮腔内冠状动脉成形 00.66，而开放性冠脉搭桥 36.1x。</p>
+      <p><strong>口诀：</strong>先看入路（怎么进去），再看部位（在哪做），最后看术式（做什么）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>操作排序：治疗性操作在前，诊断性在后</h4>
+      <p>病案首页"手术及操作栏"的填写顺序：<strong>治疗性操作优先</strong>，其次为诊断性操作；同性质时按手术大小/主要程度排序。</p>
+      <p><strong>示例：</strong>冠脉造影+支架同时进行时，支架植入（治疗）应排在造影（诊断）之前。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>与主诊断联动：操作编码必须与主诊断逻辑一致</h4>
+      <p>操作编码必须能"解释"主诊断的治疗路径。主诊断为肝癌，操作中出现肝移植或TACE是合理的；若出现心脏手术则逻辑断裂，应核查病历。</p>
+      <p><strong>实战意义：</strong>DRG分组通过"诊断+操作"组合确定，操作与诊断不匹配会导致分组错误。</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🛠️</span> 五、介入操作三步编码法 —— 本章的实战利器</h2>
+
+<p>介入操作（血管内介入）是编码中最容易漏编、错编的类别。绝大多数介入操作可以拆解为<strong>三个逻辑步骤</strong>，逐一编码即可做到不重不漏：</p>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">① 穿刺入路<br><span style="font-weight:400;font-size:12px;">如股动脉穿刺 38.91 / 38.98</span></div>
+    <div style="color:var(--accent);font-weight:700;">→</div>
+    <div class="flow-box">② 导管置入 + 造影<br><span style="font-weight:400;font-size:12px;">血管造影 88.4x-88.5x（按血管）</span></div>
+    <div style="color:var(--accent);font-weight:700;">→</div>
+    <div class="flow-box warn-step">③ 治疗操作<br><span style="font-weight:400;font-size:12px;">支架 / 栓塞 / 灌注 / 成形</span></div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>💡 三步法口诀：</strong>"<strong>穿刺是基础，造影看部位，治疗定码位</strong>"。第一步和第二步常合并编码（穿刺+造影），但治疗的每一步操作（放了几根支架、做了几次栓塞）都要逐一编码，不能合并。
+</div>
+
+<h3>5.1 实例一：冠脉造影 + 支架植入</h3>
+
+<pre>临床操作记录：经股动脉穿刺，行左右冠状动脉造影，见前降支中段重度狭窄，
+植入药物洗脱支架1枚。
+
+编码拆解：
+  ① 穿刺入路        → 38.91  （经皮股动脉穿刺插管术）
+  ② 冠脉造影        → 88.55  （冠状动脉造影术）
+  ③ 支架植入        → 36.07  （冠状动脉药物洗脱支架植入）
+
+最终操作编码：88.55 + 36.07（治疗性操作在前：36.07 在前，88.55 在后）</pre>
+
+<h3>5.2 实例二：肝癌 TACE（肝动脉化疗栓塞）</h3>
+
+<pre>临床操作记录：经股动脉入路，超选择性肝动脉造影，见肝右叶富血供肿瘤，
+经导管灌注化疗药物后行肝动脉栓塞。
+
+编码拆解：
+  ① 穿刺入路 + 肝动脉造影  → 88.47  （肝动脉造影术）
+  ② 化疗灌注               → 99.25  （注射或灌注抗肿瘤化学治疗药物）
+  ③ 栓塞操作               → 38.86  （其他血管栓塞术，按具体血管和栓塞材料
+                                        需查索引确认，栓塞材料为操作信息，
+                                        另编码不单独计）
+
+最终操作编码：88.47 + 99.25 + 栓塞术编码</pre>
+
+<div class="card warn">
+  <strong>⚠️ 介入操作常见错误：</strong>
+  <ul style="margin-top:8px;">
+    <li><strong>漏编</strong>：只编造影不编支架/栓塞/灌注等治疗步骤</li>
+    <li><strong>误编</strong>：把"冠状动脉造影+支架"合并编为 88.55 一个码，丢失治疗信息</li>
+    <li><strong>排序错</strong>：诊断性造影排在了治疗性支架之前</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，后2题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 冠脉造影 + 药物洗脱支架植入</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床资料：患者因"冠状动脉粥样硬化性心脏病"入院，行<strong>冠状动脉造影 + 前降支药物洗脱支架植入</strong>，术后恢复良好。</p>
+    <p><strong>问题：</strong>请给出主诊断及完整的操作编码，并说明填写顺序。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I25.101</code> 冠状动脉粥样硬化性心脏病（冠心病）</p>
+        <p><strong>✅ 操作编码：</strong></p>
+        <ul>
+          <li><code>36.07</code> 冠状动脉药物洗脱支架植入（<strong>治疗性，排第一</strong>）</li>
+          <li><code>88.55</code> 冠状动脉造影（<strong>诊断性，排第二</strong>）</li>
+        </ul>
+        <p><strong>💡 推理要点：</strong></p>
+        <ol>
+          <li>支架植入是本次住院的核心治疗 → 治疗性操作排在最前</li>
+          <li>造影是明确诊断/指导治疗的诊断性操作 → 排在支架之后</li>
+          <li>药物洗脱支架用 36.07，<strong>普通裸金属支架用 36.06</strong>——材料不同码位不同</li>
+          <li>若不区分材料笼统编 36.06，属于细节错误</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 电子结肠镜检查 + 息肉切除</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床资料：患者因"结肠息肉"入院，行<strong>电子结肠镜检查 + 内镜下结肠息肉切除</strong>（经内镜圈套电凝切除，送病理）。</p>
+    <p><strong>问题：</strong>请给出主诊断及操作编码，并说明"检查"与"切除"编码的区别。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>D12.600</code> 结肠良性肿瘤（结肠息肉）——病理回报前按良性编码，若病理为恶性则主诊断改为相应 C 编码</p>
+        <p><strong>✅ 操作编码：</strong></p>
+        <ul>
+          <li><code>45.42</code> 内镜下结肠息肉切除术（<strong>治疗性，排第一</strong>）</li>
+          <li><code>45.23</code> 结肠镜检查（<strong>诊断性，排第二</strong>）</li>
+        </ul>
+        <p><strong>💡 推理要点：</strong></p>
+        <ol>
+          <li>同一部位（结肠）同一器械（内镜），但<strong>目的不同编码不同</strong>：检查=45.23，切除=45.42</li>
+          <li>结肠镜检查通常包含在内镜操作过程中，但国临版要求<strong>诊断+治疗分别编码</strong></li>
+          <li>息肉切除送病理 → 需另编病理检查编码（如90.09 组织病理检查）按医院要求处理</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 慢性肾衰竭的维持性血液透析</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床资料：患者"慢性肾脏病5期（慢性肾衰竭）"，规律行血液透析 3 年。本次因"透析相关性低血压"入院，住院期间行<strong>血液透析 2 次</strong>。</p>
+    <p><strong>问题：</strong>请给出主诊断、附加诊断及操作编码。血液透析为什么编码是 39.95 而不是 99 章？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>N18.900x003</code> 慢性肾衰竭（慢性肾脏病5期）——<strong>注意不是 I95 低血压</strong>，本次住院核心问题是慢性肾衰竭的维持性治疗</p>
+        <p><strong>✅ 附加诊断：</strong><code>I95.101</code> 透析相关性低血压（若有明确记录）</p>
+        <p><strong>✅ 操作编码：</strong><code>39.95</code> 血液透析（体外透析）</p>
+        <p><strong>💡 为什么是 39.95 而不是 99 章？</strong></p>
+        <ol>
+          <li>39.95 属于<strong>循环系统操作章（39章）</strong>，因为血液透析依赖血管通路（动静脉瘘/深静脉置管），分类学上归入血管及循环系统操作</li>
+          <li>99 章只收纳"其他非手术性操作"，血液净化中的<strong>血浆置换 99.7x</strong> 才在 99 章</li>
+          <li>每月多次透析时，<strong>操作栏目按住院期间实际执行的次数编码</strong>（国临版操作编码原则上按次填写，具体按医院首页填报要求）</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 肝癌 TACE（肝动脉化疗栓塞）综合编码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床资料：患者"原发性肝细胞癌"，Child-Pugh B 级，本次入院行<strong>肝动脉造影 + 经导管肝动脉化疗栓塞术（TACE）</strong>。</p>
+    <p><strong>问题：</strong>请用"介入三步编码法"给出完整编码，并说明主诊断与操作编码的联动关系。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>C22.000</code> 肝细胞癌（原发性肝癌）</p>
+        <p><strong>✅ 操作编码（三步拆解）：</strong></p>
+        <ol>
+          <li><strong>穿刺入路：</strong>38.91（经皮股动脉穿刺插管术）</li>
+          <li><strong>肝动脉造影：</strong><code>88.47</code>（肝动脉造影术）</li>
+          <li><strong>化疗灌注：</strong><code>99.25</code>（注射或灌注抗肿瘤化疗药物）</li>
+          <li><strong>栓塞治疗：</strong>经导管肝动脉栓塞术（按具体血管查索引，如 38.86 或其他血管栓塞亚目）</li>
+        </ol>
+        <p><strong>✅ 填写顺序（治疗在前、诊断在后）：</strong>栓塞术 → 99.25 化疗灌注 → 88.47 造影 → 38.91 穿刺</p>
+        <p><strong>💡 联动关系分析：</strong></p>
+        <ul>
+          <li>主诊断肝癌（C22.0）↔ 操作 TACE：逻辑完全自洽——TACE 正是肝癌的非手术介入治疗标准方案</li>
+          <li>若操作栏出现冠脉造影而主诊断是肝癌，则诊断-操作联动断裂，需回查病历</li>
+          <li>TACE 的"诊断+操作"组合直接影响 DRG 入组（介入治疗组 vs 保守治疗组），漏编任何一个操作步骤都会导致分组偏差</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、第三阶段收官总结 ======== -->
+<h2><span class="icon">🏁</span> 七、第三阶段收官总结 —— Day26-35 手术操作编码十条要点</h2>
+
+<div class="card">
+  <p style="color:var(--text3);margin-bottom:12px;">从 Day26 到 Day35，我们用 10 天完整覆盖了 ICD-9-CM-3 手术操作编码的核心体系。以下是第三阶段最重要的十条知识沉淀：</p>
+
+  <div class="mastery-table">
+    <div class="mastery-row"><span class="mastery-badge l1">1</span> <span><strong>四要素定编码：</strong>手术操作编码由"部位 + 术式 + 入路 + 疾病性质"四要素共同决定，缺一不可</span></div>
+    <div class="mastery-row"><span class="mastery-badge l1">2</span> <span><strong>名称必须完整：</strong>手术操作名称不完整（缺部位/缺入路）时无法得到准确编码，须回手术记录补全</span></div>
+    <div class="mastery-row"><span class="mastery-badge l1">3</span> <span><strong>另编码规则：</strong>淋巴结清扫、内固定置入等伴随操作需"另编码"，不能漏</span></div>
+    <div class="mastery-row"><span class="mastery-badge l1">4</span> <span><strong>合并编码规则：</strong>一次手术中不可分割的完整操作不拆分——如全肺切除+淋巴结清扫合并为一个根治术编码</span></div>
+    <div class="mastery-row"><span class="mastery-badge l2">5</span> <span><strong>入路区分：</strong>开放/胸腔镜/腹腔镜/经皮入路不同，编码不同——微创不能代替开放编码</span></div>
+    <div class="mastery-row"><span class="mastery-badge l2">6</span> <span><strong>骨折复位四象限：</strong>"闭合/切开 × 有/无内固定"四个象限组合决定编码选择</span></div>
+    <div class="mastery-row"><span class="mastery-badge l2">7</span> <span><strong>内固定置入 vs 取出：</strong>置入（按部位钢板/髓内钉）与取出（78.6x）编码完全不同</span></div>
+    <div class="mastery-row"><span class="mastery-badge l2">8</span> <span><strong>关节置换分部位和类型：</strong>髋/膝/肩置换各不同，且区分全置换/半置换/翻修</span></div>
+    <div class="mastery-row"><span class="mastery-badge l1">9</span> <span><strong>诊断性 vs 治疗性内镜：</strong>同一内镜，目的不同编码不同（Day35 核心规则）</span></div>
+    <div class="mastery-row"><span class="mastery-badge l1">10</span> <span><strong>与主诊断联动：</strong>操作编码必须与主诊断逻辑一致，否则 DRG 分组必然出错</span></div>
+  </div>
+</div>
+
+<div class="card info">
+  <strong>🎉 第三阶段完成！</strong>从 Day26 手术操作编码总论，到骨折、关节、器官切除、修复重建，再到今天的介入/透析/内镜等"其他操作"——至此，<strong>ICD-10 诊断编码 + ICD-9-CM-3 操作编码的完整体系已全部学完</strong>。从明天起进入第四阶段：主诊断选择原则与实战应用。这是把"会编码"升级为"会选对编码"的关键阶段。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>章节骨架：</strong>87-91 诊断性（放射/超声/显微），92-99 治疗性（放疗/理疗/插管/输血）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>诊断码位：</strong>CT 88.3x、MRI 88.9x、超声 88.7x、血管造影 88.4x-88.5x</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三个例外：</strong>血液透析 39.95、腹膜透析 54.98 均不在 99 章</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>化疗输血：</strong>化疗 99.25、输血 99.0x（全血99.03/红细胞99.04/血小板99.05）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>诊断 vs 治疗：</strong>同部位内镜目的不同编码不同——胃镜42.23诊断 vs 42.29系列治疗</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>介入三步法：</strong>穿刺入路 → 造影（88.55/88.47）→ 治疗（支架36.07/栓塞/灌注99.25）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>操作排序：</strong>治疗性在前，诊断性在后；同性质按手术大小排序</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>联动检查：</strong>操作编码必须能解释主诊断的治疗路径，防止 DRG 分组错误</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 36 主题：主诊断选择基本原则 —— "三最原则" + "五步法"</strong></p>
+  <p style="margin-top:10px;">第四阶段开篇，聚焦编码员最核心的实战技能——从多个诊断中选出正确的主诊断。</p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>"三最原则"是哪三个"最"？患者健康危害、医疗资源消耗、住院时间——为什么按这个优先级排序？</li>
+    <li>主诊断选择"五步法"的第一步是什么？是先看首页还是先通读全病历？</li>
+    <li>面对"肿瘤+高血压+糖尿病"等并存病时，如何用三最原则判断哪个做主诊断？</li>
+    <li>主诊断和主要操作之间是什么关系？操作能否反过来帮我们验证主诊断选得对不对？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 35 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 + ICD-9-CM-3 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>

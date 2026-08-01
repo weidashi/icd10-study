@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 30（2026年7月18日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #0891b2; --accent-bg: #ecfeff; --accent-light: #cffafe;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 50%, #059669 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #a5f3fc; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #a5f3fc; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #a5f3fc; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #0891b2, #059669);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 30 · 2026年7月18日</div>
+  <h1>🫁 病案编码学习</h1>
+  <p class="subtitle">今日主题：呼吸系统手术编码（30-34）—— 肺叶切除、胸腔引流 · ICD-9-CM-3 第三阶段手术操作编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 30 / 60 天（50%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">呼吸系统手术是 ICD-9-CM-3 第三阶段"手术与操作编码"的核心章节，涉及喉、气管、肺、胸膜等多类器官，其中肺切除术的五阶梯编码和淋巴结清扫的合并/分别编码规则是考试与实战的高频考点：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心编码规则，考试和实战高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>ICD-9-CM-3 第 30-34 章五类目划分（喉气管/肺支气管/胸壁胸膜纵隔膈）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肺切除术五阶梯编码表：楔形/段/叶/全肺/NOS 的开放与胸腔镜编码差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入路区分原则：开放手术 vs 胸腔镜手术编码完全不同（32.49 vs 32.41）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>淋巴结清扫的合并/分别编码规则：肺叶切除+淋巴结清扫 = 32.49 + 40.59（分别）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>全肺切除伴淋巴结清扫合并至 32.5-32.6，不拆分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>袖式切除术专题：单袖（肺叶+支气管袖式）vs 双袖（+肺动脉部分切除吻合）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>"肺癌根治术"非标准术语，编码时必须指明具体切除范围</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>胸腔引流四类操作：34.04 闭合引流 / 34.09 开放引流 / 34.91 穿刺 / 34.21 胸腔镜</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>支气管袖式成形术 33.48 与肺叶切除的搭配关系</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>30/31 章喉气管手术与耳鼻喉科交叉内容</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>纵隔手术（34.6 系列）与胸外科综合应用</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>胸腔镜辅助（VATS）在现代胸外科的发展趋势</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>呼吸系统手术编码是 ICD-9-CM-3 中最具"阶梯性"的章节——肺切除术从楔形到全肺形成清晰的五级阶梯，每一级都有对应的开放/胸腔镜双编码。今天的学习重点是建立"入路→范围→淋巴结"三步决策路径，并牢记淋巴结清扫在肺叶切除与全肺切除中的不同处理规则（分别 vs 合并）。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、ICD-9-CM-3 呼吸系统手术章节结构（30-34）</h2>
+
+<h3>1.1 五类目章节划分</h3>
+<p>ICD-9-CM-3 将呼吸系统手术操作编排在第 <strong>30-34</strong> 章共五个类目范围中，按解剖部位由上至下、由"切除"到"其他操作"的逻辑组织：</p>
+
+<table>
+  <tr><th>类目范围</th><th>分类内容</th><th>核心操作</th><th>本日重点</th></tr>
+  <tr>
+    <td><code>30</code></td>
+    <td><strong>喉和气管切除</strong></td>
+    <td>喉切除、气管切除</td>
+    <td>了解</td>
+  </tr>
+  <tr>
+    <td><code>31</code></td>
+    <td>喉、气管其他手术</td>
+    <td>喉镜检查、气管造口、喉部修补</td>
+    <td>了解</td>
+  </tr>
+  <tr>
+    <td><code>32</code></td>
+    <td><strong>肺和支气管切除（核心）</strong></td>
+    <td>肺楔形/段/叶/全肺切除、支气管切除</td>
+    <td><strong>★★★ 核心</strong></td>
+  </tr>
+  <tr>
+    <td><code>33</code></td>
+    <td>肺和支气管其他手术</td>
+    <td>支气管镜、肺活检、支气管成形</td>
+    <td><strong>★★ 重点</strong></td>
+  </tr>
+  <tr>
+    <td><code>34</code></td>
+    <td><strong>胸壁、胸膜、纵隔和横膈手术</strong></td>
+    <td>胸腔引流、胸膜剥离、纵隔手术</td>
+    <td><strong>★★ 重点</strong></td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>章节记忆口诀：</strong>"30 喉气管切，31 喉气管他，32 肺切核心，33 肺他含成形，34 胸壁胸膜纵隔膈"——其中 <strong>32、33、34</strong> 是病案编码考试的高频考点，30、31 主要属于耳鼻喉科范围。
+</div>
+
+<h3>1.2 为什么肺切除术（32 类目）是核心？</h3>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">5</div>
+    <div class="stat-label">切除范围阶梯</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">楔形/段/叶/全肺/NOS</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">2</div>
+    <div class="stat-label">入路编码</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">开放 vs 胸腔镜</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">2</div>
+    <div class="stat-label">淋巴结处理</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">分别 vs 合并</div>
+  </div>
+</div>
+
+<p>肺切除术的复杂性在于三个维度的交叉：<strong>切除范围</strong>（5个阶梯）× <strong>手术入路</strong>（开放/胸腔镜）× <strong>淋巴结处理</strong>（合并/分别编码）。三者决定了每一个具体术式的最终编码组合。</p>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">📊</span> 二、肺切除术五阶梯编码表 —— 核心中的核心</h2>
+
+<h3>2.1 五阶梯完整编码对照表</h3>
+<p>肺切除术按切除范围从小到大形成清晰的五个阶梯，每个阶梯对应不同的开放与胸腔镜编码：</p>
+
+<table>
+  <tr><th>术式</th><th>切除范围</th><th>开放编码</th><th>胸腔镜编码</th><th>说明</th></tr>
+  <tr>
+    <td><strong>肺楔形切除</strong></td>
+    <td>局部边缘切除</td>
+    <td><code>32.29</code></td>
+    <td><code>32.20</code></td>
+    <td>非解剖性局部切除，通常用于活检或周边小结节</td>
+  </tr>
+  <tr>
+    <td><strong>肺段切除</strong></td>
+    <td>解剖性肺段</td>
+    <td><code>32.39</code></td>
+    <td><code>32.30</code></td>
+    <td>按支气管肺段解剖边界切除，保留相邻肺段</td>
+  </tr>
+  <tr>
+    <td><strong>肺叶切除</strong></td>
+    <td>完全一叶</td>
+    <td><code>32.49</code></td>
+    <td><code>32.41</code></td>
+    <td>肺癌根治术的标准术式，完全切除整个肺叶</td>
+  </tr>
+  <tr>
+    <td><strong>全肺切除</strong></td>
+    <td>一侧全部肺</td>
+    <td><code>32.59</code></td>
+    <td><code>32.50</code></td>
+    <td>含纵隔清扫，切除一侧全部肺组织</td>
+  </tr>
+  <tr>
+    <td><strong>肺切除NOS</strong></td>
+    <td>未特指范围</td>
+    <td><code>32.59</code></td>
+    <td>—</td>
+    <td>未特指切除范围，应尽量避免，回查手术记录</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键编码差异速记：</strong>
+  <ul style="margin-top:8px;">
+    <li><strong>开放 vs 胸腔镜编码不同</strong>——开放第四位通常为 .4x/.5x/.9，胸腔镜为 .2x/.3x/.4x/.5x 的前一位</li>
+    <li><strong>肺楔形切除 32.29 / 32.20</strong>——非解剖性切除，<strong>不</strong>按肺段边界</li>
+    <li><strong>肺段切除 32.39 / 32.30</strong>——解剖性切除，<strong>必须</strong>按支气管肺段边界</li>
+    <li><strong>肺叶切除 32.49 / 32.41</strong>——完全切除一叶，是肺癌标准术式</li>
+    <li><strong>全肺切除 32.59 / 32.50</strong>——切除一侧全部肺，含纵隔淋巴结清扫</li>
+  </ul>
+</div>
+
+<h3>2.2 五阶梯编码可视化——范围递增示意</h3>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">楔形切除<br><small>32.29 / 32.20</small></div>
+    <span>→</span>
+    <div class="flow-box">肺段切除<br><small>32.39 / 32.30</small></div>
+    <span>→</span>
+    <div class="flow-box">肺叶切除<br><small>32.49 / 32.41</small></div>
+    <span>→</span>
+    <div class="flow-box">全肺切除<br><small>32.59 / 32.50</small></div>
+    <span>→</span>
+    <div class="flow-box warn-step">NOS<br><small>32.59</small></div>
+  </div>
+  <p style="margin-top:12px;font-size:13px;color:var(--text2);">切除范围递增 · 编码应精准对应 · NOS为兜底应避免</p>
+</div>
+
+<h3>2.3 常见错误：肺楔形切除 vs 肺段切除</h3>
+<p>这两个术式在临床描述中容易混淆，但编码完全不同，根本区别在于<strong>是否按解剖边界切除</strong>：</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 肺楔形切除（32.29/32.20）</h4>
+    <p>非解剖性局部切除</p>
+    <p>用切割缝合器楔形切除周边病变</p>
+    <p><strong>不按肺段边界</strong>，可跨段</p>
+    <p>常用于：肺活检、周边小结节</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 与肺段切除混淆</h4>
+    <p>肺段切除（32.39/32.30）<strong>必须</strong>按支气管肺段边界</p>
+    <p>需分离段支气管、段动脉、段静脉</p>
+    <p>保留相邻肺段的完整结构</p>
+    <p>常用于：肺结核空洞、肺大疱</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">⚙️</span> 三、编码规则要点 —— 四步决策路径</h2>
+
+<p>面对一份肺部手术病历，编码员应按以下四步顺序决策，每一步都对应一个具体的编码分叉点：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>区分入路：开放 vs 胸腔镜</h4>
+      <p><strong>关键问题：</strong>主刀是否使用了胸腔镜辅助？</p>
+      <p><strong>编码差异：</strong>同一术式的开放与胸腔镜编码完全不同——肺叶切除开放为 <code>32.49</code>，胸腔镜为 <code>32.41</code>。<strong>不能混淆</strong>。</p>
+      <p><strong>判读位置：</strong>手术记录开头"术式"和"麻醉"部分通常明确写有"VATS"或"胸腔镜辅助"字样。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>区分切除范围：楔形/段/叶/全肺</h4>
+      <p><strong>关键问题：</strong>切除了多少肺组织？</p>
+      <p><strong>五阶梯对应：</strong>楔形（局部）→ 段（解剖性）→ 叶（整叶）→ 全肺（一侧）→ NOS（未特指）</p>
+      <p><strong>判读位置：</strong>手术记录"手术步骤"中"切除标本"描述——"楔形切除""肺段切除""肺叶切除""全肺切除"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>淋巴结清扫另编码：肺叶切除 + 纵隔淋巴结清扫 = 分别编码</h4>
+      <p><strong>核心规则：</strong>肺叶切除伴淋巴结清扫时，<strong>淋巴结清扫必须另编码</strong>——即 <code>32.49</code>（肺叶切除）+ <code>40.59</code>（纵隔淋巴结清扫），<strong>不合并</strong>。</p>
+      <p><strong>推理依据：</strong>肺叶切除本身编码不包含淋巴结清扫操作，淋巴结清扫是独立的手术步骤，消耗额外时间和资源，必须单独反映。</p>
+      <p><strong>40.59 简单淋巴结构的其他切除术</strong>——此码用于纵隔淋巴结清扫。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>全肺切除伴淋巴结清扫：合并编码至 32.5-32.6，不拆分</h4>
+      <p><strong>核心规则：</strong>全肺切除伴淋巴结清扫时，<strong>合并编码</strong>至 <code>32.5</code>（全肺切除伴纵隔淋巴结清扫）或 <code>32.6</code>（胸腔镜全肺切除伴纵隔淋巴结清扫），<strong>不另编 40.59</strong>。</p>
+      <p><strong>与肺叶切除的区别：</strong>全肺切除的 32.5/32.6 编码<strong>已包含</strong>淋巴结清扫操作，无需另编码；而肺叶切除的 32.4 编码<strong>不包含</strong>淋巴结清扫。</p>
+      <p><strong>记忆要点：</strong>"叶分别，全合并"——肺叶切除分别编码，全肺切除合并编码。</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ "叶分别，全合并"——这是考试和实战最容易出错的规则：</strong>
+  <ul style="margin-top:8px;">
+    <li>肺叶切除 + 淋巴结清扫 = <code>32.49</code> + <code>40.59</code>（两个码）</li>
+    <li>全肺切除 + 淋巴结清扫 = <code>32.59</code> 或 <code>32.50</code>（一个码，已含清扫）</li>
+    <li>如果全肺切除病历中又写了 40.59，属于<strong>重复编码</strong>，应剔除</li>
+  </ul>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🔧</span> 四、袖式切除术专题 —— 肺癌中央型病变的核心术式</h2>
+
+<h3>4.1 什么是袖式切除术？</h3>
+<p>袖式切除（Sleeve Resection）是针对中央型肺癌的一种保留肺组织的根治性术式。当肿瘤位于支气管开口或累及肺动脉主干时，传统肺叶切除无法达到切缘阴性，需要切除一段支气管/肺动脉后重新吻合，形似"袖口"故称袖式切除。</p>
+
+<h3>4.2 单袖 vs 双袖</h3>
+
+<table>
+  <tr><th>类型</th><th>切除范围</th><th>编码组合</th><th>临床场景</th></tr>
+  <tr>
+    <td><strong>单袖切除</strong></td>
+    <td>肺叶切除 + 支气管袖式成形</td>
+    <td><code>32.49</code> + <code>33.48</code></td>
+    <td>肿瘤累及支气管开口，需切除一段支气管后吻合</td>
+  </tr>
+  <tr>
+    <td><strong>双袖切除</strong></td>
+    <td>单袖 + 肺动脉部分切除伴吻合</td>
+    <td><code>32.49</code> + <code>33.48</code> + <code>38.35</code></td>
+    <td>肿瘤同时累及支气管和肺动脉，需双重吻合</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>关键编码说明：</strong>
+  <ul style="margin-top:8px;">
+    <li><code>33.48</code> 支气管袖式成形术——支气管部分切除+端端吻合/端侧吻合</li>
+    <li><code>38.35</code> 肺动脉部分切除伴吻合——血管外科章节编码，用于肺动脉重建</li>
+    <li>袖式切除<strong>不</strong>编为肺叶切除的合并码，而是分别编码三个独立操作</li>
+  </ul>
+</div>
+
+<h3>4.3 "肺癌根治术"不是标准术语</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>临床诊断写"肺癌根治术"，编码员就直接用一个码敷衍</p>
+    <p style="color:var(--red);margin-top:8px;"><strong>问题：</strong>"根治术"是临床概念，不是 ICD-9-CM-3 的标准术式名称</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>必须回翻手术记录，明确：</p>
+    <ul style="margin-top:6px;">
+      <li>切除了哪个肺叶？→ 决定 32.4x</li>
+      <li>是否胸腔镜？→ 决定 .41 vs .49</li>
+      <li>是否淋巴结清扫？→ 决定 +40.59</li>
+      <li>是否袖式成形？→ 决定 +33.48</li>
+    </ul>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 编码员实操建议：</strong>遇到"肺癌根治术"字样时，应主动联系手术医生或仔细阅读手术记录，明确以下四要素——<strong>切除范围</strong>（叶/全肺）、<strong>入路</strong>（开放/胸腔镜）、<strong>淋巴结清扫</strong>（有/无）、<strong>是否袖式成形</strong>（单袖/双袖）。不能仅凭"根治术"三字给出一个笼统编码。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🩺</span> 五、胸腔引流与胸膜操作（34 类目）</h2>
+
+<h3>5.1 四类常见胸膜/胸腔操作编码</h3>
+
+<table>
+  <tr><th>编码</th><th>操作名称</th><th>适应症</th><th>操作特点</th></tr>
+  <tr>
+    <td><code>34.04</code></td>
+    <td><strong>肋间导管置入引流（闭合性）</strong></td>
+    <td>气胸、胸腔积液、血胸</td>
+    <td>置管后接闭式引流瓶，最常用</td>
+  </tr>
+  <tr>
+    <td><code>34.91</code></td>
+    <td><strong>胸腔穿刺术</strong></td>
+    <td>诊断性穿刺、治疗性抽液</td>
+    <td>针穿刺抽取积液或积气，不留置导管</td>
+  </tr>
+  <tr>
+    <td><code>34.09</code></td>
+    <td><strong>开放性胸部引流</strong></td>
+    <td>脓胸、慢性脓腔</td>
+    <td>切开胸壁置入大口径引流管，开放引流</td>
+  </tr>
+  <tr>
+    <td><code>34.21</code></td>
+    <td><strong>胸腔镜检查</strong></td>
+    <td>诊断不明、胸膜活检</td>
+    <td>胸腔镜直视下检查，可同时行活检</td>
+  </tr>
+</table>
+
+<h3>5.2 34.04 vs 34.91 vs 34.09 —— 引流操作的关键区分</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>34.04 闭合性引流</h4>
+    <p><strong>留置导管</strong>+闭式引流瓶</p>
+    <p>皮肤小切口→置入导管→接水封瓶</p>
+    <p>持续引流，可留置数天</p>
+    <p>用于：气胸、中等量胸腔积液</p>
+  </div>
+  <div class="example-item">
+    <h4>34.91 胸腔穿刺</h4>
+    <p><strong>针穿刺</strong>+抽取积液</p>
+    <p>不留置导管，单次操作</p>
+    <p>用于诊断或少量积液治疗</p>
+    <p>操作简便，门诊可做</p>
+  </div>
+  <div class="example-item">
+    <h4>34.09 开放性引流</h4>
+    <p><strong>切开胸壁</strong>+大口径引流管</p>
+    <p>开放引流，不接闭式瓶</p>
+    <p>用于慢性脓胸、脓腔处理</p>
+    <p>创伤大，需切开肋间组织</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 常见编码错误：</strong>
+  <ol style="margin-top:8px;">
+    <li>把"胸腔穿刺抽液"误编为 34.04（闭合性引流）——穿刺是 34.91，<strong>不留置导管</strong></li>
+    <li>把"胸腔闭式引流"误编为 34.09（开放性引流）——闭式引流是 34.04，<strong>不切开胸壁</strong></li>
+    <li>胸腔镜检查同时做胸膜活检时，应<strong>另编码</strong>胸膜活检（34.04/34.09 视情况）</li>
+  </ol>
+</div>
+
+<h3>5.3 胸膜、纵隔、横膈其他操作速查</h3>
+
+<table>
+  <tr><th>编码</th><th>操作名称</th><th>备注</th></tr>
+  <tr><td><code>34.3</code></td><td>胸膜活检</td><td>可经皮或胸腔镜</td></tr>
+  <tr><td><code>34.4</code></td><td>胸膜剥脱术</td><td>用于慢性脓胸、纤维胸</td></tr>
+  <tr><td><code>34.6</code></td><td>纵隔手术</td><td>包括纵隔肿瘤切除、纵隔镜检查</td></tr>
+  <tr><td><code>34.9</code></td><td>胸腔内其他操作</td><td>包括胸腔内药物注射</td></tr>
+  <tr><td><code>34.81-34.99</code></td><td>膈肌手术</td><td>膈疝修补、膈肌缝合</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，后2题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 开放肺叶切除编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"右上肺叶肺癌，行开放右上肺叶切除术"</strong></p>
+    <p>手术记录摘要：全身麻醉，后外侧切口进胸，分离右上肺叶静脉、动脉、支气管，予以切断闭合，移除右上肺叶标本。术中出血约 200ml。</p>
+    <p>请给出主要手术操作编码及完整编码推导过程。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 确定入路：</strong>手术记录明确写"后外侧切口进胸"——属于<strong>开放手术</strong>，不是胸腔镜。</p>
+        <p><strong>✅ 第二步 · 确定切除范围：</strong>"右上肺叶切除术"——切除范围是<strong>一叶</strong>，对应肺叶切除。</p>
+        <p><strong>✅ 第三步 · 查五阶梯表：</strong>肺叶切除 + 开放入路 → <code>32.49</code></p>
+        <p><strong>✅ 第四步 · 核对淋巴结：</strong>本例未提及淋巴结清扫，<strong>不另编码</strong> 40.59。</p>
+        <p style="margin-top:8px;"><strong>最终编码：</strong><code>32.49</code>（开放肺叶切除术）</p>
+        <p><strong>💡 注意：</strong>如果手术记录中写有"纵隔淋巴结清扫"，则需要另编码 <code>40.59</code>，即 32.49 + 40.59。本题未提及，故不编。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 胸腔积液穿刺引流</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"右侧大量胸腔积液，行胸腔穿刺抽液术"</strong></p>
+    <p>手术记录摘要：患者坐位，B超定位后，于右侧肩胛线第7肋间局麻进针，抽出黄色胸水约 800ml，术毕拔针，局部压迫。</p>
+    <p>请给出主要手术操作编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 区分引流操作类型：</strong>本例为"穿刺抽液"——<strong>针穿刺</strong>，不留置导管，属于胸腔穿刺术。</p>
+        <p><strong>✅ 第二步 · 排除其他引流码：</strong></p>
+        <ul>
+          <li>34.04（闭合性引流）——需留置导管接闭式瓶，本例无留置</li>
+          <li>34.09（开放性引流）——需切开胸壁，本例仅穿刺</li>
+          <li>34.21（胸腔镜检查）——本例无内镜操作</li>
+        </ul>
+        <p><strong>✅ 第三步 · 确定编码：</strong>胸腔穿刺术 → <code>34.91</code></p>
+        <p style="margin-top:8px;"><strong>最终编码：</strong><code>34.91</code>（胸腔穿刺术）</p>
+        <p><strong>💡 关键区分点：</strong>"不留置导管"是 34.91 与 34.04 的核心区别。本例"术毕拔针"明确说明未留置，故选 34.91。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 胸腔镜肺叶切除+淋巴结清扫</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"左上肺叶肺癌，行胸腔镜下左上肺叶切除+纵隔淋巴结清扫术"</strong></p>
+    <p>手术记录摘要：全身麻醉，左侧卧位，于左侧胸壁做3个操作孔，置入胸腔镜及操作器械。分离左上肺叶静脉、动脉、支气管，用直线切割缝合器切断闭合，移除左上肺叶标本。继续清扫第5、6、7组纵隔淋巴结。</p>
+    <p><strong>问题：</strong>请给出完整的手术操作编码清单，并说明为什么需要分别编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 确定入路：</strong>手术记录明确"胸腔镜""操作孔"——属于<strong>胸腔镜手术</strong>，不是开放。</p>
+        <p><strong>✅ 第二步 · 确定切除范围：</strong>"左上肺叶切除"——切除范围是<strong>一叶</strong>，对应肺叶切除。</p>
+        <p><strong>✅ 第三步 · 查五阶梯表：</strong>肺叶切除 + 胸腔镜入路 → <code>32.41</code></p>
+        <p><strong>✅ 第四步 · 淋巴结处理：</strong>手术记录明确"清扫第5、6、7组纵隔淋巴结"——属于纵隔淋巴结清扫。</p>
+        <p><strong>✅ 第五步 · 应用"叶分别"规则：</strong>肺叶切除伴淋巴结清扫 → <strong>分别编码</strong>，不合并。</p>
+        <p style="margin-top:8px;"><strong>最终编码清单：</strong></p>
+        <pre>主要手术：32.41  胸腔镜肺叶切除术
+其他手术：40.59  纵隔淋巴结清扫术</pre>
+        <p><strong>💡 为什么分别编码？</strong></p>
+        <ul>
+          <li>肺叶切除的 32.41 编码<strong>不包含</strong>淋巴结清扫操作</li>
+          <li>纵隔淋巴结清扫是独立的手术步骤，消耗额外时间</li>
+          <li>ICD-9-CM-3 规则：肺叶切除+淋巴结清扫必须分别编码，<strong>不合并</strong></li>
+          <li>对比：全肺切除伴淋巴结清扫则合并至 32.5/32.6，<strong>不另编</strong> 40.59</li>
+        </ul>
+        <p><strong>💡 记忆口诀：</strong>"叶分别，全合并"——肺叶切除分别编码，全肺切除合并编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 左上肺中央型肺癌双袖切除</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"左上肺中央型肺癌，行胸腔镜下左上肺叶切除+支气管袖式成形+肺动脉部分切除伴吻合术（双袖切除）"</strong></p>
+    <p>手术记录摘要：胸腔镜下分离左上肺叶血管及支气管。肿瘤累及左上叶支气管开口及肺动脉干，遂切除一段左主支气管及肺动脉干，行支气管端端吻合、肺动脉端端吻合。移除左上肺叶标本。清扫纵隔淋巴结。</p>
+    <p><strong>问题：</strong>请给出完整的手术操作编码清单，并说明每个编码对应的操作内容。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · 识别术式类型：</strong>"双袖切除"= 单袖（肺叶切除+支气管袖式）+ 肺动脉部分切除伴吻合。</p>
+        <p><strong>✅ 第二步 · 拆解为独立操作：</strong></p>
+        <ul>
+          <li>操作1：左上肺叶切除 → 胸腔镜 → <code>32.41</code></li>
+          <li>操作2：支气管袖式成形 → <code>33.48</code></li>
+          <li>操作3：肺动脉部分切除伴吻合 → <code>38.35</code></li>
+          <li>操作4：纵隔淋巴结清扫 → <code>40.59</code>（肺叶切除分别编码规则）</li>
+        </ul>
+        <p><strong>✅ 第三步 · 核对编码规则：</strong></p>
+        <ul>
+          <li>袖式切除<strong>不</strong>合并到肺叶切除码中，三个操作分别编码</li>
+          <li>肺叶切除+淋巴结清扫遵循"叶分别"规则，40.59 另编码</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>最终编码清单：</strong></p>
+        <pre>主要手术：32.41  胸腔镜肺叶切除术
+其他手术：33.48  支气管袖式成形术
+其他手术：38.35  肺动脉部分切除伴吻合
+其他手术：40.59  纵隔淋巴结清扫术</pre>
+        <p><strong>💡 每个编码对应的操作内容：</strong></p>
+        <ul>
+          <li><code>32.41</code>——左上肺叶的解剖性切除（胸腔镜入路）</li>
+          <li><code>33.48</code>——支气管部分切除+端端吻合，重建气道连续性</li>
+          <li><code>38.35</code>——肺动脉部分切除+端端吻合，重建血流（血管外科章节码）</li>
+          <li><code>40.59</code>——纵隔淋巴结清扫，遵循"叶分别"规则另编码</li>
+        </ul>
+        <p><strong>💡 综合要点：</strong>双袖切除是肺癌手术中最复杂的术式之一，编码时必须<strong>拆解为四个独立操作</strong>分别编码，不能合并。这是与全肺切除伴淋巴结清扫（合并编码 32.5/32.6）的核心区别。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-num">1</div><div><strong>章节结构：</strong>30喉气管切/31喉气管他/32肺切核心/33肺他成形/34胸壁胸膜纵隔膈</div></div>
+  <div class="key-item"><div class="key-num">2</div><div><strong>五阶梯编码：</strong>楔形32.29/32.20、段32.39/32.30、叶32.49/32.41、全肺32.59/32.50、NOS32.59</div></div>
+  <div class="key-item"><div class="key-num">3</div><div><strong>入路决定编码：</strong>开放与胸腔镜编码完全不同，必查手术记录确认入路</div></div>
+  <div class="key-item"><div class="key-num">4</div><div><strong>叶分别：</strong>肺叶切除+淋巴结清扫 = 32.49 + 40.59，分别编码不合并</div></div>
+  <div class="key-item"><div class="key-num">5</div><div><strong>全合并：</strong>全肺切除伴淋巴结清扫合并至 32.5/32.6，不另编 40.59</div></div>
+  <div class="key-item"><div class="key-num">6</div><div><strong>袖式专题：</strong>单袖=32.49+33.48；双袖=32.41+33.48+38.35；"肺癌根治术"非标准术语需指明范围</div></div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 今日易错点速查：</strong>
+  <ul style="margin-top:8px;">
+    <li><strong>混淆开放与胸腔镜编码</strong>——同一术式两个码，相差一位数字</li>
+    <li><strong>混淆楔形与肺段切除</strong>——是否按解剖边界是关键</li>
+    <li><strong>全肺切除另编 40.59</strong>——重复编码，应剔除</li>
+    <li><strong>胸腔穿刺误编 34.04</strong>——穿刺是 34.91，不留置导管</li>
+    <li><strong>"肺癌根治术"给一个码</strong>——必须拆解为具体术式组合编码</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 31 主题：消化系统手术编码（42-54）</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>消化系统手术在 ICD-9-CM-3 中跨越 42-54 共13个类目，按消化管道解剖顺序还是按器官分类编排？</li>
+    <li>胃部分切除与胃大部切除的编码差异是什么？Billroth Ⅰ式和Ⅱ式如何编码？</li>
+    <li>阑尾切除术（47.0-47.9）的开放与腹腔镜编码有何不同？阑尾脓肿引流如何编码？</li>
+    <li>消化系统内镜下手术（如内镜下息肉切除、ESD、EMR）的编码规则有何特殊性？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 30 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-9-CM-3 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
