@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 46（2026年8月3日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #0d9488; --accent-bg: #f0fdfa; --accent-light: #ccfbf1;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #0891b2 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #99f6e4; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #99f6e4; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #99f6e4; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #0f766e, #0891b2);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 46 · 2026年8月3日</div>
+  <h1>🏥 DRG 分组原理：MDC → ADRG → DRG</h1>
+  <p class="subtitle">医保支付改革下的编码应用 —— 第五阶段开篇</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:76.7%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 46 / 60 天（76.7%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 一、DRG 是什么 ======== -->
+<h2><span class="icon">📖</span> 一、DRG 是什么？</h2>
+
+<h3>1.1 定义：诊断相关分组</h3>
+<p>DRG（<strong>D</strong>iagnosis <strong>R</strong>elated <strong>G</strong>roups，诊断相关分组）是一种将住院患者按照<strong>疾病诊断、治疗方式、年龄、合并症与并发症</strong>等因素进行归组的分类体系。其核心假设是：分到同一组的患者，<strong>诊疗路径相近、医疗资源消耗（费用与住院天数）相近</strong>，因此可以为每组设置一个统一的权重和付费标准。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">26</div>
+    <div class="stat-label">MDC 主要诊断大类</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">按解剖/疾病系统分</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">300-400</div>
+    <div class="stat-label">ADRG 核心组</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">按手术/操作细分</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">600+</div>
+    <div class="stat-label">DRG 最终组</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">按 CC/MCC 细分</div>
+  </div>
+</div>
+
+<h3>1.2 核心逻辑：从「无数病案」到「有限组别」</h3>
+<p>DRG 的本质是把<strong>成千上万种病案</strong>归并到<strong>几百个组</strong>。全国每年数亿住院病案，通过「分组器（Grouper）」自动映射到有限数量的 DRG 组，每个组对应一个权重（RW，Relative Weight）和付费标准。医保按「组」向医院付费，取代过去的按「项目」逐项付费——这就是 DRG 付费（按疾病诊断相关分组付费）的根基。</p>
+
+<div class="card tip">
+  <strong>💡 核心认识：</strong>在 DRG 付费体系里，<strong>病案首页的诊断与手术编码是分组器的唯一输入</strong>。分组器读不到病历正文、看不见临床思维，它只读首页编码。因此——<strong>编码质量直接决定入组，入组直接决定付费</strong>。这是整个第五阶段最需要印在脑子里的一句话。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、DRG 三层分组结构 ======== -->
+<h2><span class="icon">🗺️</span> 二、DRG 三层分组结构（核心）</h2>
+
+<p>DRG 分组不是一步到位的，而是经过<strong>「MDC → ADRG → DRG」三层递进</strong>：从大系统归类，到核心组归类，再到最终细分组。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>MDC（Major Diagnostic Category）主要诊断大类 —— 第一层</h4>
+      <p>按<strong>主要诊断的解剖系统 / 疾病系统</strong>划分，共 <strong>26 个 MDC</strong>。如 MDCA 神经系统、MDCB 眼、MDCC 耳鼻喉、MDCD 口腔颌面、MDCE 呼吸系统、MDCG 消化系统……MDCZ 其他。</p>
+      <p><strong>规则：</strong>先看主要诊断属于哪个系统 → 确定 MDC。这一步错了，后面全部错。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>ADRG（Adjacent DRG）核心疾病诊断相关分组 —— 第二层</h4>
+      <p>在每个 MDC 内部，再按<strong>「主要诊断 + 主要手术/操作」</strong>进一步细分，形成 ADRG。ADRG 大致分三类：<strong>手术组 / 操作组 / 内科组</strong>（保守治疗组）。全国 ADRG 约 <strong>300-400 个</strong>。</p>
+      <p><strong>规则：</strong>做了手术走手术组，只做了介入/内镜等操作走操作组，纯保守治疗走内科组。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>DRG 最终组 —— 第三层</h4>
+      <p>在 ADRG 内部，再按<strong>有无并发症与合并症（CC）及其严重程度（MCC）</strong>细分为最终的 DRG 组：<strong>无 CC 组 / 有 CC 组 / 严重 CC（MCC）组</strong>。</p>
+      <p><strong>规则：</strong>合并症越严重 → 分组越靠后 → 权重越高 → 医保支付越多。这是编码中「含金量」最高的地方。</p>
+    </div>
+  </div>
+</div>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">病案首页编码</div>
+    <span style="color:var(--accent);font-weight:700;">→</span>
+    <div class="flow-box">MDC 大类<br><span style="font-size:11px;color:var(--text3);">26 个</span></div>
+    <span style="color:var(--accent);font-weight:700;">→</span>
+    <div class="flow-box">ADRG 核心组<br><span style="font-size:11px;color:var(--text3);">300-400 个</span></div>
+    <span style="color:var(--accent);font-weight:700;">→</span>
+    <div class="flow-box">DRG 最终组<br><span style="font-size:11px;color:var(--text3);">600+ 个</span></div>
+    <span style="color:var(--accent);font-weight:700;">→</span>
+    <div class="flow-box">权重 / 付费</div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 记忆口诀：</strong>「先定系统（MDC），再定方式（ADRG），最后看轻重（DRG）」。三层结构一环扣一环：主要诊断决定 MDC，主要手术操作决定 ADRG，并发症合并症决定最终 DRG。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三、CHS-DRG 分组体系 ======== -->
+<h2><span class="icon">🏛️</span> 三、CHS-DRG 分组体系</h2>
+
+<h3>3.1 什么是 CHS-DRG</h3>
+<p>CHS-DRG（<strong>CHS</strong> = China Healthcare Security，国家医疗保障疾病诊断相关分组）是<strong>国家医保局主导制定的全国统一版本</strong>，用于全国医保 DRG 付费试点。它是目前国内 DRG 付费落地执行的标准分组方案，编码员日常面对的就是这套分组逻辑。</p>
+
+<h3>3.2 分组要素（分组器读了哪些信息）</h3>
+
+<table>
+  <tr><th>分组要素</th><th>在分组中的作用</th></tr>
+  <tr><td><strong>主要诊断</strong></td><td>决定进入哪个 MDC —— 最核心的入口要素</td></tr>
+  <tr><td><strong>其他诊断（并发症合并症）</strong></td><td>决定是否有 CC / MCC —— 影响最终 DRG 细分</td></tr>
+  <tr><td><strong>主要手术操作</strong></td><td>决定进入哪个 ADRG（手术组 / 操作组 / 内科组）</td></tr>
+  <tr><td><strong>性别、年龄</strong></td><td>少数病种的辅助判别（如产科、新生儿）</td></tr>
+  <tr><td><strong>离院方式</strong></td><td>死亡、转院等异常离院可能触发特殊校验</td></tr>
+  <tr><td><strong>住院天数</strong></td><td>异常值（过短 / 过长）参与入组校验</td></tr>
+</table>
+
+<h3>3.3 并发症与合并症等级（CC / MCC）</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>无 CC 组</h4>
+      <p>患者无并发症合并症，或合并症不属于 CC 表所列范围 → 归入基础 DRG 组，权重最低。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>有 CC 组</h4>
+      <p>存在列入「并发症合并症对照表（CC 表）」的疾病 → 归入有 CC 组，权重提高一档。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>严重 CC 组（MCC）</h4>
+      <p>存在列入「严重并发症合并症对照表（MCC 表）」的疾病 → 归入 MCC 组，权重最高。</p>
+      <p><strong>注意：</strong>MCC 并非所有疾病都够格，必须落在 MCC 表内的特定编码上才计。</p>
+    </div>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键提示：</strong>「有 CC」还是「无 CC」，<strong>取决于该合并症编码是否在官方 CC/MCC 表中</strong>，而不是临床认为的严重程度。同一诊断在不同 ADRG 里，可能一个算 CC、另一个不算。编码员必须熟悉常见 CC/MCC 表内诊断，才能不漏填、不误判。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、DRG 分组流程 ======== -->
+<h2><span class="icon">🔀</span> 四、DRG 分组流程（4 步）</h2>
+
+<p>把一份病案放进分组器，实际经历的流程如下：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>第一步：按主要诊断归入 MDC</h4>
+      <p>分组器读取首页<strong>主要诊断编码</strong>，按解剖/疾病系统归入 26 个 MDC 之一。主要诊断必须与本次住院的主要诊疗目的一致。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>第二步：按主要手术/操作或内科治疗方式归入 ADRG</h4>
+      <p>看首页<strong>主要手术操作编码</strong>：有手术 → 手术组；有非手术操作（介入、内镜等）→ 操作组；无手术操作 → 内科组。据此确定 ADRG。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>第三步：按并发症合并症（CC / MCC）细分 DRG</h4>
+      <p>扫描首页<strong>全部其他诊断</strong>，判断是否存在 CC 或 MCC，将 ADRG 细分到最终 DRG 组（无CC / 有CC / MCC）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>第四步：校验权重 / 费率，确定付费</h4>
+      <p>确定 DRG 组后，按组内权重（RW）与地区费率计算出应支付金额，并校验病案数据的逻辑一致性（如歧义校验、低码高编检查）。</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、编码对 DRG 的影响（重点） ======== -->
+<h2><span class="icon">⚡</span> 五、编码对 DRG 的影响（重点）</h2>
+
+<p>DRG 付费下，编码不再是「记病历」的附属工作，而是<strong>直接决定医院收入</strong>的环节。下面五个影响点必须逐条吃透：</p>
+
+<table>
+  <tr><th>编码问题</th><th>后果</th><th>影响层级</th><th>严重性</th></tr>
+  <tr>
+    <td>主要诊断选错</td>
+    <td>整个 <strong>MDC 都错</strong>，入到别的系统组</td>
+    <td>第一层 MDC</td>
+    <td style="color:var(--red);font-weight:700;">致命性错误</td>
+  </tr>
+  <tr>
+    <td>手术编码漏填 / 错填</td>
+    <td><strong>ADRG 判断错误</strong>（手术组 → 错入内科组）</td>
+    <td>第二层 ADRG</td>
+    <td style="color:var(--red);font-weight:700;">高影响</td>
+  </tr>
+  <tr>
+    <td>并发症合并症漏填</td>
+    <td>无法分到 <strong>CC / MCC 组</strong> → 权重偏低、付费减少</td>
+    <td>第三层 DRG</td>
+    <td style="color:var(--warn);font-weight:700;">经济损失</td>
+  </tr>
+  <tr>
+    <td>诊断与手术不匹配（QY 歧义病例）</td>
+    <td><strong>无法入组</strong>，按协商支付/亏损处理</td>
+    <td>全流程</td>
+    <td style="color:var(--red);font-weight:700;">直接亏损</td>
+  </tr>
+  <tr>
+    <td>虚增诊断、高套编码</td>
+    <td>套取高权重组 → <strong>医保飞检重点对象</strong>，面临追回+处罚</td>
+    <td>合规风险</td>
+    <td style="color:var(--red);font-weight:700;">法律风险</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 歧义病例（QY，Questionable）：</strong>当<strong>主要诊断与主要手术操作不匹配</strong>时，分组器无法确定入组，这类病案被称为歧义病例。例如诊断为「急性阑尾炎」却行了「胆囊切除术」——诊断和手术对不上，无法归组。歧义病例通常按较低标准支付甚至不支付，是<strong>医院亏损的重要来源</strong>，需要编码员主动发现并与临床沟通修正。
+</div>
+
+<div class="card warn">
+  <strong>🚨 「高套」风险（编码高编 / 低码高编）：</strong>为了套取更高权重组，虚增并发症合并症、把主要诊断升级为更「值钱」的疾病、或把低难度病案编成高难度手术。这类行为是<strong>国家医保飞行检查的重点打击对象</strong>。编码员必须守住底线：<strong>只编码有客观病历依据的内容</strong>。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 六、关键概念速查表 ======== -->
+<h2><span class="icon">📋</span> 六、关键概念速查表</h2>
+
+<table>
+  <tr><th>概念</th><th>含义</th><th>举例</th></tr>
+  <tr>
+    <td><code>MDC</code></td>
+    <td>主要诊断大类，共 26 个，按解剖/疾病系统划分</td>
+    <td>MDCA 神经系统</td>
+  </tr>
+  <tr>
+    <td><code>ADRG</code></td>
+    <td>核心疾病诊断相关分组，MDC 内按诊断+手术/操作细分</td>
+    <td>脑神经手术组</td>
+  </tr>
+  <tr>
+    <td><code>DRG</code></td>
+    <td>最终分组，含权重与付费标准，按 CC/MCC 细分</td>
+    <td>无CC组 / 有CC组 / MCC组</td>
+  </tr>
+  <tr>
+    <td><code>CC</code></td>
+    <td>并发症合并症（Complication &amp; Comorbidity）</td>
+    <td>糖尿病伴并发症</td>
+  </tr>
+  <tr>
+    <td><code>MCC</code></td>
+    <td>严重并发症合并症（Major CC），权重最高</td>
+    <td>严重感染性休克</td>
+  </tr>
+  <tr>
+    <td><code>QY</code></td>
+    <td>歧义病例（Questionable），诊断与手术不匹配无法入组</td>
+    <td>诊断阑尾炎、手术胆囊切除</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 速记：</strong>MDC 是「去哪个科的系统」，ADRG 是「怎么治的（手术/操作/内科）」，DRG 是「治得多重（有没有合并症）」。CC 是合并症，MCC 是更重的合并症，QY 是「对不上号」的病案。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题（分组路径推导），后2题为进阶题（权重与入组判断）。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 内科病案分组路径推导</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，男，45 岁，因肺炎（<code>J18.9</code>）入院，<strong>无手术、无操作、无并发症合并症</strong>，抗感染保守治疗后出院。</p>
+    <p><strong>问题：</strong>请按「MDC → ADRG → DRG」三层结构推导该病案的分组路径。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · MDC：</strong>主要诊断肺炎（J18.9）属于呼吸系统疾病 → 归入 <strong>MDC 呼吸系统大类</strong>。</p>
+        <p><strong>✅ 第二步 · ADRG：</strong>首页无手术、无介入/内镜等操作，仅保守抗感染治疗 → 归入 <strong>ADRG 呼吸系统内科组</strong>（非手术组）。</p>
+        <p><strong>✅ 第三步 · DRG：</strong>患者无任何并发症合并症 → 细分到 <strong>DRG 无CC组</strong>。</p>
+        <p style="margin-top:8px;"><strong>最终入组：</strong>呼吸系统内科无合并症并发症组（权重相对较低）。</p>
+        <p><strong>💡 启示：</strong>同样的肺炎，如果患者合并了糖尿病（CC），就会升入「有CC组」，权重和付费随之提高——这就是其他诊断编码的价值所在。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 手术病案分组路径推导</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者，女，68 岁，因股骨头坏死（<code>M87.0</code>）行<strong>全髋关节置换术（<code>81.51</code>）</strong>，无并发症合并症。</p>
+    <p><strong>问题：</strong>请推导分组路径，并说明若漏填手术编码会怎样。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步 · MDC：</strong>股骨头坏死（M87.0）属于肌肉骨骼系统 → 归入 <strong>MDC 肌肉骨骼系统大类</strong>。</p>
+        <p><strong>✅ 第二步 · ADRG：</strong>本次住院行了主要手术全髋关节置换（81.51）→ 归入 <strong>ADRG 髋关节置换手术组</strong>（手术组）。</p>
+        <p><strong>✅ 第三步 · DRG：</strong>无并发症合并症 → <strong>DRG 无CC组</strong>。</p>
+        <p style="margin-top:8px;"><strong>⚠️ 若漏填手术编码：</strong>分组器看不到 81.51，会把病案归入 <strong>肌肉骨骼内科组（保守治疗组）</strong>——髋关节置换的手术费、材料费全部无法通过 DRG 体现，权重和付费断崖式下降，造成<strong>严重亏损</strong>。</p>
+        <p><strong>💡 启示：</strong>主要手术操作编码是 ADRG 分组的决定性输入，<strong>漏填 = 入错组 = 亏损</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · MCC 对入组差异的影响</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>两位急性心肌梗死（<code>I21.9</code>）患者均行经皮冠状动脉介入治疗（PCI）。患者 A 入院时伴<strong>严重心力衰竭</strong>；患者 B 无任何合并症。</p>
+    <p><strong>问题：</strong>两人入组有何差异？为什么「严重心衰」能显著改变入组结果？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 分组差异：</strong></p>
+        <ul>
+          <li>患者 B（无心衰）→ <strong>心梗PCI无CC组</strong>，权重相对较低</li>
+          <li>患者 A（严重心衰）→ <strong>心梗PCI伴MCC组</strong>，权重最高一档</li>
+        </ul>
+        <p><strong>✅ 为什么能改变入组：</strong>严重心力衰竭属于<strong>严重并发症合并症（MCC）</strong>，列入 MCC 对照表。分组器在第三步扫描其他诊断时识别到 MCC → 在 ADRG 内细分到最重的一档 → 权重显著上浮。</p>
+        <p><strong>💡 关键点：</strong>心衰是否被识别为 MCC，前提是<strong>首页其他诊断里必须准确填了心衰编码</strong>（如 <code>I50.x</code>）。如果临床诊断了心衰但编码员漏填，患者 A 就会按「无CC组」支付——权重白白损失。</p>
+        <p style="color:var(--green);margin-top:8px;"><strong>→ 结论：MCC 组权重更高，但「能不能进 MCC 组」完全取决于其他诊断编码是否完整准确。</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 歧义病例（QY）识别</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>病案首页显示：主要诊断为<strong>「急性阑尾炎」</strong>，主要手术为<strong>「胆囊切除术」</strong>，无其他诊断。</p>
+    <p><strong>问题：</strong>① 分组器会如何处理？② 编码员应该怎么做？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 分组器处理：</strong>主要诊断（阑尾炎）与主要手术（胆囊切除）<strong>在逻辑上完全不匹配</strong>——阑尾炎的标准术式是阑尾切除术，胆囊切除术针对的是胆囊疾病。分组器无法确定入组，判定为<strong>歧义病例（QY）</strong>，无法进入正常 DRG 组。</p>
+        <p><strong>✅ ② 编码员应做：</strong></p>
+        <ol>
+          <li><strong>回查病历：</strong>核对手术记录、出院诊断，判断哪个诊断/手术填写有误</li>
+          <li><strong>与临床沟通：</strong>是阑尾炎诊断错了（实为胆囊炎），还是手术填错了（实为阑尾切除术）？</li>
+          <li><strong>修正后重新编码：</strong>让诊断与手术恢复逻辑一致性，再提交分组</li>
+        </ol>
+        <p style="color:var(--red);margin-top:8px;"><strong>⚠️ 后果提示：</strong>QY 病例不能入组，通常按最低标准或不支付处理，是医院直接的<strong>经济损失</strong>。编码员是发现 QY 的第一道防线。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、易错点对比 ======== -->
+<h2><span class="icon">🆚</span> 八、易错点对比（正确 vs 错误）</h2>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确：主诊断写「病因 + 具体诊断」</h4>
+    <p>如「2型糖尿病伴糖尿病足坏疽」——直接对应内分泌系统 MDC 与对应 DRG 组</p>
+    <p style="color:var(--green);margin-top:8px;">病因明确，入组准确</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误：主诊断只写症状</h4>
+    <p>如只写「下肢坏疽」（症状/表现）而不写糖尿病（病因）→ 入错 MDC（从内分泌系统错入循环系统）</p>
+    <p style="color:var(--red);margin-top:8px;">症状是表现的编码，病因才是分组的核心</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确：完整填写其他诊断</h4>
+    <p>临床明确诊断的合并症（糖尿病、高血压、心衰等）全部填入其他诊断 → 正确计入 CC/MCC</p>
+    <p style="color:var(--green);margin-top:8px;">权重充分体现资源消耗</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误：并发症合并症漏填</h4>
+    <p>病历里明确有合并症，但首页其他诊断没填 → 分不到 CC/MCC 组 → 权重偏低、付费减少</p>
+    <p style="color:var(--red);margin-top:8px;">「漏填=亏损」，是权重损失最常见原因</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确：手术操作编码完整准确</h4>
+    <p>手术/操作与主要诊断匹配，手术组 ADRG 入组正确，费用充分体现</p>
+    <p style="color:var(--green);margin-top:8px;">手术组权重远高于内科组</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误：手术编码漏填</h4>
+    <p>做了手术但首页漏填手术编码 → 分组器按内科组处理 → 权重断崖下跌</p>
+    <p style="color:var(--red);margin-top:8px;">手术漏填 = 手术组变内科组</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 正确：只编有客观依据的诊断</h4>
+    <p>编码以病历记录、检查检验结果为唯一依据，实事求是</p>
+    <p style="color:var(--green);margin-top:8px;">合规安全，经得起飞检</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 错误：高套诊断套高权重组</h4>
+    <p>虚增合并症、升级主要诊断，把病案「编重」套取高权重组</p>
+    <p style="color:var(--red);margin-top:8px;">医保飞检重点打击，追回费用+行政处罚+信用受损</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 九、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>三层分组：</strong>MDC（系统）→ ADRG（治疗方式）→ DRG（合并症轻重）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>主要诊断定 MDC：</strong>主诊断选错，整个系统都入错</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>手术操作定 ADRG：</strong>手术组 / 操作组 / 内科组，漏填=入错组</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>CC/MCC 定最终 DRG：</strong>无CC → 有CC → MCC，权重逐档上升</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>合并症漏填=亏损：</strong>其他诊断编码直接决定能否进 CC/MCC 组</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>QY 歧义病例：</strong>诊断与手术不匹配无法入组，需回查病历沟通修正</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>高套诊断=飞检风险：</strong>只编有客观病历依据的诊断，守住合规底线</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码=付费唯一输入：</strong>首页编码质量直接决定入组与医保结算</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 47 主题：DIP 支付原理与病种分值</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>DIP（按病种分值付费）与 DRG 的核心区别是什么？两者在分组逻辑上有何不同？</li>
+    <li>「病种分值」是如何计算和确定的？与 DRG 的权重（RW）有何异同？</li>
+    <li>DIP 付费下，编码员需要重点关注哪些编码环节？（主诊断/手术操作/其他诊断）</li>
+    <li>同样是「按病案首页编码付费」，为什么有些医院倾向 DIP、有些倾向 DRG？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 46 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 + CHS-DRG | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>

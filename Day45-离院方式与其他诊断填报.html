@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 45（2026年8月2日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #475569 0%, #64748b 50%, #0f766e 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #475569, #0f766e);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 45 · 2026年8月2日</div>
+  <h1>📋 病案编码学习</h1>
+  <p class="subtitle">今日主题：离院方式填写 + 其他诊断填报规范 —— 病案首页「最后一公里」第四阶段收官</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 45 / 60 天（75%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">主诊断选得再准，如果离院方式填错、其他诊断漏填，整份病案首页的质控仍会失分。今天是第四阶段收官日，把首页填报的「最后一公里」补齐：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心填报规则，考试和实战高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>离院方式六分类（1医嘱离院 / 2医嘱转院 / 3医嘱转基层 / 4非医嘱离院 / 5死亡 / 9其他）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>「医嘱」二字的判断标准 —— 是否由医生主导安排出院/转院</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>其他诊断定义与填报范围（并发症 + 合并症）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入院病情四分类（1有 / 2临床未确定 / 3情况不明 / 4无）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入院病情为4（院内获得）的诊断原则上不能作为主要诊断</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>其他诊断「三条边界」：无关既往病不填 / 异常所见需有临床意义 / 疑似按确定编码</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>填写顺序：先并发症后合并症、先重后轻、先已治疗后未治疗</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>住院期间新发现的慢性合并病应选3（情况不明）而非4（无）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>主要手术操作选择与「无需填报操作清单」</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>离院方式与病案首页质控、DRG分组的联动关系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>出院小结与离院方式不一致时的处理流程</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>「Z51化疗/放疗」「Z08复查」等就诊类型的离院方式填写</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>离院方式和入院病情是病案首页两大「数字字段」，看似只是选个1-9的数字，实则与病程记录、出院小结、护理记录环环相扣。今天的核心是建立两种核对意识：<strong>离院方式要与病程/小结「对得上」，入院病情要与诊断「编得准」</strong>。收官之日的十条要点，把前四阶段串成一条线。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🚪</span> 一、离院方式六分类 —— 病案首页的核心数字字段</h2>
+
+<h3>1.1 六分类速查表</h3>
+
+<table>
+  <tr><th>代码</th><th>离院方式</th><th>适用场景</th></tr>
+  <tr>
+    <td><code>1</code></td>
+    <td><strong>医嘱离院</strong></td>
+    <td>医生安排正常出院（病情达到出院标准，主管医生开具出院医嘱）</td>
+  </tr>
+  <tr>
+    <td><code>2</code></td>
+    <td><strong>医嘱转院</strong></td>
+    <td>医生安排转上级医院（本院诊疗能力/条件受限，由医生提出并联系转诊）</td>
+  </tr>
+  <tr>
+    <td><code>3</code></td>
+    <td><strong>医嘱转社区卫生服务机构/乡镇卫生院</strong></td>
+    <td>医生安排转基层机构（病情稳定，下转进行后续康复或长期照护）</td>
+  </tr>
+  <tr>
+    <td><code>4</code></td>
+    <td><strong>非医嘱离院</strong></td>
+    <td>患者/家属要求提前出院（自动出院、患者自行联系转院、拒绝继续治疗等）</td>
+  </tr>
+  <tr>
+    <td><code>5</code></td>
+    <td><strong>死亡</strong></td>
+    <td>住院期间死亡（无论是否进行抢救）</td>
+  </tr>
+  <tr>
+    <td><code>9</code></td>
+    <td><strong>其他</strong></td>
+    <td>以上情况以外的其他离院方式</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键点 1 —— 离院方式必须与病程记录、出院小结核对一致：</strong>离院方式不是凭空选出来的数字，它必须能在病历中找到依据——出院医嘱、自动出院签字记录、转诊联系单、死亡记录等。编码员核对时，若发现离院方式与出院小结矛盾（例如小结写「患者要求转院」，首页却填了2医嘱转院），应退回修改。
+</div>
+
+<div class="card tip">
+  <strong>💡 关键点 2 ——「医嘱」二字的含义：</strong>判断方式只有一个：<strong>是否由医生主导安排</strong>。
+  <ul style="margin-top:8px;">
+    <li><strong>医嘱离院</strong> = 医生判断「可以出院」并主动安排 → 填 1</li>
+    <li><strong>医嘱转院</strong> = 医生判断「本院处理不了」并主动联系转诊 → 填 2</li>
+    <li><strong>非医嘱离院</strong> = 患者/家属主导，要求提前出院或自行转院 → 填 4</li>
+  </ul>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键点 3 —— 高频易错：患者自行联系转上级医院 ≠ 医嘱转院。</strong>患者或家属自己联系好上级医院、要求办理转院的，即使医生最终同意并开具转院证明，<strong>主导方仍是患者，应填 4（非医嘱离院）</strong>，而不是 2。2 必须是「医生提出 + 医生安排」的双重主导。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">📚</span> 二、其他诊断填报规范 —— 并发症与合并症的完整画像</h2>
+
+<h3>2.1 其他诊断的定义</h3>
+
+<p><strong>其他诊断</strong>：指住院时并存的、住院期间后来发生的、或对本次诊疗过程/住院时间产生影响的疾病。它是除主要诊断以外的所有诊断，由<strong>并发症</strong>和<strong>合并症</strong>两类组成。</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 并发症</h4>
+    <p>与主要诊断存在<strong>因果关系</strong>——由主要诊断（或其治疗）<strong>直接引起</strong>的疾病。</p>
+    <p style="margin-top:8px;">例：急性心肌梗死（主要诊断）住院期间并发心力衰竭。</p>
+  </div>
+  <div class="compare-col">
+    <h4>合并症</h4>
+    <p>与主要诊断及并发症<strong>非直接相关</strong>的另一种疾病，但对本次医疗过程<strong>有影响</strong>。</p>
+    <p style="margin-top:8px;">例：糖尿病（合并症）患者因肺炎住院，血糖控制影响治疗。</p>
+  </div>
+</div>
+
+<h3>2.2 其他诊断的填写顺序</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>先并发症，后合并症</h4>
+      <p>与主要诊断有因果关系的并发症排在前面，与本次诊疗无关联但需处理的合并症排在后面。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>先重后轻</h4>
+      <p>疾病严重程度高的（威胁生命、消耗资源多）排在轻症之前。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>先已治疗，后未治疗</h4>
+      <p>本次住院期间接受过治疗的疾病，排在仅做观察/评估而未治疗的疾病之前。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.3 应写入其他诊断的情况</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>① 并发症</h4>
+    <p>主要诊断直接引起的疾病，如术后感染、围手术期心梗、褥疮等。</p>
+  </div>
+  <div class="example-item">
+    <h4>② 现病史涉及的疾病</h4>
+    <p>现病史中描述的、与本次住院相关的并存疾病，无论是否治疗。</p>
+  </div>
+  <div class="example-item">
+    <h4>③ 住院期间新发生/新发现的疾病</h4>
+    <p>入院后新出现的疾病，或住院检查中新发现的异常（有临床意义并经评估处理）。</p>
+  </div>
+  <div class="example-item">
+    <h4>④ 对本次诊治有影响的既往病</h4>
+    <p>入院前已存在、且对本次治疗方案/用药/住院时间产生影响的慢性病，如高血压、糖尿病。</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🚧</span> 三、其他诊断的「三条边界」—— 最易踩坑的过滤规则</h2>
+
+<p>不是病历里出现的一切情况都要填报。其他诊断必须经过以下三条边界的过滤：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>边界一：与本次住院无关的既往病不填</h4>
+      <p>入院前已治愈、且对本次诊疗无任何影响的既往疾病（如多年前治愈的阑尾炎），<strong>不需要</strong>作为其他诊断填报。</p>
+      <p><strong>判断标准：</strong>是否对本次医疗过程有影响——有影响才填，无影响不填。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>边界二：异常所见（实验室/X线/病理）原则上不编码</h4>
+      <p>单纯的化验值异常、影像学异常、病理报告异常，<strong>除非</strong>具有明确临床意义并进行了评估处理，否则无需编码。</p>
+      <p><strong>例：</strong>住院常规检查发现「尿潜血+」，未进一步评估、无临床诊断 → 不填；若因此行膀胱镜检查并确诊「膀胱肿瘤」→ 按疾病填报。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>边界三：出院时仍「疑似」的诊断，按确定诊断编码</h4>
+      <p>经检查评估后，出院时虽未完全确诊但临床高度怀疑、并按该病治疗的，<strong>按确定诊断编码</strong>，不编「疑似」字样。</p>
+      <p><strong>例：</strong>出院诊断「急性阑尾炎（可能）」，已行阑尾切除并送病理 → 按急性阑尾炎编码，疑似字样不进入编码。</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">📊</span> 四、入院病情四分类 —— 与其他诊断的联动规则</h2>
+
+<h3>4.1 入院病情四分类速查表</h3>
+
+<table>
+  <tr><th>代码</th><th>含义</th><th>判断要点</th><th>示例</th></tr>
+  <tr>
+    <td><code>1 有</code></td>
+    <td><strong>入院时已明确</strong></td>
+    <td>入院时疾病诊断已经明确</td>
+    <td>乳腺癌，入院前已确诊</td>
+  </tr>
+  <tr>
+    <td><code>2 临床未确定</code></td>
+    <td><strong>入院时可疑</strong></td>
+    <td>入院时诊断未明确、高度怀疑</td>
+    <td>乳腺肿物性质未定</td>
+  </tr>
+  <tr>
+    <td><code>3 情况不明</code></td>
+    <td><strong>入院时未考虑/窗口期</strong></td>
+    <td>入院时未诊断出，住院期间发现</td>
+    <td>住院后发现高血压</td>
+  </tr>
+  <tr>
+    <td><code>4 无</code></td>
+    <td><strong>住院期间新发生</strong></td>
+    <td>入院时不存在，住院期间新发生的疾病</td>
+    <td>围手术期心梗、院内感染</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 重要联动规则 1：入院病情为 4（院内获得）的诊断，原则上不能作为主要诊断！</strong>主要诊断应当反映患者本次住院的核心诊疗对象。若主要诊断是住院期间才发生的院内感染、围手术期并发症，说明本次住院的主诉疾病没有找准，应重新审视——通常应选择导致入院的那一疾病作为主要诊断，院内获得性疾病作为其他诊断。
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 重要联动规则 2：住院期间新发现的慢性合并病，应选 3（情况不明），而不是 4（无）。</strong>高血压、糖尿病这类疾病在入院时通常已经存在，只是「未被发现/未诊断」。选 4 意味着「入院时没有、住院后新长出来的病」——这与慢性病的本质矛盾。只有真正<strong>因住院而新发生</strong>的（如围手术期心梗、院内感染、药物不良反应）才选 4。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🔪</span> 五、手术操作填报规则 —— 简版速记</h2>
+
+<h3>5.1 主要手术的选择标准</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>与主要诊断对应</h4>
+      <p>主要手术应与主要诊断有直接对应关系——是本次住院针对主要诊断实施的核心手术。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>风险最大 / 难度最高 / 花费最多</h4>
+      <p>多台手术并存时，取技术难度最大、手术风险最高、医疗资源消耗最多的一台作为主要手术。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>既有手术又有操作：手术优先</h4>
+      <p>同一次住院中既有手术又有非手术操作时，<strong>手术</strong>优先作为主要操作填报。</p>
+    </div>
+  </div>
+</div>
+
+<h3>5.2 无需填报的常规操作清单</h3>
+
+<div class="card tip">
+  <p><strong>以下常规操作一般无需在首页填报</strong>（除非是本次住院的主要治疗手段或对分组有影响）：</p>
+  <ul style="margin-top:8px;">
+    <li>石膏固定</li>
+    <li>一般插管（气管插管、胃管等常规置管）</li>
+    <li>Doppler（多普勒超声检查）</li>
+    <li>ECG（心电图）</li>
+    <li>一般 X 线 / CT / MRI / B 超检查</li>
+    <li>鼻胃管减压等常规处置</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，后2题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 自动出院离院方式选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者治疗期间要求提前出院，病程记录记载「<strong>患者要求自动出院</strong>」，家属已签署自动出院知情同意书。</p>
+    <p><strong>问题：</strong>离院方式应选择哪一项？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong><code>4 非医嘱离院</code></p>
+        <p><strong>推理：</strong>「自动出院」的本质是<strong>患者/家属主导</strong>要求提前终止治疗，不是医生安排正常出院。虽然医生同意并签署知情同意，但主导方是患者 → 填 4。</p>
+        <p><strong>💡 记忆：</strong>病程记录出现「要求自动出院」「坚决要求出院」「要求转院」等字眼，一律先想到 4；除非有明确的「医生医嘱出院」记录才能选 1。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 患者自行联系转院的离院方式</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者家属自行联系好上级医院，要求办理转院手续，医生评估后同意转诊并开具转院证明。</p>
+    <p><strong>问题：</strong>离院方式应选择「2 医嘱转院」还是「4 非医嘱离院」？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong><code>4 非医嘱离院</code></p>
+        <p><strong>推理：</strong>「医嘱转院（2）」要求<strong>医生主导</strong>——由医生判断本院诊疗能力不足、主动提出并联系转诊。本例是<strong>患者家属自行联系</strong>，医生只是「同意」，主导方是患者 → 填 4。</p>
+        <p><strong>💡 判断口诀：</strong>谁先提出、谁在主导 → 医生提出 = 医嘱（2/3）；患者提出 = 非医嘱（4）。即使医生最终开具了转院证明，也不能改变主导方。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 住院新发现高血压的入院病情</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因肺炎入院，入院时血压正常、既往无高血压病史。住院第3天常规监测发现血压升高，多次复测确诊「高血压」，予以降压治疗，出院后需长期服药。</p>
+    <p><strong>问题：</strong>「高血压」作为其他诊断，入院病情应选几？选「4 无」是否正确？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong>选 <code>3 情况不明</code>，选「4 无」是<strong>错误</strong>的。</p>
+        <p><strong>推理：</strong></p>
+        <ul>
+          <li>「4 无」的含义是<strong>住院期间新发生的疾病</strong>——即入院时身体里确实没有这种病。</li>
+          <li>高血压是慢性病，患者入院时大概率已经存在，只是处于<strong>未被发现/未诊断</strong>的窗口期。住院期间的「发现」不等于「新发生」。</li>
+          <li>因此应选 <code>3 情况不明</code>（入院时未考虑，住院期间发现）。</li>
+        </ul>
+        <p><strong>💡 规律：</strong>住院期间<strong>新发现的慢性合并病</strong>（高血压、糖尿病、冠心病、肿瘤等）→ 一律选 3；只有<strong>真正新发生的急性事件</strong>（心梗、院内感染、药物反应）→ 才选 4。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 围手术期心梗：入院病情与主诊断资格</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因「胆囊结石伴急性胆囊炎」入院，入院后行腹腔镜胆囊切除术，术后第1天突发胸痛，心电图及肌钙蛋白确诊「急性心肌梗死」，转入监护室治疗。</p>
+    <p><strong>问题：</strong></p>
+    <ol>
+      <li>「急性心肌梗死」的入院病情应选几？</li>
+      <li>它能否作为主要诊断？为什么？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1. 入院病情：</strong>选 <code>4 无</code> —— 入院时不存在，是手术后<strong>住院期间新发生</strong>的急性事件（围手术期并发症），符合「4 无」的定义。</p>
+        <p><strong>✅ 2. 不能作为主要诊断。</strong></p>
+        <p><strong>推理：</strong></p>
+        <ul>
+          <li>入院病情为 <code>4</code>（院内获得）的诊断，<strong>原则上不能作为主要诊断</strong>——这是硬性规则。</li>
+          <li>本次住院的<strong>核心诊疗对象</strong>是胆囊结石伴胆囊炎及其手术治疗，主诊断应保持 <code>K80.1</code> 胆囊结石伴胆囊炎。</li>
+          <li>围手术期心梗作为<strong>其他诊断</strong>填报，入院病情为 4，同时它属于主要诊断的<strong>并发症</strong>，在填写顺序上排在合并症之前。</li>
+        </ul>
+        <p><strong>💡 完整编码思路：</strong></p>
+        <pre>主诊断：K80.101  胆囊结石伴急性胆囊炎（入院病情1）
+其他诊断：I21.900  急性心肌梗死（入院病情4）← 术后新发
+其他诊断：I10.x00  高血压（如有，入院病情3）← 新发现慢性病
+主要手术：51.23   腹腔镜下胆囊切除术</pre>
+        <p style="margin-top:8px;"><strong>📌 记牢联动规则：</strong>入院病情「4 无」 = 院内获得 = 不能做主诊断；「3 情况不明」 = 新发现慢性病 = 可以做其他诊断。两者不要混淆。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、第四阶段收官总结 ======== -->
+<h2><span class="icon">🏁</span> 七、第四阶段收官总结 —— Day36-45 十条要点</h2>
+
+<p>从 Day 36 主诊断选择总则，到 Day 45 离院方式收官，第四阶段（主诊断选择与编码规则）共十条核心规则，全部记牢：</p>
+
+<div class="card">
+  <div class="mastery-row"><span class="key-num">1</span> <span><strong>三最原则：</strong>主诊断 = 健康危害最大 / 资源消耗最多 / 住院时间最长 的疾病</span></div>
+  <div class="mastery-row"><span class="key-num">2</span> <span><strong>病因能包括临床表现时选病因：</strong>如「糖尿病」能包含其并发症「糖尿病肾病」时，选病因做主要诊断</span></div>
+  <div class="mastery-row"><span class="key-num">3</span> <span><strong>手术导向：</strong>手术住院，选与本次手术一致的疾病作为主诊断</span></div>
+  <div class="mastery-row"><span class="key-num">4</span> <span><strong>疑似未确诊：</strong>多诊断均疑似时，选倾向性最大（可能性最高）的疾病</span></div>
+  <div class="mastery-row"><span class="key-num">5</span> <span><strong>症状入院：</strong>以症状、体征为主诉且诊断不明时，可以症状作为主诊断</span></div>
+  <div class="mastery-row"><span class="key-num">6</span> <span><strong>并发症住院：</strong>因并发症住院时，选择并发症作为主诊断</span></div>
+  <div class="mastery-row"><span class="key-num">7</span> <span><strong>肿瘤规则：</strong>确诊/手术选肿瘤本身；放化疗入院选 Z51（Z51.1化疗/Z51.0放疗）；复查入院选 Z08</span></div>
+  <div class="mastery-row"><span class="key-num">8</span> <span><strong>损伤多部位：</strong>多部位损伤选危害最大的损伤作为主诊断</span></div>
+  <div class="mastery-row"><span class="key-num">9</span> <span><strong>其他诊断顺序：</strong>先并发症后合并症、先重后轻、先已治疗后未治疗</span></div>
+  <div class="mastery-row"><span class="key-num">10</span> <span><strong>首页数字字段：</strong>离院方式 6 类 + 入院病情 4 类，必须与病程记录、出院小结一致</span></div>
+</div>
+
+<div class="card info">
+  <p><strong>✅ 阶段自测提示：</strong>把以上十条当成「主诊断决策清单」，做题或实战时按顺序逐条比对——先看是否手术（3），再看是否有并发症（6），再看肿瘤规则（7）……规则之间冲突时，以「三最原则」（1）作为最终裁判。</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>离院方式六类：</strong>1医嘱离院 / 2医嘱转院 / 3转基层 / 4非医嘱 / 5死亡 / 9其他</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>「医嘱」判断标准：</strong>医生主导安排才是医嘱；患者自行联系转院 = 非医嘱离院(4)</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>其他诊断组成：</strong>并发症（有因果关系）+ 合并症（非直接相关但有影响）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>其他诊断顺序：</strong>先并发症后合并症 → 先重后轻 → 先已治疗后未治疗</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>三条边界：</strong>无关既往病不填；异常所见需有临床意义；疑似按确定编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>入院病情四类：</strong>1有 / 2临床未确定 / 3情况不明 / 4无</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>硬规则：</strong>入院病情4（院内获得）原则上不能作为主要诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>新发现≠新发生：</strong>住院新发现慢性病选3情况不明，新发生急性事件才选4</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 46 主题：DRG 分组原理 —— MDC → ADRG → DRG</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>DRG 分组的三级结构 MDC（主要诊断大类）→ ADRG（核心疾病诊断相关组）→ DRG 分别依据什么划分？</li>
+    <li>主要诊断的编码质量（尤其是主诊断选择）如何影响患者入组？</li>
+    <li>其他诊断（并发症与合并症）在 DRG 分组中扮演什么角色？为什么说「填得越全越准」直接影响支付？</li>
+    <li>离院方式、入院病情这些首页字段与 DRG 分组之间有哪些联动关系？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 45 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
