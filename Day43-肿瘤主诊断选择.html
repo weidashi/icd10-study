@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 43（2026年7月31日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #7c3aed; --accent-bg: #f5f3ff; --accent-light: #ede9fe;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #e11d48 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c4b5fd; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c4b5fd; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c4b5fd; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #c026d3);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 43 · 2026年7月31日</div>
+  <h1>🎗️ 病案编码学习</h1>
+  <p class="subtitle">今日主题：肿瘤主诊断选择 —— 确诊 / 治疗 / 复查 / 终末期全流程编码规则</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:71.7%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 43 / 60 天（71.7%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">肿瘤主诊断选择是 ICD-10 编码中规则最密集、最易出错的领域之一。同一肿瘤患者在不同住院阶段（确诊→治疗→复查→终末期）主诊断完全不同，需要精准判断"本次住院目的"：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心编码规则，考试和实战高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤主诊断选择九条规则——按入院目的精准匹配</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>首次化疗/放疗入院 vs 维持化疗/放疗入院的区分（Z51.1 vs Z51.0）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>原发肿瘤与继发肿瘤的主诊断优先级判断</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>化疗期间死亡 → 肿瘤编码做主诊断（不是 Z51）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤复查 Z08 与肿瘤个人史 Z85 的使用场景</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>同次住院同时化疗+放疗 → 放疗（Z51.0）优先做主诊断</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肿瘤并发症的主诊断处理（贫血、骨髓抑制、感染等）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>复查中发现肿瘤复发 → 使用肿瘤编码，不用 Z08</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>预防性手术（Z40.0）与治疗性手术的编码区分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>免疫治疗（Z51.12）、靶向治疗、基因治疗的新兴编码处理</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>妊娠合并恶性肿瘤的编码特殊处理（O00-O08 + C码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>肿瘤终末期（临终关怀）的 Z51.5 编码与主诊断关系</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>肿瘤主诊断选择的本质是<strong>"问目的"</strong>——本次住院是为了确诊？为了治疗？为了复查？还是终末期姑息？不同的住院目的决定了主诊断是肿瘤本身、Z51 系列还是 Z08。今天的学习重点是建立"先问目的，再选编码"的决策本能，并牢记九条规则之间的优先级关系。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、肿瘤主诊断选择的核心逻辑 —— 为什么这么复杂？</h2>
+
+<h3>1.1 肿瘤编码的特殊性：同一疾病，多种住院目的</h3>
+<p>与大多数疾病不同，肿瘤患者的住院目的在整个疾病过程中会<strong>多次变化</strong>。同一个肺癌患者，可能经历"确诊入院→手术入院→化疗入院（多次）→放疗入院→复查入院→复发治疗入院→终末期入院"等多种情况，而每种情况的主诊断编码<strong>完全不同</strong>。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">阶段1</div>
+    <div class="stat-label">确诊 (Diagnosis)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">肿瘤编码 C/D 码做主诊断</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">阶段2</div>
+    <div class="stat-label">治疗 (Treatment)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">首次治疗→肿瘤码 / 维持治疗→Z51</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">阶段3</div>
+    <div class="stat-label">复查 (Follow-up)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">Z08 随诊检查</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">阶段4</div>
+    <div class="stat-label">终末期 (Terminal)</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">并发症或姑息治疗为主诊断</div>
+  </div>
+</div>
+
+<p><strong>为什么这么复杂？</strong>因为主诊断的定义是"<strong>引起本次住院医疗资源消耗最多的疾病</strong>"。肿瘤本身是"疾病"，但化疗、放疗、复查都是"医疗活动"——当住院目的是医疗活动本身时，就需要用 Z 码来描述这个活动，而不是用肿瘤码描述疾病。</p>
+
+<div class="card tip">
+  <strong>核心判断公式：</strong>主诊断 = 本次住院的<strong>主要原因</strong>。如果患者是为化疗入院 → 主诊断是化疗（Z51.1）；如果患者是因为肿瘤引起的大出血入院 → 主诊断是肿瘤或出血。关键看<strong>病历首页的"入院目的"</strong>和<strong>出院诊断中的主要治疗方向</strong>。
+</div>
+
+<h3>1.2 肿瘤编码涉及的 Z 码体系全景图</h3>
+
+<table>
+  <tr><th>Z 码范围</th><th>分类内容</th><th>编码角色</th><th>使用场景</th></tr>
+  <tr>
+    <td><code>Z51.0</code></td>
+    <td><strong>放疗 encounter</strong></td>
+    <td>主诊断（维持放疗时）</td>
+    <td>维持性/单纯放疗入院</td>
+  </tr>
+  <tr>
+    <td><code>Z51.1</code></td>
+    <td><strong>化疗 encounter</strong></td>
+    <td>主诊断（维持化疗时）</td>
+    <td>维持性/单纯化疗入院</td>
+  </tr>
+  <tr>
+    <td><code>Z51.11</code></td>
+    <td>抗肿瘤化学治疗</td>
+    <td>Z51.1 的特指亚目</td>
+    <td>明确为抗肿瘤化疗时使用</td>
+  </tr>
+  <tr>
+    <td><code>Z51.12</code></td>
+    <td>抗肿瘤免疫治疗</td>
+    <td>主诊断（免疫治疗时）</td>
+    <td>PD-1/PD-L1 等免疫治疗入院</td>
+  </tr>
+  <tr>
+    <td><code>Z08</code></td>
+    <td><strong>恶性肿瘤治疗后随诊检查</strong></td>
+    <td>主诊断（复查时）</td>
+    <td>肿瘤治疗完成后复查，无复发</td>
+  </tr>
+  <tr>
+    <td><code>Z85.-</code></td>
+    <td>恶性肿瘤个人史</td>
+    <td>附加诊断</td>
+    <td>记录肿瘤病史，不做主诊断</td>
+  </tr>
+  <tr>
+    <td><code>Z40.0</code></td>
+    <td>恶性肿瘤危险预防性手术</td>
+    <td>主诊断（预防手术时）</td>
+    <td>如 BRCA 基因突变预防性乳腺切除</td>
+  </tr>
+  <tr>
+    <td><code>Z54.0-Z54.9</code></td>
+    <td>恢复期</td>
+    <td>附加诊断</td>
+    <td>肿瘤治疗后恢复期</td>
+  </tr>
+  <tr>
+    <td><code>Z51.5</code></td>
+    <td>姑息治疗</td>
+    <td>主诊断（终末期姑息时）</td>
+    <td>终末期患者姑息治疗入院</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ Z 码 vs C/D 码的本质区别：</strong>C 码（恶性肿瘤）和 D 码（良性/动态未定肿瘤）描述的是<strong>"疾病本身"</strong>；Z 码描述的是<strong>"因肿瘤而进行的医疗活动或状态"</strong>。当住院目的是"治疗肿瘤本身"（手术、首次化疗）时用 C/D 码；当住院目的是"执行某个治疗程序"（维持化疗、放疗）时用 Z 码。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🗂️</span> 二、肿瘤主诊断选择九条规则 —— 核心决策框架</h2>
+
+<p>以下是肿瘤主诊断选择的核心九条规则，按住院场景逐一展开。每条规则都对应一种特定的临床情境，规则之间存在优先级关系。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>规则一：为肿瘤手术或确诊入院 → 肿瘤做主诊断</h4>
+      <p>当住院目的是<strong>对肿瘤进行手术治疗</strong>或<strong>明确诊断</strong>（活检、病理确认）时，<strong>肿瘤本身的编码（C/D 码）作为主诊断</strong>。</p>
+      <p><strong>场景：</strong>肺癌患者入院行肺叶切除术；乳腺肿块入院行穿刺活检。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>规则二：原发肿瘤伴转移，首次就诊，未针对转移治疗 → 原发肿瘤做主诊断</h4>
+      <p>患者同时存在原发肿瘤和转移瘤，本次为<strong>首次就诊</strong>，且未对转移瘤进行特异性治疗时，<strong>原发肿瘤作为主诊断</strong>。</p>
+      <p><strong>场景：</strong>胃癌伴肝转移，首次入院行胃癌根治术，未处理肝转移。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>规则三：原发灶未明，仅发现继发肿瘤 → 继发肿瘤做主诊断</h4>
+      <p>当原发肿瘤部位<strong>不明确</strong>（未找到原发灶），仅发现继发（转移）肿瘤时，<strong>继发肿瘤编码作为主诊断</strong>。</p>
+      <p><strong>场景：</strong>患者因骨痛就诊，穿刺证实骨转移癌，但未找到原发灶 → 主诊断为骨继发恶性肿瘤（C79.5）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>规则四：为继发肿瘤手术/确诊入院 → 继发肿瘤做主诊断（即使原发存在）</h4>
+      <p>即使原发肿瘤已知且存在，如果本次住院<strong>专门针对继发肿瘤</strong>进行手术或确诊，则<strong>继发肿瘤作为主诊断</strong>。</p>
+      <p><strong>场景：</strong>结肠癌术后 1 年，发现肝转移，入院行肝转移瘤切除术 → 主诊断为肝继发恶性肿瘤（C78.7）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content">
+      <h4>规则五：首次化疗/放疗入院 → 按规则一至四选择（肿瘤码做主诊断）</h4>
+      <p>本次住院是<strong>首次</strong>化疗或放疗（初始治疗周期），主诊断<strong>仍为肿瘤编码</strong>（C/D 码），而非 Z51。因为首次治疗的核心目的是治疗肿瘤本身。</p>
+      <p><strong>场景：</strong>白血病首次诱导化疗入院 → 主诊断为白血病编码（C92.x），不是 Z51.1。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">6</div>
+    <div class="process-content">
+      <h4>规则六：维持性化疗/放疗入院 → Z51.1 或 Z51.0 做主诊断</h4>
+      <p>本次住院<strong>仅为维持性化疗或放疗</strong>（非首次，单纯为执行治疗方案），主诊断为 <code>Z51.1</code>（化疗）或 <code>Z51.0</code>（放疗），<strong>不是肿瘤码</strong>。</p>
+      <p><strong>场景：</strong>乳腺癌第 7 周期化疗入院 → 主诊断为 Z51.1（化疗），肿瘤编码作为附加诊断。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">7</div>
+    <div class="process-content">
+      <h4>规则七：化疗/放疗期间死亡 → 肿瘤码做主诊断（不是 Z51）</h4>
+      <p>患者在化疗或放疗期间死亡，主诊断为<strong>肿瘤编码本身</strong>，而非 Z51。因为死亡的根本原因是肿瘤疾病，化疗/放疗只是当时的医疗活动。</p>
+      <p><strong>场景：</strong>肺癌化疗第 3 周期期间突发呼吸衰竭死亡 → 主诊断为肺癌（C34.x），不是 Z51.1。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">8</div>
+    <div class="process-content">
+      <h4>规则八：为肿瘤并发症或其他疾病入院 → 并发症/疾病做主诊断</h4>
+      <p>本次住院主要因为<strong>肿瘤引起的并发症</strong>（贫血、骨髓抑制、感染、压迫等）或<strong>其他并存疾病</strong>，主诊断为该并发症或疾病的编码，肿瘤编码作为附加。</p>
+      <p><strong>场景：</strong>胃癌化疗后骨髓抑制入院 → 主诊断为骨髓抑制（D70.x）；肿瘤引起的肠梗阻 → 主诊断为肠梗阻（K56.x）。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">9</div>
+    <div class="process-content">
+      <h4>规则九：肿瘤已控制，入院复查无复发 → Z08 做主诊断</h4>
+      <p>肿瘤已完成治疗且<strong>控制良好</strong>，本次入院仅为<strong>常规复查</strong>，且未发现复发或转移，主诊断为 <code>Z08</code>（恶性肿瘤治疗后随诊检查）。</p>
+      <p><strong>场景：</strong>甲状腺癌术后 2 年，入院例行复查，各项检查正常 → 主诊断为 Z08（随诊检查）。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.1 九条规则优先级速查图</h3>
+
+<div class="flow-chart">
+  <div class="flow-row">
+    <div class="flow-box">入院目的是什么？</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">确诊/手术</div> →
+    <div class="flow-box">肿瘤码 (C/D)</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">首次化疗/放疗</div> →
+    <div class="flow-box">肿瘤码 (C/D)</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">维持化疗/放疗</div> →
+    <div class="flow-box">Z51.1 / Z51.0</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box warn-step">化疗/放疗期间死亡</div> →
+    <div class="flow-box">肿瘤码 (C/D)</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">肿瘤并发症入院</div> →
+    <div class="flow-box">并发症码</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box">复查无复发</div> →
+    <div class="flow-box">Z08</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔬</span> 三、Z 码深度解析 —— 肿瘤相关 Z 码的精确使用</h2>
+
+<h3>3.1 Z51.0 vs Z51.1 vs Z51.11 vs Z51.12 —— 治疗 Z 码的区分</h3>
+
+<table>
+  <tr><th>Z 码</th><th>全称</th><th>使用场景</th><th>注意要点</th></tr>
+  <tr>
+    <td><code>Z51.0</code></td>
+    <td>放疗 encounter</td>
+    <td>维持性放疗入院</td>
+    <td>同次住院化疗+放疗时，Z51.0 优先</td>
+  </tr>
+  <tr>
+    <td><code>Z51.1</code></td>
+    <td>化疗 encounter</td>
+    <td>维持性化疗入院</td>
+    <td>最常用的肿瘤治疗 Z 码</td>
+  </tr>
+  <tr>
+    <td><code>Z51.11</code></td>
+    <td>抗肿瘤化学治疗</td>
+    <td>Z51.1 的特指亚目</td>
+    <td>明确为抗肿瘤化疗时使用更精确</td>
+  </tr>
+  <tr>
+    <td><code>Z51.12</code></td>
+    <td>抗肿瘤免疫治疗</td>
+    <td>免疫治疗（如 PD-1 抑制剂）入院</td>
+    <td>新兴治疗方式，日益增多</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 关键区分：首次 vs 维持</strong><br>
+  <strong>首次化疗/放疗</strong>（第 1 周期）→ 主诊断为肿瘤编码（C/D 码），Z51 作为附加<br>
+  <strong>维持化疗/放疗</strong>（第 2 周期及以后，单纯为执行治疗方案）→ 主诊断为 Z51.1 或 Z51.0<br>
+  <strong>判断标准：</strong>看入院记录中是否明确写明"维持化疗""第 N 周期化疗"。首次治疗的目的是"治疗肿瘤"，维持治疗的目的是"执行既定方案"。
+</div>
+
+<h3>3.2 Z08 随诊检查 —— 复查场景的编码</h3>
+<p><code>Z08</code> 类目用于描述<strong>恶性肿瘤完成治疗后</strong>的随诊检查。它的核心使用条件是：<strong>肿瘤已治疗完成、本次仅为复查、未发现复发</strong>。</p>
+
+<table>
+  <tr><th>Z08 亚目</th><th>描述</th><th>典型场景</th></tr>
+  <tr><td><code>Z08.0</code></td><td>恶性肿瘤手术后随诊检查</td><td>乳腺癌术后 1 年复查</td></tr>
+  <tr><td><code>Z08.1</code></td><td>恶性肿瘤放疗后随诊检查</td><td>鼻咽癌放疗后 6 个月复查</td></tr>
+  <tr><td><code>Z08.2</code></td><td>恶性肿瘤化疗后随诊检查</td><td>淋巴瘤化疗结束后复查</td></tr>
+  <tr><td><code>Z08.3</code></td><td>恶性肿瘤多手段治疗后随诊检查</td><td>术后+放化疗综合治疗后复查</td></tr>
+  <tr><td><code>Z08.8</code></td><td>恶性肿瘤其他特指治疗后随诊检查</td><td>免疫治疗后复查</td></tr>
+  <tr><td><code>Z08.9</code></td><td>恶性肿瘤未特指治疗后随诊检查</td><td>治疗方式不详的复查</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>Z08 vs Z85 的区分：</strong><br>
+  <code>Z08</code>（随诊检查）→ 做<strong>主诊断</strong>，表示本次住院/就诊目的是"复查"<br>
+  <code>Z85.-</code>（恶性肿瘤个人史）→ 做<strong>附加诊断</strong>，记录患者曾有肿瘤病史<br>
+  <strong>两者常同时出现：</strong>如"甲状腺癌术后 3 年复查无异常"→ 主诊断 Z08.0，附加 Z85.8（甲状腺癌个人史）。
+</div>
+
+<h3>3.3 Z40.0 预防性手术 —— 特殊场景</h3>
+<p>当患者携带肿瘤易感基因（如 BRCA1/2 基因突变），行<strong>预防性器官切除</strong>以降低恶性肿瘤发生风险时，主诊断为 <code>Z40.0</code>（恶性肿瘤危险预防性手术），而非肿瘤编码——因为此时患者<strong>尚未患癌</strong>。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>BRCA 基因突变预防性乳腺切除</h4>
+    <p>主诊断：Z40.0</p>
+    <p>附加：Z15.0（BRCA 基因突变携带者）</p>
+    <p>患者尚未患乳腺癌，是预防性手术</p>
+  </div>
+  <div class="example-item">
+    <h4>家族性腺瘤性息肉病预防性结肠切除</h4>
+    <p>主诊断：Z40.0</p>
+    <p>附加：D12.x（结肠息肉）</p>
+    <p>预防癌变而行切除</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">⚡</span> 四、特殊场景深度解析 —— 易错情境逐个击破</h2>
+
+<h3>4.1 同次住院化疗+放疗 —— 放疗优先</h3>
+<p>当患者同一次住院期间<strong>同时接受化疗和放疗</strong>时，主诊断为 <code>Z51.0</code>（放疗），<code>Z51.1</code>（化疗）作为附加诊断。</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 错误做法</h4>
+    <p>主诊断编 <code>Z51.1</code>（化疗）</p>
+    <p>附加：<code>Z51.0</code>（放疗）</p>
+    <p style="color:var(--red);margin-top:8px;">放疗操作通常资源消耗更大（需要精确定位、设备使用），应优先</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确做法</h4>
+    <p>主诊断编 <code>Z51.0</code>（放疗）</p>
+    <p>附加：<code>Z51.1</code>（化疗）+ 肿瘤码</p>
+    <p style="color:var(--green);margin-top:8px;">放疗优先做主诊断是 ICD-10 的明确规定</p>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>推理依据：</strong>放疗通常需要模拟定位、制作铅模、精确摆位等复杂操作，每次放疗的资源消耗（设备、时间、人员）通常高于化疗。因此，当两者同时进行时，以资源消耗更大的放疗作为主诊断。
+</div>
+
+<h3>4.2 肿瘤并发症 —— 并发症做主诊断</h3>
+<p>肿瘤患者因<strong>肿瘤引起的并发症</strong>入院治疗时，主诊断为<strong>并发症的编码</strong>，肿瘤编码作为附加诊断。常见并发症包括：</p>
+
+<table>
+  <tr><th>并发症</th><th>ICD-10 编码</th><th>场景</th></tr>
+  <tr><td>肿瘤性贫血</td><td><code>D48.9</code> / <code>D63.0</code></td><td>肿瘤慢性失血或骨髓抑制致贫血入院输血</td></tr>
+  <tr><td>化疗后骨髓抑制</td><td><code>D70.x</code>（中性粒细胞减少）/ <code>D69.6</code>（血小板减少）</td><td>化疗后白细胞骤降入院升白治疗</td></tr>
+  <tr><td>肿瘤压迫致肠梗阻</td><td><code>K56.x</code></td><td>腹腔肿瘤压迫肠道致梗阻入院</td></tr>
+  <tr><td>上腔静脉综合征</td><td><code>I87.0</code></td><td>纵隔肿瘤压迫上腔静脉入院</td></tr>
+  <tr><td>脊髓压迫症</td><td><code>G83.8</code> / <code>G95.2</code></td><td>椎体转移瘤压迫脊髓入院</td></tr>
+  <tr><td>高钙血症</td><td><code>E83.4</code></td><td>肿瘤旁分泌 PTHrP 致高钙入院</td></tr>
+  <tr><td>恶性胸腔积液</td><td><code>J91.0</code></td><td>胸膜转移致胸腔积液入院引流</td></tr>
+</table>
+
+<h3>4.3 复查中发现复发 —— 用肿瘤码，不用 Z08</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 复查无复发</h4>
+    <p>主诊断：<code>Z08</code>（随诊检查）</p>
+    <p>附加：<code>Z85.-</code>（肿瘤个人史）</p>
+    <p>场景：术后 2 年例行复查，CT 正常</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>⚠️ 复查发现复发</h4>
+    <p>主诊断：<strong>肿瘤编码（C 码）</strong></p>
+    <p>附加：Z85.-（个人史）</p>
+    <p>场景：术后 2 年复查发现肝转移</p>
+    <p style="color:var(--red);">不用 Z08！因为发现了新问题</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 核心判断：</strong>Z08 只在"复查结果正常"时使用。一旦复查中发现<strong>肿瘤复发、转移或新发</strong>，主诊断就必须改为肿瘤编码。因为此时住院目的已从"随诊检查"变为"治疗复发/转移的肿瘤"。
+</div>
+
+<h3>4.4 妊娠合并恶性肿瘤</h3>
+<p>妊娠期间发现恶性肿瘤属于特殊场景，编码需同时体现妊娠状态和肿瘤：</p>
+<ul>
+  <li>肿瘤编码（C 码）作为主诊断，描述恶性肿瘤本身</li>
+  <li>妊娠状态编码作为附加诊断（O00-O08 相关编码）</li>
+  <li>如果因妊娠并发症入院，则妊娠并发症做主诊断，肿瘤做附加</li>
+</ul>
+
+<h3>4.5 肿瘤终末期 / 姑息治疗</h3>
+<p>肿瘤终末期患者入院接受姑息治疗（疼痛管理、营养支持、心理关怀等），主诊断的处理：</p>
+<ul>
+  <li><strong>以姑息治疗为主要目的</strong> → <code>Z51.5</code>（姑息治疗）做主诊断，肿瘤码做附加</li>
+  <li><strong>因终末期并发症入院</strong>（如呼吸困难、感染）→ 并发症做主诊断，肿瘤码做附加</li>
+  <li><strong>终末期死亡</strong> → 肿瘤编码做主诊断（根本死因）</li>
+</ul>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🎯</span> 五、九条规则实战对照 —— 正确 vs 错误决策</h2>
+
+<h3>5.1 场景对照：维持化疗入院</h3>
+
+<div class="card">
+  <h4>📋 场景：乳腺癌术后第 7 周期化疗入院</h4>
+  <p>患者乳腺癌术后，已完成 6 周期化疗，本次入院行第 7 周期化疗。无肿瘤复发证据。</p>
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col bad">
+      <h4>❌ 错误做法</h4>
+      <p>主诊断：<code>C50.x</code>（乳腺癌）</p>
+      <p>理由：认为"患者有乳腺癌所以编乳腺癌"</p>
+      <p style="color:var(--red);margin-top:8px;">违反规则六：维持化疗应编 Z51.1</p>
+    </div>
+    <div class="compare-col good">
+      <h4>✅ 正确做法</h4>
+      <p>主诊断：<code>Z51.1</code>（化疗 encounter）</p>
+      <p>附加：<code>C50.x</code>（乳腺癌）</p>
+      <p style="color:var(--green);margin-top:8px;">遵守规则六：维持化疗 Z51.1 做主诊断</p>
+    </div>
+  </div>
+</div>
+
+<h3>5.2 场景对照：化疗期间死亡</h3>
+
+<div class="card">
+  <h4>📋 场景：肺癌化疗第 3 周期期间死亡</h4>
+  <p>肺癌患者入院行第 3 周期化疗，化疗后第 5 天突发大咯血窒息死亡。</p>
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col bad">
+      <h4>❌ 错误做法</h4>
+      <p>主诊断：<code>Z51.1</code>（化疗）</p>
+      <p>附加：C34.x（肺癌）</p>
+      <p style="color:var(--red);margin-top:8px;">违反规则七：化疗期间死亡应编肿瘤码</p>
+    </div>
+    <div class="compare-col good">
+      <h4>✅ 正确做法</h4>
+      <p>主诊断：<code>C34.x</code>（肺癌）</p>
+      <p>附加：R04.8（咯血）</p>
+      <p style="color:var(--green);margin-top:8px;">遵守规则七：死亡时肿瘤码做主诊断</p>
+    </div>
+  </div>
+</div>
+
+<h3>5.3 场景对照：复查发现复发</h3>
+
+<div class="card">
+  <h4>📋 场景：结肠癌术后 2 年复查发现肝转移</h4>
+  <p>结肠癌术后 2 年，入院例行复查，CT 发现肝转移瘤。</p>
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col bad">
+      <h4>❌ 错误做法</h4>
+      <p>主诊断：<code>Z08.0</code>（术后随诊检查）</p>
+      <p>附加：C78.7（肝转移）</p>
+      <p style="color:var(--red);margin-top:8px;">已发现复发，不能用 Z08 做主诊断</p>
+    </div>
+    <div class="compare-col good">
+      <h4>✅ 正确做法</h4>
+      <p>主诊断：<code>C78.7</code>（肝继发恶性肿瘤）</p>
+      <p>附加：Z85.0（结肠癌个人史）</p>
+      <p style="color:var(--green);margin-top:8px;">发现复发 → 用肿瘤码做主诊断</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 维持化疗主诊断选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"右侧乳腺癌术后，pT2N1M0，IIB期，入院行第7周期化疗"</strong></p>
+    <p>患者已完成 6 周期 AC-T 方案化疗，本次为第 7 周期（维持治疗阶段），入院目的是单纯执行化疗方案。查体无复发征象。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？请列出完整编码清单。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：Z51.1</strong>（化疗 encounter）/ <code>Z51.11</code>（抗肿瘤化学治疗）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>本次为第 7 周期化疗，属于<strong>维持性化疗</strong>（非首次）</li>
+          <li>入院目的明确为"执行化疗方案"，无肿瘤复发或并发症</li>
+          <li>按<strong>规则六</strong>：维持化疗入院 → Z51.1 做主诊断</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：Z51.1    化疗 encounter（或 Z51.11 抗肿瘤化学治疗）
+附加：  C50.9   乳腺癌（右侧，未特指部位）
+附加：  Z85.3   乳腺恶性肿瘤个人史</pre>
+        <p><strong>💡 注意：</strong>不要因为患者有乳腺癌就编 C50 做主诊断。维持化疗的核心规则是 Z51.1 做主诊断，肿瘤码做附加。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 肿瘤确诊入院主诊断选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"右肺下叶占位性病变，性质待查，入院行穿刺活检"</strong></p>
+    <p>患者因体检发现右肺下叶占位入院，行 CT 引导下肺穿刺活检，病理回报：<strong>"低分化腺癌"</strong>。患者此前无恶性肿瘤病史。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：C34.3</strong>（右肺下叶恶性肿瘤）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>本次住院目的是<strong>确诊</strong>（行穿刺活检）</li>
+          <li>病理已证实为腺癌 → 恶性肿瘤诊断成立</li>
+          <li>按<strong>规则一</strong>：为肿瘤确诊/手术入院 → 肿瘤编码做主诊断</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：C34.3   右肺下叶恶性肿瘤
+附加：  无（首次确诊，无个人史编码）</pre>
+        <p><strong>💡 注意：</strong>这是首次确诊，不需要编 Z85（个人史）。入院时写"性质待查"，但出院时已有病理确诊，应按确诊结果编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 同次住院化疗+放疗主诊断选择</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"鼻咽癌（非角化型，未分化型），IIB期，入院行同步放化疗"</strong></p>
+    <p>患者鼻咽癌确诊后，本次入院行同步放化疗（放疗 30 次 + 化疗 2 周期）。这是首次抗肿瘤治疗。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？是肿瘤码还是 Z 码？如果用 Z 码，用 Z51.0 还是 Z51.1？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：C11.9</strong>（鼻咽恶性肿瘤）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>本次为<strong>首次</strong>抗肿瘤治疗（同步放化疗）</li>
+          <li>按<strong>规则五</strong>：首次化疗/放疗入院 → 按规则一至四选择 → 肿瘤编码做主诊断</li>
+          <li>Z51.0 和 Z51.1 均作为附加诊断</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：C11.9   鼻咽恶性肿瘤
+附加：  Z51.0   放疗 encounter
+附加：  Z51.1   化疗 encounter</pre>
+        <p><strong>💡 注意：</strong>这里有两个关键点——</p>
+        <ul>
+          <li><strong>首次治疗 → 肿瘤码做主诊断</strong>（规则五），不是 Z 码</li>
+          <li>如果是<strong>维持治疗</strong>期间同时放化疗，则 Z51.0（放疗）优先于 Z51.1（化疗）做主诊断</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 化疗期间死亡的主诊断选择</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"胃癌（低分化腺癌，IV期），入院行第4周期化疗"</strong></p>
+    <p>患者胃癌 IV 期伴腹膜转移，已行 3 周期 SOX 方案化疗。本次入院行第 4 周期化疗，化疗后第 3 天患者出现<strong>消化道大出血</strong>，经抢救无效死亡。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？是 Z51.1（化疗）还是胃癌？请给出完整推理。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：C16.9</strong>（胃恶性肿瘤）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>患者在化疗期间死亡 → 按规则七：化疗/放疗期间死亡 → <strong>肿瘤编码做主诊断</strong></li>
+          <li>虽然本次入院目的是化疗（通常编 Z51.1），但死亡改变了主诊断选择</li>
+          <li>死亡的根本原因是胃癌（肿瘤侵蚀血管致大出血），化疗只是当时的医疗活动</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：C16.9   胃恶性肿瘤
+附加：  C78.6   腹膜继发恶性肿瘤
+附加：  K92.2   消化道出血（未特指）
+附加：  Z51.1   化疗 encounter</pre>
+        <p><strong>💡 核心教训：</strong>规则七是规则六的"覆盖规则"——维持化疗本应编 Z51.1，但一旦化疗期间死亡，主诊断必须改回肿瘤码。这是因为死亡统计需要反映根本死因（肿瘤），而非当时的医疗活动（化疗）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 复查发现复发的主诊断选择</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"结肠癌术后2年，入院复查"</strong></p>
+    <p>患者 2 年前因升结肠腺癌行右半结肠切除术，术后完成 6 周期化疗。本次入院<strong>例行复查</strong>，行全腹增强 CT 发现：<strong>肝右叶新发占位，直径 3cm，考虑转移瘤</strong>。随后行肝穿刺活检证实为转移性腺癌。住院期间行肝动脉灌注化疗。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？是 Z08（随诊检查）还是肿瘤码？如果是肿瘤码，编原发（结肠）还是继发（肝）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：C78.7</strong>（肝继发恶性肿瘤）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>患者入院时目的为"复查"，但检查中<strong>发现肝转移</strong> → 住院目的变为治疗转移瘤</li>
+          <li>按规则九的反面情况：复查中发现复发/转移 → <strong>使用肿瘤编码，不用 Z08</strong></li>
+          <li>按<strong>规则四</strong>：为继发肿瘤手术/治疗入院 → 继发肿瘤做主诊断（即使原发存在）</li>
+          <li>原发肿瘤（结肠癌）已切除，本次针对肝转移治疗 → 编继发码 C78.7</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：C78.7   肝继发恶性肿瘤
+附加：  Z85.0   消化器官恶性肿瘤个人史（结肠癌）
+附加：  Z51.1   化疗 encounter（肝动脉灌注化疗）</pre>
+        <p><strong>💡 关键判断链：</strong></p>
+        <ul>
+          <li>入院目的是复查 → 如果一切正常 → Z08</li>
+          <li>发现肝转移 → 住院目的变为治疗转移瘤 → 不用 Z08</li>
+          <li>本次治疗对象是肝转移瘤（非原发结肠癌）→ 继发码 C78.7 做主诊断</li>
+          <li>原发结肠癌已切除 → 编 Z85.0（个人史）做附加</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 肿瘤并发症入院的主诊断选择</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床诊断：<strong>"胃癌IV期伴腹膜转移，重度贫血，入院输血治疗"</strong></p>
+    <p>患者胃癌 IV 期伴腹膜转移，已行 4 周期化疗。近 1 个月出现乏力、心悸，查血红蛋白 <strong>52 g/L</strong>（重度贫血），入院后行输红细胞悬液 4U 治疗，同时给予促红素注射。本次未行抗肿瘤治疗。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？是胃癌、贫血还是 Z51.1（化疗）？请给出完整推理和编码清单。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：D63.0</strong>（肿瘤性疾病引起的贫血）</p>
+        <p><strong>推理过程：</strong></p>
+        <ol>
+          <li>本次住院目的是<strong>治疗贫血</strong>（输血+促红素），未行抗肿瘤治疗</li>
+          <li>贫血的原因是肿瘤（胃癌慢性失血+化疗骨髓抑制）→ 肿瘤性贫血</li>
+          <li>按<strong>规则八</strong>：为肿瘤并发症入院 → 并发症做主诊断</li>
+          <li>贫血是肿瘤的直接并发症 → D63.0（慢性病性贫血/肿瘤性贫血）</li>
+        </ol>
+        <p><strong>✅ 完整编码清单：</strong></p>
+        <pre>主诊断：D63.0   肿瘤性疾病引起的贫血
+附加：  C16.9   胃恶性肿瘤
+附加：  C78.6   腹膜继发恶性肿瘤
+附加：  Z85.0   消化器官恶性肿瘤个人史</pre>
+        <p><strong>💡 关键区分：</strong></p>
+        <ul>
+          <li><strong>如果本次行化疗 + 顺便输血</strong> → 主诊断为 Z51.1（化疗），贫血为附加</li>
+          <li><strong>如果本次仅为治疗贫血（输血），未行化疗</strong> → 主诊断为 D63.0（贫血），肿瘤为附加</li>
+          <li>判断核心：<strong>本次住院的主要治疗方向</strong>是什么？→ 看病历首页的"入院目的"和"主要操作"</li>
+        </ul>
+        <p><strong>💡 编码选择：</strong>D63.0 比 D48.9 更精确——D63.0 专门用于"肿瘤引起的贫血"，而 D48.9 是"性质未特指肿瘤"。如果贫血是化疗引起的骨髓抑制，则应编 D70.x（中性粒细胞减少）或 D69.6（血小板减少）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>九条规则：</strong>按入院目的选主诊断——确诊/手术→肿瘤码，维持治疗→Z51</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>首次 vs 维持：</strong>首次化疗/放疗→肿瘤码做主诊断；维持化疗/放疗→Z51.1/Z51.0</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>化疗期间死亡：</strong>主诊断改回肿瘤码，不是 Z51——规则七覆盖规则六</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>同次放化疗：</strong>维持期同时放化疗→Z51.0（放疗）优先于 Z51.1（化疗）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>原发 vs 继发：</strong>未明原发→继发码；专门治继发→继发码做主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>复查无复发：</strong>Z08 做主诊断，Z85 做附加（个人史）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>复查发现复发：</strong>改用肿瘤码做主诊断，不用 Z08</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肿瘤并发症：</strong>并发症做主诊断（如贫血 D63.0），肿瘤码做附加</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 44 主题：康复科与中医科病案编码</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>康复科住院患者的主诊断应该编什么？是原发疾病还是康复治疗（Z50）？</li>
+    <li>中医科"辨证施治"的诊断如何与 ICD-10 编码对接？中医证候编码如何处理？</li>
+    <li>Z50（康复）与 Z54（恢复期）有什么区别？各自的使用场景是什么？</li>
+    <li>脑血管病后遗症患者入院康复治疗，主诊断编后遗症码还是 Z50？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 43 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>

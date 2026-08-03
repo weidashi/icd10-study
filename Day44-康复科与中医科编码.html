@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 44（2026年8月1日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #059669; --accent-bg: #ecfdf5; --accent-light: #d1fae5;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --teal: #0891b2;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #059669 0%, #0891b2 50%, #0d9488 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #6ee7b7; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #6ee7b7; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #6ee7b7; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #059669, #0891b2);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 44 · 2026年8月1日</div>
+  <h1>♻️ 病案编码学习</h1>
+  <p class="subtitle">今日主题：康复科与中医科病案编码 —— Z50/Z54 主诊断选择与中医双编码体系</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:73.3%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 44 / 60 天（73.3%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">康复科与中医科是病案编码中的"特殊地带"——它们不像内外科以疾病本身为主诊断，而是围绕"住院目的"展开编码决策。今天需要掌握康复三大规则、Z50/Z54 编码家族、以及中医双编码体系：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心编码规则，考试和实战高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>康复科主诊断选择三大规则——术后功能康复/并发症康复/后遗症康复的分界</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z50 康复治疗编码家族（Z50.0-Z50.9）各亚目的精准匹配</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>Z50 vs Z51 vs Z54 三者的本质区别——"治疗"vs"医疗"vs"恢复期"</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>"术后"诊断陷阱——根据实际住院目的拆分编码的四种场景</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>医保允许作为主诊断的 Z 编码白名单（Z51.1/Z51.0/Z47.0/Z38.x）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>Z54 恢复期编码家族（Z54.0-Z54.9）与 Z50 的使用场景差异</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>后遗症编码规则——G81.9 偏瘫做主诊断、I69.3 脑梗死后遗症做附加</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>中医病名与证候名的"双编码"填报要求（95国标）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>中医操作编码（针刺/艾灸/推拿/拔罐/刮痧）的 ICD-9-CM-3 对应</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>中医"95国标"6位编码的结构（数字+字母混合）与分类逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>Z96.6（人工髋关节）等植入物状态编码在康复病案中的附加填报</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>心脏康复（Z50.0）与心肺手术后恢复期（Z54.0）的编码路径差异</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>康复科编码的核心不是"编什么病"，而是"为什么住院"——住院目的决定主诊断方向。今天的学习重点是建立"先问目的、再定编码"的思维本能，并牢记 Z50（康复治疗）、Z51（专项医疗）、Z54（恢复期）三条平行线的边界。中医部分则要理解"病名+证候"双编码的独特体系。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、康复科编码体系总览 —— 为什么"住院目的"比"疾病本身"更重要？</h2>
+
+<h3>1.1 康复科病案的特殊性</h3>
+<p>与普通专科不同，康复科患者入院时<strong>原发疾病往往已经治疗完毕</strong>（如骨折已手术、脑梗已度过急性期），本次住院的核心目的是<strong>功能恢复</strong>而非疾病治疗。这就产生了一个根本性的编码问题：主诊断到底编"原来的病"还是编"康复治疗"？</p>
+
+<p>答案取决于<strong>三个因素</strong>的组合判断：原病是否已治疗 → 是否有并发症 → 住院目的是功能恢复还是并发症处理。由此衍生出康复编码的<strong>三大核心规则</strong>。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">规则1</div>
+    <div class="stat-label">术后功能康复</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">Z50 做主诊断</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">规则2</div>
+    <div class="stat-label">并发症康复</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">并发症做主诊断</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">规则3</div>
+    <div class="stat-label">后遗症康复</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">临床表现做主诊断</div>
+  </div>
+</div>
+
+<h3>1.2 Z 编码在康复科的三大家族</h3>
+<p>康复科编码涉及三个容易混淆的 Z 编码家族，它们虽然都与"非疾病状态"有关，但<strong>编码角色和使用场景截然不同</strong>：</p>
+
+<table>
+  <tr><th>编码家族</th><th>核心含义</th><th>编码角色</th><th>典型场景</th></tr>
+  <tr>
+    <td><code>Z50</code></td>
+    <td><strong>康复治疗</strong>（主动治疗干预）</td>
+    <td>可做主诊断（条件满足时）</td>
+    <td>物理治疗、言语训练、心脏康复</td>
+  </tr>
+  <tr>
+    <td><code>Z51</code></td>
+    <td><strong>专项医疗</strong>（特定治疗手段）</td>
+    <td>部分可做主诊断（医保白名单）</td>
+    <td>化疗 Z51.1、放疗 Z51.0</td>
+  </tr>
+  <tr>
+    <td><code>Z54</code></td>
+    <td><strong>恢复期</strong>（治疗后休养阶段）</td>
+    <td>通常为附加诊断</td>
+    <td>术后恢复期、骨折后恢复期</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 核心易混点：</strong>Z50 是"正在做康复治疗"，Z54 是"治疗做完在恢复"，Z51 是"来做某种专项医疗"。三者<strong>不可互换</strong>——一个患者入院做物理治疗用 Z50.1，入院术后休养用 Z54.0，入院做化疗用 Z51.1，路径完全不同。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🔬</span> 二、康复编码三大规则 —— 主诊断决策的核心逻辑</h2>
+
+<p>以下三条规则是康复科编码的"宪法"，所有康复科病案的主诊断选择都必须从这三条规则中找到对应路径：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>规则一：原病已手术，入院做功能康复 → 康复治疗做主诊断</h4>
+      <p><strong>适用场景：</strong>原发疾病已经通过手术或其他方式治疗完毕（如人工髋关节置换术后、骨折内固定术后），患者本次入院<strong>仅为功能恢复性康复治疗</strong>，无新的并发症。</p>
+      <p><strong>编码规则：</strong>以康复治疗编码（<code>Z50.1</code> 物理治疗）<strong>作为主要诊断</strong>，原发疾病/手术状态作为<strong>附加诊断</strong>。</p>
+      <p><strong>示例：</strong>人工髋关节置换术后入院康复 → 主诊断 <code>Z50.1</code>（物理治疗），附加 <code>Z96.6</code>（人工髋关节植入状态）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>规则二：原病治疗后出现并发症，入院处理并发症 → 并发症做主诊断</h4>
+      <p><strong>适用场景：</strong>原发疾病已治疗，但<strong>出现了并发症</strong>（如术后关节僵硬、术后感染、植入物相关并发症），患者本次入院是为了处理这些并发症。</p>
+      <p><strong>编码规则：</strong>以<strong>并发症本身作为主要诊断</strong>，<strong>不再使用 Z50 康复编码</strong>。原发疾病/手术状态作为附加诊断。</p>
+      <p><strong>关键区别：</strong>本规则下住院目的是"治并发症"而非"做康复"，所以不走 Z50 路线。例如膝关节置换术后僵硬入院松解 → 主诊断编关节僵硬（M25.6），不编 Z50.1。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>规则三：疾病后遗症入院康复 → 临床表现做主诊断</h4>
+      <p><strong>适用场景：</strong>原发疾病已进入<strong>后遗症期</strong>（如脑梗死后偏瘫、脊髓损伤后截瘫），患者入院做康复治疗。</p>
+      <p><strong>编码规则：</strong>以后遗症的<strong>临床表现作为主要诊断</strong>，原发疾病的后遗症编码作为附加诊断。</p>
+      <p><strong>示例：</strong>脑梗死后遗症偏瘫入院康复 → 主诊断 <code>G81.9</code>（偏瘫），附加 <code>I69.3</code>（脑梗死后遗症）</p>
+      <p><strong>推理依据：</strong>后遗症期原发病已稳定，本次住院治疗的核心对象是"偏瘫"这个临床表现，而非"脑梗死"本身。编偏瘫才能准确反映康复治疗的方向和资源消耗。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.1 三大规则的决策流程图</h3>
+
+<div class="flow-chart">
+  <p style="font-weight:700;margin-bottom:14px;color:var(--accent);">康复科病案主诊断决策树</p>
+  <div class="flow-row">
+    <div class="flow-box">患者入院</div>
+    <span>→</span>
+    <div class="flow-box">原病是否已治疗？</div>
+  </div>
+  <div class="flow-row" style="margin-top:10px;">
+    <div class="flow-box" style="border-color:var(--accent);background:var(--accent-bg);">已治疗 · 无并发症</div>
+    <span>→</span>
+    <div class="flow-box">规则1：Z50.1 做主诊断</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:var(--red);background:var(--red-bg);">已治疗 · 有并发症</div>
+    <span>→</span>
+    <div class="flow-box warn-step">规则2：并发症做主诊断</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-box" style="border-color:var(--purple);background:#f5f3ff;">后遗症期</div>
+    <span>→</span>
+    <div class="flow-box" style="border-color:var(--purple);">规则3：临床表现做主诊断</div>
+  </div>
+</div>
+
+<h3>2.2 三大规则对比实战</h3>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 规则1正确应用</h4>
+    <p><strong>情境：</strong>髋关节置换术后2周，伤口愈合良好，入院做步态训练和肌力恢复</p>
+    <p><strong>主诊断：</strong><code>Z50.1</code> 物理治疗</p>
+    <p><strong>附加：</strong><code>Z96.6</code> 人工髋关节植入状态</p>
+    <p style="color:var(--green);margin-top:6px;">无并发症，纯功能康复 → Z50 做主诊断</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>❌ 规则2误用Z50</h4>
+    <p><strong>情境：</strong>膝关节置换术后3月，关节僵硬活动受限，入院行手法松解</p>
+    <p><strong>错误主诊断：</strong><code>Z50.1</code> 物理治疗</p>
+    <p><strong>正确主诊断：</strong><code>M25.6</code> 关节僵硬</p>
+    <p style="color:var(--red);margin-top:6px;">有并发症（关节僵硬）→ 不编 Z50，编并发症</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">📋</span> 三、Z50 康复治疗编码家族 —— 10个亚目精准匹配</h2>
+
+<p>Z50 类目涵盖所有"康复治疗"场景，是康复科最常用的主诊断编码范围。每个亚目对应一种特定的康复治疗类型，<strong>必须精准匹配</strong>，不能笼统使用 Z50.9：</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>适用场景</th><th>使用频率</th></tr>
+  <tr>
+    <td><code>Z50.0</code></td>
+    <td><strong>心脏康复</strong></td>
+    <td>心脏手术/心梗后的心脏功能康复训练</td>
+    <td>心脏康复科常用</td>
+  </tr>
+  <tr>
+    <td><code>Z50.1</code></td>
+    <td><strong>其他物理治疗</strong>（治疗性和矫正性锻炼）</td>
+    <td>骨科术后康复、神经康复、运动功能训练</td>
+    <td><strong>最高频</strong>，康复科主力编码</td>
+  </tr>
+  <tr>
+    <td><code>Z50.2</code></td>
+    <td>酒精滥用康复</td>
+    <td>酒精依赖的康复治疗</td>
+    <td>精神科/戒酒中心</td>
+  </tr>
+  <tr>
+    <td><code>Z50.3</code></td>
+    <td>药物滥用康复</td>
+    <td>药物依赖的康复治疗</td>
+    <td>精神科/戒毒中心</td>
+  </tr>
+  <tr>
+    <td><code>Z50.4</code></td>
+    <td>精神疗法 NEC</td>
+    <td>心理治疗性康复</td>
+    <td>精神科</td>
+  </tr>
+  <tr>
+    <td><code>Z50.5</code></td>
+    <td><strong>言语治疗</strong></td>
+    <td>失语症、构音障碍、儿童语言发育迟缓训练</td>
+    <td>言语康复科常用</td>
+  </tr>
+  <tr>
+    <td><code>Z50.6</code></td>
+    <td>斜视训练（正位视训练）</td>
+    <td>斜视非手术矫正训练</td>
+    <td>眼科</td>
+  </tr>
+  <tr>
+    <td><code>Z50.7</code></td>
+    <td><strong>职业治疗和职业康复</strong></td>
+    <td>日常生活能力训练、职业技能恢复</td>
+    <td>职业康复科</td>
+  </tr>
+  <tr>
+    <td><code>Z50.8</code></td>
+    <td>其他康复操作</td>
+    <td>上述未涵盖的特异性康复</td>
+    <td>较少使用</td>
+  </tr>
+  <tr>
+    <td><code>Z50.9</code></td>
+    <td><strong>未特指的康复</strong>（NOS）</td>
+    <td>康复类型不明确时的兜底编码</td>
+    <td><strong style="color:var(--red);">应尽量避免</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ Z50.9 使用警示：</strong>"未特指"编码（NOS）是编码质量的扣分项。如果病案中使用了 Z50.9，编码质控会要求回查病历，确认具体康复类型后改为 Z50.0-Z50.8 中的特指编码。<strong>只要病历中有任何康复类型的描述，就不能用 Z50.9。</strong>
+</div>
+
+<h3>3.1 Z50.1 —— 康复科"王牌编码"的使用要点</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>骨科术后康复</h4>
+    <p>髋/膝置换术后、骨折内固定术后</p>
+    <p>主诊断：<code>Z50.1</code></p>
+    <p>附加：Z96.6/Z96.7（植入物状态）</p>
+  </div>
+  <div class="example-item">
+    <h4>神经系统康复</h4>
+    <p>脑卒中后运动功能训练（非后遗症期）</p>
+    <p>主诊断：<code>Z50.1</code></p>
+    <p>附加：原发疾病编码</p>
+  </div>
+  <div class="example-item">
+    <h4>呼吸功能康复</h4>
+    <p>COPD、肺手术后呼吸训练</p>
+    <p>主诊断：<code>Z50.1</code></p>
+    <p>注意：心脏康复用 Z50.0，不走此码</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 Z50.1 vs Z50.0 的分界：</strong>心脏康复（Z50.0）是<strong>专指心脏功能</strong>的康复训练，通常在心脏康复科进行；而 Z50.1（物理治疗）是<strong>通用性运动功能康复</strong>，涵盖骨科、神经、呼吸等。如果患者既有心脏问题又做全身运动训练，以主要治疗方向为准。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">📆</span> 四、Z54 恢复期编码家族 —— 与 Z50 的关键区别</h2>
+
+<p>Z54 类目描述的是<strong>治疗完成后的恢复期</strong>状态，它与 Z50 的本质区别在于：Z50 是"正在接受康复治疗"，Z54 是"治疗已完成进入恢复阶段"。两者不可混用。</p>
+
+<table>
+  <tr><th>编码</th><th>名称</th><th>适用场景</th><th>与Z50的区别</th></tr>
+  <tr>
+    <td><code>Z54.0</code></td>
+    <td><strong>手术后恢复期</strong></td>
+    <td>各类手术后的一般性恢复</td>
+    <td>Z50.1 是做物理治疗，Z54.0 是术后休养</td>
+  </tr>
+  <tr>
+    <td><code>Z54.1</code></td>
+    <td>放射治疗后恢复期</td>
+    <td>放疗疗程结束后的恢复</td>
+    <td>放疗本身用 Z51.0，恢复用 Z54.1</td>
+  </tr>
+  <tr>
+    <td><code>Z54.2</code></td>
+    <td>化学治疗后恢复期</td>
+    <td>化疗疗程结束后的恢复</td>
+    <td>化疗本身用 Z51.1，恢复用 Z54.2</td>
+  </tr>
+  <tr>
+    <td><code>Z54.3</code></td>
+    <td>精神治疗后恢复期</td>
+    <td>精神治疗后的恢复阶段</td>
+    <td>精神治疗用 Z50.4，恢复用 Z54.3</td>
+  </tr>
+  <tr>
+    <td><code>Z54.4</code></td>
+    <td><strong>骨折治疗后恢复期</strong></td>
+    <td>骨折固定治疗后的恢复</td>
+    <td>骨折康复训练用 Z50.1，恢复用 Z54.4</td>
+  </tr>
+  <tr>
+    <td><code>Z54.7</code></td>
+    <td>联合治疗后恢复期</td>
+    <td>多种治疗方式（如手术+放化疗）后的恢复</td>
+    <td>多种治疗叠加时使用</td>
+  </tr>
+  <tr>
+    <td><code>Z54.8</code></td>
+    <td>其他治疗后恢复期</td>
+    <td>上述未涵盖的治疗后恢复</td>
+    <td>兜底编码</td>
+  </tr>
+  <tr>
+    <td><code>Z54.9</code></td>
+    <td>未特指治疗后恢复期</td>
+    <td>恢复期但治疗类型不明</td>
+    <td><strong style="color:var(--red);">应避免使用</strong></td>
+  </tr>
+</table>
+
+<h3>4.1 Z50 vs Z51 vs Z54 —— 三者终极对比</h3>
+
+<p>这是康复科和肿瘤科编码中最容易混淆的三个 Z 编码家族，必须建立清晰的区分框架：</p>
+
+<table class="matrix-table">
+  <tr><th>对比维度</th><th>Z50（康复治疗）</th><th>Z51（专项医疗）</th><th>Z54（恢复期）</th></tr>
+  <tr>
+    <td>核心含义</td>
+    <td>"正在做康复训练"</td>
+    <td>"来做某种专项治疗"</td>
+    <td>"治疗做完在恢复"</td>
+  </tr>
+  <tr>
+    <td>住院目的</td>
+    <td>功能恢复训练</td>
+    <td>接受化疗/放疗等</td>
+    <td>术后/治疗后休养</td>
+  </tr>
+  <tr>
+    <td>是否在治疗</td>
+    <td>✅ 正在接受康复治疗</td>
+    <td>✅ 正在接受专项治疗</td>
+    <td>❓ 治疗已结束，在恢复</td>
+  </tr>
+  <tr>
+    <td>典型编码</td>
+    <td>Z50.1 物理治疗</td>
+    <td>Z51.1 化疗 / Z51.0 放疗</td>
+    <td>Z54.0 术后恢复 / Z54.2 化疗后恢复</td>
+  </tr>
+  <tr>
+    <td>主诊断资格</td>
+    <td>条件满足可做主诊断</td>
+    <td><strong>仅 Z51.1/Z51.0 可做主诊断</strong></td>
+    <td>通常做附加诊断</td>
+  </tr>
+</table>
+
+<div class="card tip">
+  <strong>记忆口诀：</strong>"50在治疗，51来做治，54已治完"——Z50 和 Z51 都是在"做"（治疗中），Z54 是"做完"（恢复中）。Z50 做的是康复训练，Z51 做的是化疗放疗等专项医疗。<strong>一字之差，编码路径完全不同。</strong>
+</div>
+
+<h3>4.2 医保 Z 编码主诊断白名单</h3>
+
+<div class="card warn">
+  <strong>⚠️ 医保重点规则：</strong>并非所有 Z 编码都能作为主诊断填报医保。根据医保结算规范，<strong>仅以下 Z 编码被明确允许作为主诊断</strong>：
+  <ul style="margin-top:10px;">
+    <li><code>Z51.1</code> 肿瘤化疗（住院化疗时做主诊断）</li>
+    <li><code>Z51.0</code> 肿瘤放疗（住院放疗时做主诊断）</li>
+    <li><code>Z47.0</code> 骨折随访/拆除固定物（住院取内固定时做主诊断）</li>
+    <li><code>Z38.x</code> 出生（新生儿住院时做主诊断）</li>
+  </ul>
+  <p style="margin-top:8px;"><strong>注意：</strong>Z50 系列虽然在临床编码规范中可以作为康复科主诊断，但在<strong>部分地区医保审核中可能遇到限制</strong>，编码时需结合本地区医保政策确认。Z54 系列<strong>原则上不做主诊断</strong>，作为附加诊断使用。</p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🪤</span> 五、"术后"诊断陷阱 —— 临床最常见、编码最容易出错</h2>
+
+<h3>5.1 问题描述</h3>
+<p>临床医生在书写诊断时，经常写"<strong>某某术后</strong>"作为诊断，例如"髋关节置换术后""阑尾切除术后""心脏搭桥术后"。这种写法在临床上或许可以理解，但在病案编码中<strong>是无效诊断</strong>——"术后"过于笼统，没有说明本次住院的实际目的。</p>
+
+<div class="card warn">
+  <strong>⚠️ 核心原则：</strong>"术后"<strong>永远不能作为独立的诊断编码</strong>。编码员必须根据病历记录确定患者本次入院的真实目的，然后选择对应的编码。<strong>同一个"术后"患者，因住院目的不同，编码完全不同。</strong>
+</div>
+
+<h3>5.2 "术后"诊断的四种拆分场景</h3>
+
+<div class="process-box">
+  <p style="font-weight:700;margin-bottom:12px;">遇到"术后"诊断时，编码员必须逐一排查以下四种可能：</p>
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>场景一：术后并发症 → 编并发症</h4>
+      <p>患者因手术<strong>出现的并发症</strong>入院处理（如术后感染、出血、粘连、植入物松动）</p>
+      <p><strong>编码：</strong>以并发症本身做主诊断，不编"术后"</p>
+      <p><strong>例：</strong>"阑尾切除术后"入院因切口感染 → 主诊断 <code>T81.4</code>（术后感染）</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>场景二：术后复查 → Z09.0</h4>
+      <p>患者手术恢复良好，本次入院仅为<strong>常规术后复查</strong>（体检、影像检查）</p>
+      <p><strong>编码：</strong><code>Z09.0</code>（手术后随访检查）做主诊断</p>
+      <p><strong>例：</strong>"甲状腺切除术后"入院复查 → 主诊断 <code>Z09.0</code></p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>场景三：术后恢复 → Z54.0</h4>
+      <p>患者手术刚完成，本次入院是<strong>术后恢复期休养</strong>（非主动康复训练）</p>
+      <p><strong>编码：</strong><code>Z54.0</code>（手术后恢复期）做主诊断</p>
+      <p><strong>例：</strong>"心脏搭桥术后"入院恢复 → 主诊断 <code>Z54.0</code></p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>场景四：术后康复 → Z50.1</h4>
+      <p>患者术后为<strong>功能恢复而接受主动康复训练</strong>（物理治疗、运动训练）</p>
+      <p><strong>编码：</strong><code>Z50.1</code>（物理治疗）做主诊断</p>
+      <p><strong>例：</strong>"髋关节置换术后"入院做步态训练 → 主诊断 <code>Z50.1</code></p>
+    </div>
+  </div>
+</div>
+
+<h3>5.3 同一"术后"诊断，四种编码结果</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 笼统编码</h4>
+    <p>临床诊断："髋关节置换术后"</p>
+    <p>编码员直接编 <code>Z96.6</code>（人工髋关节植入状态）做主诊断</p>
+    <p style="color:var(--red);margin-top:8px;"><strong>问题：</strong>没有反映住院目的，Z96.6 是状态码，不应做主诊断</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 按目的拆分</h4>
+    <p>同一"髋关节置换术后"患者：</p>
+    <p>· 入院做康复训练 → <code>Z50.1</code></p>
+    <p>· 入院因假体松动 → <code>T84.0</code>（植入物并发症）</p>
+    <p>· 入院常规复查 → <code>Z09.0</code></p>
+    <p>· 入院恢复休养 → <code>Z54.0</code></p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 编码员实操建议：</strong>看到"术后"诊断时，第一步<strong>不要急着编码</strong>，而是翻阅入院记录、首次病程、手术记录，确认三个问题：①原手术是什么？②本次入院做什么（治疗/复查/康复/恢复）？③有无并发症？确认后再选择编码路径。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六 ======== -->
+<h2><span class="icon">🌿</span> 六、中医科编码体系 —— "95国标"双编码与操作编码</h2>
+
+<h3>6.1 中医诊断的双编码体系</h3>
+<p>中医科病案与西医病案最大的区别在于诊断采用<strong>"病名+证候"双编码</strong>体系。中医诊断编码遵循<strong>"95国标"</strong>（即《中医病证分类与代码》1995年版），编码结构为6位字符（数字与字母混合）：</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">病名</div>
+    <div class="stat-label">中医病名编码</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">95国标6位码</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">证候</div>
+    <div class="stat-label">中医证候编码</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">95国标6位码</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">操作</div>
+    <div class="stat-label">中医操作编码</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">ICD-9-CM-3</div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>中医诊断双编码示例：</strong>
+  <ul style="margin-top:8px;">
+    <li><strong>中医病名：</strong>项痹（颈椎病）→ 95国标病名编码</li>
+    <li><strong>中医证候：</strong>气滞血瘀证 → 95国标证候编码</li>
+    <li><strong>西医诊断：</strong>颈椎病 → ICD-10 编码 <code>M47.9</code></li>
+  </ul>
+  <p style="margin-top:8px;">中医科病案首页通常需要<strong>同时填报中医诊断（病名+证候）和西医诊断（ICD-10）</strong>，两套编码体系并行。</p>
+</div>
+
+<h3>6.2 常见中医病名与对应西医疾病</h3>
+
+<table>
+  <tr><th>中医病名</th><th>对应西医疾病</th><th>ICD-10编码</th><th>常见证候</th></tr>
+  <tr>
+    <td><strong>项痹</strong></td>
+    <td>颈椎病</td>
+    <td><code>M47.9</code></td>
+    <td>气滞血瘀证、风寒湿痹证</td>
+  </tr>
+  <tr>
+    <td><strong>腰痹</strong></td>
+    <td>腰椎间盘突出/腰肌劳损</td>
+    <td><code>M54.5</code></td>
+    <td>肾虚证、湿热证</td>
+  </tr>
+  <tr>
+    <td><strong>中风</strong>（恢复期/后遗症期）</td>
+    <td>脑卒中</td>
+    <td><code>I69.3</code>（脑梗死后遗症）</td>
+    <td>气虚血瘀证、肝肾阴虚证</td>
+  </tr>
+  <tr>
+    <td><strong>肩凝症</strong>（五十肩）</td>
+    <td>肩关节周围炎</td>
+    <td><code>M75.0</code></td>
+    <td>风寒湿证、瘀血证</td>
+  </tr>
+  <tr>
+    <td><strong>面瘫</strong></td>
+    <td>面神经麻痹</td>
+    <td><code>G51.0</code></td>
+    <td>风邪入络证</td>
+  </tr>
+  <tr>
+    <td><strong>不寐</strong></td>
+    <td>失眠</td>
+    <td><code>G47.0</code></td>
+    <td>心脾两虚证、肝郁化火证</td>
+  </tr>
+</table>
+
+<h3>6.3 中医操作编码（ICD-9-CM-3）</h3>
+<p>中医操作（针刺、艾灸、推拿等）使用 <strong>ICD-9-CM-3 手术操作编码</strong>填报，与中医诊断编码并行。常见中医操作及编码如下：</p>
+
+<table>
+  <tr><th>中医操作</th><th>描述</th><th>ICD-9-CM-3 编码</th><th>临床应用</th></tr>
+  <tr>
+    <td><strong>针刺</strong>（毫针）</td>
+    <td>毫针针刺穴位</td>
+    <td><code>93.31</code></td>
+    <td>疼痛性疾病、神经功能障碍</td>
+  </tr>
+  <tr>
+    <td><strong>电针</strong></td>
+    <td>针刺通微电流刺激</td>
+    <td><code>93.32</code></td>
+    <td>顽固性疼痛、肌肉痉挛</td>
+  </tr>
+  <tr>
+    <td><strong>艾灸</strong></td>
+    <td>艾条/艾柱灸法</td>
+    <td><code>93.34</code></td>
+    <td>虚寒证、温通经络</td>
+  </tr>
+  <tr>
+    <td><strong>推拿</strong></td>
+    <td>手法推拿按摩</td>
+    <td><code>93.33</code></td>
+    <td>软组织损伤、关节功能障</td>
+  </tr>
+  <tr>
+    <td><strong>拔罐</strong></td>
+    <td>拔罐疗法</td>
+    <td><code>93.35</code></td>
+    <td>瘀血、风寒湿证</td>
+  </tr>
+  <tr>
+    <td><strong>刮痧</strong></td>
+    <td>刮痧疗法</td>
+    <td><code>93.39</code></td>
+    <td>外感风寒、暑湿</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 中医操作编码注意事项：</strong>
+  <ol style="margin-top:8px;">
+    <li>一次住院中多种中医操作（如针刺+艾灸+推拿）应<strong>分别编码</strong>，不能合并</li>
+    <li>中医操作编码使用 ICD-9-CM-3（与西医手术同卷），<strong>不用</strong> 95国标编码操作部分</li>
+    <li>操作编码的部位、术式等信息需从病程记录中提取，不能仅凭操作名称编码</li>
+  </ol>
+</div>
+
+<h3>6.4 中医科病案编码完整结构</h3>
+
+<pre>中医科病案首页编码结构示例：
+
+【诊断部分】
+  中医病名：项痹                    → 95国标病名编码（6位）
+  中医证候：气滞血瘀证              → 95国标证候编码（6位）
+  西医诊断：颈椎病                  → ICD-10: M47.9（主诊断）
+             颈椎间盘突出            → ICD-10: M50.1（附加）
+
+【操作部分】
+  1. 毫针针刺（颈肩部穴位）         → ICD-9-CM-3: 93.31
+  2. 艾灸（大椎、肩井穴）           → ICD-9-CM-3: 93.34
+  3. 推拿（颈肩部手法治疗）         → ICD-9-CM-3: 93.33</pre>
+
+<div class="note">
+  <strong>💡 中医编码关键点：</strong>中医科病案的主诊断仍然使用 <strong>ICD-10 西医诊断编码</strong>做主诊断（医保结算依据），中医病名和证候编码作为<strong>附加信息</strong>填报。这意味着编码员既要懂西医 ICD-10，又要熟悉中医病名与西医疾病的对应关系。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 七 ======== -->
+<h2><span class="icon">💡</span> 七、重难点深度解析：后遗症康复为什么"临床表现"做主诊断？</h2>
+
+<h3>7.1 场景设定</h3>
+<p>脑梗死患者发病后6个月，遗留<strong>右侧偏瘫</strong>，本次入院康复科做肢体功能训练。临床诊断写"脑梗死后遗症"。</p>
+<p>问题：主诊断应该编"脑梗死后遗症"（I69.3）还是"偏瘫"（G81.9）？</p>
+
+<h3>7.2 后遗症编码的特殊逻辑</h3>
+
+<table>
+  <tr><th>为什么后遗症期用临床表现做主诊断？</th><th>依据</th></tr>
+  <tr>
+    <td>① <strong>原发病已无活动性</strong></td>
+    <td>脑梗死发病6个月后已进入后遗症期，梗死灶稳定，不存在"活动性脑梗死"需要治疗</td>
+  </tr>
+  <tr>
+    <td>② <strong>本次治疗对象是"偏瘫"</strong></td>
+    <td>康复训练针对的是偏瘫肢体的运动功能恢复，而非脑梗死本身的溶栓/抗凝治疗</td>
+  </tr>
+  <tr>
+    <td>③ <strong>DRG分组需要反映资源消耗</strong></td>
+    <td>偏瘫康复（G81.9）的 DRG 权重与脑梗死治疗（I63.9）不同，用偏瘫做主诊断才能正确分组</td>
+  </tr>
+  <tr>
+    <td>④ <strong>ICD-10 后遗症编码规则</strong></td>
+    <td>ICD-10 规定后遗症期优先编临床表现，原发疾病的后遗症编码（I69.x）作为附加</td>
+  </tr>
+</table>
+
+<h3>7.3 决策对比</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 用原发病后遗症做主诊断</h4>
+    <p>主诊断：<code>I69.3</code> 脑梗死后遗症</p>
+    <p>附加：G81.9 偏瘫</p>
+    <p style="color:var(--red);margin-top:8px;"><strong>问题：</strong>没有反映本次住院的核心治疗对象（偏瘫康复），DRG 可能入到脑血管病后遗症组，与实际康复治疗资源消耗不匹配</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 用临床表现做主诊断</h4>
+    <p>主诊断：<code>G81.9</code> 偏瘫</p>
+    <p>附加：<code>I69.3</code> 脑梗死后遗症</p>
+    <p style="color:var(--green);margin-top:8px;"><strong>优势：</strong>主诊断反映康复治疗的核心对象，DRG 正确入组康复相关分组，准确体现资源消耗</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 后遗症编码通用规则：</strong>
+  <ol style="margin-top:8px;">
+    <li>后遗症的临床表现（如偏瘫 G81.9、截瘫 G82.9、失语 F80.0）<strong>做主诊断</strong></li>
+    <li>原发疾病的后遗症编码（如 I69.3 脑梗死后遗症、T90.x 头部损伤后遗症）<strong>做附加诊断</strong></li>
+    <li>此规则适用于所有后遗症期康复：脊髓损伤后截瘫、脑外伤后认知障碍、骨折后关节僵硬等</li>
+  </ol>
+  <p style="margin-top:8px;"><strong>注意：</strong>后遗症期与急性期/恢复期的分界至关重要。脑梗死后遗症通常指发病<strong>6个月以上</strong>神经系统功能稳定后，6个月以内仍可能属于恢复期，编码路径不同。</p>
+</div>
+
+<h3>7.4 后遗症康复常见编码对照</h3>
+
+<table>
+  <tr><th>原发疾病</th><th>后遗症编码（附加）</th><th>临床表现（主诊断）</th><th>场景</th></tr>
+  <tr>
+    <td>脑梗死</td>
+    <td><code>I69.3</code></td>
+    <td><code>G81.9</code> 偏瘫</td>
+    <td>偏瘫肢体康复训练</td>
+  </tr>
+  <tr>
+    <td>脑出血</td>
+    <td><code>I69.1</code></td>
+    <td><code>G81.9</code> 偏瘫</td>
+    <td>偏瘫康复训练</td>
+  </tr>
+  <tr>
+    <td>脊髓损伤</td>
+    <td><code>T91.1</code></td>
+    <td><code>G82.9</code> 截瘫</td>
+    <td>截瘫康复训练</td>
+  </tr>
+  <tr>
+    <td>脑外伤</td>
+    <td><code>T90.9</code></td>
+    <td><code>F07.9</code> 脑外伤后综合征</td>
+    <td>认知功能康复</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 八、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 八、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，中间2题为进阶题，后2题为挑战题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 髋关节置换术后康复（规则1）</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男，68岁。<strong>3周前行右侧人工髋关节置换术</strong>，手术顺利，伤口已愈合。本次入院康复科，行步态训练、髋周肌力训练、平衡训练，无并发症。</p>
+    <p><strong>问题：</strong>主诊断应该编什么？附加诊断有哪些？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 规则适用：</strong>规则一——原病已手术，入院做功能康复。</p>
+        <p><strong>✅ 主诊断：</strong><code>Z50.1</code>（其他物理治疗）——患者本次入院目的是功能恢复性康复训练，符合规则一。</p>
+        <p><strong>✅ 附加诊断：</strong></p>
+        <ul>
+          <li><code>Z96.6</code>（人工髋关节植入状态）——反映原手术状态</li>
+          <li><code>M16.1</code>（原发性髋关节病）——原发疾病（可选，部分地区要求填报）</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>💡 关键点：</strong>原手术已完成、伤口已愈合、无并发症 → 符合规则一的"纯功能康复"场景。Z50.1 做主诊断，Z96.6 反映植入物状态。</p>
+        <p><strong>💡 注意区分：</strong>如果该患者是术后1周伤口未愈即转康复科，且伤口有渗液感染，则应走规则二——编并发症（感染），不编 Z50.1。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 脑梗死后遗症偏瘫康复（规则3）</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女，72岁。<strong>8个月前发生脑梗死</strong>，经治疗后病情稳定，遗留<strong>左侧偏瘫</strong>。本次入院康复科做肢体功能训练和日常生活能力训练。</p>
+    <p><strong>问题：</strong>主诊断应该编偏瘫还是脑梗死后遗症？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 规则适用：</strong>规则三——疾病后遗症入院康复。</p>
+        <p><strong>✅ 主诊断：</strong><code>G81.9</code>（偏瘫）——后遗症的临床表现做主诊断。</p>
+        <p><strong>✅ 附加诊断：</strong><code>I69.3</code>（脑梗死后遗症）——原发疾病的后遗症编码做附加。</p>
+        <p><strong>✅ 推理过程：</strong></p>
+        <ol>
+          <li>脑梗死发病8个月，已过急性期和恢复期，进入<strong>后遗症期</strong></li>
+          <li>本次住院治疗的核心对象是"偏瘫"（肢体功能训练），而非脑梗死本身</li>
+          <li>ICD-10 后遗症编码规则：临床表现做主诊断，原发病后遗症编码做附加</li>
+          <li>用 G81.9 做主诊断能正确反映康复治疗的 DRG 分组</li>
+        </ol>
+        <p style="margin-top:8px;"><strong>💡 注意：</strong>如果编 I69.3 做主诊断，DRG 可能入到脑血管病后遗症组，而非康复治疗组，导致分组与实际资源消耗不匹配。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 膝关节置换术后僵硬（规则2）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男，65岁。<strong>3个月前行左侧人工膝关节置换术</strong>。术后出现<strong>膝关节僵硬</strong>，活动度仅45°，影响行走。本次入院行手法松解+康复训练。</p>
+    <p><strong>问题：</strong>主诊断应该编 Z50.1（物理治疗）还是 M25.6（关节僵硬）？请说明理由。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 规则适用：</strong>规则二——原病治疗后出现并发症，入院处理并发症。</p>
+        <p><strong>✅ 主诊断：</strong><code>M25.6</code>（关节僵硬）——<strong>不编 Z50.1</strong>。</p>
+        <p><strong>✅ 附加诊断：</strong></p>
+        <ul>
+          <li><code>Z96.7</code>（人工膝关节植入状态）</li>
+          <li><code>M17.1</code>（原发性膝关节病）——原发疾病</li>
+        </ul>
+        <p><strong>✅ 推理过程：</strong></p>
+        <ol>
+          <li>原病（膝关节病）已手术置换，但术后<strong>出现了并发症——关节僵硬</strong></li>
+          <li>本次入院不仅做康复训练，还做了<strong>手法松解</strong>（治疗并发症的操作）</li>
+          <li>规则二明确：有并发症时，以并发症做主诊断，<strong>不再使用 Z50 编码</strong></li>
+          <li>住院目的是"治并发症"而非"纯功能康复"</li>
+        </ol>
+        <p style="margin-top:8px;"><strong>💡 规则1 vs 规则2 的分界：</strong>关键看有无并发症。无并发症+纯功能训练 → Z50.1；有并发症+处理并发症 → 编并发症。本例关节僵硬是并发症，所以走规则二。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 心脏手术后心脏康复</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者男，58岁。<strong>1个月前行冠状动脉搭桥手术</strong>，恢复良好。本次入院心脏康复科，行<strong>心肺功能评估+有氧训练+心脏康复训练</strong>，无并发症。</p>
+    <p><strong>问题：</strong>主诊断应该编 Z50.0（心脏康复）还是 Z50.1（物理治疗）还是 Z54.0（术后恢复期）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>Z50.0</code>（心脏康复）——<strong>不是</strong> Z50.1，也<strong不是</strong> Z54.0。</p>
+        <p><strong>✅ 附加诊断：</strong></p>
+        <ul>
+          <li><code>Z95.1</code>（主动脉冠状动脉搭桥术后状态）</li>
+          <li><code>I25.1</code>（冠状动脉粥样硬化性心脏病）——原发疾病</li>
+        </ul>
+        <p><strong>✅ 三个编码的区分：</strong></p>
+        <ul>
+          <li><strong>Z50.0（心脏康复）✅：</strong>患者入院做的是<strong>专业心脏康复训练</strong>（心肺功能评估+有氧训练），这是 Z50.0 的精准匹配场景</li>
+          <li><strong>Z50.1（物理治疗）❌：</strong>Z50.1 是通用物理治疗，心脏康复有专门的 Z50.0，应优先用特指编码</li>
+          <li><strong>Z54.0（术后恢复期）❌：</strong>Z54.0 是术后休养恢复，患者本次入院是<strong>主动接受康复训练</strong>，不是单纯休养</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>💡 特指优先原则：</strong>当 Z50.0（心脏康复）和 Z50.1（物理治疗）都可能适用时，<strong>选择更特指的 Z50.0</strong>。这与 ICD-10 的"特指优先于未特指"原则一致。</p>
+        <p><strong>💡 Z50 vs Z54 的分界：</strong>正在做康复训练 → Z50；治疗结束在恢复休养 → Z54。本例在做训练，所以用 Z50.0。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>挑战题 · 中医科颈椎病针灸推拿（双编码）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者女，50岁。因<strong>颈肩疼痛伴活动受限3月</strong>入中医科。中医诊断：<strong>项痹（气滞血瘀证）</strong>。西医诊断：颈椎病。住院期间行<strong>毫针针刺+艾灸+推拿</strong>治疗。</p>
+    <p><strong>问题：</strong>请列出完整的编码结构（中医诊断 + 西医诊断 + 操作编码）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 完整编码结构：</strong></p>
+        <pre>【诊断部分】
+  中医病名：项痹                      → 95国标病名编码（6位）
+  中医证候：气滞血瘀证                → 95国标证候编码（6位）
+  西医主诊断：颈椎病                  → ICD-10: M47.9
+  西医附加：  颈椎间盘突出            → ICD-10: M50.1（如有）
+
+【操作部分】
+  1. 毫针针刺（颈肩部穴位）           → ICD-9-CM-3: 93.31
+  2. 艾灸（大椎、肩井、风池穴）       → ICD-9-CM-3: 93.34
+  3. 推拿（颈肩部手法治疗）           → ICD-9-CM-3: 93.33</pre>
+        <p><strong>✅ 关键要点：</strong></p>
+        <ol>
+          <li><strong>主诊断用 ICD-10：</strong>医保结算以西医诊断 M47.9 为主诊断</li>
+          <li><strong>中医诊断并行填报：</strong>项痹（病名）+ 气滞血瘀证（证候）是附加信息</li>
+          <li><strong>操作分别编码：</strong>针刺、艾灸、推拿是三种不同操作，分别编 93.31、93.34、93.33</li>
+          <li><strong>不用 Z50 编码：</strong>中医科治疗以疾病本身为主诊断（M47.9），不走康复 Z50 路线</li>
+        </ol>
+        <p style="margin-top:8px;"><strong>💡 中医 vs 康复的区别：</strong>中医科以治疗疾病本身为目的（针灸治颈椎病），主诊断是疾病编码；康复科以功能恢复为目的，主诊断可能是 Z50。两者编码逻辑不同。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>挑战题 · "术后"诊断拆分（综合应用）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>临床医生在病案首页上写了主诊断：<strong>"腰椎间盘突出术后"</strong>。编码员翻阅病历发现以下四种不同情况（四个独立病例）：请为每种情况选择正确的主诊断编码。</p>
+    <ol>
+      <li><strong>病例A：</strong>腰椎间盘突出术后3月，恢复良好，入院做腰背肌功能训练</li>
+      <li><strong>病例B：</strong>腰椎间盘突出术后2周，手术切口感染，入院抗感染治疗</li>
+      <li><strong>病例C：</strong>腰椎间盘突出术后6月，入院常规复查（MRI+体格检查）</li>
+      <li><strong>病例D：</strong>腰椎间盘突出术后1月，仍有腰痛，入院物理因子治疗+休息恢复</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 四种情况的编码拆分：</strong></p>
+        <table style="margin-top:10px;">
+          <tr><th>病例</th><th>住院目的</th><th>主诊断</th><th>规则</th></tr>
+          <tr>
+            <td><strong>A</strong></td>
+            <td>功能康复训练</td>
+            <td><code>Z50.1</code> 物理治疗</td>
+            <td>规则一（术后功能康复）</td>
+          </tr>
+          <tr>
+            <td><strong>B</strong></td>
+            <td>处理术后并发症（感染）</td>
+            <td><code>T81.4</code> 术后感染</td>
+            <td>规则二（并发症做主诊断）</td>
+          </tr>
+          <tr>
+            <td><strong>C</strong></td>
+            <td>术后常规复查</td>
+            <td><code>Z09.0</code> 手术后随访检查</td>
+            <td>术后复查场景</td>
+          </tr>
+          <tr>
+            <td><strong>D</strong></td>
+            <td>恢复期休养+物理治疗</td>
+            <td><code>Z54.0</code> 手术后恢复期</td>
+            <td>术后恢复场景</td>
+          </tr>
+        </table>
+        <p style="margin-top:10px;"><strong>✅ 详细推理：</strong></p>
+        <ul>
+          <li><strong>病例A：</strong>术后3月，恢复良好，入院做<strong>主动功能训练</strong> → 规则一，Z50.1 做主诊断。附加：Z96.7（如有植入物）+ M51.1（原发疾病）</li>
+          <li><strong>病例B：</strong>术后2周，出现<strong>切口感染</strong> → 规则二，并发症（T81.4 术后感染）做主诊断，不编 Z50。附加：M51.1（原发疾病）</li>
+          <li><strong>病例C：</strong>术后6月，<strong>常规复查</strong>（无治疗、无康复训练）→ Z09.0（手术后随访检查）。附加：M51.1</li>
+          <li><strong>病例D：</strong>术后1月，<strong>恢复期+物理因子治疗</strong>（非主动功能训练）→ Z54.0（手术后恢复期）。附加：M51.1</li>
+        </ul>
+        <p style="margin-top:8px;"><strong>💡 核心教训：</strong>同一个"腰椎间盘突出术后"诊断，因住院目的不同，主诊断可以是 Z50.1、T81.4、Z09.0、Z54.0 四个完全不同的编码。<strong>"术后"永远不能直接做诊断，必须拆分。</strong></p>
+        <p><strong>💡 A vs D 的微妙区别：</strong>A 是主动做功能训练（Z50.1），D 是恢复期休养+被动物理治疗（Z54.0）。区别在于患者是否在主动参与康复训练——主动训练用 Z50，被动恢复用 Z54。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 九 ======== -->
+<h2><span class="icon">✅</span> 九、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>康复三大规则：</strong>术后功能康复→Z50.1主诊断；并发症→并发症主诊断；后遗症→临床表现主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z50家族：</strong>Z50.0心脏康复/Z50.1物理治疗（最高频）/Z50.5言语治疗/Z50.7职业治疗</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>Z50 vs Z51 vs Z54：</strong>50在治疗、51来做治、54已治完——三者不可混用</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>医保Z码白名单：</strong>仅Z51.1/Z51.0/Z47.0/Z38.x明确允许做主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>后遗症编码：</strong>临床表现（如G81.9偏瘫）做主诊断，原发病后遗症（如I69.3）做附加</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>"术后"陷阱：</strong>四种拆分——并发症/T81.x、复查Z09.0、恢复Z54.0、康复Z50.1</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>中医双编码：</strong>95国标病名+证候并行填报，主诊断仍用ICD-10西医编码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>中医操作：</strong>针刺93.31/艾灸93.34/推拿93.33/拔罐93.35，用ICD-9-CM-3分别编码</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 45 主题：离院方式填写 + 其他诊断填报规范</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>病案首页"离院方式"有哪几种？每种的标准定义和适用场景是什么？</li>
+    <li>"其他诊断"的填报范围如何界定？哪些诊断应该填、哪些不应该填？</li>
+    <li>并发症、合并症、伴随疾病在"其他诊断"栏目中如何排序？</li>
+    <li>离院方式填写错误会对DRG/DIP结算产生什么影响？质控如何拦截？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 44 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 + 95国标中医编码 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
