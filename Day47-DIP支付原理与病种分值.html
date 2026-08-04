@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 47（2026年8月4日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #0d9488 0%, #059669 50%, #10b981 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Formula Box ===== */
+  .formula-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 8px;
+    padding: 16px 20px; margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    font-size: 13px; line-height: 1.8; text-align: center;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 47 · 2026年8月4日</div>
+  <h1>💰 DIP 支付原理与病种分值</h1>
+  <p class="subtitle">第五阶段：DRG/DIP 与医保清单 —— 理解中国原创的按病种分值付费体系</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:78.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 47 / 60 天（78.33%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">第五阶段核心任务：理解支付改革下编码如何直接影响医院收入。DIP 是 Day 46 DRG 的姊妹课。</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员必须知道，直接影响结算）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>DIP = 疾病诊断 + 治疗方式 的穷举聚类，理解"诊断x手术"是分组轴心</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>核心病种 vs 综合病种的临界值区分（一般≥15例为核心）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>病种分值(RW)的含义和基本计算逻辑（病种均费 ÷ 全部均费 × 基准分）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>高倍率/低倍率偏差病例的判断标准（2倍以上 / 0.5倍以下）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，能解释数据差异）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>预算点值 vs 结算点值的区别（年初预定 vs 年终清算）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>辅助目录的作用机制：CCI指数、疾病严重程度分型、病案质量指数</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>编码对 DIP 入组的影响——主诊断和手术操作任一写错，分组全错</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>DIP与DRG的分组逻辑根本差异：自下而上聚类 vs 自上而下预设</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DIP的历史起源（牡丹江模式、广州实践）和发展脉络</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DIP与DRG各自的适用场景和协同应用</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>DIP是中高级编码员必须掌握的知识。今天重点理解"诊断x治疗方式"这个核心分组逻辑——一旦理解了这个，你就能明白为什么编码的每个细节都直接与医院收入绑定。
+</div>
+
+<!-- ======== 一、DIP 是什么 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、DIP 是什么？——大数据驱动的中国原创支付方式</h2>
+
+<h3>1.1 定义：诊断+治疗方式的分值化</h3>
+<p><strong>按病种分值付费（Diagnosis-Intervention Packet, DIP）</strong>是国家医保局力推的中国原创支付方式。它的核心思路非常直观：</p>
+
+<div class="card tip">
+  <strong>DIP = "每一个疾病诊断 × 每一种治疗方式"形成的组合，赋予一个分值。</strong><br><br>
+  医保不再按项目逐一付费（检查、药品、耗材……），而是按"这一组病的平均花费"给你一个打包价。医院省了就能结余留用，超了就自己承担。
+</div>
+
+<p>简单理解三句话：<strong>设定总额 → 测定分值 → 计算点值</strong>。这是 DIP 的完整闭环：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>区域总额预算</h4>
+      <p>医保部门根据基金收支状况，划拨一定金额作为该统筹区 DIP 住院费用的年度预算上限。以收定支、略有结余。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>测定病种分值（RW）</h4>
+      <p>基于前3年历史全样本数据（权重比例 1:2:7），计算每个病种组合的次均费用与全部病例次均费用的比值，赋予分值。分值反映"资源消耗权重"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>年终计算点值（单价）</h4>
+      <p>年终清算时：点值 = 年度DIP预算总额 ÷ 区域内所有医疗机构的总分值。每家医院的收入 = 获得的总分值 × 点值。</p>
+    </div>
+  </div>
+</div>
+
+<h3>1.2 DIP vs DRG —— 为什么必须对比理解？</h3>
+<p>昨天刚学了 DRG，今天学 DIP。这两个支付方式是"平行推进"的，一个统筹区只能选其一作为主支付方式。但你不知道二者区别，就没法理解编码在不同支付体系下的不同影响。下面是最关键的区别：</p>
+
+<table>
+  <tr><th>维度</th><th>DRG (疾病诊断相关分组)</th><th>DIP (按病种分值付费)</th></tr>
+  <tr>
+    <td><strong>分组逻辑</strong></td>
+    <td><strong>自上而下预设规则</strong>：先制定标准化分组方案（600-1000组），病例按规则"落入"对应病组</td>
+    <td><strong>自下而上数据聚类</strong>：基于真实历史数据，对"诊断+治疗方式"进行穷举聚类（可达1万+组）</td>
+  </tr>
+  <tr>
+    <td><strong>分组数量</strong></td>
+    <td>700-1000组，相对粗犷，强调标准化</td>
+    <td>3000-15000+组，颗粒度更细，"一病一操作一组"</td>
+  </tr>
+  <tr>
+    <td><strong>关键分组变量</strong></td>
+    <td>主诊断 + 手术操作 + 年龄 + 合并症/并发症（CC/MCC） + 离院方式</td>
+    <td><strong>主诊断 + 手术操作</strong>（只这两个！无年龄、CC/MCC等维度）</td>
+  </tr>
+  <tr>
+    <td><strong>付费属性</strong></td>
+    <td><strong>预付制</strong>：支付标准在年初提前确定</td>
+    <td><strong>后付制</strong>：区域总额预算 + 点数法，年终计算出点值后清算</td>
+  </tr>
+  <tr>
+    <td><strong>编码依赖</strong></td>
+    <td>编码影响 MDC → ADRG → DRG 三级分组，主诊断错误直接入错 MDC</td>
+    <td>编码决定"诊断 × 治疗方式"的唯一组合，<strong>任一错误直接入错组</strong></td>
+  </tr>
+  <tr>
+    <td><strong>适用场景</strong></td>
+    <td>病案基础好、编码能力强、三级医院</td>
+    <td>更适合县级医院、数据驱动、历史数据较稳定的统筹区</td>
+  </tr>
+  <tr>
+    <td><strong>主要风险</strong></td>
+    <td>分组过粗可能导致罕见/复杂病例"一刀切"，医院推诿重病人</td>
+    <td>基于数据匹配，对<strong>编码高套、错填、漏填</strong>的监管难度更大</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码员最需要记住的区别：</strong><br>
+  DRG 的复杂病例有 CC/MCC 机制可以提升权重（所以并发症编码很重要！）；<br>
+  DIP 没有 CC/MCC，但通过<strong>辅助目录</strong>（CCI指数、疾病严重程度分型等）来校正分值。<br>
+  共同点：<strong>主诊断和手术操作编码</strong>是分组的绝对核心，编错了全盘皆输。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、DIP 主目录 ======== -->
+<h2><span class="icon">🗂️</span> 二、DIP 主目录：核心病种 vs 综合病种</h2>
+
+<h3>2.1 "疾病诊断 + 治疗方式"的穷举聚类</h3>
+<p>DIP 不预设分组规则，而是先对历史数据中所有真实病例的<strong>"ICD-10 诊断编码 + ICD-9-CM-3 手术操作编码"</strong>进行穷举配对，然后聚类。例如：</p>
+
+<pre>真实数据中出现的组合：
+案例1: I63.902（脑梗死） + 99.10（溶栓治疗）
+案例2: I63.902（脑梗死） + 无手术（保守治疗）
+案例3: I63.902（脑梗死） + 00.61（脑血管介入取栓）
+
+→ 这三个组合被分为三个不同的 DIP 病种，各有一个独立的分值</pre>
+
+<div class="card tip">
+  <strong>为什么说 DIP 对编码员的要求更高？</strong><br>
+  因为 DIP 分组只靠"诊断编码 × 手术编码"两个维度，没有任何缓冲机制。DRG 写错一个诊断，可能还在同一个 MDC；DIP 写错一个，直接入到另一个组——分值可能差 10 倍。
+</div>
+
+<h3>2.2 核心病种与综合病种的临界值</h3>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">≥15例</div>
+    <div class="stat-label">核心病种（Core DIP）</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">&lt;15例</div>
+    <div class="stat-label">综合病种（Mixed DIP）</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">85%+</div>
+    <div class="stat-label">核心病种病例覆盖比例</div>
+  </div>
+</div>
+
+<p><strong>临界值</strong>的核心作用：</p>
+<ul>
+  <li><strong>核心病种：</strong>组内历史病例数 ≥ 15 例，"诊断+治疗方式"的组合稳定，直接作为单独的病种纳入 DIP 目录库。这是 DIP 结算的<strong>主要付费单元</strong>。</li>
+  <li><strong>综合病种：</strong>组内历史病例数 &lt; 15 例，病例太少、数据不够稳定，不能独立成病种。需要按治疗方式属性<strong>二次聚类</strong>：</li>
+</ul>
+
+<table>
+  <tr><th>综合病种聚类方式</th><th>说明</th><th>示例</th></tr>
+  <tr><td><strong>保守治疗组</strong></td><td>无手术、无操作，仅药物治疗/观察</td><td>罕见病的内科保守治疗</td></tr>
+  <tr><td><strong>诊断性操作组</strong></td><td>仅做了诊断性检查（内镜、活检等）</td><td>某种少见病的胃镜检查</td></tr>
+  <tr><td><strong>治疗性操作组</strong></td><td>有治疗性操作但非手术（如穿刺引流）</td><td>某种少见病的穿刺引流</td></tr>
+  <tr><td><strong>相关手术组</strong></td><td>有手术治疗</td><td>某种少见病的手术治疗</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 实例：</strong>郑州 2026 版 DIP 目录中，核心病种 4785 个（含等价术式/诊断 138 组），综合病种 1698 个，非稳定病种 360 个。总计 6571 个病种条目。宁德 2.0 版优化调整后共 5243 条，其中综合病种 1132 条。
+</div>
+
+<h3>2.3 DIP 目录的三级结构</h3>
+
+<table>
+  <tr><th>级别</th><th>聚类轴心</th><th>作用</th></tr>
+  <tr>
+    <td><strong>三级目录</strong></td>
+    <td>"诊断+操作"的精确组合 —— 这是实际付费的最小单元</td>
+    <td>支付结算的基本单位，每个三级目录对应一个病种分值的测算</td>
+  </tr>
+  <tr>
+    <td><strong>二级目录</strong></td>
+    <td>同一诊断下不同治疗方式的聚合</td>
+    <td>用于分析同一种疾病在不同治疗方式下的资源消耗差异</td>
+  </tr>
+  <tr>
+    <td><strong>一级目录</strong></td>
+    <td>按 ICD-10 章的解剖/病因大类聚合</td>
+    <td>用于宏观分析学科发展均衡性、资源分配</td>
+  </tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 三、病种分值的形成 ======== -->
+<h2><span class="icon">⚖️</span> 三、病种分值（RW）的形成与计算</h2>
+
+<h3>3.1 分值是什么？</h3>
+<p><strong>病种分值（Related Weight, RW）</strong>是每个"诊断+治疗方式"组合的<strong>资源消耗权重</strong>。它不是价格，而是一个"相对值"——反映该病种的医疗资源消耗是所有出院病例平均水平的多少倍。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>基准病种（深圳）</h4>
+    <p>选择"急性阑尾炎：腹腔镜下阑尾切除术"作为基准病种，基准分 = <code>1000</code> 分。</p>
+    <p>所有其他病种的分值都以它为标准算出。</p>
+  </div>
+  <div class="example-item">
+    <h4>分值含义</h4>
+    <p>如果一个病种的分值是 <code>2500</code>，意味着该病种的平均资源消耗是基准病种的 <strong>2.5 倍</strong>。</p>
+    <p>如果一个病种的分值是 <code>500</code>，意味着其消耗仅为基准病种的一半。</p>
+  </div>
+</div>
+
+<h3>3.2 分值计算公式</h3>
+
+<div class="formula-box">
+  <strong>病种分值（RW）</strong><br><br>
+  = 该病种组合的加权次均医疗费用 ÷ 全部出院病例的加权次均医疗费用 × 基准分值（如 1000）
+</div>
+
+<p>其中权重计算：前三年历史数据的权重比例为 <strong>1:2:7</strong>（越靠近当前年份权重越大）。这是为了保证分值与当前的费用水平接近。</p>
+
+<div class="card tip">
+  <strong>分值计算示例：</strong><br>
+  假设全部出院病例加权次均费用为 8,000 元，基准病种（腹腔镜阑尾切除）次均费用为 10,000 元。<br>
+  某个"脑梗死 + 溶栓治疗"的病种，加权次均费用为 25,000 元。<br><br>
+  基准病种分值 = 10,000 ÷ 8,000 × 1000 = <strong>1250</strong><br>
+  脑梗死溶栓分值 = 25,000 ÷ 8,000 × 1000 = <strong>3125</strong>
+</div>
+
+<h3>3.3 药品分值和耗材分值</h3>
+<p>DIP 还将分值分解为<strong>药品分值（dRW）</strong>和<strong>耗材分值（cRW）</strong>：</p>
+
+<table>
+  <tr><th>类型</th><th>含义</th><th>作用</th></tr>
+  <tr><td><strong>DIP 分值 (RW)</strong></td><td>病种的总资源消耗权重</td><td>结算支付的基础</td></tr>
+  <tr><td><strong>药品分值 (dRW)</strong></td><td>该病种中药品消耗的权重</td><td>用于分析药品结构的合理性，监控药占比</td></tr>
+  <tr><td><strong>耗材分值 (cRW)</strong></td><td>该病种中耗材消耗的权重</td><td>用于分析耗材结构的合理性，监控耗占比</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 四、点值与付费标准 ======== -->
+<h2><span class="icon">💵</span> 四、分值点值与付费标准测算</h2>
+
+<h3>4.1 预算点值 vs 结算点值</h3>
+
+<div class="compare-row">
+  <div class="compare-col" style="background:var(--accent-bg);border-color:#c7d2fe;">
+    <h4>📊 预算点值（年初）</h4>
+    <p><strong>年初确定，用于事前估算。</strong></p>
+    <p>公式：<br>预算点值 = 加权平均年度住院总费用 ÷ ∑(各病种分值 × 预估病例数)</p>
+    <p style="margin-top:8px;color:var(--text3);">作用是让医院知道"今年每一分大概值多少钱"，便于过程管控。</p>
+  </div>
+  <div class="compare-col" style="background:var(--green-bg);border-color:#86efac;">
+    <h4>💰 结算点值（年终）</h4>
+    <p><strong>年终清算时确定，用于实际拨付。</strong></p>
+    <p>公式：<br>结算点值 = 年度DIP可分配基金总额 ÷ ∑(年度实际总分值)</p>
+    <p style="margin-top:8px;color:var(--text3);">实际给到医院的支付标准。总分值越高，点值越低（分母效应）。</p>
+  </div>
+</div>
+
+<h3>4.2 支付标准公式</h3>
+
+<div class="formula-box">
+  <strong>某病例的 DIP 支付标准</strong><br><br>
+  = 病种分值（RW）× 结算点值 × 医疗机构系数 × 实际报销比例
+</div>
+
+<p><strong>医疗机构系数</strong>反映了不同级别医院收治同一病种时的成本差异。三级医院的系数通常高于二级医院。部分统筹区还设有<strong>基层病种同价</strong>机制——选择适宜基层开展的病种，各级医院同一系数（"同病同治同效同价"）。</p>
+
+<div class="card warn">
+  <strong>⚠️ 核心逻辑——"点数法"的分母效应：</strong><br>
+  DIP 是区域总额预算下的点数法。你的分值收入不取决于你的绝对分值，而取决于<strong>你相对于区域内其他医院的分值占比</strong>。<br><br>
+  举例：如果全市所有医院都"做高分值"，总分值膨胀，点值就会下降——每个人的单位分值价值缩水。这就是"囚徒困境"——编码高套短期有利，长期损人损己。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五、偏差病例与辅助目录 ======== -->
+<h2><span class="icon">🔧</span> 五、偏差病例校正与辅助目录</h2>
+
+<h3>5.1 高倍率/低倍率偏差病例</h3>
+
+<table>
+  <tr><th>病例类型</th><th>判断标准</th><th>分值校正规则</th></tr>
+  <tr>
+    <td><strong>正常病例</strong></td>
+    <td>0.5 ≤ 费用比值(R) ≤ 2.0</td>
+    <td>正常入组分值 = 病种基准分值 × 医疗机构系数</td>
+  </tr>
+  <tr>
+    <td style="background:var(--red-bg)"><strong>高倍率病例</strong></td>
+    <td>费用比值(R) &gt; 2.0（即费用超过平均的2倍）</td>
+    <td>校正分值 = [(R-2) × 0.8 + 1] × 基准分值 × 系数<br>或: 核准追加分值 = (R-2) × 基准分值 × 系数</td>
+  </tr>
+  <tr>
+    <td style="background:var(--warn-bg)"><strong>低倍率病例</strong></td>
+    <td>费用比值(R) &lt; 0.5（即费用不足平均的50%）</td>
+    <td>校正分值 = R × 基准分值 × 系数<br>（按实际费用比例打折）</td>
+  </tr>
+  <tr>
+    <td style="background:#fee2e2"><strong>极高异常病例</strong></td>
+    <td>费用 &gt; 平均的5倍以上</td>
+    <td>可申请<strong>特例单议</strong>，专家评议后重新核定分值<br>申报病例数 ≤ 全年出院人次 3‰~5‰</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 编码员的后果意识：</strong><br>
+  如果你把本该是"保守治疗"的病例错误编入了"手术治疗"组（编码高套），病例费用可能远低于该手术组平均值，成为<strong>低倍率病例</strong>——分值被打折，医院反而少拿钱。<br>
+  如果你把重症漏编了关键手术编码，费用远超保守治疗组平均值，成为<strong>高倍率病例</strong>——医院亏损。<br>
+  <strong>所以：编码准确 = 不亏钱。</strong>
+</div>
+
+<h3>5.2 辅助目录体系</h3>
+
+<table>
+  <tr><th>类别</th><th>辅助目录</th><th>作用</th></tr>
+  <tr><td rowspan="5"><strong>疾病严重程度<br>辅助目录</strong></td>
+    <td><strong>CCI 指数</strong></td>
+    <td>通过大数据建模测定每个诊断的合并症/并发症严重程度权重，分为极严重/严重/一般/无四个等级</td>
+  </tr>
+  <tr>
+    <td><strong>疾病严重程度分型</strong></td>
+    <td>根据并发症危及范围及死亡状态，将病例分为中度、重度、死亡 3 级</td>
+  </tr>
+  <tr>
+    <td><strong>肿瘤严重程度分型</strong></td>
+    <td>针对肿瘤病例的特异化校正，按转移、放化疗分为 5 级（Ⅱ-Ⅵ）</td>
+  </tr>
+  <tr>
+    <td><strong>次要诊断病种</strong></td>
+    <td>合理评价次要诊断对资源消耗的影响</td>
+  </tr>
+  <tr>
+    <td><strong>年龄特征病种</strong></td>
+    <td>对特定年龄段（如新生儿、高龄）进行分值调整</td>
+  </tr>
+  <tr><td rowspan="5"><strong>违规行为监管<br>辅助目录</strong></td>
+    <td><strong>病案质量指数</strong></td>
+    <td>综合评估编码规范性、诊断与操作的一致性，<strong>直接影响最终结算</strong></td>
+  </tr>
+  <tr>
+    <td><strong>二次入院评分 (RSA)</strong></td>
+    <td>监测短期内同一诊断再次入院——可能是分解住院的信号</td>
+  </tr>
+  <tr>
+    <td><strong>低标入院评分 (RLA)</strong></td>
+    <td>评估是否存在"不该住院的收了住院"</td>
+  </tr>
+  <tr>
+    <td><strong>超长住院评分 (RLLOS)</strong></td>
+    <td>识别住院天数超出正常范围的病例</td>
+  </tr>
+  <tr>
+    <td><strong>死亡风险评分 (RM)</strong></td>
+    <td>评估死亡病例的风险等级，防止"该救不救"</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点解析：DIP 下编码高套的"囚徒困境"</h2>
+
+<p>今天最值得深入思考的是 DIP 支付体系中的一个核心矛盾：<strong>编码高套</strong>。</p>
+
+<h3>什么是编码高套？</h3>
+<p>编码高套（Upcoding）是指有意选择<strong>更高分值</strong>（而非更准确）的编码来填报，以获取更高的医保结算金额。</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>例：手术编码高套</h4>
+    <p>真实操作：<code>腹腔镜阑尾切除术</code>（LC，分值1000）</p>
+    <p>故意编为：<code>开腹阑尾切除术</code>（分值1200）</p>
+    <p>理由："反正都是切阑尾"——完全错误！</p>
+  </div>
+  <div class="example-item">
+    <h4>例：诊断编码高套</h4>
+    <p>真实诊断：<code>J18.901</code>（肺炎，未特指）</p>
+    <p>故意编为：<code>J15.901</code>（细菌性肺炎，分值更高）</p>
+    <p>理由："反正都是肺炎"——违反编码原则！</p>
+  </div>
+</div>
+
+<h3>DIP 下高套的严重后果</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 短期幻象</h4>
+    <p>某个医院通过高套拿到了更高的分值，看起来年度结算"赚了"。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 长期真相</h4>
+    <p>如果全区域医院都高套，总分值膨胀，点值（单价）下降。到第二年，所有医院的分值都被"注水"了——大家都回到了同一起跑线，但<strong>数据的可信度已经被破坏</strong>。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 医保飞检中的高套核查方向：</strong><br>
+  ① 手术级别与诊断的匹配性（一级手术配了高权重的 DIP 组）<br>
+  ② 抗生素使用与诊断编码的一致性（"重症肺炎"却只用了一代头孢）<br>
+  ③ 住院天数与病种分值的合理性（5天出院的高分值血肿清除？）<br>
+  ④ 同一诊断在不同医院的"升级"趋势<br>
+  <strong>编码员记住：你的每一个码，都会在数据海洋中被对比和质询。</strong>
+</div>
+
+<h3>DIP 对编码员的核心影响总结</h3>
+
+<table>
+  <tr><th>影响维度</th><th>具体体现</th></tr>
+  <tr><td><strong>主诊断选择</strong></td><td>DIP分组只看"诊断+手术"，无CC/MCC缓冲 → 主诊断错 = 入组全错</td></tr>
+  <tr><td><strong>手术编码完整性</strong></td><td>做了手术一定要编码，漏填手术编码 → 被归入"保守治疗"组 → 分值大幅降低</td></tr>
+  <tr><td><strong>编码精度</strong></td><td>类目（3字符）级别不够 → 国临版扩展码必须编到最细 → 差了最后一位可能就差了几个 DIP 组</td></tr>
+  <tr><td><strong>术语清洗</strong></td><td>"肺炎"要明确到病原体？"心梗"要区分 STEMI/NSTEMI？这些在DIP下都是不同的病种</td></tr>
+  <tr><td><strong>医保结算清单</strong></td><td>DIP的结算数据来源是医保结算清单（不是病案首页）→ 两者不一致会被质控</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · DIP 核心概念</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>判断以下说法的正误：</p>
+    <ol>
+      <li>DIP 的分组逻辑是先预设分组规则，然后让病例"落入"分组</li>
+      <li>DIP 的病种分值（RW）是一个绝对值，反映的是该病种的实际价格</li>
+      <li>核心病种和综合病种的分界标准是组内病例数是否 ≥15 例</li>
+      <li>DIP 的支付标准是年初确定的固定值，全年不变</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1. ❌ 错误。</strong> DIP 是<strong>自下而上</strong>的数据聚类——先有真实病例数据，再按"诊断+治疗方式"穷举聚类形成病种。DRG 才是<strong>自上而下</strong>预设规则。</p>
+        <p><strong>2. ❌ 错误。</strong> 病种分值（RW）是<strong>相对权重</strong>，不是价格。它反映该病种的资源消耗相对于基准病种的倍数。实际支付金额 = 分值 × 点值（点值才是单价）。</p>
+        <p><strong>3. ✅ 正确。</strong> 一般以 15 例为临界值，≥15 例归入核心病种（直接作为独立的 DIP 病种），&lt;15 例归入综合病种（需按治疗方式二次聚类）。</p>
+        <p><strong>4. ❌ 错误。</strong> DIP 属于<strong>后付制</strong>——点值在年终清算时才确定（区域总额 ÷ 总分值）。年初的预算点值只是预估，结算点值才是实际拨付标准。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 分值计算</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某统筹区 DIP 数据如下（基准分值 = 1000）：</p>
+    <table>
+      <tr><th>病种</th><th>加权次均费用</th></tr>
+      <tr><td>全部出院病例（加权平均）</td><td>6,500 元</td></tr>
+      <tr><td>急性阑尾炎：腹腔镜阑尾切除术</td><td>9,000 元</td></tr>
+      <tr><td>脑梗死+溶栓治疗</td><td>18,200 元</td></tr>
+      <tr><td>COPD急性加重+无创通气</td><td>11,700 元</td></tr>
+      <tr><td>单纯高血压+保守治疗</td><td>2,600 元</td></tr>
+    </table>
+    <p><strong>问题：</strong>请计算这四个病种的 DIP 分值（保留整数）。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 公式：</strong>病种分值 = 病种次均费用 ÷ 全部病例次均费用 × 1000</p>
+        <p><strong>急性阑尾炎腹腔镜切除：</strong>9,000 ÷ 6,500 × 1000 = <strong>1385</strong> 分</p>
+        <p><strong>脑梗死+溶栓：</strong>18,200 ÷ 6,500 × 1000 = <strong>2800</strong> 分</p>
+        <p><strong>COPD急性加重+无创通气：</strong>11,700 ÷ 6,500 × 1000 = <strong>1800</strong> 分</p>
+        <p><strong>单纯高血压+保守治疗：</strong>2,600 ÷ 6,500 × 1000 = <strong>400</strong> 分</p>
+        <p><strong>💡 理解：</strong>脑梗死溶栓的资源消耗是平均水平的 2.8 倍，而单纯高血压保守治疗只有平均水平的 0.4 倍。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 偏差病例判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某病种的同级别医院次均费用为 8,000 元。以下 4 个病例分别产生了多少费用？它们分别是什么类型的病例？</p>
+    <table>
+      <tr><th>病例</th><th>费用</th><th>R值(费用÷均费)</th><th>类型</th></tr>
+      <tr><td>A</td><td>10,000 元</td><td>？</td><td>？</td></tr>
+      <tr><td>B</td><td>18,000 元</td><td>？</td><td>？</td></tr>
+      <tr><td>C</td><td>3,200 元</td><td>？</td><td>？</td></tr>
+      <tr><td>D</td><td>45,000 元</td><td>？</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：</strong>R = 10,000 ÷ 8,000 = 1.25 → <strong>正常病例</strong>（0.5 ≤ R ≤ 2.0）。分值 = 基准分值 × 系数。</p>
+        <p><strong>✅ B：</strong>R = 18,000 ÷ 8,000 = 2.25 → <strong>高倍率病例</strong>（R &gt; 2.0）。分值需按偏差公式校正。</p>
+        <p><strong>✅ C：</strong>R = 3,200 ÷ 8,000 = 0.40 → <strong>低倍率病例</strong>（R &lt; 0.5）。分值按实际比例打折。</p>
+        <p><strong>✅ D：</strong>R = 45,000 ÷ 8,000 = 5.625 → <strong>极高异常病例</strong>（R &gt; 5.0）。可申请特例单议，专家评议后核定。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 编码影响 DIP 分组</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者因"右侧腹股沟疝"入院，行<strong>腹腔镜疝修补术</strong>。出院诊断和手术编码如下：</p>
+    <p>方案A（正确编码）：诊断 <code>K40.901</code>（单侧腹股沟疝）+ 手术 <code>17.11</code>（腹腔镜腹股沟疝修补术）</p>
+    <p>方案B（错误编码）：诊断 <code>K40.901</code> + 不小心没编手术码（漏填）</p>
+    <p>方案C（错误编码）：诊断 <code>K40.901</code> + 误编为不相关的手术码 <code>54.21</code>（诊断性腹腔镜检查）</p>
+    <p><strong>问题：</strong>三种方案分别会被 DIP 分组到哪个病种类型？哪个分值最高？哪个最低？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 方案A（正确）：</strong>DIP 分组为"腹股沟疝 + 腹腔镜疝修补术"→ 属于有手术操作的病种 → 分值最高（假设800分）。</p>
+        <p><strong>✅ 方案B（漏填手术码）：</strong>DIP 分组为"腹股沟疝 + 无手术操作"→ 被归入保守治疗组 → 分值大幅降低（假设120分）。<strong>做了手术但没钱——最大的损失。</strong></p>
+        <p><strong>✅ 方案C（编错手术码）：</strong>DIP 分组为"腹股沟疝 + 诊断性腹腔镜检查"→ 被归入诊断性操作组 → 分值介于两者之间但远低于正确编码（假设250分）。<strong>编错了也丢钱。</strong></p>
+        <p><strong>💡 核心教训：</strong>DIP 下漏填和错填手术编码，都是直接损失。分值差距 6-7 倍在 DIP 里是常态。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 点值清算计算</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某统筹区年度 DIP 可分配基金总额为 <strong>5 亿元</strong>。区域内三家医院年度结算数据如下：</p>
+    <table>
+      <tr><th>医院</th><th>年度总分值</th><th>医疗机构系数</th></tr>
+      <tr><td>A 医院（三级）</td><td>80,000,000 分</td><td>1.10</td></tr>
+      <tr><td>B 医院（二级）</td><td>40,000,000 分</td><td>0.90</td></tr>
+      <tr><td>C 医院（二级）</td><td>30,000,000 分</td><td>0.85</td></tr>
+    </table>
+    <p><strong>问题：</strong>（1）结算点值是多少？（2）各医院各拿到多少医保拨付？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步：计算考虑系数的有效总分值</strong></p>
+        <p>A：80,000,000 × 1.10 = <strong>88,000,000</strong> 分</p>
+        <p>B：40,000,000 × 0.90 = <strong>36,000,000</strong> 分</p>
+        <p>C：30,000,000 × 0.85 = <strong>25,500,000</strong> 分</p>
+        <p>有效总分值 = 88,000,000 + 36,000,000 + 25,500,000 = <strong>149,500,000 分</strong></p>
+        <p><strong>✅ 第二步：结算点值</strong></p>
+        <p>结算点值 = 5亿 ÷ 1.495亿 = <strong>33.44 元/分</strong></p>
+        <p><strong>✅ 第三步：各医院拨付</strong></p>
+        <p>A 医院：88,000,000 × 33.44 = <strong>2.94 亿元</strong></p>
+        <p>B 医院：36,000,000 × 33.44 = <strong>1.20 亿元</strong></p>
+        <p>C 医院：25,500,000 × 33.44 = <strong>0.85 亿元</strong></p>
+        <p><strong>💡 关键理解：</strong>如果 A 医院明年通过"编码优化"把总分值做到了 1 亿，在总预算不变的情况下，有效总分值上升，点值就会从 33.44 元下降——<strong>编码高套最终会压低全区域点值</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · DIP vs DRG 场景判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>阅读以下场景，判断在 DIP 和 DRG 两种支付方式下，编码错误的后果有何不同：</p>
+    <p><strong>场景：</strong>患者因"2型糖尿病伴肾病"入院，主要治疗为降糖和护肾保守治疗。编码员把主诊断编为 <code>E11.201+N08.3*</code>（2型糖尿病伴肾病，使用星剑号），但遗漏了肾病作为次要诊断的 <code>N18.2</code>（慢性肾脏病2期）。</p>
+    <p><strong>问题：</strong>在 DRG 下和在 DIP 下，这个遗漏分别造成什么影响？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ DRG 下的影响：</strong></p>
+        <p>N18.2 属于 CC（并发症/合并症），漏填可能导致该病例从"伴CC的 DRG"降级到"不伴CC的 DRG"，权重和支付标准下降。但因为 E11.2+N08.3* 本身已包含肾病信息，具体影响取决于分组器对 N18.2 的识别。</p>
+        <p><strong>✅ DIP 下的影响：</strong></p>
+        <p>DIP 只看"主诊断 + 手术/操作"，E11.201 的治疗方式组合是确定的。漏填 N18.2 对 DIP 主目录分组的影响相对较小（因为 DIP 不直接用 CC/MCC 分层）。但 N18.2 会影响<strong>辅助目录中的 CCI 指数</strong>——CCI 用次要诊断的权重来校正病种分值。漏填 N18.2 意味着 CCI 等级可能从"严重"降为"无"，辅助分型调整系数降低，最终结算金额减少。</p>
+        <p><strong>💡 结论：</strong>在 DRG 下，CC/MCC 的漏填直接影响主分组和支付标准。在 DIP 下，次要诊断漏填主要通过辅助目录的 CCI 和疾病严重程度分型来影响最终支付——但影响的幅度通常小于 DRG 中 CC/MCC 的影响。这个区别是 DIP "纯诊断+手术"分组逻辑带来的固有差异。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>DIP 分组核心：</strong>"疾病诊断编码 + 手术操作编码"穷举聚类</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>核心 vs 综合病种：</strong>临界值 ≥15 例为核心，&lt;15 例需按治疗方式二次聚类</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>病种分值(RW)：</strong>相对权重 = 病种均费 ÷ 全部均费 × 基准分，非绝对价格</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>预算 vs 结算点值：</strong>年初预估（预算）vs 年终清算（结算），后者才是实拨依据</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>偏差病例校正：</strong>高倍率(R&gt;2)追加、低倍率(R&lt;0.5)打折、极高异常(R&gt;5)单议</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>辅助目录双体系：</strong>疾病严重程度校正 + 违规行为监管（CCI、RSA、RLA、RLLOS、RM）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>DIP vs DRG：</strong>自下而上聚类 vs 自上而下预设、后付 vs 预付、万组 vs 千组</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码后果：</strong>漏填手术码 → 归入保守组（分差6-7倍）、高套 → 低倍率打折/飞检风险</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 48 主题：医保结算清单 vs 病案首页 —— 差异与衔接</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>医保结算清单和病案首页有哪些根本不同？（用途、数据项、编码版本……）</li>
+    <li>DIP/DRG 结算用的是医保结算清单还是病案首页？为什么？</li>
+    <li>哪些数据项需要从首页同步到清单？哪些是清单独有？</li>
+    <li>如果首页和清单的诊断/手术编码不一致，医保以哪个为准？</li>
+    <li>"入院病情"代码在清单上有没有？和其他诊断有什么关联？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 47 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 / DIP技术规范</p>
+</div>
+
+</body>
+</html>
