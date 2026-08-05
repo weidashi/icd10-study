@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 48（2026年8月5日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 48 · 2026年8月5日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：医保结算清单 vs 病案首页 —— 两套体系的差异与衔接</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:80%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 48 / 60 天（80%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">医保结算清单是DRG/DIP支付的直接数据源，理解它与病案首页的差异，是编码员从"编对码"到"编对钱"的跨越。</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频+日常工作刚需）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>两大单据的六大核心差异（制定部门、目的、编码标准、主诊断原则、其他诊断规则、入院病情处理）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>"清单≠首页"的铁律——不能简单复制粘贴</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入院病情"4"（无）的诊断不能作为清单主诊断</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>其他诊断在清单中的过滤规则：仅保留影响资源消耗的诊断</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，防范隐患）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>医保版ICD vs 国临版ICD的映射机制与对接流程</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>清单"三最"与首页"三最"的顺序差异及临床影响</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>DRG付费下清单的五级质控体系</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>193项清单指标的具体归口分配（基本信息/诊疗/收费）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DIP付费下清单与DRG付费下清单影响的差异程度</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>今天的内容是编码员从"技术编码"走向"管理编码"的分水岭。不要求背住193项指标，但必须能够张嘴说出"清单≠首页"的六个核心差异——这在医保飞检和编码审核中是必考题。
+</div>
+
+<!-- ======== 一、两套体系全景 ======== -->
+<hr class="divider">
+<h2><span class="icon">🏗️</span> 一、两套体系全景——谁制定？为什么而存在？</h2>
+
+<h3>1.1 "两张皮"的由来</h3>
+<p>病案首页和医保结算清单，看起来都是出院时要填的那张纸（或电子表单），但它们的"出身"和"使命"截然不同。理解这一点，是理解所有填报差异的起点。</p>
+
+<table>
+  <tr><th>维度</th><th>病案首页</th><th>医保结算清单</th></tr>
+  <tr>
+    <td><strong>制定部门</strong></td>
+    <td>国家卫生健康委（卫健委）</td>
+    <td>国家医疗保障局（医保局）</td>
+  </tr>
+  <tr>
+    <td><strong>核心目的</strong></td>
+    <td>医疗质量管理、医院绩效考核、临床科研、疾病统计</td>
+    <td><strong>医保基金支付</strong>的唯一合法依据</td>
+  </tr>
+  <tr>
+    <td><strong>设计原则</strong></td>
+    <td>可及性、科学性、客观性、便捷性</td>
+    <td>适用性、一致性、规范性</td>
+  </tr>
+  <tr>
+    <td><strong>诊断编码标准</strong></td>
+    <td>国临版 ICD-10 / ICD-9-CM-3（突出疾病难易程度）</td>
+    <td>医保版 ICD-10 / ICD-9-CM-3（突出医疗资源消耗）</td>
+  </tr>
+  <tr>
+    <td><strong>应用场景</strong></td>
+    <td>医院等级评审、"国考"、科研、质控、卫生统计</td>
+    <td>DRG/DIP 分组、医保费用结算、医保监管飞检</td>
+  </tr>
+  <tr>
+    <td><strong>数据项数量</strong></td>
+    <td>约120项（主要关注诊疗信息）</td>
+    <td><strong>193项</strong>（31基本信息+6门诊慢特病+58住院诊疗+98收费信息）</td>
+  </tr>
+  <tr>
+    <td><strong>其他诊断</strong></td>
+    <td>全部诊断都需填写</td>
+    <td>仅填报<strong>影响资源消耗</strong>的诊断，无关的诊断不填</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 最危险的认知误区：</strong>"清单不就是首页的数据导出一下吗？"——这是千万不能有的想法。清单来源于首页但又<b>有别于首页</b>。把首页直接复制到清单上，会导致：虚增诊断→DRG分组抬高→涉嫌高套分值→医保拒付甚至处罚。
+</div>
+
+<h3>1.2 两张单据的协同关系：谁驱动谁？</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>首页填写 → 数据源头</h4>
+      <p>临床医生记录真实病情，编码员按国临版ICD完成编码。这是所有后续数据的"原材料"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>首页数据 → 清单"再加工"</h4>
+      <p>HIS系统从首页提取诊疗信息，编码员（或系统）过滤掉不影响资源消耗的其他诊断，将国临版编码映射为医保版编码。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>清单上传 → 分组+支付</h4>
+      <p>清单上传至医保平台→DRG/DIP分组器→生成支付金额。清单质量直接决定医院收入。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>反馈循环</h4>
+      <p>DRG入组结果（QY歧义组、高倍率、低倍率）反馈回院内→质控部门溯源到首页问题→推动首页填写质量改进。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======== 二、六大维度逐条对比 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔬</span> 二、六大核心差异——逐条拆解</h2>
+
+<h3>差异一：制定部门与目标体系</h3>
+<p>卫健委管医疗质量，所以首页追求"全面"——所有诊断都填上，服务于国考、等级评审、科研。医保局管基金安全，所以清单追求"精准"——只填影响费用的诊断，作为支付依据。</p>
+
+<h3>差异二：编码标准——医保版 vs 国临版</h3>
+<p>这是最容易在执行层面被忽略的差异。医院日常编码使用的是国家临床版（国临版）ICD-10，但医保局要求清单上传使用医保版编码。<strong>两者并不是一一对应关系</strong>，需要做映射：</p>
+
+<table>
+  <tr><th>场景</th><th>国临版</th><th>医保版（需映射后）</th><th>映射要点</th></tr>
+  <tr>
+    <td>社区获得性肺炎</td>
+    <td><code>J15.902</code></td>
+    <td><code>J15.902</code></td>
+    <td>多数编码直接对应，少数需要转换</td>
+  </tr>
+  <tr>
+    <td>2型糖尿病伴周围循环并发症</td>
+    <td><code>E11.401</code></td>
+    <td>需查看对应表</td>
+    <td>扩展码映射可能不同，需建立对照表</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 映射不正确 = 入组失败：</strong>如果医院直接上传国临版编码而没有按医保局要求做好映射，系统无法识别→分组器报错→病例未入组→医院拿不到钱。很多医院DRG初期亏损，根源就在映射表没做好。
+</div>
+
+<h3>差异三：主要诊断选择的"三最"——顺序不同，结果不同</h3>
+<p>首页和清单都用了"三最"原则，但<strong>顺序不同</strong>：</p>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>📋 病案首页的"三最"</h4>
+    <p>① 对患者<strong>健康危害最大</strong></p>
+    <p>② 消耗医疗资源最多</p>
+    <p>③ 影响住院时间最长</p>
+    <p style="margin-top:8px;color:var(--text3);">→ 突出"疾病难易程度"</p>
+  </div>
+  <div class="compare-col good">
+    <h4>💰 医保结算清单的"三最"</h4>
+    <p>① <strong>消耗医疗资源最多</strong></p>
+    <p>② 对患者健康危害最大</p>
+    <p>③ 影响住院时间最长</p>
+    <p style="margin-top:8px;color:var(--text3);">→ 突出"医疗资源消耗"</p>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>📌 什么时候这个顺序差异会改变结果？</strong><br><br>
+  <strong>案例：</strong>90岁心梗患者，整体健康差，既不能手术也不能放支架，只能保守治疗。心梗对健康危害最大，但<strong>消耗资源最多的是合并的严重感染</strong>（大量抗生素+重症监护）。<br><br>
+  <strong>首页：</strong>主诊断选心梗（健康危害最大）<br>
+  <strong>清单：</strong>主诊断可能选严重感染（资源消耗最多）<br><br>
+  这个差异直接影响DRG入组——两个诊断可能分到完全不同的ADRG。
+</div>
+
+<h3>差异四：其他诊断——"全量" vs "精选"</h3>
+<p>这一差异是首页→清单转换中最容易出错的环节，也是医保飞检的重点关注项。</p>
+
+<table>
+  <tr><th>对比维度</th><th>病案首页</th><th>医保结算清单</th></tr>
+  <tr>
+    <td><strong>填报原则</strong></td>
+    <td>患者所有现存疾病全部填写——从严重的心衰到轻微的脂肪肝、10年前的外伤史</td>
+    <td>仅填报<strong>对本次住院有影响</strong>的诊断——即消耗了医疗资源（检查/治疗/监护/延长住院时间）的</td>
+  </tr>
+  <tr>
+    <td><strong>典型不填项</strong></td>
+    <td>N/A——全部都要填</td>
+    <td>肝囊肿（未治疗）、陈旧性外伤（无活动）、稳定期慢性病（未干预）</td>
+  </tr>
+  <tr>
+    <td><strong>风险</strong></td>
+    <td>填少了→质控扣分、国考指标受影响</td>
+    <td>填多了→"故意多编"→涉嫌高套分值→医保拒付或处罚</td>
+  </tr>
+</table>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>案例：肺炎入院，附带发现肝囊肿</h4>
+    <p>患者因社区获得性肺炎入院，腹部彩超顺便发现肝囊肿（无需治疗）。</p>
+    <p><strong>首页：</strong>主诊断 J15.902 + 其他诊断 K76.807（肝囊肿）</p>
+    <p><strong>清单：</strong>主诊断 J15.902，其他诊断<strong>无</strong>（肝囊肿不消耗资源）</p>
+  </div>
+  <div class="example-item">
+    <h4>案例：肝硬化出血，伴有陈旧外伤</h4>
+    <p>患者因肝硬化食管静脉曲张破裂出血入院，30年前曾有外伤致单眼失明。</p>
+    <p><strong>首页：</strong>主诊断 + 其他诊断包括"外伤后单眼失明"</p>
+    <p><strong>清单：</strong>不填"单眼失明"——无资源消耗，无需填报</p>
+  </div>
+</div>
+
+<h3>差异五：入院病情"4"的绝对禁区</h3>
+<p>这是清单最"硬"的一条规则，没有通融余地：</p>
+
+<div class="card warn">
+  <p><strong>入院病情代码含义：</strong></p>
+  <p>1 = 有（入院时已明确诊断）<br>
+  2 = 临床未确定（入院时是疑似诊断，出院时确诊）<br>
+  3 = 情况不明（入院时处于潜伏期/窗口期，入院后发现）<br>
+  <strong>4 = 无（住院期间新发生的）</strong></p>
+  <p style="margin-top:12px;"><strong>📌 清单铁律：原则上，入院病情为"4"的诊断不能作为主诊断。</strong></p>
+</div>
+
+<p>为什么这条规则这么重要？因为它背后是一个更深层的逻辑：<strong>医保基金不再为医疗差错/不良事件买单。</strong></p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>违规案例：坠床事故→骨折→置换</h4>
+    <p>患者入院调血糖，住院期间发生坠床（护理不良事件）→股骨颈骨折→行人工关节置换。</p>
+    <p><strong>❌ 违规操作：</strong>把入院病情"4"的骨折改写成"3"，用骨折+关节置换入DRG组——严重骗保。</p>
+    <p><strong>✅ 正确做法：</strong>主诊断仍为调血糖相关诊断，骨折作为其他诊断并标记入院病情"4"。</p>
+  </div>
+  <div class="example-item">
+    <h4>合规案例：急诊手术后并发症</h4>
+    <p>患者因股骨颈骨折急诊手术，术后发生脂肪栓塞（入院病情"4"）。</p>
+    <p>但如果脂肪栓塞比骨折更严重，消耗资源更多→<strong>可以作为主诊断</strong>（属于规则中的特殊约定例外）。</p>
+  </div>
+</div>
+
+<h3>差异六：编码映射——看不见的"翻译层"</h3>
+<p>多数医院的HIS系统内置国临版编码，清单上传时需要自动映射为医保版。但这个映射不是简单的"一一对应"：</p>
+
+<pre>国临版 ICD-10 编码   →   【映射对照表】   →   医保版 ICD-10 编码
+
+⚠️ 常见映射问题：
+1. 映射表版本过旧（医保版已更新，医院未同步）
+2. 扩展码不对应（国临版有但医保版没有的编码 → 需要上翻到类目）
+3. 中医诊断误传到西医诊断字段
+4. 主诊断标志未正确标记（清单要求有且仅有一个"主诊断标志"）</pre>
+
+<hr class="section-divider">
+
+<!-- ======== 三、首页→清单 转换实战 ======== -->
+<h2><span class="icon">🔄</span> 三、首页→清单 转换全流程</h2>
+
+<h3>3.1 "其他诊断"过滤三步法</h3>
+<p>从首页转到清单时，编码员需要逐条审视其他诊断，判断其是否应在清单中保留。判断标准只有一个关键词：<strong>资源消耗</strong>。</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">①</div>
+    <div class="process-content">
+      <h4>判断是否消耗了医疗资源</h4>
+      <p>包括但不限于：临床评估、检验检查、诊断性操作、治疗、护理、监护、延长住院时间。</p>
+      <p>如果该诊断在住院期间进行了<strong>任何形式的干预</strong>（哪怕只是化验、会诊、观察），就应保留。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">②</div>
+    <div class="process-content">
+      <h4>判断是否有明确诊断替代了症状</h4>
+      <p>如患者因"腹痛"入院，住院期间确诊"胃溃疡"，则清单中只保留"胃溃疡"的编码，不保留症状码"腹痛"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">③</div>
+    <div class="process-content">
+      <h4>避免重复编码</h4>
+      <p>如主诊断是"酒精性肝硬化伴食管静脉曲张破裂出血"，就不要再编"上消化道出血"——这是主诊断的临床表现，属于重复编码。</p>
+    </div>
+  </div>
+</div>
+
+<h3>3.2 转换案例详解</h3>
+
+<table>
+  <tr><th>步骤</th><th>病案首页</th><th>医保结算清单</th><th>转换理由</th></tr>
+  <tr>
+    <td>主诊断</td>
+    <td>社区获得性肺炎 J15.902</td>
+    <td>社区获得性肺炎 J15.902</td>
+    <td>一致（多数情况主诊断不变）</td>
+  </tr>
+  <tr>
+    <td>其他诊断1</td>
+    <td>2型糖尿病 E11.900</td>
+    <td>2型糖尿病 E11.900</td>
+    <td><strong>保留</strong>——住院期间进行了血糖监测和降糖治疗</td>
+  </tr>
+  <tr>
+    <td>其他诊断2</td>
+    <td>肝囊肿 K76.807</td>
+    <td>（删除）</td>
+    <td><strong>不填</strong>——仅彩超顺便发现，未做任何治疗</td>
+  </tr>
+  <tr>
+    <td>其他诊断3</td>
+    <td>陈旧性踝关节骨折 Z87.8</td>
+    <td>（删除）</td>
+    <td><strong>不填</strong>——10年前外伤史，本次住院无任何干预</td>
+  </tr>
+  <tr>
+    <td>其他诊断4</td>
+    <td>高血压 I10.x05</td>
+    <td>高血压 I10.x05</td>
+    <td><strong>保留</strong>——住院期间每日监测血压，继续口服降压药</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 四、DRG/DIP付费下的清单填报陷阱 ======== -->
+<h2><span class="icon">⚠️</span> 四、最常见填报错误 TOP 5</h2>
+
+<div class="card warn">
+  <h3 style="margin:0 0 8px;color:var(--red);">错误1：编码映射不一致 → 入组失败</h3>
+  <p>医院使用国临版编码，但没有按医保局发布的对应表做好映射就直接上传。系统无法识别→未入组→医院收不到钱。</p>
+  <p><strong>对策：</strong>定期更新院内编码映射表，与医保局发布的版本保持同步。</p>
+</div>
+
+<div class="card warn">
+  <h3 style="margin:0 0 8px;color:var(--red);">错误2：入院病情"4"做成了主诊断</h3>
+  <p>住院期间新发生的并发症（如术后感染、坠床骨折）被设为主要诊断。医保认定这是医疗质量问题，不为此买单。</p>
+  <p><strong>对策：</strong>质控系统设置硬校验——入院病情"4"的诊断自动拦截，不能设为主诊断。</p>
+</div>
+
+<div class="card warn">
+  <h3 style="margin:0 0 8px;color:var(--red);">错误3："全量照搬"首页的其他诊断</h3>
+  <p>把首页上所有诊断原封不动复制到清单，包括大量无资源消耗的合并症/个人史。这被视为"故意多编"。</p>
+  <p><strong>对策：</strong>每条其他诊断逐一过筛——"本次住院消耗了资源吗？"</p>
+</div>
+
+<div class="card warn">
+  <h3 style="margin:0 0 8px;color:var(--red);">错误4：倾向高权重诊断 → 编码高套</h3>
+  <p>医生或编码员根据"哪个诊断分值高"来选主诊断，而非根据真实病情。医保飞检发现后，判定为骗保。</p>
+  <p><strong>对策：</strong>主诊断选择必须可溯源——病程记录能支撑该诊断是本次住院的主要原因。</p>
+</div>
+
+<div class="card warn">
+  <h3 style="margin:0 0 8px;color:var(--red);">错误5：未正确使用"不能做主诊断"的编码</h3>
+  <p>将Z37（分娩结局）、V01-Y98（损伤外因）、T31（烧伤面积）等<strong>只能作为附加码</strong>的编码用作了主诊断。</p>
+  <p><strong>对策：</strong>牢记不可做主诊断的编码类型：外因码、个人史码、状态码、烧伤面积码等。</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 五、重难点深度解析：入院病情"4"——什么时候可以有例外？</h2>
+
+<h3>为什么这条规则如此重要？</h3>
+<p>入院病情"4"的主诊断禁令，本质上是医保支付改革的核心逻辑之一：<strong>从"按项目付费→按结果付费"的转变。</strong></p>
+<p>在按项目付费时代，医院发生的并发症越多，收入越多——一个术后感染能带来额外的抗生素+住院天数+护理费收入。但在DRG/DIP按病种打包付费下，这些并发症不再带来额外收入。医保通过"入院病情4不能做主诊断"这条规则明确表态：<strong>你医院自己造成的问题，不要找我买单。</strong></p>
+
+<h3>例外情况有哪些？</h3>
+<table>
+  <tr><th>例外情形</th><th>说明</th><th>示例</th></tr>
+  <tr>
+    <td><strong>急诊手术后并发症</strong></td>
+    <td>如果术后并发症比原发病更严重，消耗资源更多，可以作为主诊断</td>
+    <td>股骨颈骨折急诊手术→术后脂肪栓塞→脂肪栓塞做主诊断 T79.1</td>
+  </tr>
+  <tr>
+    <td><strong>需治疗原诊疗计划未执行原因</strong></td>
+    <td>当针对导致原计划未执行的疾病做了相应诊疗时，选择该疾病为主诊断</td>
+    <td>拟行子宫肌瘤手术，术前发现严重心律失常→先治疗心律失常→心律失常为主诊断</td>
+  </tr>
+  <tr>
+    <td><strong>难以避免的并发症</strong></td>
+    <td>通过临床循证医学证明该并发症在现有技术条件下难以避免</td>
+    <td>骨髓抑制是化疗几乎必然的并发症（争议较多，需审慎判断）</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 实操口诀：</strong>"入院有→1，入院疑→2，入院藏→3，入院无→4。4不做主诊，急手例外。能避免的4做了主诊=医疗质量问题=医保不买单。"
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共6题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 其他诊断过滤</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"急性胰腺炎 K85.900"入院，住院病历中还记录了以下情况。请判断哪些应该出现在<strong>医保结算清单</strong>的其他诊断中：</p>
+    <ol>
+      <li>胆囊结石 K80.200（入院检查发现，本次住院未处理，建议择期手术）</li>
+      <li>高血压 I10.x05（入院时已确诊，住院期间每日监测血压、继续口服降压药）</li>
+      <li>10年前阑尾切除史 Z90.8（仅问病史时提及）</li>
+      <li>住院第3天发生低钾血症 E87.6（经补钾治疗后纠正）</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 清单应保留的其他诊断：</strong></p>
+        <p><strong>② 高血压 I10.x05</strong> —— 保留。住院期间进行了血压监测并继续药物治疗，消耗了医疗资源。</p>
+        <p><strong>④ 低钾血症 E87.6</strong> —— 保留。住院期间新发生，进行了补钾治疗，消耗了资源。入院病情为"4"，只能作为其他诊断，不能做主诊断。</p>
+        <p><strong>❌ 不应出现在清单的其他诊断：</strong></p>
+        <p><strong>① 胆囊结石</strong> —— 不填。虽已发现但本次住院未进行任何处理，无资源消耗。</p>
+        <p><strong>③ 阑尾切除史</strong> —— 不填。仅病史提及，无任何诊疗行为，零资源消耗。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 入院病情判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>请为以下诊断匹配正确的入院病情代码（1/2/3/4）：</p>
+    <table>
+      <tr><th>诊断</th><th>入院时情况</th><th>入院病情</th></tr>
+      <tr><td>乳腺癌</td><td>入院前穿刺已确诊</td><td>？</td></tr>
+      <tr><td>肺占位（入院时"肺恶性肿瘤不除外"）</td><td>出院时病理确诊为肺腺癌</td><td>？</td></tr>
+      <tr><td>高血压</td><td>入院时未诊断，入院后体检发现血压高（150/95mmHg）</td><td>？</td></tr>
+      <tr><td>术后切口感染</td><td>入院时无感染，术后第5天发生</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>乳腺癌 → 1（有）</strong>：入院前已通过穿刺病理确诊。</p>
+        <p><strong>肺腺癌 → 2（临床未确定）</strong>：入院时是可疑诊断，缺少病理结果，出院时确诊。注意不是3！因为入院时临床医生已经考虑了这个可能性。</p>
+        <p><strong>高血压 → 3（情况不明）</strong>：入院时不知晓，入院后检查新发现的慢性疾病，应选"3"而非"4"。<strong>💡 关键区别：</strong>住院期间新发现的慢性疾病（如高血压、高脂血症、胆囊结石）选"3"，只有住院期间真正新发生的急性问题（如医院感染、术后并发症）才选"4"。</p>
+        <p><strong>术后切口感染 → 4（无）</strong>：入院时明确没有，住院期间新发生。这个就是真正的"4"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 清单主诊断判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因"胆囊结石伴慢性胆囊炎"择期入院行腹腔镜胆囊切除术，术后第3天发生肺栓塞，转入ICU治疗7天。</p>
+    <p><strong>问题：</strong>医保结算清单的主诊断应该选什么？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：胆囊结石伴有慢性胆囊炎 K80.101</strong></p>
+        <p><strong>✅ 推理过程：</strong></p>
+        <p>① 肺栓塞是<strong>择期手术后的并发症</strong>（入院病情"4"），按规则<strong>不能作为主诊断</strong>。</p>
+        <p>② 清单规范明确：择期手术后出现的并发症，应作为其他诊断填写。</p>
+        <p>③ 患者本次住院的<strong>原始目的</strong>是治疗胆囊结石，消耗资源的主体也围绕胆囊切除术展开。</p>
+        <p><strong>✅ 最终编码：</strong>主诊断 K80.101，其他诊断包括 I26.901（肺栓塞，入院病情4）。</p>
+        <p><strong>💡 如果改为急诊手术：</strong>假设患者因急性胆囊炎急诊入院，急诊手术后发生更严重的肺栓塞消耗更多资源→此时可以考虑肺栓塞做主诊断（属于急诊术后并发症例外）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 综合转换</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者的<strong>病案首页</strong>诊断如下。请将其转换为<strong>医保结算清单</strong>（给出应保留的诊断及理由）：</p>
+    <table>
+      <tr><th>序号</th><th>诊断</th><th>入院病情</th><th>住院期间处理</th></tr>
+      <tr><td>主诊断</td><td>2型糖尿病伴酮症酸中毒 E11.101</td><td>1（有）</td><td>胰岛素泵、补液、纠酸</td></tr>
+      <tr><td>其他1</td><td>高血压2级 I10.x04</td><td>1（有）</td><td>每日测血压、口服降压药</td></tr>
+      <tr><td>其他2</td><td>高脂血症 E78.500</td><td>1（有）</td><td>继续口服降脂药</td></tr>
+      <tr><td>其他3</td><td>肝囊肿 K76.807</td><td>1（有）</td><td>入院彩超发现，未处理</td></tr>
+      <tr><td>其他4</td><td>低钾血症 E87.600</td><td>4（无）</td><td>住院期间发生，补钾纠正</td></tr>
+      <tr><td>其他5</td><td>20年前阑尾切除史 Z90.800</td><td>1（有）</td><td>病史提及，无干预</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 医保结算清单应保留：</strong></p>
+        <p><strong>主诊断：</strong>2型糖尿病伴酮症酸中毒 E11.101 ✓</p>
+        <p><strong>其他诊断1：</strong>高血压2级 I10.x04 —— 保留（每日监测血压+持续服药→消耗资源）</p>
+        <p><strong>其他诊断2：</strong>高脂血症 E78.500 —— 保留（继续口服降脂药→消耗资源）</p>
+        <p><strong>其他诊断3：</strong>低钾血症 E87.600 —— 保留（入院病情"4"，住院期间新发生且进行了治疗）</p>
+        <p><strong>❌ 应删除的诊断：</strong></p>
+        <p><strong>肝囊肿 K76.807</strong> —— 不填（仅影像学发现，零干预，零资源消耗）</p>
+        <p><strong>阑尾切除史 Z90.800</strong> —— 不填（仅病史提及，零资源消耗）</p>
+        <p><strong>💡 总结：</strong>6条诊断→清单保留4条，删除2条。这就是"精选"的过程。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · "三最"顺序差异实战</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>92岁患者，因"急性心肌梗死"入院，入院时即存在"重症肺炎（呼吸衰竭，需有创呼吸机支持）"。治疗过程：心梗采取保守治疗（口服药物），主要医疗资源（ICU 10天+呼吸机+强力抗生素）用于重症肺炎。</p>
+    <p><strong>问题：</strong>病案首页和医保结算清单的主诊断各应选什么？为什么可能不同？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 病案首页主诊断：急性心肌梗死 I21.x</strong>（对健康危害最大）</p>
+        <p><strong>✅ 医保结算清单主诊断：重症肺炎 J18.9（或更具体的病原体肺炎）</strong>（消耗医疗资源最多）</p>
+        <p><strong>✅ 推理过程：</strong></p>
+        <p>① 首页"三最"排序——健康危害第一。心梗对患者的生命威胁远大于肺炎，所以首页主诊断选心梗。</p>
+        <p>② 清单"三最"排序——<strong>资源消耗第一</strong>。在本次住院中，重症肺炎消耗了ICU+呼吸机+抗生素的绝大部分费用。心梗仅口服药物，几乎不占资源。</p>
+        <p>③ 这就是"三最顺序不同导致主诊断不同"的典型案例——体现了DRG支付中"按资源消耗入组"的核心理念。</p>
+        <p><strong>💡 结论：</strong>首页和清单的主诊断可以不同，关键在于理解两条轨道的不同逻辑。这是编码员需要有能力独立判断的场景。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 违规识别</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>以下为某医院医保结算清单的部分数据，请判断是否存在填报问题：</p>
+    <p><strong>主诊断：</strong>股骨颈骨折 S72.000（入院病情：4）</p>
+    <p><strong>其他诊断：</strong>2型糖尿病 E11.900（入院病情：1）</p>
+    <p><strong>主要手术：</strong>全髋关节置换 81.51</p>
+    <p>病历摘要：患者因"糖尿病血糖控制不佳"入院调血糖。住院第4天，患者在病房如厕时跌倒，致股骨颈骨折，于住院第6天行全髋关节置换术。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>⚠️ 严重违规！</strong></p>
+        <p>① 股骨颈骨折入院病情为"4"（住院期间新发生），原则上<strong>不能作为主诊断</strong>。</p>
+        <p>② 跌倒导致的骨折属于<strong>护理不良事件</strong>——是可以通过改进护理措施合理避免的。用这个入院病情"4"的诊断做主诊断入DRG组，本质上是在用医保基金为医院的差错买单。</p>
+        <p>③ 如果骨折入院病情被改成"3"再上传，那就是<strong>篡改入院病情</strong>，属于严重骗保行为。</p>
+        <p><strong>✅ 正确做法：</strong></p>
+        <p>主诊断应为：2型糖尿病 E11.900（入院调血糖是本次住院的原始目的）</p>
+        <p>其他诊断：股骨颈骨折 S72.000（入院病情"4"，做其他诊断）</p>
+        <p>但对这个病例而言，无论怎么编，都改变不了一个事实——<strong>这是医疗不良事件</strong>。医保对此类事件不付费，医院需要自行承担骨折治疗费用。这就是"入院病情4不做主诊断"规则的制度设计初衷。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、重点回顾 ======== -->
+<h2><span class="icon">✅</span> 七、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>清单≠首页：</strong>不同部门、不同目的、不同规则——不能用复制粘贴</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码标准不同：</strong>首页国临版 ≠ 清单医保版，需要映射转换</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>"三最"顺序：</strong>首页→健康危害第一；清单→资源消耗第一</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>其他诊断过滤：</strong>首页全部填，清单只保留消耗了资源的</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>入院病情4：</strong>住院新发生=不能做主诊断（急手并发症例外）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>映射做不好=入组失败：</strong>编码对不上→分组器报错→拿不到钱</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>清单193项：</strong>31基本信息+6门诊慢特病+58住院诊疗+98收费</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>不能做主诊断的：</strong>Z37、V01-Y98、T31、Z状态码、入院病情4</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 49 主题：DRG 歧义病例（QY）分析 —— 诊断与手术不匹配</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>什么是 QY（歧义）病例？它和"未入组"有什么区别？</li>
+    <li>哪些诊断和手术的组合会导致 QY？最常见的 QY 组合有哪些？</li>
+    <li>编码员如何提前发现和避免 QY 病例？</li>
+    <li>QY 病例对医院收入的影响有多大？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 48 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 + 医保版 | 参考：医保发〔2019〕55号、医保办发〔2020〕20号</p>
+</div>
+
+</body>
+</html>
