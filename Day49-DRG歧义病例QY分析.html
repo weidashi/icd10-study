@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 49（2026年8月6日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #b91c1c 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .matrix-table td:first-child { font-weight: 700; background: #fafafa; color: var(--accent); }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-step {
+    counter-increment: rule-step;
+  }
+  .rule-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #ea580c, #dc2626);
+    color: #fff; font-weight: 800; font-size: 14px; margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 49 · 2026年8月6日</div>
+  <h1>🚨 DRG 歧义病例（QY）分析</h1>
+  <p class="subtitle">诊断与手术不匹配 —— 第五阶段 · 入组实战</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:81.7%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 49 / 60 天（81.7%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">QY 歧义病例是 DRG 入组失败的"重灾区"，直接关系医院医保结算收入。今天的目标是建立"诊断与手术必须对应"的审核本能：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（核心概念，入组审核高频）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>QY（歧义）病例的定义——主要诊断与主要手术不对应，无法分入任何 DRG 组</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>QY 与"未入组"的本质区别（逻辑冲突 vs 数据缺失）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>入歧义组的结算后果——按实际费用折算点数 90% 结算</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>手术编码原则：按手术记录实质编码，不照搬临床书写</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（避免常见错误和深度应用）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>QY 产生的四大原因：诊断选错 / 手术选错 / 诊断笼统 / 编码错误</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>QY 处理四步流程：检出 → 复核 → 修正 → 重传</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>高倍率 / 低倍率 / 歧义组 / 特例单议的概念区分</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展知识）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>特例单议的适用范围与 5% 限额控制</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>年度清算时歧义病例点数的追加减机制</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>主要诊断选择"更具体的临床表现"优先规则（首页填报规范第十一条）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>QY 病例是编码员与医保结算之间的"最后一公里"——编码本身可能没错，但主要诊断与主要手术不在"同一件事"上，就会直接掉入歧义组扣 10% 结算。今天务必把"诊断↔手术对应关系"的审核动作练成肌肉记忆。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">📖</span> 一、什么是 QY（歧义）病例？</h2>
+
+<h3>1.1 定义：QY = Query（歧义）病例</h3>
+<p><strong>QY 病例</strong>（QY = Query，歧义/疑问）指的是：<span class="hl">病案首页的主要诊断和主要手术操作之间不对应、不相关，导致无法将病案分入任何 DRG 组的病例</span>。分组器会将其归入"歧义组"（QY 组）。</p>
+
+<div class="card warn">
+  <strong>⚠️ 核心判断标准：</strong>主要诊断与主要手术操作必须描述"<strong>同一件事</strong>"。比如——诊断是"急性阑尾炎"，手术就必须围绕阑尾（阑尾切除术）；如果首页写的是"急性阑尾炎 + 胆囊切除术"，诊断和手术各说各话，分组器就不知道这笔钱花在治什么病上，只能判定为 QY。
+</div>
+
+<h3>1.2 QY 与「未入组」的区别——两者不是一回事</h3>
+
+<table>
+  <tr><th>对比维度</th><th>QY 歧义病例</th><th>未入组病例</th></tr>
+  <tr>
+    <td>根本原因</td>
+    <td><strong>逻辑冲突</strong>：主要诊断与主要手术不匹配</td>
+    <td><strong>数据问题</strong>：信息缺失、编码无效、超出规则</td>
+  </tr>
+  <tr>
+    <td>典型表现</td>
+    <td>诊断肺炎 + 手术胆囊切除；甲状腺肿物 + 乳腺手术编码</td>
+    <td>主要诊断缺失、主要手术编码无效、年龄性别与诊断矛盾</td>
+  </tr>
+  <tr>
+    <td>分组器提示</td>
+    <td>提示"歧义/Query"，入<strong>歧义组</strong></td>
+    <td>提示"无法入组 / 入空白组"</td>
+  </tr>
+  <tr>
+    <td>结算影响</td>
+    <td>按实际费用折点数的 <strong>90%</strong> 预结</td>
+    <td>通常按更低标准或项目付费结算</td>
+  </tr>
+  <tr>
+    <td>修正方向</td>
+    <td>修正诊断与手术的<strong>对应关系</strong></td>
+    <td>补齐数据、修正无效编码</td>
+  </tr>
+</table>
+
+<h3>1.3 入歧义组的后果——直接的经济损失</h3>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">90%</div>
+    <div class="stat-label">入歧义组按实际费用折算点数结算（如成都方案）</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">直接亏损 10%</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">± 点数</div>
+    <div class="stat-label">年度清算按原因追加或扣减点数</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">因医院原因则扣减</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">1 个</div>
+    <div class="stat-label">首页上两个字段的错位</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:6px;">诊断 ↔ 手术</div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>本质再提炼：</strong>QY 的实质就是<strong>主要诊断和主要手术不是"同一件事"</strong>。DRG 分组的逻辑是用"主要诊断定病例、主要手术定操作维度"，两者必须在同一个临床逻辑链上。医保按组付费，入歧义组意味着无法按正常权重结算，医院承担损失。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🗺️</span> 二、QY 产生的四大原因</h2>
+
+<p>掌握 QY 的判断，先要掌握 QY 是怎么产生的。绝大多数歧义病例都逃不出以下四种原因：</p>
+
+<table>
+  <tr><th>原因</th><th>表现</th><th>典型示例</th></tr>
+  <tr>
+    <td><strong>① 主要诊断选错</strong></td>
+    <td>诊断与手术部位不符，诊断没有反映本次住院实际治疗的病</td>
+    <td>诊断"颈部淋巴结继发恶性肿瘤"，手术却做"颈部软组织病损切除术"——诊断定位在淋巴结，手术却编码到软组织</td>
+  </tr>
+  <tr>
+    <td><strong>② 主要手术选错</strong></td>
+    <td>手术与诊断不对应，把与主要诊断无关的手术列为主要手术</td>
+    <td>诊断"肺炎"（J 章呼吸系统），主要手术却编"胆囊切除术"（51.22）——手术跟肺炎毫无关系</td>
+  </tr>
+  <tr>
+    <td><strong>③ 诊断笼统不具体</strong></td>
+    <td>"帽子诊断"无法对应到具体手术，分组器无法判定归属</td>
+    <td>诊断"腹部包块"（未明确性质），手术"剖腹探查术"——包块是什么病？探查结果没写清，无法入组</td>
+  </tr>
+  <tr>
+    <td><strong>④ 编码错误</strong></td>
+    <td>部位/术式编码编错，使手术看起来与诊断无关</td>
+    <td>临床诊断"甲状腺肿物"，手术实际做甲状腺切除，但编码员错编到"乳腺手术"——一个键位之差，整个病例掉入歧义</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 自我检查口诀：</strong>拿到一份首页，先问自己三句话——<strong>① 这个手术是治哪个病的？② 主要诊断是不是那个病？③ 手术名称能不能从手术记录里对得上？</strong>三句话有任何一句答不上来，就存在 QY 风险。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">🔬</span> 三、典型 QY 案例拆解</h2>
+
+<div class="card">
+  <h4>📋 案例：颈部淋巴结继发恶性肿瘤 + 颈部软组织肿块切除</h4>
+  <p style="font-size:13px;color:var(--text3);margin-top:6px;">某患者因颈部淋巴结肿大入院，术后病理证实为<strong>转移性横纹肌肉瘤（M8900/6）</strong>，临床手术记录明确为"颈部淋巴结清扫"。病案首页填报如下：</p>
+
+  <table style="margin-top:14px;">
+    <tr><th>字段</th><th>首页填报内容</th><th>问题</th></tr>
+    <tr>
+      <td>主要诊断</td>
+      <td><code>C77.002</code> 颈部淋巴结继发恶性肿瘤</td>
+      <td>定位在"淋巴结"，正确</td>
+    </tr>
+    <tr>
+      <td>主要手术</td>
+      <td>临床书写"颈部软组织肿块切除" → 编码为 <code>83.39</code> 颈部软组织病损切除术</td>
+      <td><strong>错</strong>：手术定位在"软组织"，与诊断不对应</td>
+    </tr>
+  </table>
+
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col bad">
+      <h4>❌ 歧义判定过程</h4>
+      <p><code>83.39</code>（软组织病损切除术）按分组规则入 <strong>MDCD（头颈耳鼻口咽）</strong>相关组</p>
+      <p>而主要诊断"继发恶性肿瘤"应入肿瘤相关 MDC（如 MDCT/MDCA 肿瘤组）</p>
+      <p style="color:var(--red);margin-top:8px;">诊断组与手术组不对应 → 分组器报 <strong>QY</strong>，病例掉入歧义组</p>
+    </div>
+    <div class="compare-col good">
+      <h4>✅ 修正方案</h4>
+      <p>回翻手术记录：实质是"根治性颈淋巴结清扫"</p>
+      <p><strong>手术编码改为：</strong><code>40.41</code> 根治性颈淋巴结清扫，单侧</p>
+      <p style="color:var(--green);margin-top:8px;">手术定位在"淋巴结"，与主要诊断对应 → <strong>正常入组</strong></p>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>💡 教训提炼：</strong>① 主要手术必须与主要诊断对应，同为"淋巴结"这个器官系统；② <strong>手术名称不能直接照搬临床书写</strong>——临床写"软组织肿块切除"是口语化描述，编码员必须按手术记录的实质内容（清扫了哪组淋巴结、是根治性还是局部切除）来确定编码。
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">📐</span> 四、QY 处理流程 —— 检出到重传四步走</h2>
+
+<p>发现 QY 病例后不要慌，按标准流程走，绝大多数都能修正重传、挽回损失：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>检出</h4>
+      <p>分组器在预分组/预结算时报出 <strong>QY / 歧义提示</strong>，或病案首页月度质控抽检中发现"诊断与手术不对应"</p>
+      <p><strong>关键动作：</strong>把 QY 病例清单拉出来，按科室归类，逐份排查</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>复核</h4>
+      <p>调阅<strong>手术记录、病程记录、术后诊断</strong>，核对主要诊断与主要手术是否对应、编码是否与记录实质一致</p>
+      <p><strong>关键动作：</strong>回答"手术到底治的是哪个病？诊断是不是那个病？"</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>修正</h4>
+      <p>与临床科室沟通确认，<strong>谁错了改谁</strong>——诊断选错改诊断，手术编码错改手术</p>
+      <p><strong>优先级提示：</strong>多数 QY 出在手术编码上，优先核对手术；确实需要改诊断的必须有病程记录/病理报告支持</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>重传</h4>
+      <p>修正后的首页重新上传医保结算清单，重新执行分组</p>
+      <p><strong>关键动作：</strong>确认重新入组成功后再进入结算，跟踪到账</p>
+    </div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>💡 时限提醒：</strong>各地医保对结算清单的修正重传有时间窗口（通常在月度结算前），QY 病例越早发现越主动。建议把 QY 排查纳入<strong>月度的例行质控</strong>，而不是等医保反馈后才处理。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">⚡</span> 五、与 QY 相关的特殊病例概念</h2>
+
+<p>QY 只是入组异常中的一种。DRG 支付体系里还有几个高频概念，放在一起对比记忆更清晰：</p>
+
+<table>
+  <tr><th>概念</th><th>定义</th><th>结算/处理方式</th></tr>
+  <tr>
+    <td><strong>高倍率病例</strong></td>
+    <td>实际费用显著高于该组付费标准的病例</td>
+    <td>费用异常的原因多样（复杂合并症、特殊情况），需<strong>特例单议</strong>或申请按项目付费，防止医院"干得多赔得多"</td>
+  </tr>
+  <tr>
+    <td><strong>低倍率病例</strong></td>
+    <td>实际费用低于该组付费标准的病例</td>
+    <td>费用偏低说明病情轻或处置简单，按实际费用结算，防止"低标入院、套小钱"</td>
+  </tr>
+  <tr>
+    <td><strong>歧义组 / 空白组病例</strong></td>
+    <td>无法入任何 DRG 组的病例（含 QY）</td>
+    <td>月度预结按<strong>实际费用折算点数 90%</strong> 结算，年度清算根据原因追加减</td>
+  </tr>
+  <tr>
+    <td><strong>特例单议</strong></td>
+    <td>对费用远超标准的特殊病例单独讨论、单独支付</td>
+    <td>住院时间长、费用高、新药新耗新技术、复杂危重、多学科诊疗、双侧手术、儿童病例等可申请；一般<strong>不超过当年出院病例 5%</strong></td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 记忆线索：</strong>高倍率 / 低倍率看的是"<strong>费用 vs 付费标准</strong>"，歧义组看的是"<strong>能不能入组</strong>"，特例单议是"<strong>费用异常时的申诉通道</strong>"。QY 病例是明确可避免的——它不入歧义组，就不存在 90% 结算的问题，这是编码员最直接的控费贡献。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 六、今日案例练习（共 4 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前2题为基础题，后2题为进阶题。点击答案查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 识别 QY 风险</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某病案首页填报：主要诊断 <strong>"急性阑尾炎"（K35.8）</strong>，主要手术 <strong>"胆囊切除术"（51.22）</strong>。</p>
+    <p><strong>问题：</strong>这份首页会产生什么问题？应该如何解决？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 问题定性：</strong>产生 <strong>QY 歧义病例</strong>——主要诊断（急性阑尾炎）与主要手术（胆囊切除）不在"同一件事"上。</p>
+        <p><strong>✅ 推理过程：</strong>阑尾炎的治疗手术应是阑尾切除术（47.x），胆囊切除术针对的是胆囊疾病（K80-K82）。诊断与手术器官系统完全不同，分组器无法判定这次住院到底治的是什么病，必然报 QY。</p>
+        <p><strong>✅ 解决步骤：</strong></p>
+        <ol>
+          <li>复核病历：阑尾是否真的切除了？胆囊又是什么情况？</li>
+          <li>与临床沟通：如果是阑尾炎住院，主要手术应改为<strong>阑尾切除术</strong>；如果本次住院实际重点是胆囊手术，则主要诊断需改为胆囊疾病</li>
+          <li>修正后重传结算清单，重新入组</li>
+        </ol>
+        <p><strong>💡 一句话教训：</strong>诊断和手术永远要"对着看"——手术是治什么病的，诊断就必须写那个病。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · QY 病例的结算规则</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p><strong>问题：</strong>QY 病例被分组器归入歧义组后，医保是如何结算的？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 结算规则：</strong>月度预结时按<strong>实际费用折算点数，以 90% 的比例结算</strong>（如成都 DRG 方案）。</p>
+        <p><strong>✅ 补充要点：</strong></p>
+        <ol>
+          <li>先按 90% 预结，相当于医院直接损失约 10% 的费用</li>
+          <li>年度清算时，医保会根据 QY 产生的<strong>原因</strong>决定追加还是扣减点数——若是医院病案首页填报责任（编码/选择错误），通常维持扣减甚至进一步扣减</li>
+          <li>因此 QY 病例越早修正越好：<strong>修正→重传→重新入组</strong> 才是止损的唯一路径</li>
+        </ol>
+        <p><strong>💡 一句话教训：</strong>QY 是"可挽回的损失"，前提是主动检出、及时修正；放任不管 = 10% 直接亏损。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>进阶题 · 颈淋巴结继发恶性肿瘤的 QY 修正</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者主要诊断 <strong>"颈部淋巴结继发恶性肿瘤"（C77.002）</strong>，原主要手术编码为 <strong>"颈部软组织病损切除术"（83.39）</strong>，分组器报 QY。</p>
+    <p><strong>问题：</strong>如何修正？为什么原来的编码会歧义？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 修正方案：</strong>将主要手术改为 <strong>"根治性颈淋巴结清扫，单侧"（40.41）</strong>。</p>
+        <p><strong>✅ 歧义原因分析：</strong></p>
+        <ol>
+          <li><code>83.39</code>（软组织病损切除术）按分组规则入 <strong>MDCD 头颈耳鼻口咽</strong>相关组——定位在"软组织"</li>
+          <li>而主要诊断"颈部淋巴结继发恶性肿瘤"属于肿瘤范畴，应入肿瘤相关 MDC 组</li>
+          <li>诊断与手术分属不同 MDC 的逻辑域，无法匹配 → 分组器报 QY</li>
+        </ol>
+        <p><strong>✅ 修正依据：</strong></p>
+        <ol>
+          <li>调阅手术记录：实质手术是"根治性颈淋巴结清扫"，<strong>不是软组织肿块切除</strong></li>
+          <li>手术名称不能照搬临床口语书写，要按<strong>手术记录的实质操作</strong>编码</li>
+          <li>改码后手术定位在"淋巴结"，与主要诊断 C77（淋巴结）完全对应 → 正常入组</li>
+        </ol>
+        <p><strong>💡 一句话教训：</strong>诊断定位"淋巴结"，手术编码就必须也落在"淋巴结"上——器官系统对齐，是入组的第一道门槛。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 帽子诊断 vs 更具体的临床表现</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者因<strong>胸痛</strong>入院，主要诊断填报 <strong>"冠状动脉粥样硬化性心脏病"</strong>，手术 <strong>"冠状动脉造影"</strong>，入组 FQ13 组。但病程记录显示：患者实际为<strong>急性前壁心肌梗死</strong>，本次住院核心是心梗的诊治。</p>
+    <p><strong>问题：</strong>主要诊断应改为什么？依据是什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 修正：</strong>主要诊断改为 <strong>"急性前壁心肌梗死"（I21.0）</strong>。</p>
+        <p><strong>✅ 推理过程：</strong></p>
+        <ol>
+          <li>冠心病是"帽子诊断"（基础病），本次住院实际处理的是<strong>急性心梗</strong>——这是本次医疗资源消耗的焦点</li>
+          <li>依据《病案首页主要诊断选择规范》<strong>第十一条</strong>：本次住院期间出现的、需要主要治疗的、<strong>更具体的临床表现</strong>应优先作为主要诊断</li>
+          <li>急性前壁心梗（I21.0）是冠心病的急性具体表现，比笼统的"冠状动脉粥样硬化性心脏病"具体得多</li>
+          <li>不修正的风险：不仅可能影响入组权重，若临床沟通不足还容易在入组与质控环节反复被打回</li>
+        </ol>
+        <p><strong>💡 一句话教训：</strong>笼统的"帽子诊断"打天下，既违反主要诊断选择规范，也让 DRG 分组失真——<strong>选更具体的那个诊断，才是病案首页的灵魂。</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、易错点对比 ======== -->
+<h2><span class="icon">💡</span> 七、易错点对比 —— 正确 vs 错误</h2>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 主要手术照搬临床书写</h4>
+    <p>临床写"颈部软组织肿块切除"，直接编 <code>83.39</code>，不看手术记录实质</p>
+    <p>→ 软组织 vs 淋巴结错位，掉入 QY</p>
+    <p style="color:var(--red);margin-top:8px;">书面名称 ≠ 实际操作，必须看手术记录实质</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 按手术记录实质编码</h4>
+    <p>手术记录明确"根治性颈淋巴结清扫"，编 <code>40.41</code></p>
+    <p>→ 淋巴结 vs 淋巴结对齐，正常入组</p>
+    <p style="color:var(--green);margin-top:8px;">编码依据永远在手术记录里，不在临床口头书写里</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 诊断笼统"帽子诊断"</h4>
+    <p>胸痛入院写"冠状动脉粥样硬化性心脏病"，漏掉急性前壁心梗</p>
+    <p>→ 分组失真，无法反映真实资源消耗</p>
+    <p style="color:var(--red);margin-top:8px;">帽子诊断掩盖了本次住院真正要治的病</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 选择更具体的临床表现</h4>
+    <p>依据首页规范第十一条，写"急性前壁心肌梗死" I21.0</p>
+    <p>→ 主诊断精确反映本次住院核心</p>
+    <p style="color:var(--green);margin-top:8px;">具体 > 笼统，临床急重症优先</p>
+  </div>
+</div>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ QY 直接放弃</h4>
+    <p>看到分组器报 QY，不查不问，直接按歧义组 90% 结算</p>
+    <p>→ 每次 QY 都白丢 10%</p>
+    <p style="color:var(--red);margin-top:8px;">放弃 = 把可挽回的损失变成既成事实</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 与临床沟通修正重传</h4>
+    <p>按"检出→复核→修正→重传"四步走，重新入组</p>
+    <p>→ 止损 + 追回正常组权重</p>
+    <p style="color:var(--green);margin-top:8px;">QY 不可怕，可怕的是不处理 QY</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>QY 定义：</strong>主要诊断与主要手术不对应/不相关，无法分入任何 DRG 组</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>与未入组区别：</strong>QY 是逻辑冲突，未入组是数据缺失/编码无效</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>结算后果：</strong>入歧义组按实际费用折算点数 90% 结算，年度清算再追加减</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>本质一句话：</strong>主要诊断和主要手术不是"同一件事"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>四大原因：</strong>诊断选错 / 手术选错 / 诊断笼统 / 编码错误</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>手术铁律：</strong>按手术记录实质编码，不照搬临床书写</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>处理四步：</strong>检出 → 复核 → 修正 → 重传</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>特殊病例：</strong>高倍率/低倍率看费用，歧义组看入组，特例单议≤5%</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 50 主题：医保飞检与编码合规——高套、低套、低标入院、分解住院</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>什么是"高套编码"？为什么把轻症病例编入高权重 DRG 组会构成违规？</li>
+    <li>"低标入院"（无入院指征收治）与"分解住院"各指什么？二者有何关联？</li>
+    <li>医保飞检一般查哪些病案首页字段？编码员在日常工作中如何自证合规？</li>
+    <li>编码合规的底线是什么——追求入组权重最大化，还是如实反映诊疗过程？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 49 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：病案与编码 + 病案编码案例库</p>
+</div>
+
+</body>
+</html>
