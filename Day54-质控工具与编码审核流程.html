@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 54（2026年8月11日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .rule-item {
+    background: var(--card); border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: 12px 18px; margin: 10px 0; box-shadow: var(--shadow);
+  }
+  .rule-item h4 { margin: 0 0 6px; color: var(--accent); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 54 · 2026年8月11日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：质控工具与编码审核流程 —— 从"事后纠错"到"全程质控"</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 54 / 60 天（90%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（考试高频，编码员基本功）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>病案首页三级质控体系架构（临床→编码员→终末）及各级职责</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>六大类编码逻辑校验规则（合并编码、残余类目、性别冲突、必填项、主诊断限制、S-T外因）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码审核的核心流程：录入→自查→互查→终审→反馈</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>质控指标三大核心：主要诊断编码正确率、主要手术编码正确率、首页填报完整率</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（深入理解，避免系统性风险）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>智能质控系统的六大质控规则类别及AI自然语言处理在编码审核中的应用</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>编码与非编码规则的区别与协同（编码逻辑规则 vs 基本信息完整性规则）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>事中质控 vs 事后质控：从"防火墙"到"全流程"的转变逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>疾病编码与手术编码交叉校验的四大核心逻辑</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（扩展视野，不做重点）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>国家病案管理质控指标（2021版）27项指标完整体系</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>多地医院质控系统建设案例（协和四层治理、今创系统）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>质控工具是编码员的"第二双手"。学好它，不只为了通过检查，更是为了保护自己和医院的利益——DRG/DIP时代，一个未被质控系统检出的编码错误可能直接导致科室亏损。今天要记住：<strong>规则能自动化的就交给系统，系统检不出的要靠人工经验</strong>。
+</div>
+
+<!-- ======== 一、编码质控体系全线图 ======== -->
+<hr class="divider">
+<h2><span class="icon">🏗️</span> 一、编码质控体系全线图 —— 三级质控 + 四级协同</h2>
+
+<h3>1.1 为什么要建立编码质控体系？</h3>
+<p>病案首页的编码质量直接决定 DRG/DIP 入组正确率、国考指标得分、医保结算准确性。传统模式下，医生写完首页就归档，编码员在归档后才发现问题——这就是"事后质控"，问题发现得越晚，修复成本越高、影响面越大。现代质控体系的核心思路是把质控 <span class="hl"><strong>前置到填写的每一个环节</strong></span>，实现"事中质控"。</p>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num" style="color:var(--red)">事后纠错</div>
+    <div class="stat-label">传统模式：归档后发现问题→退回修改→重复归档，单份病历耗时≥30分钟</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num" style="color:var(--green)">事中质控</div>
+    <div class="stat-label">现代模式：填写时即时提示→保存前校验→提交即合格，首填即准率达 98%+</div>
+  </div>
+</div>
+
+<h3>1.2 三级质控体系（全国通用标准）</h3>
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num" style="background:#ef4444;">1</div>
+    <div class="process-content">
+      <h4>一级质控：临床科室自查（源头控制）</h4>
+      <p>由经治住院医师填写首页并初步自查 → 上级医师（主治/副主任）审查修改 → 科主任最终审核签字。</p>
+      <p>核心职责：确保诊断描述完整准确、主诊断选择合理、手术操作名称规范。目标：<strong>源头数据 100% 真实反映诊疗过程</strong>。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num" style="background:#f59e0b;">2</div>
+    <div class="process-content">
+      <h4>二级质控：编码员审核（编码转换+规则校验）</h4>
+      <p>病案科专职编码员分片包干，对全院所有出院病历开展二次质控。必查五大核心：①诊断漏填 ②诊断错填 ③手术操作漏填 ④诊断与手术匹配性 ⑤入院病情代码正确性。</p>
+      <p>编码员不仅"转码"，更要<strong>读懂病程记录、核查检验报告、追问模糊诊断</strong>。发现疑问必须与临床医师沟通确认，严禁"盲编"。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num" style="background:#4f46e5;">3</div>
+    <div class="process-content">
+      <h4>三级质控：终末质控（标准化评分+归档审核）</h4>
+      <p>由病案管理科专职质控员（通常需 5 年以上编码经验 + ICD 编码师资质）对归档前病案开展 100% 核查。</p>
+      <p>使用编码质量评分表，从准确性、完整性、合规性三维度量化考核。<strong>80 分以下退回修改</strong>，整改完成后重新审核。聚焦罕见病、DRG 高权重病例、死亡病例。</p>
+    </div>
+  </div>
+</div>
+
+<h3>1.3 DRG 时代的新角色：四级协同质控（"四位一体"）</h3>
+<p>在 DRG/DIP 支付改革推动下，越来越多的医院在传统三级质控外，新增<strong>质控部门/运营管理科</strong>作为第四级，关注风险病案和医保亏损预警：</p>
+
+<table>
+  <tr><th>角色</th><th>质控焦点</th><th>产出物</th></tr>
+  <tr><td>临床医师</td><td>填写首页、生成结算清单数据，系统实时校验</td><td>源头数据</td></tr>
+  <tr><td>编码员</td><td>编码审核、临床沟通，上万条规则辅助下高效编目</td><td>精准编码</td></tr>
+  <tr><td>病案室</td><td>定期抽查、批注评分，保证首页和清单质量</td><td>质控评分</td></tr>
+  <tr><td>质控/运营部门</td><td>关注风险病案，规避基金损失及医保亏损</td><td>盈亏损益分析</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ======== 二、编码逻辑校验规则详解 ======== -->
+<h2><span class="icon">🧮</span> 二、编码逻辑校验规则详解 —— 六大类规则全覆盖</h2>
+
+<p>编码逻辑校验是质控系统的核心引擎。一个成熟的规则库通常包含<strong>六大类</strong>校验，分为"编码规则"和"非编码规则"两部分。以下逐一拆解：</p>
+
+<h3>2.1 疾病编码之间逻辑合理性（最高频规则类）</h3>
+
+<div class="rule-item">
+  <h4>规则① 合并编码提示</h4>
+  <p>当两个可合并编码同时存在时，系统提示使用合并编码。例如：<code>B25.9</code>（巨细胞病毒病）+ <code>B24</code>（HIV）共存 → 应编码至更特异的 <code>B20.2</code>（HIV 病伴巨细胞病毒病）。</p>
+  <p><strong>质控逻辑：</strong>系统扫描所有诊断编码对，与内置"合并编码对照表"逐条匹配。命中 → 提示编码员确认是否需要合并。</p>
+</div>
+
+<div class="rule-item">
+  <h4>规则② 残余类目（.8/.9）警告</h4>
+  <p>当主诊断存在 <code>.8</code> 或 <code>.9</code> 等残余类目时，提示编码员确认是否存在更特异的亚目。例如：<code>E11.9</code>（未特指的 2 型糖尿病）与 <code>E11.1</code>（伴酮症酸中毒）同时存在时，应选 E11.1 做主诊断。</p>
+</div>
+
+<div class="rule-item">
+  <h4>规则③ 急慢性互斥检查</h4>
+  <p>同一种疾病的活动期和后遗症期一般不能同时存在。例如：<code>I69.3</code>（脑梗死后遗症）+ <code>I63.9</code>（脑梗死，未特指）→ 提示冲突，应只保留当前状态编码。</p>
+</div>
+
+<h3>2.2 手术编码之间逻辑合理性</h3>
+
+<div class="rule-item">
+  <h4>规则④ 另编码/省略编码自动提醒</h4>
+  <p>① 冠脉支架植入（<code>36.07</code>）→ 必须另编码支架个数（<code>00.45-00.48</code>）和处理血管个数（<code>00.40-00.43</code>）。</p>
+  <p>② 眼内人工晶状体置入（<code>13.71</code>）→ 系统追问是否有一期同时进行的白内障摘除术（<code>13.11-13.69</code>），若存在需另编码。</p>
+</div>
+
+<div class="rule-item">
+  <h4>规则⑤ 不能作为主要手术编码的拦截</h4>
+  <p><code>00.3</code>（计算机辅助外科）、<code>00.40-00.43</code>（治疗血管数量）、<code>00.45-00.48</code>（支架数量）等明确标注"仅作为附加编码"的类目，若被选为主手术，系统直接拦截。</p>
+</div>
+
+<h3>2.3 疾病与手术编码交叉校验</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 典型错误示例</h4>
+    <p>主诊断 <code>O82</code>（剖宫产分娩），手术栏无 <code>74.x</code>（剖宫产术）→ 逻辑矛盾，系统必报警。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 校验逻辑</h4>
+    <p>"某些诊断必须伴随特定手术，某些手术不能出现在某些诊断下"——这叫<strong>诊断-手术匹配性校验</strong>。DIP/DRG 分组尤其依赖这项规则。</p>
+  </div>
+</div>
+
+<h3>2.4 基本信息逻辑校验</h3>
+
+<table>
+  <tr><th>校验维度</th><th>规则示例</th><th>触发后动作</th></tr>
+  <tr>
+    <td><strong>性别冲突</strong></td>
+    <td>女性患者 + 编码 <code>C61</code>（前列腺癌）/ 男性患者 + <code>C53</code>（宫颈癌）</td>
+    <td>刚性预警，直接禁止提交</td>
+  </tr>
+  <tr>
+    <td><strong>年龄冲突</strong></td>
+    <td>新生儿专属疾病编码（如 P00-P96）用于 28 天以上患者</td>
+    <td>警告提示，要求确认</td>
+  </tr>
+  <tr>
+    <td><strong>年龄适配阈值</strong></td>
+    <td>老年特有慢病编码用于 18 岁以下患者</td>
+    <td>警告提示</td>
+  </tr>
+  <tr>
+    <td><strong>新生儿体重</strong></td>
+    <td>Z37 编码存在时，新生儿出生体重必填，入院体重应为空</td>
+    <td>必填项校验</td>
+  </tr>
+</table>
+
+<h3>2.5 肿瘤编码专项校验</h3>
+
+<div class="card tip">
+  <p><strong>肿瘤编码有两类校验缺一不可：</strong></p>
+  <ul>
+    <li><strong>形态学编码必填：</strong>当部位编码为 C00-C97 或 D00-D48 时，形态学编码（M 码）必须存在。</li>
+    <li><strong>动态码与部位码一致性：</strong><code>/0</code>（良性）对应 D10-D36；<code>/1</code>（交界）对应 D37-D48；<code>/2</code>（原位癌）对应 D00-D09；<code>/3</code>（原发性恶性）对应 C00-C76, C80-C97；<code>/6</code>（继发恶性）对应 C77-C79。不匹配即报错。</li>
+  </ul>
+</div>
+
+<h3>2.6 必填项与其他校验</h3>
+
+<table>
+  <tr><th>规则类别</th><th>典型触发条件</th><th>动作</th></tr>
+  <tr><td>S-T 损伤编码</td><td>有 S00-T98 编码但无 Y01-Y98 外因码</td><td>禁止提交</td></tr>
+  <tr><td>星剑号配对</td><td>存在 * 号编码但无对应的 † 号编码</td><td>警告</td></tr>
+  <tr><td>不可做主诊断</td><td>B95-B97（病原体）、R65（SIRS）、Z37（分娩结局）、J96（呼衰）等被选为主诊断</td><td>警告</td></tr>
+  <tr><td>离院方式</td><td>离院方式为"转院"但未填写接收机构名称</td><td>必填提示</td></tr>
+  <tr><td>手术费用</td><td>有手术费用但手术操作编码为空</td><td>警告</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 三、智能质控工具 ======== -->
+<h2><span class="icon">🤖</span> 三、智能质控工具 —— 从规则匹配到 AI 语义理解</h2>
+
+<h3>3.1 智能质控系统的三阶段进化</h3>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>第一代：规则匹配型</h4>
+    <p>基于 IF-THEN 规则库，"编码 A 不能与编码 B 共存"、"必填字段不能为空"。优点是逻辑清晰、可控；缺点是只能发现已知的固定模式错误，无法应对复杂临床场景。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>第三代：AI 语义理解型</h4>
+    <p>NLP 技术对病程记录、手术记录、检查报告做后结构化处理，将非结构化文本转化为结构化数据，与编码结果交叉校验。能从"医生写了什么"直接判断"编码编得对不对"。</p>
+  </div>
+</div>
+
+<h3>3.2 智能质控系统的六大功能模块</h3>
+
+<table>
+  <tr><th>模块</th><th>功能描述</th><th>质控价值</th></tr>
+  <tr>
+    <td><strong>完整性质控</strong></td>
+    <td>必填项校验、数据格式校验（手机号 11 位、邮编 6 位），保存即提示</td>
+    <td>杜绝缺项归档</td>
+  </tr>
+  <tr>
+    <td><strong>值域范围质控</strong></td>
+    <td>关系、职业、麻醉方式、标准科室等字段合规性校验</td>
+    <td>标准化数据</td>
+  </tr>
+  <tr>
+    <td><strong>逻辑合理性质控</strong></td>
+    <td>诊断合并冲突、药物/操作逻辑矛盾自动识别</td>
+    <td>纠正常识性错误</td>
+  </tr>
+  <tr>
+    <td><strong>诊断逻辑质控</strong></td>
+    <td>主诊选择、次诊顺序、NOS 规则、性别年龄适配、编码冲突/合并/漏编、诊断与入院病情/离院方式符合性</td>
+    <td>核心质控层</td>
+  </tr>
+  <tr>
+    <td><strong>手术逻辑质控</strong></td>
+    <td>主手术有效性、NOS 校验、性别适配、合并/另编规则、费用匹配、切口/愈合等级、麻醉方式校验</td>
+    <td>手术编码防线</td>
+  </tr>
+  <tr>
+    <td><strong>缺陷管理</strong></td>
+    <td>点击质控条目直接跳转缺陷字段、一键整改、忽略/恢复管理、缺陷明细可视化、形成闭环</td>
+    <td>高效修正</td>
+  </tr>
+</table>
+
+<h3>3.3 智能编码辅助：从"人工查表"到"AI推荐"</h3>
+
+<div class="card info">
+  <p><strong>工作原理：</strong>系统对医学文书数据进行后结构化处理（NLP 实体识别：解剖部位、病理改变、疾病性质、术式入路），通过医学知识库对标化数据进行归类，再调用 ICD 编码映射模型推荐编码。</p>
+  <p style="margin-top:10px;"><strong>关键能力：</strong></p>
+  <ul>
+    <li><strong>自动识别：</strong>读取病程记录中的诊断描述 → 自动推荐对应 ICD 编码</li>
+    <li><strong>实时提醒：</strong>检测到诊断与手术不匹配 → 即时弹出质控建议</li>
+    <li><strong>智能编码：</strong>任意医学表达 → 解剖部位+术式识别 → 次序重构 → 深度检索 → ICD 编码</li>
+  </ul>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 编码员不可被 AI 替代：</strong>AI 可以处理标准化、重复性的编码任务（如常见内固定取出、剖宫产），但<strong>复杂病例的主诊断选择、合并编码决策、罕见病编码</strong>仍然需要编码员阅读完整病程、理解临床逻辑后做出判断。AI 是"助手"，不是"替代者"。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四、编码审核流程 ======== -->
+<h2><span class="icon">📋</span> 四、编码审核全流程 —— 从病历到归档的五道关口</h2>
+
+<h3>4.1 标准审核流程</h3>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>读病历（编码前准备）</h4>
+      <p>编码员必须<strong>全程阅读</strong>病案资料：入院记录 → 首次病程记录 → 日常病程记录 → 手术记录 → 病理报告 → 检验检查报告 → 出院小结。全面掌握患者诊疗过程后，再开始编码。严禁"只看出院诊断就编码"。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>编码录入（主导词→索引→核对卷一）</h4>
+      <p>严格遵循"三部曲"流程。对书写不规范、信息不完整的诊断，<strong>及时与临床医师沟通确认</strong>，严禁盲目编码、随意编码。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>自查（100% 必做）</h4>
+      <p>编码完成后，编码员需<strong>100% 自行核查</strong>：编码准确性、完整性、与临床诊断的一致性。确认无明显错误后提交审核。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>小组互查（15%-20% 抽检）</h4>
+      <p>编码小组每日随机抽取 15%-20% 病例交叉审核，重点关注手术、肿瘤等高风险病例，采用<strong>双人盲审对比编码结果</strong>，分歧处共同研判。</p>
+    </div>
+  </div>
+
+  <div class="process-step">
+    <div class="process-num">5</div>
+    <div class="process-content">
+      <h4>终审 + 归档</h4>
+      <p>专职质控员对归档前病案 100% 核查，量化评分。80 分以下退回修改，整改完成后重新审核。质控结果纳入科室绩效考核。</p>
+    </div>
+  </div>
+</div>
+
+<h3>4.2 编码会诊机制：疑难病例不单打独斗</h3>
+
+<p>当遇到以下情况时，启动<strong>编码疑难病例会诊</strong>：</p>
+<ul>
+  <li><strong>罕见病无法确定编码归属：</strong>如新发传染病、极罕见的遗传病</li>
+  <li><strong>复杂手术多编码组合争议：</strong>如 Whipple 手术的完整编码链</li>
+  <li><strong>主诊断多选一无共识：</strong>临床医师和编码员各执一词</li>
+  <li><strong>DRG/DIP 入组异常追溯：</strong>入组结果与预期严重偏离</li>
+</ul>
+<div class="note">
+  <strong>💡 会诊小组构成：</strong>病案管理科主任 + 资深编码员（5 年以上经验）+ 相关临床科室骨干医师。讨论结论记录入库，形成<strong>内部编码知识库</strong>，供全体编码员查阅学习。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、质控指标 ======== -->
+<h2><span class="icon">📊</span> 五、核心质控指标体系 —— 看懂国家标准</h2>
+
+<h3>5.1 国家病案管理质控指标（2021版）中的编码相关指标</h3>
+
+<table>
+  <tr><th>指标编号</th><th>指标名称</th><th>定义</th><th>目标值</th></tr>
+  <tr>
+    <td><strong>MER-TQ-04</strong></td>
+    <td>主要诊断编码正确率</td>
+    <td>主要诊断编码正确的病历数 / 总出院病历数</td>
+    <td>≥ 95%（三级医院）</td>
+  </tr>
+  <tr>
+    <td><strong>MER-TQ-06</strong></td>
+    <td>主要手术编码正确率</td>
+    <td>主要手术编码正确的病历数 / 总手术病历数</td>
+    <td>≥ 95%</td>
+  </tr>
+  <tr>
+    <td><strong>MER-TQ-03</strong></td>
+    <td>主要诊断填写正确率</td>
+    <td>主要诊断填写正确（非编码层面）的病历数 / 总出院病历数</td>
+    <td>≥ 90%</td>
+  </tr>
+  <tr>
+    <td><strong>MER-TQ-02</strong></td>
+    <td>出院病历归档完整率</td>
+    <td>归档病历内容完整的病历数 / 总出院病历数</td>
+    <td>≥ 98%</td>
+  </tr>
+  <tr>
+    <td><strong>MER-HR-03</strong></td>
+    <td>编码人员月均负担数</td>
+    <td>出院病历总数 / 编码人员实际工作总月数</td>
+    <td>≤ 2800 份/月·人</td>
+  </tr>
+</table>
+
+<h3>5.2 DRG/DIP 视角的关键质控指标</h3>
+
+<div class="stat-row">
+  <div class="stat-badge">
+    <div class="stat-num">≥98%</div>
+    <div class="stat-label">编码准确率目标（三级医院标准）</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">≤2%</div>
+    <div class="stat-label">QY 歧义病例占比上限</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">≥99%</div>
+    <div class="stat-label">首页数据上报完整率</div>
+  </div>
+  <div class="stat-badge">
+    <div class="stat-num">≤5%</div>
+    <div class="stat-label">质控退回修改率（理想值）</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、重难点解析 ======== -->
+<h2><span class="icon">💡</span> 六、重难点解析：人工审核 vs 系统审核 —— 分工与互补</h2>
+
+<h3>6.1 系统能做的、做不到的</h3>
+
+<p>这是一个编码员必须清楚的核心问题：<strong>哪些错误可以放心交给系统，哪些必须自己盯？</strong></p>
+
+<table>
+  <tr><th>场景</th><th>系统能搞定？</th><th>原因</th></tr>
+  <tr>
+    <td>性别冲突（男性+宫颈癌码）</td>
+    <td>✅ 100%</td>
+    <td>编码字典库内置性别属性，直接比对即可</td>
+  </tr>
+  <tr>
+    <td>必填项缺失（外因码、形态学码）</td>
+    <td>✅ 100%</td>
+    <td>简单的"有/无"判断</td>
+  </tr>
+  <tr>
+    <td>肿瘤动态码与部位码不匹配</td>
+    <td>✅ 100%</td>
+    <td>固定的映射关系表</td>
+  </tr>
+  <tr>
+    <td>合并编码提示</td>
+    <td>✅ 85%+</td>
+    <td>规则库覆盖大部分已知合并编码，但新发现的关系可能遗漏</td>
+  </tr>
+  <tr>
+    <td><strong>主诊断选择合理性</strong></td>
+    <td>⚠️ 60%</td>
+    <td>系统只检查"不可做主诊断"的原子规则，但无法判断"三最原则"</td>
+  </tr>
+  <tr>
+    <td><strong>编码高套/低套</strong></td>
+    <td>❌ 几乎不能</td>
+    <td><strong>这是人工审核的核心战场</strong>。系统不知道你在"故意高套"还是"实事求是"</td>
+  </tr>
+  <tr>
+    <td><strong>病案内涵质量</strong></td>
+    <td>⚠️ 40%</td>
+    <td>AI 可辅助识别"诊断无病程记录支持"，但无法判断临床诊疗的合理性</td>
+  </tr>
+</table>
+
+<h3>6.2 系统审核"翻车"的三种典型场景</h3>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>翻车① 规则过于机械</h4>
+    <p>患者入院确诊"肺炎（J18.9）"，同时有"2型糖尿病（E11.9）"。系统提示 J18.9 是残余类目，建议编码更特异的亚目——但病原体未明确，J18.9 就是<strong>正确的</strong>。盲目按提示修改反而导致"编造病原体"的错误。</p>
+  </div>
+  <div class="example-item">
+    <h4>翻车② 合并编码误判</h4>
+    <p>"高血压"+"冠心病"并存，系统提示合并编码 I11.x（高血压性心脏病）。但患者高血压和冠心病<strong>无因果关系</strong>——一个是原发性，一个是动脉粥样硬化性。分别编码 I10 + I25.1 才正确。</p>
+  </div>
+  <div class="example-item">
+    <h4>翻车③ AI 语义误解析</h4>
+    <p>病程记录写"患者既往有乙肝病史，本次住院无肝炎活动"。AI 可能提取到"乙肝"并推荐 B18.1（慢性病毒性肝炎），但实际应编 Z86.1（个人史）。<strong>AI 不懂"个人史"和"活动期"的边界。</strong></p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 核心教训：</strong>系统质控是"守门员"——拦截明显的硬伤；人工审核是"裁判"——做出需要临床判断的决策。<strong>永远不要因为系统没报错就认为编码一定正确。</strong>系统可能漏掉一个关键的"不包括"注释、一个错误的合并编码决策、一个微妙的主诊断选择偏差。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题（质控规则应用），后3题为进阶题（人工审核决策）。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 质控规则识别</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某编码员填写的病案首页数据如下，请逐一判断质控系统会触发什么规则：</p>
+    <ol>
+      <li>患者女性，次要诊断编码 <code>N40.x00</code>（前列腺增生）</li>
+      <li>主诊断 <code>C34.9</code>（支气管肺癌），形态学编码为空</li>
+      <li>主诊断 <code>I63.9</code>（脑梗死），次要诊断 <code>I69.3</code>（脑梗死后遗症）</li>
+      <li>手术编码 <code>00.45</code>（置入一根血管支架）被选为主要手术编码</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>1.</strong> 性别冲突规则 → N40（前列腺增生）仅限男性，女性患者报刚性错误，禁止提交。</p>
+        <p><strong>2.</strong> 肿瘤形态学编码必填规则 → C34.9 为恶性肿瘤部位编码，缺少 M 码，系统提示必填。</p>
+        <p><strong>3.</strong> 急慢性互斥规则 → I63.9（活动期脑梗死）与 I69.3（后遗症）不能共存，系统报警。</p>
+        <p><strong>4.</strong> 不能做主手术规则 → 00.45 明确标注仅作附加编码，系统直接拦截。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 跨性别编码判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>以下哪些编码/编码组合会触发质控系统的性别冲突规则？选出所有正确答案：</p>
+    <p>A. 男性 + <code>O82</code>（经剖宫产术的单胎分娩）</p>
+    <p>B. 女性 + <code>B26.0</code>（流行性腮腺炎性睾丸炎）</p>
+    <p>C. 男性 + <code>N40</code>（前列腺增生）</p>
+    <p>D. 女性 + <code>I21.0</code>（急性前壁心肌梗死）</p>
+    <p>E. 男性 + <code>C53.9</code>（宫颈恶性肿瘤）</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：A、B、E</strong></p>
+        <p><strong>推理过程：</strong></p>
+        <p>① O82 是产科编码，仅限女性 → <strong>A 触发</strong></p>
+        <p>② B26.0 是睾丸炎，仅限男性 → 女性患者出现此码 → <strong>B 触发</strong></p>
+        <p>③ N40 是前列腺增生（仅男性），但<strong>注意：</strong>男性+N40 是正常的 → C <strong>不触发</strong></p>
+        <p>④ I21.0（心梗）男女均可患 → D <strong>不触发</strong></p>
+        <p>⑤ C53.9（宫颈癌）仅限女性 → 男性患者出现 → <strong>E 触发</strong></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 必填项与逻辑链校验</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>某患者出院诊断为"左胫骨平台骨折"，手术记录为"切开复位钢板内固定术"。编码员填写：</p>
+    <p>疾病编码：<code>S82.1</code>（胫骨平台骨折）</p>
+    <p>手术编码：<code>78.57</code>（胫骨内固定术）</p>
+    <p><strong>问题：</strong>质控系统会触发哪些规则？编码员还需要补充什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 会触发的规则：</strong></p>
+        <p>① <strong>S-T 损伤编码外因码必填规则：</strong>S82.1 是损伤章编码，必须有对应的外因编码（第二十章 V01-Y98）。系统会强制要求补充外因编码。</p>
+        <p>② <strong>骨折类型亚目检查：</strong>S82.1 应进一步区分闭合性（.0）还是开放性骨折（.1）。</p>
+        <p><strong>✅ 编码员需要补充：</strong></p>
+        <p>• 外因编码：如 <code>W01.4</code>（在同一平面上滑倒/绊倒/摔倒，如不平人行道）</p>
+        <p>• 闭合/开放后缀：闭合性 <code>S82.100</code> 或开放性 <code>S82.101</code></p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 系统报错 vs 人工否决</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>患者 68 岁男性，本次因"胸痛 3 小时"入院。急诊心电图+心肌酶确诊"急性广泛前壁心梗"，急诊行 PCI 术（冠脉支架置入，1 根药物涂层支架）。</p>
+    <p>编码员编码：主诊断 <code>I21.0</code>，次要诊断 <code>I10.x00</code>（原发性高血压）、<code>I25.1</code>（冠心病）。</p>
+    <p>质控系统弹出提示："I25.1（冠心病）与 I21.0（急性心梗）疑似冲突，心梗为冠心病的急性表现，请确认是否需要合并编码。"</p>
+    <p><strong>问题：</strong>这个系统提示是对的吗？编码员应该怎么处理？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 系统提示是合理的，但需要人工判断：</strong></p>
+        <p><strong>分析：</strong></p>
+        <p>• ICD-10 中，I21.x（急性心梗）和 I25.1（冠心病/动脉粥样硬化性心脏病）有明确的临床层级关系——心梗是冠心病的急性表现，二者不存在编码互斥。</p>
+        <p>• 本例患者入院的原因是<strong>急性心梗</strong>（I21.0），冠心病（I25.1）和高血压（I10）是既往已存在的合并症，作为其他诊断填写是合理的。</p>
+        <p><strong>✅ 正确处理：</strong></p>
+        <p>• 主诊断保持 <code>I21.001</code>（急性广泛前壁心肌梗死）</p>
+        <p>• 次要诊断保留 <code>I10.x00</code>（原发性高血压）和 <code>I25.101</code>（冠状动脉粥样硬化性心脏病）</p>
+        <p>• 手术编码：<code>36.0701</code>（药物涂层支架置入）+ <code>00.45</code>（1根支架）+ <code>00.40</code>（1根血管处理）+ <code>88.55</code>（冠脉造影）</p>
+        <p>• <strong>编码员应关闭系统提示</strong>，并记录理由："I21.0（急性心梗）为本次住院的主诊断，I25.1（冠心病）为已有慢性基础疾病，二者非合并编码关系，分别编码合理。"</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 三级质控责任划分</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某医院近期 DRG 入组异常增多，追溯发现以下三种情况。请为每种情况判断：问题主要出在三级质控的哪一级？</p>
+    <table>
+      <tr><th>情况</th><th>具体表现</th></tr>
+      <tr><td>A</td><td>临床医生将"头晕"作为出院主诊断，但病程记录明确记载了确诊的"腔隙性脑梗死"</td></tr>
+      <tr><td>B</td><td>编码员将"冠状动脉粥样硬化性心脏病 不稳定型心绞痛"误编为 I25.1，实际应为 I20.0（不稳定型心绞痛，属 I20 心绞痛类目，非 I25 慢性冠心病）</td></tr>
+      <tr><td>C</td><td>终审核查时发现，某编码员连续 3 天将同一科室的病案中"2 型糖尿病伴肾病"编为 E11.9（未特指），漏掉了 E11.2† + N08.3* 的星剑号编码</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 答案：</strong></p>
+        <p><strong>A → 一级质控失责（临床科室自查）。</strong>医生没有遵循"确诊后以病因码替代症状码"的原则，上级医师审查也未发现。主诊断选择的第一责任人始终是临床医师。编码员应该发现并退回，但根因在源头。</p>
+        <p><strong>B → 二级质控失责（编码员）。</strong>不稳定型心绞痛（UA）与慢性冠心病是不同的类目归属。I20.x（心绞痛）和 I25.1（冠心病）虽然临床有关联，但 ICD-10 有明确区分。编码员查目录时没有核实"心绞痛→I20"的索引路径。</p>
+        <p><strong>C → 三级质控失责（终末审核）。</strong>系统性漏编星剑号编码说明编码员的编码习惯存在缺陷。终审质控员应通过编码质量评分表发现这种高频错误，并对编码员进行针对性培训和纠正。</p>
+        <p><strong>💡 延伸思考：</strong>这三类问题恰恰对应三级质控的核心价值——一级管"诊断别写错"，二级管"编码别编错"，三级管"系统性的问题别持续"。三者缺一不可。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 质控闭环操作实务</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>某地医保局飞检组抽查到某医院的一份病案：</p>
+    <ul>
+      <li>主诊断：<code>J44.0</code>（慢性阻塞性肺病伴急性下呼吸道感染）</li>
+      <li>次要诊断：<code>J18.9</code>（肺炎，未特指）</li>
+      <li>手术操作：无</li>
+      <li>入院病情代码：J18.9 → "4.无"</li>
+    </ul>
+    <p>飞检组提出质疑：J18.9 入院病情为"4.无"（入院时不存在），但 J44.0 本身已包含了"急性下呼吸道感染"的成分，请判断以下两项：</p>
+    <ol>
+      <li>这份编码是否存在逻辑矛盾？如有，应该如何修正？</li>
+      <li>如果这确实是医院编码员的系统性错误（全院该组合全部错误），你应该作为质控负责人制定怎样的整改流程？</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 问题 1：逻辑矛盾分析</strong></p>
+        <p>J44.0 的类目名明确包含"伴急性下呼吸道感染"，如果患者的急性下呼吸道感染就是入院时已存在的（即 COPD 急性加重的原因），那就不应该再编 J18.9，且入院病情更不应该是"4.无"。</p>
+        <p>• 如果感染在入院时已存在 → J44.0 就够了，去掉 J18.9（多余编码）</p>
+        <p>• 如果感染是住院期间新发生的 → J44.0 不应做主诊断（应编 J44.8/J44.9+J18.9），入院病情应为"4.无"（院内感染）</p>
+        <p>当前状态 J44.0 + J18.9（入院病情=4）存在逻辑自相矛盾。</p>
+        <p><strong>✅ 问题 2：整改进程（质控闭环四步法）</strong></p>
+        <p><strong>第一步·检出：</strong>在质控系统中新增规则——"当主诊断为 J44.0 且存在 J18.9 时，入院病情不能为 4"。全院已有病案批量回溯检索。</p>
+        <p><strong>第二步·分析：</strong>召集呼吸科临床医师+编码员，明确 J44.0 的"包括"注释——已涵盖的下呼吸道感染不应再编 J18.9。如确有院内感染，应在病程记录中明确诊断依据。</p>
+        <p><strong>第三步·修正：</strong>已归档病案联系信息科批量修正编码（或标记待整改后分批修正）。在编编码暂停提交。</p>
+        <p><strong>第四步·巩固：</strong>①更新质控规则库 ②组织呼吸科编码专项培训 ③将该问题纳入编码员入职培训教材 ④下月随机抽查同类编码准确率。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 八、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾（共 8 条）</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>三级质控：</strong>临床自查（源头）→ 编码员核查（编码转换）→ 终末审核（评分归档）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>六大规则类：</strong>疾病间逻辑、手术间逻辑、诊断手术交叉、基本信息/性别年龄、肿瘤专项、必填项/外因</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>系统能100%拦截：</strong>性别冲突、必填项缺失、肿瘤动态码不匹配</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>系统几乎不能做的：</strong>编码高套/低套、主诊断合理性、病案内涵质量</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>编码审核五步：</strong>读病历→编码录入→自查→互查→终审归档</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>AI 辅助的边界：</strong>推荐编码是"参考"，不是"答案"。AI 不懂"个人史 vs 活动期"</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>不可盲目信任系统：</strong>系统未报错 ≠ 编码正确。人工审核是最后防线</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>质控闭环：</strong>检出→分析→修正→巩固。单点纠错不够，必须堵住系统性漏洞</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 55 主题：DRG/DIP 场景下的编码决策与沟通</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>当 DRG 预分组结果与临床预期严重偏离时，编码员应该优先调整编码还是启动与临床的沟通？</li>
+    <li>编码员如何向临床医师解释"你的诊断没错，但按编码规则必须这样编"？</li>
+    <li>DIP 场景下，"诊断+治疗方式"的组合怎样影响分值？编码员如何帮助科室在海量病种中找到"最佳编码路径"？</li>
+    <li>面临医保飞检质询时，编码员应准备哪些证据来证明编码的合理性？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 54 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 知识来源：国家卫健委病案管理质控指标（2021版）、各级医院质控实践</p>
+</div>
+
+</body>
+</html>
