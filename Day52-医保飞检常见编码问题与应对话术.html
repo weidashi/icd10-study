@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 52（2026年8月9日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #6366f1; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 40%, #6366f1 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.85); font-size: 15px; }
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+  .formula-box {
+    background: #f8fafc; border: 2px dashed var(--accent); border-radius: 10px;
+    padding: 16px 20px; margin: 14px 0; text-align: center; font-size: 15px;
+    font-family: "SF Mono","Cascadia Code",monospace;
+  }
+  .formula-box strong { color: var(--accent); }
+  .qa-item {
+    background: var(--card); border-radius: 10px; padding: 16px 20px; margin: 12px 0;
+    border: 1px solid var(--border); box-shadow: var(--shadow);
+  }
+  .qa-q { font-weight: 700; color: var(--accent); font-size: 15px; margin-bottom: 8px; }
+  .qa-a { font-size: 14px; color: var(--text2); }
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 52 · 2026年8月9日</div>
+  <h1>🛡️ 医保飞检常见编码问题与应对话术</h1>
+  <p class="subtitle">把每一次飞检当作编码质量的"体检"—— 做对编码，不怕查；查到了，也能从容应对</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:86.7%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 52 / 60 天（86.7%）</p>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">点击展开各层级要求：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员核心能力）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>飞检六大重点查方向：高套诊断、分解住院、低标入院、虚假手术、高码低编、诱导住院</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码符合率的定义：抽查病案中编码与病历一致的占比，目标是≥90%</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>飞检中编码员的三步应答法：摆证据→讲逻辑→引用规范</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码自查清单核心检查项（主诊断、并发症、手术匹配、精度）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（防风险、增效益）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>飞检"大数据筛查"原理：同组费用异常、CMI异常波动、高套高频病组识别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>联网审核四步流程：数据采集→智能筛查→人工复核→现场核查</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>被质疑编码时的标准应答话术模板</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（拓宽视野）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>飞检的行政处罚等级：约谈→拒付→罚款→暂停医保→取消定点</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>第三方飞检机构的工作流程与评分标准</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>Day 51 学习了编码如何影响 DRG 权重和结余，今天我们要面对一个现实问题——医保飞检。<strong>飞检不是"麻烦"，而是"质检"。</strong>编码质量好的医院，飞检就是走个过场；编码问题多的医院，飞检就是"暴雷"时刻。今天的目标是：<strong>知道飞检查什么、怎么查、以及被质疑时如何专业应答。</strong>
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🔍</span> 一、医保飞检全景：查什么？怎么查？</h2>
+
+<h3>1.1 飞检的六大重点方向</h3>
+<p>医保飞行检查（简称"飞检"）是医保局不定期、不打招呼、直奔现场的检查方式。根据近年飞检实践，编码相关的检查主要集中在以下六个方向：</p>
+
+<table>
+  <tr><th style="width:60px;">方向</th><th>具体表现</th><th>编码员关联度</th></tr>
+  <tr>
+    <td><strong>① 高套诊断</strong></td>
+    <td>编入不存在的并发症/合并症以提升 DRG 权重</td>
+    <td style="color:var(--red);font-weight:700;">★★★★★ 极高</td>
+  </tr>
+  <tr>
+    <td><strong>② 分解住院</strong></td>
+    <td>同一疾病短期内多次住院，规避 DRG 超额亏损</td>
+    <td style="color:var(--text3);">★★☆☆☆ 较低（但编码员可能"被动配合"）</td>
+  </tr>
+  <tr>
+    <td><strong>③ 低标入院</strong></td>
+    <td>门诊能处理的疾病收治住院，消耗医保基金</td>
+    <td style="color:var(--text3);">★☆☆☆☆ 低（临床决策为主）</td>
+  </tr>
+  <tr>
+    <td><strong>④ 虚假手术</strong></td>
+    <td>手术编码与病历记录不符，或根本未行手术</td>
+    <td style="color:var(--red);font-weight:700;">★★★★★ 极高</td>
+  </tr>
+  <tr>
+    <td><strong>⑤ 高码低编</strong></td>
+    <td>编码精度不够，导致权重被低估（如 Day51 的 J44.9 vs J44.1 案例）</td>
+    <td style="color:var(--red);font-weight:700;">★★★★★ 极高</td>
+  </tr>
+  <tr>
+    <td><strong>⑥ 诱导住院</strong></td>
+    <td>以"免费体检""包吃住"等方式诱导患者住院</td>
+    <td style="color:var(--text3);">★☆☆☆☆ 低（管理问题）</td>
+  </tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码员最需要关注的飞检方向：</strong>高套诊断、虚假手术、高码低编——这三个方向直接与编码员日常工作相关，是飞检中编码员被"点名"最多的领域。
+</div>
+
+<h3>1.2 飞检如何"发现"编码问题？—— 大数据筛查原理</h3>
+<p>医保飞检已经进入"大数据时代"。检查组不会一份一份翻病历，而是先用信息系统做四步筛查：</p>
+
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>数据采集</h4>
+      <p>从医院信息系统提取近 1-2 年的全部病案首页数据，包括 DRG 分组、RW 权重、总费用、住院天数、入院病情等字段。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>智能筛查（最关键的步骤）</h4>
+      <p>系统自动标记异常数据：同一 DRG 组费用最高/最低的 5% 病例、MCC 编码率远高于同地区同级别医院、CMI 异常波动、同一病组 15 天内再入院等。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>人工复核</h4>
+      <p>医保专家对系统标记的异常病例逐一复核，筛选出"有理由怀疑"的病例进入现场核查名单。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">4</div>
+    <div class="process-content">
+      <h4>现场核查</h4>
+      <p>检查组到达医院后，调取被标记病例的完整病历，逐项核对编码与病历的一致性。</p>
+    </div>
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>💡 关键理解：</strong>大数据筛查阶段，<strong>系统不会判断"编码是否合理"</strong>，只会判断"这个编码组合是否异常"。如果你的编码数据在统计上偏离了同地区、同级别医院的正常范围，系统就会标记你。<strong>所以，编码质量不只是"编对码"的问题，还涉及"你的编码数据不能太特别"。</strong>
+</div>
+
+<h3>1.3 飞检重点"盯梢"的 DRG 病组</h3>
+<p>根据历年飞检数据，以下病组是高套编码的高发区，也是飞检重点抽查对象：</p>
+
+<table>
+  <tr><th>病组</th><th>高套手法</th><th>风险等级</th></tr>
+  <tr><td>肺炎（ET21/ET23）</td><td>无呼吸衰竭证据却编入 MCC 组</td><td style="color:var(--red);font-weight:700;">🔴 极高</td></tr>
+  <tr><td>脑梗死（BR21/BR23）</td><td>主诊断与次要诊断互换，脑梗死从"不伴 CC"提到"伴 CC"</td><td style="color:var(--red);font-weight:700;">🔴 极高</td></tr>
+  <tr><td>心力衰竭（FR21/FR23）</td><td>轻度心衰编为重度心衰（NYHA II 级→IV 级）</td><td style="color:var(--red);font-weight:700;">🔴 高</td></tr>
+  <tr><td>慢性阻塞性肺病（ET22/ET24）</td><td>J44.9 自动升级为 J44.1 编入 MCC 组</td><td style="color:var(--red);font-weight:700;">🔴 高</td></tr>
+  <tr><td>白内障手术（CB11/CB13）</td><td>虚假手术、手术编码与诊断不符</td><td style="color:var(--red);font-weight:700;">🔴 高</td></tr>
+  <tr><td>膝关节置换（IB11/IB13）</td><td>人工关节编码与实际不符（如用进口编码报国产耗材）</td><td style="color:var(--text3);">🟡 中</td></tr>
+</table>
+
+<!-- ======== 二 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">📋</span> 二、编码符合率 —— 飞检的核心评价指标</h2>
+
+<h3>2.1 什么是编码符合率？</h3>
+<p><strong>编码符合率</strong>是指飞检抽查的病案中，编码与病历记录一致的病例占比。计算公式：</p>
+
+<div class="formula-box">
+  <strong>编码符合率</strong> = <strong>编码与病历一致的病例数</strong> ÷ <strong>抽查总病例数</strong> × 100%
+</div>
+
+<p>飞检中的"符合"标准是：<strong>病案首页上的每一个编码，都能在病历中找到对应的诊断记录、病程记录、检查报告或手术记录作为支撑。</strong></p>
+
+<h3>2.2 编码符合率的行业标准</h3>
+
+<table>
+  <tr><th>等级</th><th>符合率</th><th>含义</th></tr>
+  <tr>
+    <td style="color:var(--green);font-weight:700;">✅ 优秀</td>
+    <td>≥95%</td>
+    <td>编码质量优秀，飞检通过率极高，基本不会被重点关注</td>
+  </tr>
+  <tr>
+    <td style="color:var(--accent);font-weight:700;">⚠️ 合格</td>
+    <td>90%-95%</td>
+    <td>达到行业基本要求，但仍有改进空间</td>
+  </tr>
+  <tr>
+    <td style="color:var(--warn);font-weight:700;">⚠️ 需整改</td>
+    <td>80%-90%</td>
+    <td>编码质量有待提升，飞检中容易被约谈</td>
+  </tr>
+  <tr>
+    <td style="color:var(--red);font-weight:700;">❌ 不合格</td>
+    <td>&lt;80%</td>
+    <td>编码质量严重不足，飞检可能面临行政处罚</td>
+  </tr>
+</table>
+
+<h3>2.3 编码符合率检查的"七项"核心维度</h3>
+
+<table>
+  <tr><th style="width:40px;">#</th><th>检查维度</th><th>具体检查内容</th><th>常见扣分点</th></tr>
+  <tr><td>1</td><td>主诊断准确性</td><td>主诊断是否遵循"三最"原则</td><td>症状码代替病因码、次要诊断当主诊断</td></tr>
+  <tr><td>2</td><td>其他诊断完整性</td><td>所有并发症是否都已编码</td><td>漏报 MCC/CC、遗漏入院前已存在的合并症</td></tr>
+  <tr><td>3</td><td>手术操作准确性</td><td>手术编码与手术记录一致</td><td>手术编码精度不足、漏编另编码</td></tr>
+  <tr><td>4</td><td>编码精度</td><td>编码是否到最细亚目层级</td><td>笼统编码（如 J96.9 代替 J96.0）</td></tr>
+  <tr><td>5</td><td>诊断与手术匹配</td><td>主诊断与主手术是否逻辑一致</td><td>QY 歧义病例（如肺炎+胃切除）</td></tr>
+  <tr><td>6</td><td>入院病情编码</td><td>入院病情是否准确（1/2/3/4）</td><td>入院病情 4（无）与诊断逻辑矛盾</td></tr>
+  <tr><td>7</td><td>离院方式</td><td>离院方式是否准确（1-5）</td><td>非医嘱离院与死亡混淆</td></tr>
+</table>
+
+<!-- ======== 三 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">🎯</span> 三、飞检中最常见编码违规手法（六大重点方向）</h2>
+
+<p>国家医保局飞检组近年重点聚焦以下六大方向。理解每一种违规手法的"数据特征"，才能在编码时主动规避，也才能在抽查时从容自证。</p>
+
+<div class="key-grid">
+  <div class="key-item"><span class="key-dot"></span><span><strong>① 高套诊断</strong><br>把病情报重，套入更高权重病组</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>② 分解住院</strong><br>一次住院拆成多次，规避单次限额</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>③ 低标入院</strong><br>达不到住院标准却收治住院</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>④ 虚假手术</strong><br>无手术记录却编手术编码</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>⑤ 高码低编</strong><br>手术操作与诊断严重不符</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>⑥ 诱导住院</strong><br>以"免费住院"等名义诱导就医</span></div>
+</div>
+
+<h3>3.1 六大违规手法的数据筛查特征</h3>
+
+<table>
+  <tr><th style="width:110px;">违规手法</th><th>大数据筛查特征</th><th>典型表现</th></tr>
+  <tr>
+    <td><strong>高套诊断</strong></td>
+    <td>同一病组病例住院费用明显高于同组均值</td>
+    <td>轻症肺炎套入合并呼吸衰竭的重症病组</td>
+  </tr>
+  <tr>
+    <td><strong>分解住院</strong></td>
+    <td>同一患者短时间内（如15天内）多次入院</td>
+    <td>同一疾病反复住院结算，总费用超单次限额</td>
+  </tr>
+  <tr>
+    <td><strong>低标入院</strong></td>
+    <td>大量轻症、门诊可治病例收治住院</td>
+    <td>普通感冒、轻微外伤收住院治疗</td>
+  </tr>
+  <tr>
+    <td><strong>虚假手术</strong></td>
+    <td>手术编码与手术记录、费用明细不符</td>
+    <td>编码了手术但病历无手术记录、无麻醉单</td>
+  </tr>
+  <tr>
+    <td><strong>高码低编</strong></td>
+    <td>手术级别与诊断严重不匹配</td>
+    <td>诊断轻症却编了大型手术编码</td>
+  </tr>
+  <tr>
+    <td><strong>诱导住院</strong></td>
+    <td>同一患者多次住院、住院率异常</td>
+    <td>以"免费体检""包吃住"诱导老人住院</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>💡 关键认知：</strong>飞检不是"逐份翻病历"，而是<strong>先跑大数据、再抽重点病案</strong>。编码员的第一道防线，是让首页数据经得起"机器筛"。
+</div>
+
+<h3>3.2 大数据筛查的"四步走"流程</h3>
+
+<div class="process-box">
+  <div class="process-step"><div class="process-num">1</div><div class="process-content"><h4>数据采集</h4><p>汇聚医保结算清单、病案首页、费用明细等全量数据</p></div></div>
+  <div class="process-step"><div class="process-num">2</div><div class="process-content"><h4>智能筛查</h4><p>用算法识别异常模式（费用异常、住院频次异常、编码逻辑冲突）</p></div></div>
+  <div class="process-step"><div class="process-num">3</div><div class="process-content"><h4>人工复核</h4><p>对机器筛出的可疑病例，由专家人工初核</p></div></div>
+  <div class="process-step"><div class="process-num">4</div><div class="process-content"><h4>现场核查</h4><p>对重大疑点病例进驻医院，逐份调阅病历核实</p></div></div>
+</div>
+
+<h3>3.3 高套编码高风险病组 TOP 榜</h3>
+
+<p>以下病组是飞检高套检查的"重点盯防对象"，编码这些病组时务必核实诊断依据：</p>
+
+<table>
+  <tr><th>病组</th><th>疾病</th><th>高套风险点</th></tr>
+  <tr><td>ET21 / ET23</td><td>肺炎</td><td>是否合并呼吸衰竭/心力衰竭，虚报合并症</td></tr>
+  <tr><td>BR21 / BR23</td><td>脑梗死</td><td>是否真实存在偏瘫、失语等功能障碍</td></tr>
+  <tr><td>FR21 / FR23</td><td>心力衰竭</td><td>是否合并休克、恶性心律失常</td></tr>
+  <tr><td>ET22 / ET24</td><td>COPD</td><td>是否合并急性加重、呼吸衰竭</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 编码员红线：</strong>合并症（MCC/CC）必须有<strong>病历支撑</strong>。凡编码中的合并症，病程记录、检查报告、医嘱必须能"对得上"，否则就是高套编码。
+</div>
+
+<!-- ======== 四 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">💬</span> 四、飞检现场应答：编码员三步法</h2>
+
+<p>当飞检组就某份病案向你提问时，不要慌乱。记住三步法：<strong>摆证据 → 讲逻辑 → 引用规范</strong>。</p>
+
+<h3>4.1 三步应答法详解</h3>
+
+<div class="process-box">
+  <div class="process-step"><div class="process-num">1</div><div class="process-content"><h4>摆证据</h4><p>先拿出病历中的客观记录：病程记录、检查报告、手术记录、医嘱。用"证据链"说话，而不是空口解释。</p></div></div>
+  <div class="process-step"><div class="process-num">2</div><div class="process-content"><h4>讲逻辑</h4><p>说明编码依据的主诊断选择逻辑：为什么选这个主诊断、合并症为什么成立、编码精度为什么这么定。</p></div></div>
+  <div class="process-step"><div class="process-num">3</div><div class="process-content"><h4>引用规范</h4><p>援引《病案首页填写规范》《医疗保障基金结算清单填写规范》或 ICD-10 编码规则，说明编码"有据可依"。</p></div></div>
+</div>
+
+<h3>4.2 高频提问与应答话术模板</h3>
+
+<div class="qa-item">
+  <div class="qa-q">Q1：「这个主诊断为什么选肺炎而不是高血压？」</div>
+  <div class="qa-a">
+    <strong>应答：</strong>「依据《病案首页填写规范》，主诊断应选择<strong>对患者健康危害最大、消耗医疗资源最多、住院时间最长的疾病</strong>。本病例本次住院以肺部感染为主要治疗目的，占用了主要的检查、用药和床位资源，因此选择肺炎作为主诊断。高血压属于入院前已存在、本次仅做维持治疗的合并症，已如实填在其他诊断中。」
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q2：「这个患者没有呼吸衰竭记录，为什么编码了呼吸衰竭？」</div>
+  <div class="qa-a">
+    <strong>应答：</strong>「感谢老师的核查。我立即核实病历。若病程记录、血气分析报告、医嘱中确实没有呼吸衰竭的证据，那这个编码是我工作失误，我会<strong>立即更正</strong>并登记为质控问题。请允许我查看原始病历。」
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q3：「这个脑梗死病例为什么编码了偏瘫？」</div>
+  <div class="qa-a">
+    <strong>应答：</strong>「偏瘫编码的依据是<strong>康复科会诊记录中的肌力评估（左上肢肌力3级）</strong>以及神经内科查体记录。这是病历中客观记载的功能障碍，符合编码规则中'合并症须有明确记录支持'的要求。」
+  </div>
+</div>
+
+<div class="qa-item">
+  <div class="qa-q">Q4：「为什么这个手术编码和手术记录不一致？」</div>
+  <div class="qa-a">
+    <strong>应答：</strong>「我核对一下手术记录单和麻醉记录。手术编码应以<strong>手术记录单上的实际手术名称</strong>为准。如果确实存在不一致，属于编码精度问题，我会立即修正并追查原因。」
+  </div>
+</div>
+
+<div class="card tip">
+  <strong>💡 应答心态：</strong>飞检组核查是"查清事实"，不是"抓人"。态度诚恳、证据充分、快速纠错，是编码员最稳妥的应对方式。<strong>切忌与飞检组争执、推诿、隐瞒。</strong>
+</div>
+
+<!-- ======== 五 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">🛠️</span> 五、编码自查清单（飞检前必做）</h2>
+
+<p>与其等飞检来查，不如<strong>自己先查一遍</strong>。以下自查清单是编码员日常工作的"保命清单"：</p>
+
+<table>
+  <tr><th style="width:40px;">#</th><th>自查项</th><th>自查要点</th></tr>
+  <tr><td>1</td><td>主诊断</td><td>是否符合"三最"原则？有无症状码当主诊断？</td></tr>
+  <tr><td>2</td><td>并发症编码</td><td>所有 MCC/CC 都有病历支撑吗？有无漏报？</td></tr>
+  <tr><td>3</td><td>手术编码</td><td>与手术记录一致吗？精度到最细亚目了吗？</td></tr>
+  <tr><td>4</td><td>诊断手术匹配</td><td>有无 QY 歧义（主诊断与主手术逻辑冲突）？</td></tr>
+  <tr><td>5</td><td>入院病情</td><td>入院病情 1/2/3/4 填准确了吗？</td></tr>
+  <tr><td>6</td><td>离院方式</td><td>医嘱离院/非医嘱离院/死亡区分准确吗？</td></tr>
+  <tr><td>7</td><td>编码精度</td><td>有无笼统编码（如 J96.9 代替 J96.0）？</td></tr>
+  <tr><td>8</td><td>费用明细</td><td>编码与收费项目、检验检查是否对得上？</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 核心逻辑：</strong>自查的本质是<strong>"编码-病历-费用"三方一致</strong>。任何一方的编码都对不上，都可能被大数据筛查命中。
+</div>
+
+<!-- ======== 六 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">✍️</span> 六、实战案例练习</h2>
+
+<div class="case">
+  <div class="case-header"><span class="case-num">1</span> 案例练习：肺炎高套疑点 <span class="case-tag practice">练习</span></div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者 68 岁，因"咳嗽、发热3天"入院，诊断为社区获得性肺炎。住院期间无呼吸衰竭、心力衰竭记录，无血气分析异常。但首页编码了呼吸衰竭（J96.0）作为合并症，DRG 落入 ET21（重症肺炎病组），费用明显高于同组均值。</p>
+    <p><strong>请回答：</strong>① 该编码是否属于飞检违规？② 属于哪种违规手法？③ 正确应如何编码？</p>
+    <details><summary>点击查看参考答案</summary>
+      <div class="answer-box">
+        <p><strong>① 属于违规。</strong>因为呼吸衰竭编码没有病历支撑（无病程记录、无血气分析）。</p>
+        <p><strong>② 属于高套诊断。</strong>虚报合并症以套入更高权重的 ET21 病组。</p>
+        <p><strong>③ 正确编码：</strong>主诊断仍为社区获得性肺炎（J18.9），删除无依据的呼吸衰竭合并症编码，DRG 应落入较轻的 ET23 病组。</p>
+        <p><strong>核心原则：</strong>合并症编码必须有<strong>客观记录支撑</strong>，否则就是高套。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><span class="case-num">2</span> 案例练习：脑梗死偏瘫编码 <span class="case-tag practice">练习</span></div>
+  <div class="case-body">
+    <p><strong>病历摘要：</strong>患者 72 岁，急性脑梗死入院。神经内科查体记录明确记载"右侧肢体肌力3级"，康复科会诊有偏瘫诊断。首页编码了偏瘫（G81.9）作为其他诊断。</p>
+    <p><strong>请回答：</strong>① 该编码是否成立？② 依据是什么？③ 若飞检组质疑，如何应答？</p>
+    <details><summary>点击查看参考答案</summary>
+      <div class="answer-box">
+        <p><strong>① 编码成立。</strong>偏瘫有神经内科查体（肌力3级）和康复科会诊记录支撑。</p>
+        <p><strong>② 依据：</strong>合并症编码须有明确记录支持，本病例偏瘫证据充分。</p>
+        <p><strong>③ 应答：</strong>「偏瘫编码依据康复科会诊记录中的肌力评估（右侧肢体肌力3级）及神经内科查体记录，这是病历客观记载的功能障碍，符合编码规则要求。」——即<strong>摆证据</strong>。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<div class="case">
+  <div class="case-header"><span class="case-num">3</span> 思考挑战：分解住院识别 <span class="case-tag challenge">挑战</span></div>
+  <div class="case-body">
+    <p><strong>场景：</strong>同一患者 7 天内因"慢性胃炎"住院 3 次，每次住院费用均低于单次限额，但三次合计明显超标。飞检大数据筛查将其标记为"分解住院"疑点。</p>
+    <p><strong>请思考：</strong>① 如何判断这是"合理反复就医"还是"分解住院"？② 编码员在其中扮演什么角色？</p>
+    <details><summary>点击查看参考答案</summary>
+      <div class="answer-box">
+        <p><strong>① 判断依据：</strong>看是否<strong>同一疾病、同一治疗方案被刻意拆分</strong>。若三次住院均为重复性检查、短期可完成治疗，且非病情反复，则高度疑似分解住院。</p>
+        <p><strong>② 编码员角色：</strong>编码员需如实记录每次住院的实际病情，不诱导、不配合拆分。若发现同一患者短期内频繁住院，应<strong>主动提示医保办</strong>核查合理性。</p>
+        <p><strong>核心原则：</strong>编码员的底线是<strong>如实编码</strong>，不参与任何人为拆分行为。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ======== 七 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">📌</span> 今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><span class="key-dot"></span><span><strong>六大违规方向</strong><br>高套诊断、分解住院、低标入院、虚假手术、高码低编、诱导住院</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>编码符合率</strong><br>抽查中编码与病历一致占比，目标 ≥90%</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>三步应答法</strong><br>摆证据 → 讲逻辑 → 引用规范</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>大数据筛查</strong><br>先跑机器、再抽重点病案，首页数据要经得起"机器筛"</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>三方一致</strong><br>编码-病历-费用三方对得上，是高套的天然防线</span></div>
+  <div class="key-item"><span class="key-dot"></span><span><strong>应答心态</strong><br>诚恳、证据充分、快速纠错，不争执不隐瞒</span></div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 一句话记住：</strong>做对编码，不怕飞检；查到了，也能<strong>摆证据、讲逻辑、引规范</strong>从容应对。
+</div>
+
+<!-- ======== 八 ======== -->
+<hr class="section-divider">
+<h2><span class="icon">📖</span> 明日预习</h2>
+
+<p>明天（Day 53）我们将学习<strong>编码质量评价体系与持续改进</strong>，包括：</p>
+
+<ul>
+  <li>编码质量评价的"七维"指标体系</li>
+  <li>编码质量持续改进的 PDCA 循环</li>
+  <li>编码员绩效考核与能力提升路径</li>
+  <li>编码质量不良事件的根因分析</li>
+</ul>
+
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 52 · 2026年8月9日</p>
+  <p>做对每一个编码，守护每一份病历的真实性</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day53 · 编码质量评价体系与持续改进</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: #f5f7fb; color: #1e293b; line-height: 1.7; padding: 0;
+}
+/* ===== Hero ===== */
+.hero {
+  background: linear-gradient(135deg, #0b3b5c 0%, #1a6b8a 50%, #2d9bb5 100%);
+  color: #fff; padding: 48px 24px 40px; text-align: center;
+}
+.hero-badge {
+  display: inline-block; background: rgba(255,255,255,.18); color: #fff;
+  padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  letter-spacing: .5px; margin-bottom: 16px;
+}
+.hero h1 { font-size: 30px; margin-bottom: 8px; }
+.hero p { font-size: 15px; opacity: .85; max-width: 640px; margin: 0 auto; }
+/* ===== Mastery ===== */
+.mastery-bar {
+  display: flex; justify-content: center; gap: 12px;
+  padding: 20px 24px; background: #fff; border-bottom: 1px solid #e9edf2;
+  flex-wrap: wrap;
+}
+.mastery-item {
+  display: flex; align-items: center; gap: 8px;
+  background: #f0f4f8; padding: 8px 16px; border-radius: 8px; font-size: 14px;
+}
+.mastery-item .icon { font-size: 18px; }
+.mastery-item .level { font-weight: 700; color: #0b3b5c; }
+.mastery-item .desc { color: #475569; }
+/* ===== Container ===== */
+.container { max-width: 780px; margin: 0 auto; padding: 32px 24px 64px; }
+/* ===== Section ===== */
+.section {
+  background: #fff; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,.06);
+  padding: 28px; margin-bottom: 24px;
+}
+.section h2 {
+  font-size: 20px; color: #0b3b5c; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section h2 .icon { font-size: 22px; }
+.section h3 {
+  font-size: 17px; color: #1a6b8a; margin: 20px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section h3 .icon { font-size: 18px; }
+.section h4 {
+  font-size: 15px; color: #334155; margin: 14px 0 8px; font-weight: 600;
+}
+.section p { margin-bottom: 12px; color: #334155; }
+.section ul, .section ol { padding-left: 22px; margin-bottom: 14px; }
+.section li { margin-bottom: 6px; color: #334155; }
+/* ===== Table ===== */
+.table-wrap { overflow-x: auto; margin-bottom: 16px; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+}
+th {
+  background: #e9f0f7; color: #0b3b5c; font-weight: 600;
+  padding: 10px 12px; text-align: left; border: 1px solid #d0d9e5;
+}
+td {
+  padding: 9px 12px; border: 1px solid #d0d9e5; vertical-align: top;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+/* ===== Callout ===== */
+.callout {
+  background: #f0f7ff; border-left: 4px solid #2d9bb5;
+  padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 16px;
+}
+.callout.warn { background: #fff8f0; border-left-color: #e67e22; }
+.callout.tip { background: #f0faf4; border-left-color: #27ae60; }
+.callout.danger { background: #fef2f2; border-left-color: #e74c3c; }
+.callout-title { font-weight: 700; margin-bottom: 4px; font-size: 14px; }
+/* ===== Code ===== */
+code {
+  background: #eef2f6; padding: 2px 7px; border-radius: 4px;
+  font-size: 13px; color: #c0392b; font-family: "Consolas","Courier New",monospace;
+}
+pre {
+  background: #1e293b; color: #e2e8f0; padding: 16px 20px; border-radius: 8px;
+  overflow-x: auto; margin-bottom: 16px; font-size: 13px; line-height: 1.6;
+}
+pre code { background: none; color: inherit; padding: 0; }
+/* ===== Tag ===== */
+.tag {
+  display: inline-block; padding: 2px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 600; margin-right: 4px; margin-bottom: 4px;
+}
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-green { background: #d1fae5; color: #065f46; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+.tag-orange { background: #ffedd5; color: #9a3412; }
+/* ===== PDCA ===== */
+.pdca-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+}
+.pdca-card {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+  padding: 16px; text-align: center;
+}
+.pdca-card .phase { font-size: 20px; font-weight: 700; color: #0b3b5c; margin-bottom: 4px; }
+.pdca-card .phase-label { font-size: 13px; color: #64748b; margin-bottom: 8px; }
+.pdca-card .phase-desc { font-size: 13px; color: #334155; }
+/* ===== Footer ===== */
+.footer {
+  text-align: center; padding: 32px 24px; color: #94a3b8; font-size: 13px;
+  border-top: 1px solid #e9edf2; margin-top: 16px;
+}
+.footer strong { color: #64748b; }
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .pdca-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 24px; }
+  .section { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">DAY 53 · 8月10日</div>
+  <h1>🏥 编码质量评价体系与持续改进</h1>
+  <p>从"会编码"到"编好码"——建立量化评价、闭环管理、持续优化的编码质量体系</p>
+</div>
+
+<div class="mastery-bar">
+  <div class="mastery-item"><span class="icon">📊</span><span class="level">L1</span><span class="desc">理解七维指标体系</span></div>
+  <div class="mastery-item"><span class="icon">🔄</span><span class="level">L2</span><span class="desc">掌握PDCA改进流程</span></div>
+  <div class="mastery-item"><span class="icon">📋</span><span class="level">L3</span><span class="desc">独立设计编码质量月报</span></div>
+</div>
+
+<div class="container">
+
+<!-- ===== 一、为什么需要编码质量评价体系 ===== -->
+<div class="section">
+<h2><span class="icon">🎯</span> 一、为什么需要编码质量评价体系</h2>
+
+<p>经过前 52 天的学习，我们已经掌握了从 ICD-10 基础到 DRG/DIP 支付、从手术编码到医保飞检的完整知识体系。但一个关键问题始终存在：<strong>我们怎么知道自己编码编得好不好？</strong></p>
+
+<p>没有量化评价，就没有客观改进。编码质量评价体系的意义在于：</p>
+
+<ul>
+  <li><strong>守住合规底线</strong>——飞检常态化背景下，编码质量直接影响医保结算安全</li>
+  <li><strong>量化个人能力</strong>——从"感觉不错"到"数据说话"，让成长可追踪</li>
+  <li><strong>支撑医院管理</strong>——CMI、RW、权重结余等指标都建立在编码质量之上</li>
+  <li><strong>驱动持续改进</strong>——发现问题→分析根因→制定措施→验证效果，形成闭环</li>
+</ul>
+
+<div class="callout tip">
+  <div class="callout-title">💡 核心思想</div>
+  <p><strong>编码质量不是检查出来的，是设计出来的。</strong>好的评价体系不仅告诉你"哪里错了"，更告诉你"怎么变好"。</p>
+</div>
+</div>
+
+<!-- ===== 二、七维编码质量指标体系 ===== -->
+<div class="section">
+<h2><span class="icon">📊</span> 二、七维编码质量指标体系</h2>
+
+<p>编码质量不能只看一个维度。以下七个维度构成完整的编码质量评价框架：</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th style="width:20%">维度</th>
+      <th style="width:30%">定义</th>
+      <th style="width:25%">计算公式</th>
+      <th style="width:25%">目标值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>① 主诊断准确率</strong></td>
+      <td>主诊断选择符合"三最"原则的比例</td>
+      <td><code>正确主诊断数 / 抽检总数</code></td>
+      <td><span class="tag tag-green">≥ 95%</span></td>
+    </tr>
+    <tr>
+      <td><strong>② 其他诊断完整率</strong></td>
+      <td>应编的其他诊断（并发症、合并症）是否完整填报</td>
+      <td><code>完整填报数 / 应编总数</code></td>
+      <td><span class="tag tag-green">≥ 90%</span></td>
+    </tr>
+    <tr>
+      <td><strong>③ 手术编码准确率</strong></td>
+      <td>手术操作编码（ICD-9-CM-3）准确率</td>
+      <td><code>正确手术码数 / 抽检手术总数</code></td>
+      <td><span class="tag tag-green">≥ 90%</span></td>
+    </tr>
+    <tr>
+      <td><strong>④ 编码精度率</strong></td>
+      <td>编码是否细化到最细亚目（含扩展码）</td>
+      <td><code>最细亚目数 / 编码总数</code></td>
+      <td><span class="tag tag-blue">≥ 85%</span></td>
+    </tr>
+    <tr>
+      <td><strong>⑤ QY歧义率</strong></td>
+      <td>诊断与手术不匹配导致歧义入组的比例</td>
+      <td><code>QY病例数 / 手术病例总数</code></td>
+      <td><span class="tag tag-red">≤ 3%</span></td>
+    </tr>
+    <tr>
+      <td><strong>⑥ 编码符合率</strong></td>
+      <td>编码与病历记录、费用清单三方一致的比例</td>
+      <td><code>三方一致数 / 抽检总数</code></td>
+      <td><span class="tag tag-green">≥ 90%</span></td>
+    </tr>
+    <tr>
+      <td><strong>⑦ 医保结算通过率</strong></td>
+      <td>医保结算清单一次通过审核的比例</td>
+      <td><code>通过数 / 上传总数</code></td>
+      <td><span class="tag tag-green">≥ 95%</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <div class="callout-title">⚠️ 关键提示</div>
+  <p><strong>六维"编码符合率"是飞检的核心评价指标</strong>，也是"三方一致原则"的量化体现：编码-病历-费用，三套数据必须对得上。飞检检查组首先看的就是这个指标。</p>
+</div>
+</div>
+
+<!-- ===== 三、编码质量评价方法 ===== -->
+<div class="section">
+<h2><span class="icon">🔍</span> 三、编码质量评价方法</h2>
+
+<h3><span class="icon">1️⃣</span> 抽样方法</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>抽样方式</th>
+      <th>方法说明</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>随机抽样</strong></td>
+      <td>按出院病例编号随机抽取，样本量通常为月出院量的 5%-10%</td>
+      <td>常规月度质控</td>
+    </tr>
+    <tr>
+      <td><strong>分层抽样</strong></td>
+      <td>按科室/病区/DRG组别分层，每层抽取一定比例</td>
+      <td>科室间对比分析</td>
+    </tr>
+    <tr>
+      <td><strong>重点抽样</strong></td>
+      <td>针对高风险病组、高倍率病例、死亡病例重点抽取</td>
+      <td>飞检自查、专项质控</td>
+    </tr>
+    <tr>
+      <td><strong>全量审核</strong></td>
+      <td>对特定范围（如某科室一个月）全部病例逐份审核</td>
+      <td>飞检迎检、整改复查</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3><span class="icon">2️⃣</span> 评分标准</h3>
+
+<p>建议采用 <strong>百分制扣分法</strong>，每份病历按以下标准扣分：</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>缺陷类型</th>
+      <th>扣分标准</th>
+      <th>示例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>严重缺陷</strong></td>
+      <td>扣 10 分/项</td>
+      <td>主诊断选择错误、高套编码、漏编MCC</td>
+    </tr>
+    <tr>
+      <td><strong>中度缺陷</strong></td>
+      <td>扣 5 分/项</td>
+      <td>其他诊断遗漏、手术编码不完整、入院病情错误</td>
+    </tr>
+    <tr>
+      <td><strong>一般缺陷</strong></td>
+      <td>扣 2 分/项</td>
+      <td>编码未细化到最细亚目、标点格式错误</td>
+    </tr>
+    <tr>
+      <td><strong>轻微缺陷</strong></td>
+      <td>扣 1 分/项</td>
+      <td>编码日期错位、签名缺失、排版问题</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout">
+  <div class="callout-title">📐 计算公式</div>
+  <p><strong>编码质量得分 = 100 - 总扣分</strong></p>
+  <p>单份病历最低 0 分。月度质量得分 = 全部抽检病历得分之和 / 抽检病历数。</p>
+  <p>质量等级划分：<span class="tag tag-green">A级 ≥90分</span> <span class="tag tag-blue">B级 80-89分</span> <span class="tag tag-orange">C级 70-79分</span> <span class="tag tag-red">D级 ＜70分</span></p>
+</div>
+
+<h3><span class="icon">3️⃣</span> 评价频率</h3>
+<ul>
+  <li><strong>日常质控</strong>——每日随机抽查 5-10 份病历，即时反馈</li>
+  <li><strong>月度评价</strong>——每月汇总分析，形成编码质量月报</li>
+  <li><strong>季度专项</strong>——每季度针对一个薄弱环节深度分析</li>
+  <li><strong>年度综合</strong>——年度编码质量白皮书，对标同行水平</li>
+</ul>
+</div>
+
+<!-- ===== 四、PDCA 持续改进循环 ===== -->
+<div class="section">
+<h2><span class="icon">🔄</span> 四、PDCA 持续改进循环</h2>
+
+<p>PDCA（Plan-Do-Check-Act）是编码质量改进的经典方法论，也是医保飞检整改的标准流程：</p>
+
+<div class="pdca-grid">
+  <div class="pdca-card">
+    <div class="phase">P</div>
+    <div class="phase-label">计划阶段</div>
+    <div class="phase-desc">分析现状 → 找出问题 → 设定目标 → 制定措施</div>
+  </div>
+  <div class="pdca-card">
+    <div class="phase">D</div>
+    <div class="phase-label">执行阶段</div>
+    <div class="phase-desc">培训宣贯 → 流程优化 → 工具支持 → 试点推广</div>
+  </div>
+  <div class="pdca-card">
+    <div class="phase">C</div>
+    <div class="phase-label">检查阶段</div>
+    <div class="phase-desc">数据收集 → 指标对比 → 效果评估 → 差距分析</div>
+  </div>
+  <div class="pdca-card">
+    <div class="phase">A</div>
+    <div class="phase-label">处理阶段</div>
+    <div class="phase-desc">标准化成功经验 → 纳入常规 → 遗留问题 → 进入下一循环</div>
+  </div>
+</div>
+
+<h3><span class="icon">📋</span> PDCA 实操案例：降低 QY 歧义率</h3>
+
+<p><strong>背景：</strong>某院 QY 歧义率 5.8%（目标 ≤3%），主要集中在外科病房。</p>
+
+<p><strong>P — 计划：</strong></p>
+<ul>
+  <li>分析上季度 47 例 QY 病例，发现 62% 为"主诊断与手术不匹配"</li>
+  <li>设定目标：3 个月内 QY 歧义率降至 3% 以下</li>
+  <li>制定措施：① 建立手术-诊断匹配检查表 ② 编码员上线前需完成手术导向规则培训 ③ 外科出院病历增加编码复核环节</li>
+</ul>
+
+<p><strong>D — 执行：</strong></p>
+<ul>
+  <li>编制《手术-诊断匹配速查表》，下发编码组</li>
+  <li>组织 3 次专题培训，覆盖全部编码员和外科科室联络员</li>
+  <li>在 HIS 系统中嵌入 QY 预警提示（编码提交前自动校验）</li>
+</ul>
+
+<p><strong>C — 检查：</strong></p>
+<ul>
+  <li>次月 QY 歧义率 4.2%，较上月下降 1.6 个百分点</li>
+  <li>第三个月 3.1%，接近目标值</li>
+  <li>第四个月 2.7%，达成目标</li>
+</ul>
+
+<p><strong>A — 处理：</strong></p>
+<ul>
+  <li>将手术-诊断匹配检查表纳入编码组 SOP</li>
+  <li>QY 预警提示功能常态化运行</li>
+  <li>剩余 0.3% 的遗留问题（罕见手术组合）进入下一轮 PDCA</li>
+</ul>
+
+<div class="callout tip">
+  <div class="callout-title">💡 PDCA 精要</div>
+  <p>PDCA 不是一次性活动，而是螺旋上升的持续过程。每一个循环解决一部分问题，下一轮再攻克剩下的。不要追求一次解决所有问题。</p>
+</div>
+</div>
+
+<!-- ===== 五、编码质量月报模板 ===== -->
+<div class="section">
+<h2><span class="icon">📄</span> 五、编码质量月报模板</h2>
+
+<p>编码质量月报是向医院管理层汇报、推动改进的核心工具。以下是一个标准模板框架：</p>
+
+<h3>月报结构</h3>
+<ol>
+  <li><strong>概览页</strong>——本月抽检总量、综合得分、七维指标一览、环比趋势</li>
+  <li><strong>各科室排名</strong>——按科室编码质量得分排序，标红不达标科室</li>
+  <li><strong>TOP 缺陷分析</strong>——本月频次最高的 5 类缺陷，附带典型案例</li>
+  <li><strong>DRG/DIP 影响分析</strong>——编码错误对 CMI、权重、结算的影响量化</li>
+  <li><strong>改进措施跟踪</strong>——上月问题整改完成率、本月新发现问题</li>
+  <li><strong>重点工作建议</strong>——下月质控重点、培训计划、系统优化建议</li>
+</ol>
+
+<h3>月报核心指标示例</h3>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>本月</th>
+      <th>上月</th>
+      <th>环比</th>
+      <th>目标</th>
+      <th>状态</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>抽检病历数</td>
+      <td>186</td>
+      <td>172</td>
+      <td>+8.1%</td>
+      <td>≥150</td>
+      <td><span class="tag tag-green">达标</span></td>
+    </tr>
+    <tr>
+      <td>综合质量得分</td>
+      <td>87.3</td>
+      <td>84.6</td>
+      <td>+2.7</td>
+      <td>≥90</td>
+      <td><span class="tag tag-orange">未达标</span></td>
+    </tr>
+    <tr>
+      <td>主诊断准确率</td>
+      <td>94.1%</td>
+      <td>92.5%</td>
+      <td>+1.6%</td>
+      <td>≥95%</td>
+      <td><span class="tag tag-orange">未达标</span></td>
+    </tr>
+    <tr>
+      <td>其他诊断完整率</td>
+      <td>88.7%</td>
+      <td>86.2%</td>
+      <td>+2.5%</td>
+      <td>≥90%</td>
+      <td><span class="tag tag-orange">未达标</span></td>
+    </tr>
+    <tr>
+      <td>手术编码准确率</td>
+      <td>91.4%</td>
+      <td>89.1%</td>
+      <td>+2.3%</td>
+      <td>≥90%</td>
+      <td><span class="tag tag-green">达标</span></td>
+    </tr>
+    <tr>
+      <td>编码精度率</td>
+      <td>86.2%</td>
+      <td>83.8%</td>
+      <td>+2.4%</td>
+      <td>≥85%</td>
+      <td><span class="tag tag-green">达标</span></td>
+    </tr>
+    <tr>
+      <td>QY歧义率</td>
+      <td>3.2%</td>
+      <td>4.1%</td>
+      <td>-0.9%</td>
+      <td>≤3%</td>
+      <td><span class="tag tag-orange">未达标</span></td>
+    </tr>
+    <tr>
+      <td>编码符合率</td>
+      <td>89.5%</td>
+      <td>87.3%</td>
+      <td>+2.2%</td>
+      <td>≥90%</td>
+      <td><span class="tag tag-orange">未达标</span></td>
+    </tr>
+    <tr>
+      <td>医保结算通过率</td>
+      <td>96.8%</td>
+      <td>95.4%</td>
+      <td>+1.4%</td>
+      <td>≥95%</td>
+      <td><span class="tag tag-green">达标</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="callout warn">
+  <div class="callout-title">⚠️ 实操提示</div>
+  <p>月报要有"数据+故事"——数字告诉管理层发生了什么，典型案例告诉管理层为什么发生。建议每月精选 3 个典型案例附在月报后面。</p>
+</div>
+</div>
+
+<!-- ===== 六、编码员个人成长路径 ===== -->
+<div class="section">
+<h2><span class="icon">🌱</span> 六、编码员个人成长路径</h2>
+
+<p>编码质量评价体系不仅服务于管理，也服务于编码员个人的职业发展：</p>
+
+<h3><span class="icon">📈</span> 编码员成长四阶段</h3>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>阶段</th>
+      <th>能力要求</th>
+      <th>质量目标</th>
+      <th>典型用时</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>L1 入门期</strong></td>
+      <td>掌握 ICD-10 基本规则，能独立完成常见病编码</td>
+      <td>主诊断准确率 ≥ 85%</td>
+      <td>0-6 个月</td>
+    </tr>
+    <tr>
+      <td><strong>L2 成长期</strong></td>
+      <td>熟悉手术编码、DRG/DIP 原理，能处理复杂病例</td>
+      <td>主诊断准确率 ≥ 90%，手术编码准确率 ≥ 85%</td>
+      <td>6-18 个月</td>
+    </tr>
+    <tr>
+      <td><strong>L3 熟练期</strong></td>
+      <td>掌握肿瘤、并发症、损伤等难点编码，能指导他人</td>
+      <td>七维指标全部达标</td>
+      <td>18-36 个月</td>
+    </tr>
+    <tr>
+      <td><strong>L4 专家期</strong></td>
+      <td>参与飞检迎检、DRG 分析、编码规则制定</td>
+      <td>成为科室质控骨干，能独立完成编码质量分析报告</td>
+      <td>3 年以上</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3><span class="icon">📝</span> 个人改进计划示例</h3>
+
+<div class="callout">
+  <div class="callout-title">📋 编码员月度改进计划</div>
+  <p><strong>问题：</strong>本月其他诊断完整率 85%，主要漏编项为"高血压"和"糖尿病"</p>
+  <p><strong>根因分析：</strong>对"应编尽编"原则理解不深，习惯性认为"老病"不用写</p>
+  <p><strong>改进措施：</strong></p>
+  <ol>
+    <li>每日编码前先列"必编清单"（高血压、糖尿病、既往手术史等）</li>
+    <li>每份病历编码完成后对照"其他诊断检查清单"自查</li>
+    <li>每周回顾 5 份被退回的编码，整理漏编原因</li>
+  </ol>
+  <p><strong>目标：</strong>下月其他诊断完整率提升至 90%</p>
+</div>
+</div>
+
+<!-- ===== 七、持续改进的三大支柱 ===== -->
+<div class="section">
+<h2><span class="icon">🏛️</span> 七、持续改进的三大支柱</h2>
+
+<p>编码质量持续改进不是编码组一个部门的事，需要三个支柱协同支撑：</p>
+
+<h3><span class="icon">👨‍⚕️</span> 支柱一：临床协作</h3>
+<ul>
+  <li><strong>编码-临床沟通机制</strong>——建立编码员与临床科室的定期沟通制度</li>
+  <li><strong>诊断书写规范化</strong>——推进临床诊断书写规范，减少"术语清洗"负担</li>
+  <li><strong>科室联络员</strong>——每个临床科室指定一名编码联络员，负责日常沟通</li>
+  <li><strong>联合查房/病例讨论</strong>——编码员参与疑难病例讨论，理解临床逻辑</li>
+</ul>
+
+<h3><span class="icon">💻</span> 支柱二：信息化支撑</h3>
+<ul>
+  <li><strong>智能编码辅助</strong>——嵌入 ICD 智能推荐、历史编码检索功能</li>
+  <li><strong>实时质控预警</strong>——编码提交前自动校验常见错误（如 QY 歧义、主诊断与性别不符）</li>
+  <li><strong>数据驾驶舱</strong>——可视化展示编码质量七维指标，实时监控趋势</li>
+  <li><strong>知识库集成</strong>——编码规则、排除条款、典型案例在线查询</li>
+</ul>
+
+<h3><span class="icon">📚</span> 支柱三：持续培训</h3>
+<ul>
+  <li><strong>新规速递</strong>——医保政策、编码规则更新及时传达</li>
+  <li><strong>案例复盘</strong>——每月精选典型错误案例，集体复盘讨论</li>
+  <li><strong>专项培训</strong>——针对薄弱环节（如肿瘤编码、手术编码）组织专题培训</li>
+  <li><strong>能力考核</strong>——每季度一次编码能力测试，以考促学</li>
+</ul>
+
+<div class="callout tip">
+  <div class="callout-title">💡 核心观点</div>
+  <p><strong>编码质量不是编码员一个人的责任，而是整个医院数据治理体系的产出。</strong>临床写好、编码编好、系统验好、质控管好——四者缺一不可。</p>
+</div>
+</div>
+
+<!-- ===== 八、重点回顾 ===== -->
+<div class="section">
+<h2><span class="icon">📌</span> 八、重点回顾</h2>
+
+<div class="callout danger">
+  <div class="callout-title">⚠️ 必须记住的 5 个要点</div>
+  <ol>
+    <li><strong>七维指标体系</strong>——主诊断准确率、其他诊断完整率、手术编码准确率、编码精度率、QY歧义率、编码符合率、医保结算通过率</li>
+    <li><strong>编码符合率 ≥ 90%</strong>——飞检核心指标，也是"三方一致原则"的量化体现</li>
+    <li><strong>PDCA 循环</strong>——计划→执行→检查→处理，螺旋上升的持续改进方法</li>
+    <li><strong>编码质量月报四要素</strong>——概览、排名、缺陷分析、改进跟踪</li>
+    <li><strong>三大支柱缺一不可</strong>——临床协作 + 信息化支撑 + 持续培训</li>
+  </ol>
+</div>
+
+<div class="callout tip">
+  <div class="callout-title">📝 自查清单</div>
+  <ul>
+    <li>✅ 我能说出七维指标各自的定义和目标值</li>
+    <li>✅ 我能设计一份编码质量月报的框架</li>
+    <li>✅ 我能用 PDCA 方法制定一个改进计划</li>
+    <li>✅ 我了解编码员成长的四个阶段和每个阶段的目标</li>
+    <li>✅ 我理解"编码质量是体系产物，不是个人产物"</li>
+  </ul>
+</div>
+</div>
+
+<!-- ===== 九、明日预习 ===== -->
+<div class="section">
+<h2><span class="icon">🔮</span> 九、明日预习 · Day 54</h2>
+
+<p>明天我们将进入 <strong>病案编码综合实战</strong> 阶段——用 7 天时间，完成 7 个综合案例的全流程编码实战演练。</p>
+
+<p>Day 54 将是一个 <strong>内科综合案例</strong>，涵盖：</p>
+<ul>
+  <li>多系统合并症的主诊断选择</li>
+  <li>CC/MCC 的准确识别与填报</li>
+  <li>DRG 分组预测与编码调整</li>
+  <li>医保结算清单填报</li>
+</ul>
+
+<p>请准备好：<strong>ICD-10 三卷本、ICD-
