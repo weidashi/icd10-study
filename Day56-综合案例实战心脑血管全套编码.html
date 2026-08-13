@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 56（2026年8月13日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* ===== Hero Header ===== */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  /* ===== Section Headers ===== */
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  /* ===== Mastery Table ===== */
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  /* ===== Cases ===== */
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  /* ===== Key Grid ===== */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ===== Tables ===== */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  /* ===== Code ===== */
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ===== Note ===== */
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  /* ===== Flow / Process ===== */
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  /* ===== Example Grid ===== */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  /* ===== Compare ===== */
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  /* ===== Flow Chart Wrap ===== */
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row {
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    margin: 6px 0; flex-wrap: wrap;
+  }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  /* ===== Progress Bar ===== */
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  /* ===== Stat Badge ===== */
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* ===== Dividers ===== */
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  /* ===== Misc ===== */
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  /* ===== Footer ===== */
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 56 · 2026年8月13日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：综合案例实战（一）—— 心脑血管疾病全套编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:93.33%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 56 / 60 天（93.33%）</p>
+</div>
+
+<hr class="divider">
+
+<div class="card tip">
+  <p><strong>📌 进入第六阶段（Day 56-60）：综合案例与能力提升。</strong>从今天起，不再学习新章节，而是把前 55 天学到的「疾病编码 + 手术编码 + 主诊断选择 + DRG」串成完整的编码链条。</p>
+  <p style="margin-top:8px;">今天聚焦<strong>心脑血管疾病</strong>——这是病案室日常工作量最大、编码错误率最高、DRG 权重差异最悬殊的领域。今天不讲新概念，只做一件事：<span class="hl"><strong>把散点知识拧成"拿到一份病历 → 输出一份完整编码"的肌肉记忆</strong></span>。</p>
+</div>
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（综合实战核心，编码员硬功夫）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>急性心梗 I21 双轴心：按「ST 段类型（透壁/心内膜下）」+「梗死部位」细分</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>脑出血 I61（部位轴心）/ 脑梗死 I63（责任动脉+病因双轴心）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>高血压合并编码 I10 / I11 / I12 / I13 四档决策</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>PCI 手术完整多码组合（36.07 + 00.66 + 00.4x + 88.55）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>颅内血肿清除三码体系：01.24 硬膜外 / 01.31 硬膜下 / 01.39 脑内</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（边界判断，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>高血压因果推定边界：心衰须医生陈述、CKD 可推定合并</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>心梗时间轴：I21 急性 → I22 再梗死 → I25.2 陈旧性</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>脑血管三阶段：I65-I66 狭窄 → I63 梗死 → I69 后遗症</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>创伤性颅内出血（S06 + 外因码）vs 自发性（I60-I62）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（DRG 视角，锦上添花）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>心脑血管病例的 CHS-DRG 入组路径（FR 组 / BR 组）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>Killip 分级 / NYHA 分级对心衰严重度的体现</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>复发性脑卒中的时间窗判定（≥20 天视为新发）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>不要急着看答案。每个案例先自己「从主导词走到国临版扩展码」，再对照解析。心脑血管编码的核心不是背码，而是<span class="hl"><strong>记住每一步核对时「卡在哪、为什么」</strong></span>。
+</div>
+
+<!-- ======== 一 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、心脑血管疾病编码全景地图（诊断篇）</h2>
+
+<p>拿到一份心脑血管病历，第一反应不是查码，而是先「定位到家族」。循环系统章（I00-I99）里，与临床高频相关的五大板块，构成了今天实战的坐标系：</p>
+
+<table>
+  <tr><th>家族</th><th>码位范围</th><th>分类轴心</th><th>高频编码示例</th></tr>
+  <tr><td><strong>高血压</strong></td><td><code>I10-I15</code></td><td>是否合并心/肾损害</td><td>I10 原发性；I11 高血压性心脏病；I12 高血压性肾病；I13 心+肾</td></tr>
+  <tr><td><strong>冠心病 / 心绞痛</strong></td><td><code>I20-I25</code></td><td>急慢性 + 发作类型</td><td>I20.0 不稳定型心绞痛；I25.1 冠状动脉粥样硬化性心脏病</td></tr>
+  <tr><td><strong>急性心肌梗死</strong></td><td><code>I21-I23</code></td><td>ST 段类型 × 梗死部位</td><td>I21.0 前壁 STEMI；I21.4 NSTEMI；I25.2 陈旧性</td></tr>
+  <tr><td><strong>心力衰竭</strong></td><td><code>I50</code></td><td>收缩/舒张/左右心</td><td>I50.9 未特指；I50.0 充血性</td></tr>
+  <tr><td><strong>脑血管病</strong></td><td><code>I60-I69</code>（+G45）</td><td>出血/缺血 × 责任血管 × 部位</td><td>I60 SAH；I61 脑出血；I63 脑梗死；G45 TIA；I69 后遗症</td></tr>
+</table>
+
+<div class="note">
+  <strong>🧭 定位口诀：</strong>「心前区痛先分急慢，脑部症状先分血塞」——<strong>心</strong>：急性（I21）还是慢性（I20/I25）？<strong>脑</strong>：出血（I60-I62）还是缺血（I63）？这一刀切下去，后续所有编码都不会跑偏。
+</div>
+
+<p>这张地图的价值在于：<strong>心脑血管病案的主诊断几乎全部落在这五个家族里</strong>。而每一个家族内部，又有各自的「分型陷阱」。下面逐个拆解最关键的三个。</p>
+
+<hr class="section-divider">
+
+<!-- ======== 二 ======== -->
+<h2><span class="icon">🩸</span> 二、高血压合并编码：I10-I13 四档决策树</h2>
+
+<p>高血压是心脑血管病案的「常客」，但它极少单独做主诊断——真正拉开 DRG 权重差距的是<strong>高血压有没有伤到心脏、肾脏</strong>。ICD-10 为此设计了「合并编码」家族 I10-I15，编码员要做的是判断患者落在哪一档。</p>
+
+<div class="flow-chart">
+  <div class="flow-row"><div class="flow-box">高血压（I10 起点）</div></div>
+  <div class="flow-row">⬇</div>
+  <div class="flow-row">
+    <div class="flow-box">是否合并心脏损害？<br>（医生陈述「高血压性心脏病」）</div>
+    <div class="flow-box">是否合并慢性肾病？<br>（CKD，推定因果）</div>
+  </div>
+  <div class="flow-row">⬇</div>
+  <div class="flow-row">
+    <div class="flow-box">仅心脏 → <code>I11</code></div>
+    <div class="flow-box">仅肾脏 → <code>I12</code></div>
+    <div class="flow-box warn-step">心+肾都有 → <code>I13</code></div>
+  </div>
+</div>
+
+<table>
+  <tr><th>类目</th><th>含义</th><th>关键亚目</th><th>是否需要附加码</th></tr>
+  <tr><td><code>I10</code></td><td>原发性高血压（无并发症）</td><td>I10.x00</td><td>无需</td></tr>
+  <tr><td><code>I11</code></td><td>高血压性心脏病</td><td>I11.0 伴心力衰竭 / I11.9 不伴</td><td>若伴心衰，另编 <code>I50.-</code> 明确类型</td></tr>
+  <tr><td><code>I12</code></td><td>高血压性肾病</td><td>I12.0 伴肾衰竭 / I12.9 不伴</td><td>另编 <code>N18.-</code> 明确 CKD 分期</td></tr>
+  <tr><td><code>I13</code></td><td>高血压心脏和肾脏病</td><td>I13.0 伴心衰 / I13.1 伴肾衰 / I13.2 伴心衰和肾衰</td><td>另编 I50.- 和 N18.-</td></tr>
+  <tr><td><code>I15</code></td><td>继发性高血压</td><td>I15.0 肾血管性 / I15.1 肾实质 / I15.2 内分泌性</td><td>另编基础病因</td></tr>
+</table>
+
+<h3>2.1 因果推定规则——最容易踩的坑</h3>
+<p>合并编码的前提是「高血压」和「心/肾损害」之间存在<strong>因果关系</strong>。但这两者的因果关系判定标准<strong>不同</strong>：</p>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 高血压 + 慢性肾病（CKD）</h4>
+    <p><strong>推定因果</strong>：只要同时存在高血压和 CKD，<strong>默认合并</strong>到 I12（除非医生明确写明「CKD 与高血压无关」）。</p>
+    <p>编码：<code>I12.9</code> + <code>N18.3</code>（慢性肾病3期）</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>⚠️ 高血压 + 心脏病</h4>
+    <p><strong>须陈述因果</strong>：只有医生明确写「高血压性心脏病」或「心脏病由高血压引起」，才能编 I11；否则只能<strong>分别编</strong> I10 + 心脏病码。</p>
+    <p>编码：<code>I10</code> + <code>I50.9</code>（而非 I11.0）</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 核心铁律：</strong>「心须陈述、肾可推定」。高血压性心脏病<strong>必须有医生的因果表述</strong>；高血压性肾病则<strong>推定因果</strong>。这一步判断错，主诊断可能从 I11.0 掉到 I10，DRG 权重直接缩水，且属于<strong>编码不准确</strong>（既可能是高套风险，也可能是低套损失）。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 三 ======== -->
+<h2><span class="icon">💔</span> 三、急性心梗 I21：双轴心 + 时间轴</h2>
+
+<p>急性心肌梗死是心内科最重、编码最讲究的病种。ICD-10 把它分类于 <code>I21-I23</code>，核心是<strong>双轴心</strong>——先按 ST 段类型，再按梗死部位。</p>
+
+<h3>3.1 双轴心分类</h3>
+<table>
+  <tr><th>轴心 1：ST 段类型</th><th>轴心 2：梗死部位</th><th>编码</th></tr>
+  <tr><td rowspan="3"><strong>STEMI（ST 段抬高型/透壁性）</strong></td><td>前壁</td><td><code>I21.0</code></td></tr>
+  <tr><td>下壁（膈面）</td><td><code>I21.1</code></td></tr>
+  <tr><td>其他部位 / 未特指</td><td><code>I21.2</code> / <code>I21.3</code></td></tr>
+  <tr><td><strong>NSTEMI（非 ST 段抬高型/心内膜下）</strong></td><td>—</td><td><code>I21.4</code></td></tr>
+  <tr><td>未特指</td><td>—</td><td><code>I21.9</code></td></tr>
+</table>
+
+<div class="note">
+  <strong>🔑 判型依据：</strong>看<strong>心电图 ST 段</strong>（不是看症状、不是看肌钙蛋白）。STEMI 透壁 → I21.0/I21.1/I21.2；NSTEMI 心内膜下 → I21.4。部位依据<strong>心电图导联 + 冠脉造影</strong>定位。国临版会进一步细分到扩展码（如 I21.0 前壁下再分前间壁、广泛前壁等），务必编到最细。
+</div>
+
+<h3>3.2 时间轴——急性和陈旧的边界</h3>
+<pre>急性发作（本次）      → I21.x   急性心肌梗死
+    │  28 天内再次梗死（另一部位） → I22.x   随后性/再发性心肌梗死
+    │  本次再梗于同一部位，按 I21 处理
+    ▼
+出院后遗留 / 既往病史 → I25.2   陈旧性心肌梗死（仅作其他诊断）</pre>
+
+<div class="card warn">
+  <strong>⚠️ 高频错误：</strong>把「陈旧性心肌梗死 I25.2」编成主诊断。I25.2 表示<strong>既往得过心梗、本次不是来治心梗</strong>的，只能作其他诊断。本次因胸痛/心衰入院，主诊断应是<strong>本次治疗的主要疾病</strong>（如 I20 心绞痛、I50 心衰），而非陈旧心梗。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 四 ======== -->
+<h2><span class="icon">🧠</span> 四、脑血管病 I60-I69：先分血塞，再定部位</h2>
+
+<p>脑血管病编码的第一问永远是：<span class="hl"><strong>出血还是缺血？</strong></span>这一刀决定了整个编码方向，也是脑病案最基础的分水岭。</p>
+
+<table>
+  <tr><th>类型</th><th>编码</th><th>分类轴心</th><th>关键点</th></tr>
+  <tr><td>蛛网膜下腔出血 SAH</td><td><code>I60</code></td><td>责任血管（颈动脉/大脑中/前交通/基底动脉…）</td><td>常因动脉瘤破裂，配合 I60.x 责任血管亚目</td></tr>
+  <tr><td>脑（实质）出血</td><td><code>I61</code></td><td>部位（半球/脑干/小脑/脑室）</td><td>半球内再分壳核/丘脑/脑叶等（I61.001/I61.101…）</td></tr>
+  <tr><td>其他非创伤性颅内出血</td><td><code>I62</code></td><td>硬膜下/硬膜外</td><td>I62.0 硬膜下；I62.1 硬膜外（<strong>非创伤性</strong>）</td></tr>
+  <tr><td>脑梗死</td><td><code>I63</code></td><td>责任动脉 × 病因（血栓/栓塞/狭窄）</td><td>I63.3 大脑中动脉；I63.8 其他（含腔隙性 I63.801）</td></tr>
+  <tr><td>一过性脑缺血 TIA</td><td><code>G45</code></td><td>责任动脉系统</td><td>注意：TIA 归<strong>神经系统 G 章</strong>，不在 I 章！</td></tr>
+  <tr><td>脑血管病后遗症</td><td><code>I69</code></td><td>后遗症类型 + 原发病</td><td>I69.3 脑梗死后遗症等，<strong>不能编在急性期</strong></td></tr>
+</table>
+
+<h3>4.1 创伤性 vs 非创伤性——最隐蔽的坑</h3>
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 自发性颅内出血（无外伤）</h4>
+    <p>编码于 <code>I60-I62</code>（循环系统章）</p>
+    <p>例：高血压脑出血 → <code>I61.0</code></p>
+  </div>
+  <div class="compare-col bad">
+    <h4>⚠️ 创伤性颅内出血（有外伤）</h4>
+    <p>编码于 <code>S06</code>（损伤章）+ 外因码</p>
+    <p>例：摔伤致硬膜下血肿 → <code>S06.5</code> + <code>W01</code>（跌倒）</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 判断依据：</strong>看<strong>有无明确外伤史</strong>。同一个「硬膜下血肿」，自发性归 I62.0，创伤性归 S06.5。两者不仅编码不同，<strong>DRG 入组也不同</strong>（I 章循环系统 vs S 章损伤），权重差异巨大。病历里有没有「摔倒/撞击」等描述，是判断的钥匙。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 五 ======== -->
+<h2><span class="icon">🔪</span> 五、手术操作编码实战：PCI + 颅内血肿清除 + 脑血管介入</h2>
+
+<h3>5.1 PCI（经皮冠状动脉介入）——完整多码组合</h3>
+<p>PCI 不是「一个码」，而是<strong>一串码</strong>。核心码 + 三个维度附加码，缺一不可。</p>
+
+<pre>主手术：36.07  药物洗脱支架置入（或 36.06 非药物洗脱支架）
+附加 1：00.66  经皮冠状动脉球囊成形术（PTCA，若有球囊扩张）
+附加 2：00.40-00.43  治疗血管数量（单/双/三/四根及以上）
+附加 3：00.45-00.48  置入支架数量（一/二/三/四枚及以上）
+附加 4：00.44  分支血管操作（若涉及分叉病变）
+诊断性：88.55  单根导管冠脉造影（88.56 两根导管 / 88.57 其他）</pre>
+
+<div class="note">
+  <strong>🔑 支架类型决定主码：</strong>药物洗脱支架 → <code>36.07</code>；裸支架/药物涂层（非洗脱）→ <code>36.06</code>。<span class="hl"><strong>「药物涂层」≠「药物洗脱」</strong></span>——看介入报告里写的是「洗脱」还是「涂层」，一字之差就是 36.06 与 36.07 的区别。
+</div>
+
+<h3>5.2 颅内血肿清除——三码体系（部位决定编码）</h3>
+<table>
+  <tr><th>血肿部位</th><th>编码</th><th>常见术式</th></tr>
+  <tr><td>硬脑膜外血肿</td><td><code>01.24</code></td><td>开颅硬脑膜外血肿清除术</td></tr>
+  <tr><td>硬脑膜下 / 蛛网膜下血肿</td><td><code>01.31</code></td><td>开颅硬膜下血肿清除术（或钻孔引流 01.31）</td></tr>
+  <tr><td>脑实质内血肿</td><td><code>01.39</code></td><td>脑内血肿清除术（锥颅/钻孔/开颅）</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 部位 + 病因双锁定：</strong>先确认是<strong>哪个间隙</strong>的血肿（硬膜外/硬膜下/脑内），再选对应手术码。同时诊断编码也要锁死：硬膜外 I62.1、硬膜下 I62.0、脑内 I61。<span class="hl"><strong>手术码和诊断码必须同部位对应</strong></span>，否则产生 QY 歧义病例。
+</div>
+
+<h3>5.3 脑血管介入——取栓与栓塞</h3>
+<table>
+  <tr><th>操作</th><th>编码</th><th>说明</th></tr>
+  <tr><td>机械取栓（脑梗死）</td><td><code>39.74</code></td><td>经导管颅内动脉取栓术</td></tr>
+  <tr><td>动脉瘤栓塞（SAH）</td><td><code>39.72</code></td><td>经导管颅内动脉瘤栓塞术（弹簧圈）</td></tr>
+  <tr><td>静脉溶栓（脑梗死）</td><td><code>99.10</code></td><td>血栓溶解剂注射/输注（rt-PA）</td></tr>
+  <tr><td>脑血管造影</td><td><code>88.41</code></td><td>脑血管造影术</td></tr>
+</table>
+
+<!-- ======== 重难点 ======== -->
+<hr class="divider">
+<h2><span class="icon">💡</span> 六、重难点深度解析：高血压合并编码的「因果推定边界」</h2>
+
+<p>今天所有考点里，<strong>高血压合并编码（I10/I11/I12/I13）</strong>是出错率最高的一个。它难不在「背码」，而在「判断医生到底给了多少因果信息」。我们用两个真实场景对比：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景 A：只说「高血压 + 心衰」</h4>
+    <p>出院诊断：「高血压病 3 级、心力衰竭」——医生<strong>没写</strong>「高血压性心脏病」。</p>
+    <p><strong>→ 分别编码</strong>：<code>I10</code> + <code>I50.9</code>，<span class="keyword-tag">不能</span>合并为 I11.0。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景 B：写「高血压性心脏病」</h4>
+    <p>出院诊断：「高血压性心脏病、心力衰竭」——有明确因果表述。</p>
+    <p><strong>→ 合并编码</strong>：<code>I11.0</code> + <code>I50.9</code>（I50 补充心衰类型）。</p>
+  </div>
+</div>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景 C：高血压 + CKD 5期</h4>
+    <p>诊断：「高血压 3 级、慢性肾病 5 期」——即使没写「高血压性肾病」，<strong>推定因果</strong>。</p>
+    <p><strong>→ 合并编码</strong>：<code>I12.0</code> + <code>N18.5</code>。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景 D：三样全占</h4>
+    <p>诊断：「高血压性心脏病、心衰、慢性肾病 5 期」——心、肾都有损害。</p>
+    <p><strong>→ 终极合并</strong>：<code>I13.2</code>（伴心衰和肾衰）+ <code>I50.9</code> + <code>N18.5</code>。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 三条铁律（务必背下）：</strong><br>
+  ① <strong>心须陈述</strong>——心脏病要合并进 I11，医生必须写「高血压性」，否则 I10 单列。<br>
+  ② <strong>肾可推定</strong>——高血压 + CKD 直接合并 I12，无需医生写「高血压性肾病」。<br>
+  ③ <strong>I11 + I12 同时存在 → 升级 I13</strong>，不要再分开编两个码。<br>
+  <span style="color:var(--warn);font-weight:700;">漏判一条，主诊断权重就可能从 I13 一路跌到 I10。</span>
+</div>
+
+<div class="note">
+  <strong>💡 编码员动作：</strong>看到「高血压」出现在诊断里，立刻追问三件事：① 有没有心脏损害且医生写了「高血压性」？② 有没有 CKD？③ 两者是否同时存在？三问下来，I10/I11/I12/I13 一目了然。拿不准时<strong>回看病程记录/会诊意见</strong>，而不是自己「脑补因果」。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 案例练习 ======== -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 高血压合并编码判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，67 岁，出院诊断：「高血压病 3 级、慢性肾脏病 3 期」。病程记录<strong>未</strong>提「高血压性肾病」。</p>
+    <p><strong>问题：</strong>高血压与肾病应如何编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 合并编码：</strong><code>I12.9</code>（高血压性肾病，不伴肾衰竭）+ <code>N18.3</code>（慢性肾病3期）。</p>
+        <p><strong>推理：</strong>高血压 + CKD 之间<strong>推定因果</strong>，即使医生没写「高血压性」，也默认合并到 I12。这正是「肾可推定」规则的体现——与心脏病不同。</p>
+        <p><strong>💡 避坑：</strong>千万别因为医生「没写高血压性」就拆成 I10 + N18.3。那样会低估疾病关联，影响 DRG 分组准确度。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 脑梗死部位编码</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，58 岁，突发右侧肢体无力 4 小时入院。头颅 MRI 示「左侧大脑中动脉供血区急性脑梗死」，行静脉溶栓治疗。</p>
+    <p><strong>问题：</strong>主诊断编码？溶栓操作编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I63.3</code>（大脑中动脉血栓形成性脑梗死）——主导词「梗死/闭塞」→ 脑 → 大脑中动脉 → I63.3。核对卷一：I63 脑梗死，双轴心为「责任动脉 + 病因（血栓/栓塞）」，本例为大脑中动脉血栓形成。</p>
+        <p><strong>✅ 操作编码：</strong><code>99.10</code>（血栓溶解剂注射/输注，静脉 rt-PA 溶栓）。</p>
+        <p><strong>💡 避坑：</strong>溶栓（99.10）与机械取栓（39.74）是两个不同的操作码，一个打药、一个拉栓，务必看操作记录区分。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · PCI 手术多码组合</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，61 岁，急性前壁心肌梗死，急诊行 PCI：前降支植入<strong>2 枚药物洗脱支架</strong>，术中球囊扩张，术前单导管冠脉造影。</p>
+    <p><strong>问题：</strong>给出完整手术编码组合。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 手术编码组合：</strong></p>
+        <p>① 主手术 <code>36.07</code> 药物洗脱支架置入</p>
+        <p>② <code>00.66</code> 经皮冠状动脉球囊成形术（PTCA）</p>
+        <p>③ <code>00.46</code> 置入两根血管支架</p>
+        <p>④ <code>00.40</code> 单根血管操作（仅前降支）</p>
+        <p>⑤ <code>88.55</code> 单根导管冠脉造影</p>
+        <p><strong>推理：</strong>主码看<strong>支架类型</strong>（药物洗脱 → 36.07）；附加码三个维度一个都不能少：治疗血管数（00.40）、支架数（00.46）、造影（88.55）。</p>
+        <p><strong>💡 避坑：</strong>「药物洗脱支架」≠「药物涂层支架」，前者 36.07、后者 36.06，看介入报告用词。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 心梗时间轴判断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>男，75 岁，8 年前曾患心肌梗死。本次因「胸痛 3 天」入院，冠脉造影未见新发梗死，诊断：「冠状动脉粥样硬化性心脏病、不稳定型心绞痛、陈旧性心肌梗死、心功能 III 级」。</p>
+    <p><strong>问题：</strong>主诊断应选哪个？陈旧性心梗怎么编？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I20.0</code>（不稳定型心绞痛）——本次住院主要治疗的是心绞痛，而非 8 年前的陈旧心梗。</p>
+        <p><strong>✅ 其他诊断：</strong><code>I25.1</code>（冠状动脉粥样硬化性心脏病）、<code>I25.2</code>（陈旧性心肌梗死）、<code>I50.9</code>（心力衰竭）。</p>
+        <p><strong>推理：</strong>心梗时间轴——急性（I21）→ 再梗死（I22）→ 陈旧（I25.2）。<strong>陈旧心梗 I25.2 永远不作主诊断</strong>，因为本次不是来治它的。</p>
+        <p><strong>💡 避坑：</strong>「心功能 III 级」是 NYHA 分级描述，需另编 <code>I50.9</code> 体现心力衰竭，不能只写分级不编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 创伤性 vs 自发性颅内出血</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>女，82 岁，在家中<strong>摔倒</strong>后头痛 2 天，CT 示「硬膜下血肿」。</p>
+    <p><strong>问题：</strong>编码 S06.5 还是 I62.0？是否需要外因码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 编码：</strong><code>S06.5</code>（创伤性硬膜下出血）+ <code>W01</code>（跌倒，外因附加码）。</p>
+        <p><strong>推理：</strong>有明确<strong>外伤史（摔倒）</strong> → 创伤性颅内出血归<strong>S 章（损伤）</strong>，不归 I 章。外因码 W01 说明是「跌倒」造成的，S 章损伤编码必须配外因码。</p>
+        <p><strong>💡 避坑：</strong>同样的「硬膜下血肿」，<strong>无外伤 → I62.0</strong>（非创伤性），<strong>有外伤 → S06.5</strong>。判断钥匙在<strong>病历里有没有外伤史</strong>。二者 DRG 入组完全不同。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 完整综合病例（诊断 + 手术 + 合并编码）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>男，72 岁，高血压病史 10 年，突发意识障碍 2 小时。CT 示「左侧基底节区脑出血」。急诊开颅行脑内血肿清除术。病程记录：「高血压性心脏病、心力衰竭、慢性肾脏病 5 期」。</p>
+    <p>出院诊断：脑出血、高血压 3 级、高血压性心脏病、心力衰竭、慢性肾脏病 5 期。</p>
+    <p><strong>问题：</strong>给出① 主诊断 ② 其他诊断（含合并编码）③ 手术编码 ④ DRG 入组思路。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 主诊断：</strong><code>I61.0</code>（脑实质出血，基底节区）——本次住院<strong>主要治疗</strong>的是脑出血，且做了对应手术。</p>
+        <p><strong>✅ ② 其他诊断：</strong></p>
+        <p>· 高血压 + 心脏病 + 肾病三样全占 → 终极合并编码 <code>I13.2</code>（高血压心脏和肾脏病，伴心衰和肾衰）</p>
+        <p>· 附加 <code>I50.9</code>（心力衰竭）+ <code>N18.5</code>（慢性肾病5期）</p>
+        <p>· <span class="keyword-tag">注意：不再单独编 I10、I11、I12</span>——I13.2 已包含三者，避免重复编码。</p>
+        <p><strong>✅ ③ 手术编码：</strong><code>01.39</code>（脑内血肿清除术）——血肿在<strong>脑实质内</strong>，对应 01.39（而非硬膜外 01.24 / 硬膜下 01.31）。</p>
+        <p><strong>✅ ④ DRG 思路：</strong>主诊断 I61（脑出血）+ 开颅手术 → 入 MDCB「神经系统疾病」的手术组（BR 组）；合并 CKD 5 期、心衰等 MCC/CC，会进一步拉升权重。</p>
+        <p><strong>💡 核心教训：</strong>这一题串起了「主诊断选择（脑出血，与手术匹配）→ 合并编码（I13.2）→ 手术编码（01.39）→ DRG（BR 手术组）」的完整链条，正是心脑血管病案编码的标准动作。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>先分血塞：</strong>脑病案第一步判断出血（I60-I62）还是缺血（I63），方向错全错</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>心梗双轴心：</strong>STEMI 按部位（I21.0/1/2），NSTEMI 固定 I21.4</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>心须陈述：</strong>高血压心脏病合并 I11 需医生写「高血压性」</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>肾可推定：</strong>高血压 + CKD 直接合并 I12，无需因果陈述</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>I11+I12 → I13：</strong>心肾同损升级为 I13，不再分开编</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>PCI 是一串码：</strong>36.07 + 00.66 + 00.4x + 00.45-48 + 88.55</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>血肿三码：</strong>硬膜外 01.24 / 硬膜下 01.31 / 脑内 01.39</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>创伤 vs 自发：</strong>有外伤 S06+外因码，无外伤 I60-I62</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 57 主题：综合案例实战（二）—— 肿瘤全套编码</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>肿瘤「部位 + 形态学」双编码的完整流程是怎样的？（M 编码动态码 /0、/1、/2、/3、/6 怎么选）</li>
+    <li>确诊肿瘤 vs 放化疗住院（Z51）vs 复查随诊（Z08）的主诊断各怎么选？</li>
+    <li>恶性肿瘤「首次确诊治疗」与「复发再治疗」编码有何区别？</li>
+    <li>肿瘤相关手术（根治术）如何做多码组合编码？</li>
+  </ul>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 56 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 / ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
