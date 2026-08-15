@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 57（2026年8月14日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border); font-size: 14px;
+  }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px; margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px; margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="day-badge">Day 57 · 2026年8月14日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：综合案例实战（二）—— 肿瘤全套编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 57 / 60 天（95%）</p>
+</div>
+
+<hr class="divider">
+
+<div class="card tip">
+  <p><strong>📌 综合案例实战第二天：肿瘤全套编码。</strong>肿瘤是病案室里编码链条最长、最容易「漏码」「错选主诊断」的病种——因为它同时牵扯<strong>部位码 + 形态学码 + 主诊断选择 + 放化疗 Z 码 + 根治手术多码</strong>五层逻辑。</p>
+  <p style="margin-top:8px;">今天只做一件事：<span class="hl"><strong>把「拿到一份肿瘤病历 → 输出一份完整、无漏码、主诊断正确」的完整链条练成肌肉记忆</strong></span>。</p>
+</div>
+
+<!-- 掌握程度 -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（肿瘤编码硬功夫）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤「部位码 + 形态学码」双编码铁律（C 章 + M 编码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>M 形态学动态码五档：/0 良性 /1 交界 /2 原位 /3 恶性原发 /6 转移 /9 未定</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>肿瘤主诊断九条规则：确诊 / 放化疗 Z51 / 随诊 Z08 / 并发症</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>放化疗住院 Z51.0 / Z51.1 主诊断切换逻辑</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>根治术多码组合：部位切除 + 淋巴结清扫（40.x）+ 术式附加</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（边界判断）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>「确诊 + 同次化疗」与「单纯化疗」的主诊断区别</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>转移性肿瘤：原发确定 / 未确定的两种编码路径（C80）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>原位癌（D00-D09）与浸润癌（C 章）的分水岭</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>淋巴造血系统肿瘤（C81-C96）不编 M 形态学码的例外</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（DRG 视角）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>肿瘤病例的 CHS-DRG 入组（内科化疗组 vs 外科手术组）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>肿瘤 TNM 分期与编码的配合（分期不进入编码，但影响治疗）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>预防性手术 Z40.0（如 BRCA 突变预防性乳腺切除）</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>肿瘤编码最容易错的不是「查不到码」，而是「<strong>漏了形态学码</strong>」或「<strong>主诊断选错</strong>」。做题时先问自己三句话：① 部位码是什么？② 有没有病理、形态学码要不要补？③ 这次住院的<strong>主要目的</strong>是什么（确诊？手术？化疗？复查？）？
+</div>
+
+<!-- 一 -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、肿瘤编码全景地图（诊断篇）</h2>
+
+<p>肿瘤编码的「总坐标系」是<strong>部位码 + 形态学码双轨并行</strong>。部位码决定「长在哪」，形态学码决定「长成什么样、良性恶性」。先看部位码的四大分区：</p>
+
+<table>
+  <tr><th>分区</th><th>码位范围</th><th>含义</th><th>编码特点</th></tr>
+  <tr><td><strong>恶性肿瘤（原发）</strong></td><td><code>C00-C97</code></td><td>浸润性恶性肿瘤</td><td>主诊断的核心区，绝大多数实体瘤落在这里</td></tr>
+  <tr><td><strong>原位癌</strong></td><td><code>D00-D09</code></td><td>未突破基底膜的癌</td><td>「癌」但<strong>不是</strong> C 章，动态码是 /2</td></tr>
+  <tr><td><strong>良性肿瘤</strong></td><td><code>D10-D36</code></td><td>良性新生物</td><td>动态码 /0</td></tr>
+  <tr><td><strong>动态未定 / 未知</strong></td><td><code>D37-D48</code></td><td>交界性、性质待定</td><td>动态码 /1 或 /9</td></tr>
+</table>
+
+<div class="note">
+  <strong>🧭 高频部位码速查：</strong>C16 胃 · C18 结肠 · C20 直肠 · C22 肝 · C25 胰腺 · C34 肺 · C50 乳腺 · C53 宫颈 · C56 卵巢 · C61 前列腺 · C64 肾 · C67 膀胱 · C71 脑 · C73 甲状腺 · C81-C96 淋巴造血 · C90 多发性骨髓瘤 · C91-C95 白血病 · C97 复合性恶性肿瘤 · <strong>C80 未特指部位</strong>（仅原发灶不明时用）。
+</div>
+
+<p>部位码之外，还有一条「转移轨道」：<strong>C77-C79</strong> 专门用来表达继发（转移）性肿瘤——C77 淋巴结转移、C78 呼吸和消化器官转移、C79 其他部位转移。当住院是<strong>治疗转移灶</strong>时，主诊断就落在这些码上。</p>
+
+<hr class="section-divider">
+
+<!-- 二 -->
+<h2><span class="icon">🧬</span> 二、双编码铁律：部位码 + 形态学码（M 编码）</h2>
+
+<p>ICD-10 对肿瘤采用<strong>双编码</strong>：一个<strong>部位码</strong>（说明解剖位置），一个<strong>形态学码 M</strong>（说明组织学类型和良恶性）。部位码是<strong>主码</strong>，形态学码是<strong>附加码</strong>——<span class="hl"><strong>只有拿到了病理报告，才编 M 形态学码</strong></span>。</p>
+
+<h3>2.1 形态学动态码——五档一字定生死</h3>
+<p>M 编码斜杠后第 1 位的「动态码」是肿瘤编码的核心：</p>
+
+<table>
+  <tr><th>动态码</th><th>含义</th><th>对应部位码分区</th><th>示例</th></tr>
+  <tr><td><code>/0</code></td><td>良性</td><td>D10-D36</td><td>M8850/0 脂肪瘤</td></tr>
+  <tr><td><code>/1</code></td><td>动态未定（交界性）</td><td>D37-D48</td><td>M8442/1 交界性卵巢浆液性肿瘤</td></tr>
+  <tr><td><code>/2</code></td><td>原位癌</td><td>D00-D09</td><td>M8500/2 导管原位癌（DCIS）</td></tr>
+  <tr><td><code>/3</code></td><td>恶性，原发</td><td>C00-C97</td><td>M8140/3 腺癌</td></tr>
+  <tr><td><code>/6</code></td><td>恶性，转移性/继发</td><td>C77-C79</td><td>M8140/6 转移性腺癌</td></tr>
+  <tr><td><code>/9</code></td><td>恶性，未特指</td><td>C 章</td><td>M8010/9 癌，未特指</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 铁律一：</strong>形态学动态码必须和部位码<strong>对得上</strong>。原位癌（/2）绝不能编到 C 章（C 章是浸润性恶性 /3）。<span class="hl"><strong>病理写「导管原位癌」→ 部位 D05（乳腺原位癌）+ M8500/2，而不是 C50</strong></span>。
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 铁律二：</strong>淋巴造血系统肿瘤（白血病 C91-C95、淋巴瘤 C81-C85、多发性骨髓瘤 C90）<strong>不额外编 M 形态学码</strong>——因为 C 章这些类目本身已经按组织学分类好了。避免画蛇添足。
+</div>
+
+<h3>2.2 常见形态学 M 码速查</h3>
+<table>
+  <tr><th>组织学类型</th><th>M 码</th><th>组织学类型</th><th>M 码</th></tr>
+  <tr><td>癌（未特指）</td><td><code>M8010/3</code></td><td>腺癌</td><td><code>M8140/3</code></td></tr>
+  <tr><td>鳞状细胞癌</td><td><code>M8070/3</code></td><td>小细胞癌</td><td><code>M8041/3</code></td></tr>
+  <tr><td>浸润性导管癌（乳腺）</td><td><code>M8500/3</code></td><td>恶性黑色素瘤</td><td><code>M8720/3</code></td></tr>
+  <tr><td>肝细胞癌</td><td><code>M8170/3</code></td><td>平滑肌肉瘤</td><td><code>M8890/3</code></td></tr>
+</table>
+
+<div class="note">
+  <strong>🔑 完整双编码示例：</strong>「胃窦腺癌」→ 部位 <code>C16.3</code>（胃窦）+ 形态学 <code>M8140/3</code>（腺癌）。先查部位、再补形态学，缺一不可。
+</div>
+
+<hr class="section-divider">
+
+<!-- 三 -->
+<h2><span class="icon">🎯</span> 三、肿瘤主诊断选择：九条规则（实战精简版）</h2>
+
+<p>肿瘤主诊断选择的本质，是回答一个问题：<span class="hl"><strong>这次住院到底「主要为了什么」？</strong></span>围绕住院目的，九条规则可以浓缩成一张决策表：</p>
+
+<table>
+  <tr><th>住院目的</th><th>主诊断</th><th>肿瘤本身</th><th>说明</th></tr>
+  <tr><td>首次确诊 / 治疗原发肿瘤</td><td>肿瘤部位码</td><td>主诊断</td><td>例：C34 肺癌，本次行根治术</td></tr>
+  <tr><td>单纯放疗</td><td><code>Z51.0</code></td><td>其他诊断</td><td>放疗疗程为主诊断</td></tr>
+  <tr><td>单纯化疗 / 靶向 / 免疫</td><td><code>Z51.1</code>（化疗）/ <code>Z51.2</code>（其他）</td><td>其他诊断</td><td>化疗为主诊断</td></tr>
+  <tr><td><strong>确诊 + 同次化疗</strong></td><td>肿瘤部位码</td><td>主诊断</td><td>首次确诊并入化疗，肿瘤做主诊断</td></tr>
+  <tr><td>复查 / 随诊</td><td><code>Z08</code></td><td>其他诊断</td><td>恶性肿瘤治疗后随诊</td></tr>
+  <tr><td>肿瘤并发症为主</td><td>并发症码</td><td>其他诊断</td><td>如贫血、肠梗阻、感染</td></tr>
+  <tr><td>治疗转移灶</td><td>转移部位码（C77-C79）</td><td>原发灶其他诊断</td><td>如 C79.5 骨转移</td></tr>
+  <tr><td>临终 / 死亡</td><td>肿瘤部位码</td><td>主诊断</td><td>死于肿瘤本身</td></tr>
+  <tr><td>预防性手术（高危）</td><td><code>Z40.0</code></td><td>—</td><td>如 BRCA 突变预防性乳腺切除</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 最容易错的两种：</strong><br>
+  ① <strong>单纯化疗</strong>：主诊断是 Z51.1（不是肿瘤码），但肿瘤码<strong>仍要编为其他诊断</strong>（否则医保清单信息缺失）。<br>
+  ② <strong>确诊 + 同次化疗</strong>：本次首次确诊肿瘤并同步化疗，主诊断是<strong>肿瘤本身</strong>（不是 Z51.1），这是唯一一个「化疗但主诊断仍是肿瘤」的特例。
+</div>
+
+<hr class="section-divider">
+
+<!-- 四 -->
+<h2><span class="icon">💊</span> 四、放化疗 Z 码与随诊 Z08：主诊断切换逻辑</h2>
+
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 常见错误：化疗住院把肿瘤做主诊断</h4>
+    <p>「肺癌」入院化疗，主诊断编 <code>C34.9</code>。</p>
+    <p><strong>错在</strong>：本次住院主要治疗是「化疗」，不是肿瘤本身的手术/根治。主诊断应为 <code>Z51.1</code>，C34.9 降为其他诊断。</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 正确：化疗为主诊断 Z51.1</h4>
+    <p>主诊断 <code>Z51.1</code>（肿瘤化学治疗疗程）；</p>
+    <p>其他诊断 <code>C34.9</code>（肺癌）+ <code>M8041/3</code>（小细胞癌，若有病理）。</p>
+  </div>
+</div>
+
+<h3>4.1 Z 码放化疗家族</h3>
+<table>
+  <tr><th>编码</th><th>含义</th></tr>
+  <tr><td><code>Z51.0</code></td><td>放射治疗疗程</td></tr>
+  <tr><td><code>Z51.1</code></td><td>化学治疗疗程（含靶向、内分泌治疗的疗程编码场景需核对）</td></tr>
+  <tr><td><code>Z51.2</code></td><td>其他特指的治疗后医疗照护（免疫治疗等按实际核对）</td></tr>
+  <tr><td><code>Z08</code></td><td>恶性肿瘤治疗后随诊检查</td></tr>
+  <tr><td><code>Z85</code></td><td>恶性肿瘤个人史（既往得过、已治愈，仅作其他诊断）</td></tr>
+</table>
+
+<div class="note">
+  <strong>🔑 主诊断切换口诀：</strong>「<strong>治肿瘤选肿瘤，做化疗选 Z51，复查随诊选 Z08，既往得过选 Z85</strong>」。四选一，先问「这次住院的目的」。
+</div>
+
+<hr class="section-divider">
+
+<!-- 五 -->
+<h2><span class="icon">🔪</span> 五、肿瘤手术编码：根治术多码组合</h2>
+
+<p>肿瘤根治术从来不是「一个码」，而是<strong>「部位切除 + 淋巴结清扫 + 术式/范围附加」</strong>的一串码。核心原则：<span class="hl"><strong>切除范围决定主码，淋巴结清扫必须另编</strong></span>。</p>
+
+<h3>5.1 常见根治术多码组合</h3>
+<table>
+  <tr><th>术式</th><th>主码（部位切除）</th><th>附加码（淋巴结清扫等）</th></tr>
+  <tr><td>胃癌根治术</td><td><code>43.5-43.9</code>（胃部分/全切除）</td><td><code>40.59</code> 区域淋巴结清扫</td></tr>
+  <tr><td>结肠癌根治术</td><td><code>45.7x</code>（结肠部分切除）</td><td><code>40.59</code> 区域淋巴结清扫</td></tr>
+  <tr><td>直肠癌根治术（Miles）</td><td><code>48.5/48.6</code>（腹会阴联合切除等）</td><td><code>40.59</code> + 可能造口 <code>46.1x</code></td></tr>
+  <tr><td>肺癌根治术</td><td><code>32.4</code>（肺叶切除）</td><td><code>40.59</code> 淋巴结清扫（纵隔）</td></tr>
+  <tr><td>乳腺癌改良根治术</td><td><code>85.43</code>（改良根治）</td><td><code>40.3</code> 区域淋巴结清扫（腋窝）</td></tr>
+  <tr><td>宫颈癌根治术</td><td><code>68.6/68.7</code>（子宫根治性切除）</td><td><code>40.59</code> 盆腔淋巴结清扫</td></tr>
+</table>
+
+<div class="note">
+  <strong>🔑 淋巴结清扫码：</strong>颈/腋窝/腹股沟等<strong>表浅</strong>淋巴结清扫多用 <code>40.3</code>（区域淋巴结清扫）；胸腔/腹腔/盆腔等<strong>深部</strong>淋巴结清扫多用 <code>40.59</code>（其他淋巴结根治性清扫）。看手术记录写的清扫范围。
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 避坑：</strong>「根治术」三个字不能直接当主码查。先拆出<strong>实际切除的器官和范围</strong>（胃切了多少？肺切了几叶？），再分别编码。<span class="hl"><strong>「全胃切除根治术」= 43.99 全胃切除 + 40.59，而不是一个「根治术码」</strong></span>。
+</div>
+
+<hr class="divider">
+
+<!-- 六 重难点 -->
+<h2><span class="icon">💡</span> 六、重难点深度解析：动态码「一字之差」的编码事故</h2>
+
+<p>今天最高频、后果最严重的错误，是<strong>形态学动态码选错</strong>。同样是乳腺肿块，病理报告用词的细微差别，会导向完全不同的编码：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>「乳腺导管原位癌 DCIS」</h4>
+    <p>动态码 <code>/2</code> → 部位 <code>D05.1</code> + <code>M8500/2</code>。</p>
+    <p><strong>原位癌，不编 C50</strong>。</p>
+  </div>
+  <div class="example-item">
+    <h4>「乳腺浸润性导管癌」</h4>
+    <p>动态码 <code>/3</code> → 部位 <code>C50.9</code> + <code>M8500/3</code>。</p>
+    <p><strong>浸润性恶性，编 C 章</strong>。</p>
+  </div>
+  <div class="example-item">
+    <h4>「卵巢交界性浆液性肿瘤」</h4>
+    <p>动态码 <code>/1</code> → 部位 <code>D39.1</code> + <code>M8442/1</code>。</p>
+    <p><strong>动态未定，不编 C 章</strong>。</p>
+  </div>
+  <div class="example-item">
+    <h4>「肝转移性腺癌（原发结肠）」</h4>
+    <p>转移灶动态 <code>/6</code> → 部位 <code>C78.7</code>（肝继发）+ 原发 <code>C18.9</code> 其他诊断。</p>
+    <p><strong>主诊断是转移灶</strong>（若本次治转移）。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 三条铁律（务必背下）：</strong><br>
+  ① <strong>动态码决定分区</strong>——/2 一定落 D00-D09（原位），/3 才落 C 章（恶性原发），/1 落 D37-D48（交界）。<br>
+  ② <strong>没有病理不编 M</strong>——临床只写「占位/肿物」而无病理，部位码按动态未定 D37-D48 或临床判断处理，不硬套 /3。<br>
+  ③ <strong>转移灶 ≠ 原发灶</strong>——原发已确定时，转移灶编 C77-C79（动态 /6），原发部位另列其他诊断。
+</div>
+
+<div class="note">
+  <strong>💡 编码员动作：</strong>拿到肿瘤病历，先翻<strong>病理报告</strong>——这是形态学码的唯一依据。病理写「浸润」「癌（Carcinoma）」→ /3；写「原位」「上皮内瘤变 III 级」→ /2；写「交界性」→ /1。病理没出，别急着编 M 码。
+</div>
+
+<hr class="divider">
+
+<!-- 七 案例练习 -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 双编码（部位 + 形态学）</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>女，58 岁，胃镜活检病理：「胃窦腺癌」。住院行胃癌根治术（胃大部切除 + 区域淋巴结清扫）。</p>
+    <p><strong>问题：</strong>给出诊断编码（部位 + 形态学）与手术编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断编码：</strong>部位 <code>C16.3</code>（胃窦恶性肿瘤）+ 形态学 <code>M8140/3</code>（腺癌）。</p>
+        <p><strong>✅ 手术编码：</strong><code>43.7</code>（胃部分切除，胃大部）+ <code>40.59</code>（区域淋巴结清扫）。</p>
+        <p><strong>推理：</strong>部位 + 形态学双编码缺一不可；根治术拆成「胃切除 + 淋巴结清扫」两码。</p>
+        <p><strong>💡 避坑：</strong>别漏编 M8140/3。只有病理确诊的腺癌才补形态学码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 原位癌 vs 浸润癌</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>女，45 岁，乳腺钼靶提示「右乳导管原位癌（DCIS）」，行保乳手术 + 前哨淋巴结活检。</p>
+    <p><strong>问题：</strong>诊断编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断编码：</strong>部位 <code>D05.1</code>（乳腺导管原位癌）+ 形态学 <code>M8500/2</code>（导管原位癌）。</p>
+        <p><strong>推理：</strong>「原位癌」动态码 /2 → 编 D00-D09 原位癌区，<strong>不编 C50</strong>（那是浸润性）。</p>
+        <p><strong>💡 避坑：</strong>「原位癌」三个字就是分水岭。看到 DCIS / CIS / 上皮内瘤变 III 级，都走 D 章。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 化疗住院主诊断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，62 岁，确诊「右肺小细胞癌」1 月，本次入院行第 2 周期化疗。</p>
+    <p><strong>问题：</strong>主诊断选什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>Z51.1</code>（肿瘤化学治疗疗程）。</p>
+        <p><strong>✅ 其他诊断：</strong><code>C34.9</code>（肺恶性肿瘤）+ <code>M8041/3</code>（小细胞癌）。</p>
+        <p><strong>推理：</strong>本次住院主要目的是「化疗」，不是首次确诊也不是手术，故主诊断 Z51.1；肿瘤码降为其他诊断。</p>
+        <p><strong>💡 避坑：</strong>若本次是「首次确诊 + 同次化疗」，主诊断才是肿瘤本身，这是唯一特例。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 转移灶 vs 原发灶主诊断</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>男，70 岁，结肠癌术后 2 年，本次因「腰背痛」入院，PET-CT 示「腰椎骨转移」，行腰椎转移灶放疗。</p>
+    <p><strong>问题：</strong>主诊断选什么？结肠癌怎么编？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>C79.5</code>（骨继发性恶性肿瘤）——本次主要治疗的是<strong>腰椎骨转移灶</strong>。</p>
+        <p><strong>✅ 其他诊断：</strong><code>C18.9</code>（结肠恶性肿瘤，原发灶）+ <code>Z85.0</code>（消化器官恶性肿瘤个人史，若已治愈）。</p>
+        <p><strong>推理：</strong>治疗靶点是「转移灶」而非原发灶，故主诊断落在 C79（继发恶性肿瘤）；原发结肠癌作其他诊断。</p>
+        <p><strong>💡 避坑：</strong>别把原发结肠癌 C18 当主诊断——本次没在治它。主诊断必须匹配本次治疗。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 交界性肿瘤动态码</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>女，33 岁，术中冰冻 + 术后病理：「左侧卵巢交界性浆液性肿瘤」，行左侧附件切除术。</p>
+    <p><strong>问题：</strong>诊断编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断编码：</strong>部位 <code>D39.1</code>（卵巢动态未定肿瘤）+ 形态学 <code>M8442/1</code>（交界性浆液性肿瘤）。</p>
+        <p><strong>推理：</strong>「交界性」= 动态码 /1 → 编 D37-D48 动态未定区，<strong>不编 C56</strong>（恶性）。</p>
+        <p><strong>💡 避坑：</strong>交界性肿瘤不是「恶性」，也不是「良性」，是 /1 独立档位。编错到 C56 属于高套。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 完整综合病例（双编码 + 主诊断 + 根治术）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>男，66 岁，因「大便带血 3 月」入院，肠镜活检病理：「直肠腺癌」。行「直肠癌根治术（腹会阴联合切除术）+ 盆腔淋巴结清扫 + 乙状结肠造口术」。</p>
+    <p><strong>问题：</strong>给出① 主诊断 ② 形态学码 ③ 完整手术编码 ④ DRG 入组思路。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 主诊断：</strong><code>C20</code>（直肠恶性肿瘤）——本次首次确诊并手术治疗，主诊断是肿瘤本身。</p>
+        <p><strong>✅ ② 形态学码：</strong><code>M8140/3</code>（腺癌）。</p>
+        <p><strong>✅ ③ 手术编码：</strong><code>48.5</code>（腹会阴联合切除术）+ <code>40.59</code>（盆腔淋巴结清扫）+ <code>46.11</code>（结肠造口术）。</p>
+        <p><strong>✅ ④ DRG 思路：</strong>主诊断 C20（直肠癌）+ 根治手术 → 入 MDCG「消化系统疾病」的手术组；腹会阴联合切除属大手术，权重高。</p>
+        <p><strong>💡 核心教训：</strong>这一题串起「双编码（C20 + M8140/3）→ 主诊断（肿瘤本身）→ 根治术多码（切除 + 清扫 + 造口）→ DRG」完整链条，是肿瘤病案编码的标准动作。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- 八 重点回顾 -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>双编码铁律：</strong>部位码（主）+ 形态学码（附），有病理才编 M</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>动态码五档：</strong>/0 良 /1 交界 /2 原位 /3 恶性原发 /6 转移</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>原位癌走 D 章：</strong>/2 编 D00-D09，绝不编 C 章</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>交界性走 D37-D48：</strong>/1 独立档位，不是良性也不是恶性</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>化疗主诊断 Z51.1：</strong>肿瘤降为其他诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>复查随诊 Z08：</strong>治后随诊检查为主诊断</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>转移灶主诊断：</strong>治转移编 C77-C79，原发另列</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>根治术多码：</strong>部位切除 + 淋巴结清扫 40.x</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 58 主题：综合案例实战（三）—— 骨科 + 创伤全套编码</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>骨折编码的「部位 + 性质（闭合/开放）」双轴心怎么确定？</li>
+    <li>损伤外因码（W 跌倒 / V 交通事故）如何与 S 章损伤码配合？</li>
+    <li>骨折复位手术的「闭合/开放 × 有无内固定」四象限编码？（79.0-79.3）</li>
+    <li>关节置换（全髋 81.51 / 全膝 81.54）与内固定（78.5）的区别？</li>
+  </ul>
+</div>
+
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 57 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 / ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>

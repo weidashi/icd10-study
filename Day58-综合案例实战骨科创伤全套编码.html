@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 58（2026年8月15日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    margin: 0 -24px; padding: 48px 32px 40px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.2); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero h1 { font-size: 30px; margin: 14px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.8); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border); font-size: 14px;
+  }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px; margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px; padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .flow-chart {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0; text-align: center;
+  }
+  .flow-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+  .flow-box {
+    background: #fff; border: 2px solid var(--accent); border-radius: 6px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .flow-box.warn-step { border-color: var(--red); background: var(--red-bg); }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px; margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="day-badge">Day 58 · 2026年8月15日</div>
+  <h1>📚 病案编码学习</h1>
+  <p class="subtitle">今日主题：综合案例实战（三）—— 骨科 + 创伤全套编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:96.67%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">进度 58 / 60 天（96.67%）</p>
+</div>
+
+<hr class="divider">
+
+<div class="card tip">
+  <p><strong>📌 综合案例实战第三天：骨科 + 创伤全套编码。</strong>创伤（损伤 S-T 章）是病案室里「<strong>多码组合最多、外因码最易漏</strong>」的领域——一份骨折病历往往要编<strong>部位码 + 性质码（闭合/开放）+ 外因码 + 手术复位码 + 内固定码</strong>五层。</p>
+  <p style="margin-top:8px;">今天聚焦<span class="hl"><strong>骨折 + 创伤的完整编码链条</strong></span>，把「拿到一份骨科病历 → 输出无漏码、外因齐全、手术对应的完整编码」练成肌肉记忆。</p>
+</div>
+
+<!-- 掌握程度 -->
+<h2><span class="icon">🎯</span> 今日学习目标与掌握程度</h2>
+
+<div class="card">
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（骨科创伤编码硬功夫）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>损伤 S 章「部位 + 性质」双轴心（闭合性 / 开放性骨折）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>损伤外因码 V01-Y98 必编（跌倒 W / 交通事故 V）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>骨折复位四象限：79.0-79.3（闭合/开放 × 有无内固定）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>内固定置入 78.5 vs 取出 78.6</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>关节置换：全髋 81.51 / 全膝 81.54 / 半髋 81.52</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（边界判断）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>「开放性骨折」判定：骨折端与外界相通（皮肤破损）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>损伤 vs 疾病：骨质疏松性骨折（M80）与创伤性骨折（S 章）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>多处骨折多码 vs 合并码（T02 涉及多部位）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>清创术 86.22（切除性）vs 86.28（非切除性）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 了解即可（DRG 视角）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>骨折病例的 CHS-DRG 入组（IF/IG 骨骼肌肉手术组）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>多发伤的损伤严重度评分（ISS）与编码优先级</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>关节镜诊断（80.26）vs 镜下治疗的区别</span></div>
+    </div>
+  </details>
+</div>
+
+<div class="note">
+  <strong>💡 本日学习建议：</strong>骨科编码的核心是「<strong>闭合还是开放</strong>」这一刀。做题时先看<strong>皮肤/伤口情况</strong>判断骨折性质，再看<strong>手术记录</strong>判断复位方式和有无内固定。外因码永远别忘了配。
+</div>
+
+<!-- 一 -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、损伤编码全景地图（S 章三维坐标）</h2>
+
+<p>损伤章（S00-T98）的编码是<strong>三维坐标</strong>：<strong>部位（长在哪）+ 性质（伤成什么样）+ 外因（怎么伤的）</strong>。其中「外因码」是 S 章独有、也最容易被漏掉的一维。</p>
+
+<table>
+  <tr><th>维度</th><th>说明</th><th>示例</th></tr>
+  <tr><td><strong>部位</strong></td><td>身体解剖区域（按 S 章分节）</td><td>S72 股骨骨折</td></tr>
+  <tr><td><strong>性质</strong></td><td>损伤类型（骨折/脱位/挫伤/撕裂）+ 闭合/开放</td><td>闭合性 vs 开放性</td></tr>
+  <tr><td><strong>外因</strong></td><td>受伤原因（V01-Y98 附加码）</td><td>W01 跌倒 / V 交通事故</td></tr>
+</table>
+
+<h3>1.1 骨折部位速查（S 章分节）</h3>
+<table>
+  <tr><th>码位</th><th>部位</th><th>码位</th><th>部位</th></tr>
+  <tr><td><code>S02</code></td><td>颅骨和面骨</td><td><code>S42</code></td><td>肩和上臂（锁骨、肱骨）</td></tr>
+  <tr><td><code>S12</code></td><td>颈部（颈椎）</td><td><code>S52</code></td><td>前臂（尺骨、桡骨）</td></tr>
+  <tr><td><code>S22</code></td><td>肋骨、胸骨、胸椎</td><td><code>S62</code></td><td>腕和手</td></tr>
+  <tr><td><code>S32</code></td><td>腰椎、骨盆</td><td><code>S72</code></td><td>股骨</td></tr>
+  <tr><td><code>S82</code></td><td>小腿（胫骨、腓骨）</td><td><code>S92</code></td><td>足（含踝）</td></tr>
+</table>
+
+<div class="note">
+  <strong>🧭 部位记忆口诀：</strong>「<strong>从上往下，肩（S42）→ 前臂（S52）→ 腕手（S62）→ 股骨（S72）→ 小腿（S82）→ 足（S92）</strong>」。下肢大骨折（股骨、小腿）是骨科住院主力和 DRG 权重高地。
+</div>
+
+<hr class="section-divider">
+
+<!-- 二 -->
+<h2><span class="icon">🦴</span> 二、骨折编码双轴心：闭合性 vs 开放性</h2>
+
+<p>同一根骨的骨折，ICD-10 用<strong>闭合性 / 开放性</strong>两个亚目区分，这是骨折编码<strong>最关键的一刀</strong>：</p>
+
+<table>
+  <tr><th>类型</th><th>判定标准</th><th>编码规律</th><th>临床意义</th></tr>
+  <tr><td><strong>闭合性骨折</strong></td><td>骨折端不与外界相通，皮肤无破损</td><td>亚目为<strong>偶数</strong>（.0/.2/.4…）</td><td>无感染风险，恢复较快</td></tr>
+  <tr><td><strong>开放性骨折</strong></td><td>骨折端穿破皮肤，与外界相通</td><td>亚目为<strong>奇数</strong>（.1/.3/.5…）</td><td>有感染风险，需清创</td></tr>
+</table>
+
+<div class="compare-row">
+  <div class="compare-col good">
+    <h4>✅ 闭合性股骨干骨折</h4>
+    <p>皮肤完整，无伤口。</p>
+    <p>编码：<code>S72.3</code>（股骨干骨折，闭合性）。</p>
+  </div>
+  <div class="compare-col bad">
+    <h4>⚠️ 开放性股骨干骨折</h4>
+    <p>骨折端穿出皮肤，有出血伤口。</p>
+    <p>编码：<code>S72.4</code>（股骨干骨折，开放性）。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 判定铁律：</strong>「开放性」的唯一标准是<strong>骨折端是否与外界相通（皮肤破损）</strong>，不是看「有没有软组织伤」。看<strong>病历的伤口描述 + X 线/CT</strong>，别只凭「骨折」二字就默认闭合。闭合与开放一字之差，DRG 入组、手术方式（需清创）都不同。
+</div>
+
+<hr class="section-divider">
+
+<!-- 三 -->
+<h2><span class="icon">🚗</span> 三、外因编码 V01-Y98：损伤的「怎么伤的」</h2>
+
+<p>所有 S 章损伤编码<strong>必须配外因码</strong>（V01-Y98），说明受伤的原因。这是损伤编码的<strong>完整性铁律</strong>——缺外因码，就是「不完整编码」。</p>
+
+<table>
+  <tr><th>外因类别</th><th>码位</th><th>高频示例</th></tr>
+  <tr><td>运输事故（交通事故）</td><td><code>V01-V99</code></td><td>V28 摩托车事故、V49 汽车事故</td></tr>
+  <tr><td>跌倒</td><td><code>W00-W19</code></td><td><code>W01</code> 平地跌倒、<code>W10</code> 楼梯跌倒</td></tr>
+  <tr><td>暴露于无生命机械力</td><td><code>W20-W49</code></td><td>W22 被物体撞击</td></tr>
+  <tr><td>暴露于有生命机械力（暴力）</td><td><code>W50-W64</code></td><td>W50 被人击打</td></tr>
+  <tr><td>中毒/其他</td><td><code>X/Y</code></td><td>X/Y 中毒（配合 T36-T50）</td></tr>
+</table>
+
+<div class="note">
+  <strong>🔑 外因码使用规则：</strong>① S 章损伤必配外因码；② 外因码<strong>只能作附加码</strong>，不作主诊断；③ 同一损伤可配多个外因（如 Y92 场所、Y93 活动、Y99 状态附加）。最常用的是「跌倒 W」和「交通事故 V」。
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 高频漏码：</strong>「股骨颈骨折（摔伤）」只编 <code>S72.0</code> 而漏编 <code>W01</code>（跌倒），属于<strong>编码不完整</strong>。医保质控和外因统计都会抓这个。养成「编完 S 章，立刻补外因」的肌肉记忆。
+</div>
+
+<hr class="section-divider">
+
+<!-- 四 -->
+<h2><span class="icon">🔪</span> 四、骨折复位手术：79.0-79.3 四象限</h2>
+
+<p>骨折手术编码的核心是<strong>复位方式（闭合/开放）× 有无内固定</strong>组成的四象限：</p>
+
+<table>
+  <tr><th></th><th>不伴内固定</th><th>伴内固定</th></tr>
+  <tr><td><strong>闭合复位</strong></td><td><code>79.0</code></td><td><code>79.1</code></td></tr>
+  <tr><td><strong>开放复位</strong></td><td><code>79.2</code></td><td><code>79.3</code></td></tr>
+</table>
+
+<div class="flow-chart">
+  <div class="flow-row"><div class="flow-box">骨折复位</div></div>
+  <div class="flow-row">⬇ 切开皮肤了吗？</div>
+  <div class="flow-row">
+    <div class="flow-box">没切开 → 闭合复位（79.0/79.1）</div>
+    <div class="flow-box warn-step">切开暴露 → 开放复位（79.2/79.3）</div>
+  </div>
+  <div class="flow-row">⬇ 放内固定了吗？</div>
+  <div class="flow-row">
+    <div class="flow-box">无 → 79.0 / 79.2</div>
+    <div class="flow-box">有 → 79.1 / 79.3</div>
+  </div>
+</div>
+
+<div class="note">
+  <strong>🔑 判断依据：</strong>① <strong>闭合 vs 开放</strong>——看手术记录是否「切开皮肤、暴露骨折端」；② <strong>有无内固定</strong>——看是否用了钢板、螺钉、髓内钉。最常用的是 <code>79.3</code>（切开复位内固定，ORIF），俗称「打钢板」。
+</div>
+
+<hr class="section-divider">
+
+<!-- 五 -->
+<h2><span class="icon">🔩</span> 五、内固定、关节置换与清创</h2>
+
+<h3>5.1 内固定置入 vs 取出</h3>
+<table>
+  <tr><th>操作</th><th>编码</th><th>说明</th></tr>
+  <tr><td>内固定装置置入</td><td><code>78.5</code></td><td>钢板、螺钉、髓内钉的置入（配合 79.1/79.3）</td></tr>
+  <tr><td>内固定装置取出</td><td><code>78.6</code></td><td>骨折愈合后取钢板/螺钉</td></tr>
+</table>
+<div class="note">
+  <strong>🔑 易混点：</strong>骨折复位伴内固定时，主码是复位码 <code>79.1/79.3</code>，<span class="hl"><strong>不是 78.5</strong></span>。78.5 用于「单纯置入内固定装置」的场景（如骨不连再固定）。取出内固定则单独编 <code>78.6</code>。
+</div>
+
+<h3>5.2 关节置换</h3>
+<table>
+  <tr><th>术式</th><th>编码</th><th>术式</th><th>编码</th></tr>
+  <tr><td>全髋关节置换</td><td><code>81.51</code></td><td>全膝关节置换</td><td><code>81.54</code></td></tr>
+  <tr><td>半髋（股骨头）置换</td><td><code>81.52</code></td><td>踝关节置换</td><td><code>81.56</code></td></tr>
+</table>
+
+<h3>5.3 清创术</h3>
+<table>
+  <tr><th>类型</th><th>编码</th><th>适用</th></tr>
+  <tr><td>切除性清创</td><td><code>86.22</code></td><td>切除坏死组织、异物，开放性骨折清创</td></tr>
+  <tr><td>非切除性清创</td><td><code>86.28</code></td><td>冲洗、去除表面污染物</td></tr>
+</table>
+
+<div class="card warn">
+  <strong>⚠️ 避坑：</strong>开放性骨折常「<strong>清创 + 复位内固定</strong>」一起做，编码要分开：<code>86.22</code>（清创）+ <code>79.3</code>（开放复位内固定）+ <code>78.5</code>（若另有内固定置入描述）。别把清创漏掉——它体现了开放性骨折的感染防控。
+</div>
+
+<hr class="divider">
+
+<!-- 六 重难点 -->
+<h2><span class="icon">💡</span> 六、重难点深度解析：「闭合 vs 开放」的编码事故</h2>
+
+<p>今天最高频、后果最重的错误，是<strong>骨折「闭合性 / 开放性」判反</strong>。同一根股骨干骨折，闭合和开放不仅编码不同，DRG 入组、医保付费也差一大截。用四组场景对比：</p>
+
+<div class="example-grid">
+  <div class="example-item">
+    <h4>场景 A：皮肤完整</h4>
+    <p>摔伤，股骨干骨折，皮肤无破损。</p>
+    <p><strong>→ 闭合性</strong> <code>S72.3</code> + 外因 <code>W01</code>。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景 B：骨折端外露</h4>
+    <p>车祸，股骨干骨折，骨折端穿出皮肤。</p>
+    <p><strong>→ 开放性</strong> <code>S72.4</code> + 外因 <code>V49</code>。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景 C：伴浅表擦伤</h4>
+    <p>摔伤，小腿骨折，膝盖有擦伤但骨折端未外露。</p>
+    <p><strong>→ 仍闭合性</strong> <code>S82.2</code> + <code>W01</code>。擦伤另编浅表损伤。</p>
+  </div>
+  <div class="example-item">
+    <h4>场景 D：术后切口≠开放</h4>
+    <p>闭合骨折，手术切开复位。别把「手术切开」当成「开放性骨折」。</p>
+    <p><strong>→ 诊断仍闭合</strong> <code>S72.3</code>；手术才是开放复位 <code>79.3</code>。</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 三条铁律（务必背下）：</strong><br>
+  ① <strong>诊断的「闭合/开放」看受伤当时</strong>——皮肤有没有破损、骨折端是否与外界相通，<strong>不是看手术切没切开</strong>。<br>
+  ② <strong>手术的「闭合/开放复位」看术式</strong>——是否切开皮肤暴露骨折端。<span class="hl"><strong>闭合骨折可以开放复位手术（切开打钢板）</strong></span>，两者不矛盾。<br>
+  ③ <strong>擦伤、挫伤不等于开放性</strong>——浅表软组织伤不影响骨折的闭合/开放定性。
+</div>
+
+<div class="note">
+  <strong>💡 编码员动作：</strong>看到骨折，先读<strong>入院时伤口描述</strong>（有无开放性伤口、骨折端外露），确定诊断闭合/开放；再读<strong>手术记录</strong>，确定复位方式（闭合/开放）和有无内固定。诊断与手术两套「开合」逻辑分开判断。
+</div>
+
+<hr class="divider">
+
+<!-- 七 案例练习 -->
+<h2><span class="icon">✏️</span> 七、今日案例练习（共 6 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">前3题为基础题，后3题为进阶题。点击答案查看完整推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">1</div>
+    <span>基础题 · 闭合/开放骨折判断</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，45 岁，平地跌倒，右股骨干骨折，皮肤完整无破损。</p>
+    <p><strong>问题：</strong>诊断编码（含外因码）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断编码：</strong><code>S72.3</code>（股骨干骨折，闭合性）+ <code>W01</code>（平地跌倒）。</p>
+        <p><strong>推理：</strong>皮肤完整 → 闭合性骨折，亚目偶数 .3；跌倒是外因，配 W01。</p>
+        <p><strong>💡 避坑：</strong>外因码 W01 别漏，S 章损伤必配外因。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">2</div>
+    <span>基础题 · 骨折复位四象限</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>男，45 岁，右股骨干闭合性骨折，行「切开复位 + 髓内钉内固定术」。</p>
+    <p><strong>问题：</strong>手术编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 手术编码：</strong><code>79.3</code>（骨折开放复位术伴内固定）。</p>
+        <p><strong>推理：</strong>切开皮肤（开放复位）+ 有内固定（髓内钉）→ 落四象限「开放 + 有内固定」= 79.3。</p>
+        <p><strong>💡 避坑：</strong>复位码 79.3 已含内固定，<strong>不必</strong>再单独编 78.5（除非另有独立内固定装置置入描述）。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">3</div>
+    <span>基础题 · 关节置换</span>
+    <span class="case-tag practice">PRACTICE</span>
+  </div>
+  <div class="case-body">
+    <p>女，72 岁，右股骨颈骨折（闭合性），行「全髋关节置换术」。</p>
+    <p><strong>问题：</strong>诊断与手术编码？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断：</strong><code>S72.0</code>（股骨颈骨折，闭合性）+ <code>W01</code>（跌倒）。</p>
+        <p><strong>✅ 手术：</strong><code>81.51</code>（全髋关节置换术）。</p>
+        <p><strong>推理：</strong>股骨颈骨折行全髋置换，手术码是「关节置换 81.51」，<strong>不是</strong>复位码 79.x（因为做的是置换而非复位内固定）。</p>
+        <p><strong>💡 避坑：</strong>股骨颈骨折首选置换（81.51/81.52），股骨干骨折才走复位（79.x）。部位和术式要对应。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">4</div>
+    <span>进阶题 · 开放性骨折 + 清创 + 外因</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>男，30 岁，车祸致左胫腓骨骨折，骨折端穿出皮肤，急诊行「清创术 + 切开复位钢板内固定术」。</p>
+    <p><strong>问题：</strong>给出诊断（含外因）与完整手术编码。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断：</strong><code>S82.4</code>（胫腓骨骨折，开放性）+ <code>V49</code>（汽车交通事故，外因码）。</p>
+        <p><strong>✅ 手术：</strong><code>86.22</code>（切除性清创）+ <code>79.3</code>（开放复位伴内固定）。</p>
+        <p><strong>推理：</strong>骨折端穿出皮肤 → 开放性（奇数亚目）；车祸 → 外因 V 码；开放性骨折需清创（86.22）+ 开放复位内固定（79.3）。</p>
+        <p><strong>💡 避坑：</strong>清创码和复位码都要编，别漏清创——它体现了开放性骨折的感染防控。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">5</div>
+    <span>进阶题 · 骨质疏松性骨折 vs 创伤性骨折</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>女，80 岁，轻微弯腰后突发腰痛，X 线示「腰椎压缩性骨折」，骨密度提示重度骨质疏松。</p>
+    <p><strong>问题：</strong>诊断编码选 M80 还是 S 章？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 诊断编码：</strong><code>M80.08</code>（骨质疏松伴病理性骨折，椎体）——若为「骨质疏松性骨折」。</p>
+        <p><strong>推理：</strong>轻微外力（弯腰）就骨折，是<strong>骨质疏松的病理性骨折</strong>，归 M 章（M80 骨质疏松伴病理性骨折），<strong>不是</strong>创伤性骨折 S 章。M80 有星剑号关系，需注意双重分类。</p>
+        <p><strong>💡 避坑：</strong>「轻微外力/无明显外伤」的骨折，先考虑病理性（M80）；「明确较大外力（摔伤/车祸）」才走 S 章创伤性。二者 DRG 入组完全不同。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header">
+    <div class="case-num">6</div>
+    <span>进阶题 · 完整综合病例（诊断 + 外因 + 手术 + DRG）</span>
+    <span class="case-tag challenge">CHALLENGE</span>
+  </div>
+  <div class="case-body">
+    <p>女，78 岁，平地跌倒致右股骨颈骨折（闭合性），既往糖尿病、高血压。行「全髋关节置换术」。</p>
+    <p><strong>问题：</strong>给出① 主诊断 ② 外因码 ③ 手术编码 ④ 其他诊断 ⑤ DRG 思路。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ ① 主诊断：</strong><code>S72.0</code>（股骨颈骨折，闭合性）。</p>
+        <p><strong>✅ ② 外因码：</strong><code>W01</code>（平地跌倒）。</p>
+        <p><strong>✅ ③ 手术编码：</strong><code>81.51</code>（全髋关节置换术）。</p>
+        <p><strong>✅ ④ 其他诊断：</strong><code>E11.9</code>（2 型糖尿病）+ <code>I10</code>（原发性高血压）——合并症如实编，影响 DRG 的 CC/MCC 判定。</p>
+        <p><strong>✅ ⑤ DRG 思路：</strong>主诊断 S72 + 髋关节置换手术 → 入 MDCI「骨骼肌肉系统」的手术组（IF/IG 组）；糖尿病、高血压作为合并症可能拉升 CC 权重。</p>
+        <p><strong>💡 核心教训：</strong>这一题串起「诊断（S72.0）+ 外因（W01）+ 手术（81.51）+ 合并症 + DRG」完整链条，是老年髋部骨折病案编码的标准动作。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- 八 重点回顾 -->
+<h2><span class="icon">✅</span> 八、今日重点回顾</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-dot"></div><div><strong>骨折双轴心：</strong>部位 + 闭合/开放（偶/奇亚目）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>开放性判定：</strong>骨折端与外界相通（皮肤破损）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>外因必配：</strong>S 章损伤必编 V01-Y98 外因码</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>复位四象限：</strong>79.0-79.3（闭合/开放 × 有无内固定）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>关节置换：</strong>全髋 81.51 / 全膝 81.54 / 半髋 81.52</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>内固定：</strong>置入 78.5 vs 取出 78.6（复位码已含则不再编）</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>清创分型：</strong>切除性 86.22 / 非切除性 86.28</div></div>
+  <div class="key-item"><div class="key-dot"></div><div><strong>病理性骨折：</strong>轻微外力骨折走 M80，非 S 章</div></div>
+</div>
+
+<hr class="divider">
+
+<h2>📅 明日预习</h2>
+<div class="card info">
+  <p><strong>Day 59 主题：编码员常犯错误 TOP 20 复盘</strong></p>
+  <p style="margin-top:10px;">预习问题：</p>
+  <ul style="margin-top:8px;">
+    <li>主诊断选择的「症状 vs 病因」「病因 vs 临床表现」冲突最容易错在哪？</li>
+    <li>合并编码（高血压、糖尿病并发症）漏合并 / 错合并的典型场景有哪些？</li>
+    <li>手术编码「漏码、错码、多码」的高频错误有哪些？</li>
+    <li>编码员如何建立「自查清单」避免重复犯错？</li>
+  </ul>
+</div>
+
+<div class="footer">
+  <p>病案编码60天学习计划 · Day 58 / 60</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 / ICD-9-CM-3 国临版</p>
+</div>
+
+</body>
+</html>
