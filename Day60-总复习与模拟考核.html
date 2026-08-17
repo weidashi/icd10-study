@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>病案编码学习 - Day 60（2026年8月17日·收官日）</title>
+<style>
+  :root {
+    --bg: #f4f7fb; --card: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --text2: #2d3748; --text3: #718096;
+    --accent: #4f46e5; --accent-bg: #eef2ff; --accent-light: #e0e7ff;
+    --warn: #92400e; --warn-bg: #fefce8; --warn-border: #fbbf24;
+    --code-bg: #f1f5f9; --red: #ef4444; --red-bg: #fef2f2;
+    --green: #10b981; --green-bg: #ecfdf5;
+    --master-red: #ef4444; --master-yellow: #f59e0b; --master-green: #10b981;
+    --purple: #8b5cf6; --pink: #ec4899;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.85;
+    max-width: 920px; margin: 0 auto; padding: 0 24px 80px;
+  }
+
+  /* 收官日特别 hero —— 金色渐变 */
+  .hero {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 35%, #d97706 100%);
+    margin: 0 -24px; padding: 52px 32px 44px; color: #fff;
+    border-radius: 0 0 24px 24px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; left: 30%;
+    width: 140px; height: 140px; border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .hero .day-badge {
+    display: inline-block; background: rgba(255,255,255,.25); color: #fff;
+    padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    letter-spacing: .5px; backdrop-filter: blur(4px);
+  }
+  .hero .trophy { font-size: 40px; margin: 10px 0 6px; }
+  .hero h1 { font-size: 30px; margin: 6px 0 8px; color: #fff; line-height: 1.3; }
+  .hero .subtitle { color: rgba(255,255,255,.9); font-size: 15px; }
+
+  h2 {
+    font-size: 20px; margin: 44px 0 18px; padding: 14px 18px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); color: var(--accent); font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-left: 4px solid var(--accent);
+  }
+  h2 .icon { font-size: 24px; flex-shrink: 0; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: var(--text2); font-weight: 700; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: var(--text2); font-weight: 600; }
+  p { margin: 10px 0; font-size: 15px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 18px 22px; margin: 14px 0; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .card.tip { background: var(--accent-bg); border-color: #c7d2fe; }
+  .card.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.info { background: #f0fdf4; border-color: #86efac; }
+  .card.gold { background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: #fde68a; }
+
+  .mastery-table { margin: 16px 0; }
+  .mastery-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 16px; margin: 6px 0; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 14px; transition: transform .15s;
+  }
+  .mastery-row:hover { transform: translateX(4px); }
+  .mastery-badge {
+    display: inline-block; min-width: 52px; text-align: center;
+    padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .mastery-badge.l1 { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+  .mastery-badge.l2 { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+  .mastery-badge.l3 { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+
+  .case { border-radius: var(--radius); margin: 18px 0; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .case-header {
+    background: var(--card); padding: 14px 20px; font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+  }
+  .case-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .case-num.gold { background: #d97706; }
+  .case-tag { font-size: 12px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+  .case-tag.practice { background: var(--accent-bg); color: var(--accent); }
+  .case-tag.challenge { background: var(--warn-bg); color: var(--warn); }
+  .case-tag.final { background: #fce7f3; color: #be185d; }
+  .case-body { padding: 18px 22px; font-size: 14px; background: var(--card); }
+  details { margin-top: 12px; }
+  details > summary {
+    cursor: pointer; color: var(--accent); font-weight: 600; padding: 10px 14px;
+    font-size: 14px; user-select: none; background: var(--accent-bg);
+    border-radius: 8px; transition: background .15s; list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▶ '; font-size: 11px; }
+  details[open] > summary::before { content: '▼ '; }
+  details > summary:hover { background: var(--accent-light); }
+  .answer-box {
+    margin-top: 10px; padding: 16px 20px; background: var(--green-bg);
+    border-radius: 8px; font-size: 14px; border-left: 4px solid var(--green);
+  }
+  .answer-box strong { color: var(--green); }
+
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0; }
+  .key-item {
+    background: var(--card); border-radius: 10px; padding: 14px 16px;
+    display: flex; gap: 10px; align-items: flex-start; font-size: 14px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    transition: transform .15s;
+  }
+  .key-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .key-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 6px; }
+  .key-num {
+    background: var(--accent); color: #fff; min-width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+  .key-num.gold { background: #d97706; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 14px; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); font-weight: 700; color: var(--accent); white-space: nowrap; font-size: 13px; }
+  tr:hover { background: var(--accent-light); }
+  td code, th code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono","Cascadia Code","Fira Code",monospace; font-size: 13px; }
+  pre {
+    background: #1e293b; color: #e2e8f0; border-radius: var(--radius);
+    padding: 18px 22px; overflow-x: auto; font-size: 13px; line-height: 1.7;
+    margin: 14px 0; font-family: "SF Mono","Cascadia Code","Fira Code",monospace;
+    box-shadow: var(--shadow-md);
+  }
+
+  .note {
+    background: var(--accent-bg); border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 20px;
+    margin: 14px 0; font-size: 14px;
+  }
+  .note strong { color: var(--accent); }
+
+  .process-box {
+    background: var(--accent-light); border: 1px solid #c7d2fe; border-radius: 10px;
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .process-step {
+    display: flex; align-items: flex-start; gap: 14px; padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .process-step:last-child { border-bottom: none; }
+  .process-num {
+    background: var(--accent); color: #fff; min-width: 32px; height: 32px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+  .process-content h4 { margin: 0 0 4px; font-size: 15px; }
+  .process-content p { margin: 2px 0; font-size: 13px; color: var(--text2); }
+
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .example-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    background: var(--card); box-shadow: var(--shadow);
+  }
+  .example-item h4 { margin: 0 0 6px; color: var(--accent); font-size: 14px; }
+  .example-item p { font-size: 13px; margin: 4px 0; }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .compare-col {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font-size: 14px;
+  }
+  .compare-col.good { background: var(--green-bg); border-color: #86efac; }
+  .compare-col.bad { background: var(--red-bg); border-color: #fecaca; }
+  .compare-col h4 { margin: 0 0 8px; font-size: 14px; }
+
+  .progress-bar {
+    background: rgba(255,255,255,.2); border-radius: 10px; height: 8px;
+    margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 10px; background: #fff; transition: width .5s; }
+
+  .stat-row { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .stat-badge {
+    flex: 1; min-width: 120px; background: var(--card); border-radius: var(--radius);
+    padding: 16px; text-align: center; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-num.gold { color: #d97706; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .divider { border: none; border-top: 2px solid var(--accent-bg); margin: 36px 0; }
+  .section-divider { border: none; border-top: 1px dashed var(--border); margin: 24px 0; }
+
+  .hl { background: linear-gradient(180deg, transparent 60%, #ffe066 60%); padding: 0 2px; }
+  .keyword-tag { color: var(--red); font-weight: 600; }
+  ul, ol { padding-left: 24px; margin: 10px 0; font-size: 14px; }
+  li { margin: 5px 0; }
+  li p { margin: 4px 0; }
+
+  .footer { text-align: center; color: var(--text3); font-size: 13px; margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    body { padding: 0 12px 60px; }
+    .hero { margin: 0 -12px; padding: 32px 16px 28px; border-radius: 0 0 16px 16px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; padding: 12px 14px; }
+    .key-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+    .compare-row { grid-template-columns: 1fr; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero">
+  <div class="day-badge">Day 60 · 2026年8月17日 · 收官日</div>
+  <div class="trophy">🏆</div>
+  <h1>病案编码学习 · 总复习 + 模拟考核</h1>
+  <p class="subtitle">60 天系统学习计划 · 圆满收官 —— 从编码三部曲到 DRG/DIP 价值编码</p>
+  <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+  <p style="font-size:12px;color:rgba(255,255,255,.8);margin-top:2px;">进度 60 / 60 天（100%）· 计划完成 ✅</p>
+</div>
+
+<div class="note">
+  <strong>💡 收官日说明：</strong>今天是 60 天学习计划的最后一天。前 59 天我们从「编码三部曲」走到了「DRG/DIP 价值编码」——今天把整条主线串成一张地图，再用一套 10 题模拟考核检验学习成果，最后给出后续进阶路径。这不是结束，而是真正上手的起点。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 掌握程度 ======== -->
+<h2><span class="icon">🎯</span> 60 天核心能力掌握程度</h2>
+
+<div class="card">
+  <p style="margin-bottom:12px;color:var(--text3);">以下是对 60 天全部内容的「毕业级」要求分级。L1 是编码员上岗的底线，L2 是高质量编码的分水岭，L3 是迈向 DRG/DIP 价值编码的进阶。点击展开各层级：</p>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-red);background:var(--red-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fecaca;">
+      🔴 L1 必须掌握（编码员上岗底线，一错就丢分）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>编码三部曲：主导词 → 查第三卷索引 → 回第一卷核对（含"不包括"注释）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>术语清洗：临床诊断 → ICD-10 标准诊断的转换</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>主诊断三最原则 + 五步法（危害最大/资源最多/时间最长）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>症状码 vs 确诊码替换铁律（有病因用病因，没病因才用症状）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>放化疗住院主诊断用 Z51.0/Z51.1（不是肿瘤 C 码）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>合并编码三条件：ICD-10 明确条目 + 直接因果 + 卷一确认</span></div>
+      <div class="mastery-row"><span class="mastery-badge l1">L1</span> <span>首页填报必须编到国临版扩展码（不能停在类目）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-yellow);background:var(--warn-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #fde68a;">
+      🟡 L2 应该理解（高质量编码分水岭，避免隐形错误）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>星剑号（†/*）双码完整性：剑号病因为主、星号表现为辅，缺一不可</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>肿瘤双编码：部位 C/D 码 + 形态学 M 码，动态码 /0-/6 与部位一致</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>手术编码四要素：部位 + 术式 + 入路 + 疾病性质</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>手术导向规则：有手术时主诊断必须与手术匹配（防 QY 歧义）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>损伤三维编码：部位 + 性质 + 外因（V01-Y98 必编但不能做主诊断）</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>烧伤双编码：深度 T20-T25 + 面积 T31</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>高血压 I10-I15 合并编码、糖尿病 E10-E14 分型与星剑号</span></div>
+      <div class="mastery-row"><span class="mastery-badge l2">L2</span> <span>CKD N18 分期铁律（GFR 值对应 N18.1-N18.5）</span></div>
+    </div>
+  </details>
+  <details style="margin:6px 0;">
+    <summary style="cursor:pointer;font-weight:700;color:var(--master-green);background:var(--green-bg);padding:8px 14px;border-radius:8px;list-style:none;border:1px solid #a7f3d0;">
+      🟢 L3 进阶了解（DRG/DIP 价值编码，向数据精算师迈进）
+    </summary>
+    <div style="padding:10px 14px;">
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DRG 三层分组：MDC → ADRG → DRG，CC/MCC 并发症等级</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>DIP 病种分值与 RW 权重，编码对医院结余的影响</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>医保结算清单 vs 病案首页的差异与衔接</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>QY 歧义病例、高/低倍率病例的编码因素</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>医保飞检合规：高套/低套/低标入院的识别与红线</span></div>
+      <div class="mastery-row"><span class="mastery-badge l3">L3</span> <span>三级公立医院"国考"中的编码指标</span></div>
+    </div>
+  </details>
+</div>
+
+<!-- ======== 一、60天知识地图 ======== -->
+<hr class="divider">
+<h2><span class="icon">🗺️</span> 一、60 天知识地图：六大阶段全景回顾</h2>
+
+<p>60 天的学习沿一条主线推进：<strong>认识分类体系 → 分章精讲 → 手术编码 → 主诊断选择 → 支付改革应用 → 综合实战</strong>。下面这张总览表把六个阶段的核心、关键规则、对应天数一次串清，建议作为日后复习的「目录页」。</p>
+
+<table>
+  <tr><th>阶段</th><th>天数</th><th>核心目标</th><th>关键规则/工具</th><th>对应天数</th></tr>
+  <tr><td><strong>一</strong></td><td>Day 1-10</td><td>编码基础与入门</td><td>三卷本 · 编码三部曲 · 术语清洗 · 星剑号 · Z 编码 · 法规质控</td><td>Day1-10</td></tr>
+  <tr><td><strong>二</strong></td><td>Day 11-25</td><td>ICD-10 分章精讲</td><td>A-B 传染病 · C/D 肿瘤双编码 · E 糖尿病 · I 循环 · J 呼吸 · K 消化 · N 泌尿 · S-T 损伤</td><td>Day11-25</td></tr>
+  <tr><td><strong>三</strong></td><td>Day 26-35</td><td>ICD-9-CM-3 手术编码</td><td>四要素拆解 · 各系统手术 · PCI 五码组合 · 关节置换 · 中转开腹</td><td>Day26-35</td></tr>
+  <tr><td><strong>四</strong></td><td>Day 36-45</td><td>主诊断选择与编码规则</td><td>三最原则 · 五步法 · Z51 放化疗 · 手术匹配 QY · 并发症 T80-T88 · 烧伤三维</td><td>Day36-45</td></tr>
+  <tr><td><strong>五</strong></td><td>Day 46-55</td><td>DRG/DIP 与医保清单</td><td>MDC→ADRG→DRG · DIP 病种分值 · 清单vs首页 · QY/倍率 · 飞检合规</td><td>Day46-55</td></tr>
+  <tr><td><strong>六</strong></td><td>Day 56-60</td><td>综合案例与能力提升</td><td>心脑血管全套 · 肿瘤全套 · 骨科创伤全套 · TOP20 错误 · 总复习</td><td>Day56-60</td></tr>
+</table>
+
+<div class="card tip">
+  <strong>🔑 主线一句话：</strong>把临床语言翻译成编码语言（术语清洗），按规则查码（三部曲），选对主诊断（三最原则），保证编码完整（双编码 + 最细码），最终让编码服务于统计、质控、支付（DRG/DIP）——这五步，就是编码员价值的完整链条。
+</div>
+
+<hr class="section-divider">
+
+<!-- ======== 二、核心规则速记 ======== -->
+<h2><span class="icon">⚡</span> 二、核心规则速记：三大"铁律"贯穿全程</h2>
+
+<p>60 天里有无数条规则，但真正"贯穿全程、反复出现"的只有三组。把它们刻进肌肉记忆，90% 的编码错误都能避开。</p>
+
+<h3>2.1 编码三部曲 —— 查码的标准化流程</h3>
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>确定主导词（Leader Word）</h4>
+      <p>从诊断中提取"疾病本质词"。器官名查不到就换病理词：缺失 / 出血 / 息肉 / 梗死 / 脱位 / 肿瘤。肿瘤部位码主导词固定是"肿瘤"，形态学码主导词是"癌/瘤/肉瘤"。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>查第三卷字母顺序索引</h4>
+      <p>按"主导词 → 一级修饰 → 二级修饰"逐级缩窄。"见"是强制跳转，"另见"是按需补充——两者不能混。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>回第一卷核对（最关键）</h4>
+      <p>第一眼看"不包括（Excludes）"——Excludes1 互斥不能同用，Excludes2 并列需分别编；再看"包括"确认覆盖范围；最后看章/节注释。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.2 主诊断三件套 —— 选码的标准化流程</h3>
+<p>主诊断决定 DRG/DIP 入组，是编码员最值钱的判断。质控统计里"主次顺序混乱 + 主诊断选择错误"合计超 55%，是错误之王。三件套是过滤它的三层网：</p>
+<div class="process-box">
+  <div class="process-step">
+    <div class="process-num">1</div>
+    <div class="process-content">
+      <h4>症状码替换</h4>
+      <p>住院期间明确了器质性病因 → 用确诊码替代症状码（R 码）。唯一例外：始终未找到病因（如胸痛冠脉造影阴性）才可用 R 码。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">2</div>
+    <div class="process-content">
+      <h4>三最排序</h4>
+      <p>健康危害最大 / 消耗资源最多 / 住院时间最长——三者综合判断。有手术时主诊断必须与手术匹配，否则产生 QY 歧义。</p>
+    </div>
+  </div>
+  <div class="process-step">
+    <div class="process-num">3</div>
+    <div class="process-content">
+      <h4>特殊场景校验</h4>
+      <p>放化疗住院 → Z51.0/Z51.1；术后复查 → Z08；取内固定 → Z47.0；死亡病例 → 原发死因。四大状态码禁区：Z90/Z47/Z48/Z96 不能在有对应手术时随意做主诊断。</p>
+    </div>
+  </div>
+</div>
+
+<h3>2.3 合并编码三条件 —— "该合的不拆，不该合的不凑"</h3>
+<table>
+  <tr><th>条件</th><th>说明</th><th>典型</th></tr>
+  <tr><td>① ICD-10 有明确合并条目</td><td>不是自己觉得有联系就能合</td><td>2型糖尿病伴昏迷 → E11.0</td></tr>
+  <tr><td>② 存在直接因果关系</td><td>A 导致 B，而非"同时存在"</td><td>高血压性心脏病 → I11.x</td></tr>
+  <tr><td>③ 卷一确认</td><td>合并编码的"包括"注释必须覆盖当前诊断</td><td>I11 的"包括"明确高血压+心脏病的范围</td></tr>
+</table>
+<div class="card warn">
+  <strong>⚠️ 高频误区：</strong>高血压 + 冠心病"同时存在"≠ 因果。I11 是"高血压<strong>导致</strong>的心脏病"，无因果证据时只能分别编 I10 + I25.1。这是 Day 37、Day 59 反复出现的坑。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 三、高频考点TOP15 ======== -->
+<h2><span class="icon">📌</span> 三、高频考点 TOP 15 速查表</h2>
+
+<p>以下是历年编码员考试、质控检查、医保飞检反复出现的考点。每条都对应 60 天里的某一课，建议照表回查。</p>
+
+<table>
+  <tr><th>#</th><th>考点</th><th>关键编码/规则</th><th>对应天</th></tr>
+  <tr><td>1</td><td>编码三部曲</td><td>主导词 → 查卷三 → 核对卷一（含 Excludes）</td><td>Day 1/3/9</td></tr>
+  <tr><td>2</td><td>星剑号双码</td><td>剑号†病因为主、星号*表现为辅，两码都填</td><td>Day 5</td></tr>
+  <tr><td>3</td><td>肿瘤双编码</td><td>部位 C/D + 形态学 M，动态码 /0-/6 与部位一致</td><td>Day 12/13</td></tr>
+  <tr><td>4</td><td>糖尿病分型</td><td>E10(1型)/E11(2型)/E12/E13/E14，伴并发症用合并码</td><td>Day 14</td></tr>
+  <tr><td>5</td><td>高血压合并编码</td><td>I10(原发)/I11(心脏)/I12(肾)/I13(心+肾)，需因果证据</td><td>Day 18/37</td></tr>
+  <tr><td>6</td><td>急性心梗双轴心</td><td>I21 STEMI/NSTEMI + 时间轴 I21→I22→I25.2</td><td>Day 18</td></tr>
+  <tr><td>7</td><td>脑血管病编码</td><td>I60(SAH)/I61(脑出血)/I63(脑梗死)/I69(后遗症)</td><td>Day 19</td></tr>
+  <tr><td>8</td><td>CKD 分期铁律</td><td>N18.1-N18.5 严格对应 GFR 值</td><td>Day 23</td></tr>
+  <tr><td>9</td><td>手术四要素</td><td>部位 + 术式 + 入路 + 疾病性质</td><td>Day 27</td></tr>
+  <tr><td>10</td><td>主诊断三最原则</td><td>危害最大/资源最多/时间最长 + 五步法</td><td>Day 36</td></tr>
+  <tr><td>11</td><td>放化疗 Z51</td><td>Z51.0 放疗 / Z51.1 化疗做主诊断（确诊+同次治疗例外）</td><td>Day 38/43</td></tr>
+  <tr><td>12</td><td>手术匹配防 QY</td><td>主诊断必须与手术对得上，否则歧义组</td><td>Day 39/49</td></tr>
+  <tr><td>13</td><td>损伤三维编码</td><td>部位 S/T + 性质 + 外因 V01-Y98（必编不能做主诊断）</td><td>Day 25/41</td></tr>
+  <tr><td>14</td><td>烧伤双编码</td><td>深度 T20-T25 + 面积 T31</td><td>Day 42</td></tr>
+  <tr><td>15</td><td>DRG 三层分组</td><td>MDC → ADRG → DRG，CC/MCC 拉升权重</td><td>Day 46/51</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ======== 四、重难点深度解析 ======== -->
+<h2><span class="icon">💡</span> 四、重难点深度解析：DRG/DIP 下编码员的价值跃迁</h2>
+
+<p>60 天学下来，你会发现编码员的工作早就不是"照诊断查码"那么简单。在 DRG/DIP 支付改革下，编码员实际上承担着医院<strong>"数据精算师"</strong>的角色——一个编码的差异，可能是几万元的结余差距。这是整个学习计划最高维度的认知。</p>
+
+<h3>4.1 同一病例，编码差异如何影响 DRG 权重</h3>
+<p>以"2型糖尿病"住院为例，看看主诊断选择如何改变入组与权重：</p>
+<div class="compare-row">
+  <div class="compare-col bad">
+    <h4>❌ 低质量编码</h4>
+    <p>主诊断 <code>E11.9</code>（2型糖尿病无并发症）</p>
+    <p>→ 入糖尿病无并发症组</p>
+    <p>→ RW 较低，资源消耗体现不出</p>
+    <p>→ 漏报了肾病/视网膜病变等 MCC</p>
+  </div>
+  <div class="compare-col good">
+    <h4>✅ 精准编码</h4>
+    <p>主诊断 <code>E11.2</code>†（2型糖尿病伴肾病）+ <code>N08.3</code>*</p>
+    <p>→ 入糖尿病伴并发症组</p>
+    <p>→ RW 显著提升（CC/MCC 拉升）</p>
+    <p>→ 完整反映诊疗难度与资源消耗</p>
+  </div>
+</div>
+
+<div class="card warn">
+  <strong>⚠️ 关键认知：</strong>精准 ≠ 高套。精准编码是<strong>把真实存在的并发症如实编全</strong>（该报的 CC/MCC 不漏报）；高套是<strong>把没有的编成有的</strong>（虚增诊断、拔高主诊断）。前者是能力，后者是违规红线。两者的分界线就一句话：<strong>每一个码都要有病历证据</strong>。
+</div>
+
+<h3>4.2 编码员价值的三个层次</h3>
+<div class="example-grid">
+  <div class="example-item">
+    <h4>第一层 · 技术编码</h4>
+    <p>把诊断查成码——三部曲、术语清洗、双编码。这是 60 天地基，是"不出错"的底线。</p>
+  </div>
+  <div class="example-item">
+    <h4>第二层 · 规则编码</h4>
+    <p>选对主诊断、用对合并编码、避开 QY——这是"入对组"的关键，直接影响 DRG 入组。</p>
+  </div>
+  <div class="example-item">
+    <h4>第三层 · 价值编码</h4>
+    <p>把真实诊疗难度完整反映到编码里，让医院合理结余、让数据支持国考与质控——这是编码员的天花板。</p>
+  </div>
+</div>
+
+<div class="note">
+  <strong>💡 收官认知：</strong>编码员的最高境界不是"查码快"，而是"<strong>读病历 + 懂规则 + 知支付</strong>"三位一体。诊断名是线索，病历是证据，规则是准绳，支付是落点。缺任何一环，编码都站不住。
+</div>
+
+<hr class="divider">
+
+<!-- ======== 五、模拟考核 ======== -->
+<h2><span class="icon">📝</span> 五、模拟考核（综合 10 题）</h2>
+<p style="color:var(--text3);margin-bottom:4px;">这套题覆盖六大阶段的核心考点，前 6 题为基础题，后 4 题为进阶综合题。建议先独立作答再对答案。点击展开查看推理过程。</p>
+
+<!-- 题1 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">1</div><span>基础题 · 主导词选择</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>请为以下临床诊断选出<strong>正确的主导词</strong>并给出编码方向：</p>
+    <ol>
+      <li>先天性无子宫</li>
+      <li>垂体卒中</li>
+      <li>肺上叶原发性支气管肺癌</li>
+    </ol>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 1.</strong> 主导词 <strong>缺失</strong> → 缺失-子宫-先天性 → <code>Q51.0</code>（不是"先天性"或"子宫"）</p>
+        <p><strong>✅ 2.</strong> 主导词 <strong>出血</strong> → 出血-垂体 → <code>E23.6</code>（不是"卒中"或"垂体"）</p>
+        <p><strong>✅ 3.</strong> 部位码主导词 <strong>肿瘤</strong> → 肿瘤-恶性-肺 → <code>C34.1</code>；形态学码主导词 <strong>癌</strong> → 鳞状细胞癌 <code>M8070/3</code></p>
+        <p><strong>💡 规律：</strong>器官名查不到就换病理词；肿瘤部位码固定查"肿瘤"，形态学码查"癌/瘤/肉瘤"。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题2 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">2</div><span>基础题 · 症状码替换</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>患者因"头晕"入院，住院期间头颅 MRI 确诊"腔隙性脑梗死"，出院诊断医生仍写"头晕"。</p>
+    <p><strong>问题：</strong>主诊断编什么？为什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 主诊断：</strong><code>I63.801</code> 腔隙性脑梗死</p>
+        <p><strong>✅ 规则：</strong>住院期间明确了器质性病因 → <strong>以确诊替代症状</strong>。头晕（R42）淘汰。</p>
+        <p><strong>💡 口诀：</strong>有病因用病因，没病因才用症状。这是质控高频扣分点。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题3 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">3</div><span>基础题 · "不包括"规则</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>出院诊断"心源性猝死"，心电图提示广泛前壁急性心肌梗死。</p>
+    <p><strong>问题：</strong>主诊断编 I46.1（心脏性猝死）还是 I21.x（急性心梗）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 核对卷一：</strong>I46.1 类目下"不包括"明确写"心源性猝死（I21-I22）"。</p>
+        <p><strong>✅ 推理：</strong>心源性猝死由急性心梗直接引起时，不编 I46.1，而编心梗本身。</p>
+        <p><strong>✅ 最终：</strong><code>I21.0</code> 急性广泛前壁心肌梗死</p>
+        <p><strong>💡 教训：</strong>核对卷一第一眼看"不包括"。跳过它 = 闭眼编码。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题4 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">4</div><span>基础题 · 合并编码判断</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>判断以下两种情况该合并还是分别编码：</p>
+    <table>
+      <tr><th>场景</th><th>诊断组合</th><th>你的判断</th></tr>
+      <tr><td>A</td><td>2型糖尿病 + 低血糖昏迷</td><td>？</td></tr>
+      <tr><td>B</td><td>高血压 + 冠心病（无因果证据）</td><td>？</td></tr>
+    </table>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ A：</strong>合并编码 <code>E11.0</code>（2型糖尿病伴昏迷）。糖尿病与低血糖昏迷有直接因果，且有明确合并条目。</p>
+        <p><strong>✅ B：</strong>分别编码 <code>I10</code> + <code>I25.1</code>。"同时存在"≠ 因果，I11 是"高血压导致的心脏病"，无证据不能用。</p>
+        <p><strong>💡 铁律：</strong>合并编码三条件缺一不可——明确条目 + 直接因果 + 卷一确认。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题5 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">5</div><span>基础题 · 星剑号与肿瘤双编码</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>出院诊断"阿尔茨海默病性痴呆"，65 岁，发病 2 年；另一患者"肝细胞癌"。</p>
+    <p><strong>问题：</strong>各应编几个码？哪个是主诊断？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 阿尔茨海默：</strong>两码都编——<code>G30.0†</code>（剑号病因，主诊断）+ <code>F00.0*</code>（星号表现，附加）</p>
+        <p><strong>✅ 肝细胞癌：</strong>两码都编——部位 <code>C22.0</code>（主诊断）+ 形态学 <code>M8170/3</code></p>
+        <p><strong>💡 规律：</strong>星剑号双码、肿瘤双编码，都是"缺一不可"。剑号/部位码为主，星号/形态学码为辅。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题6 -->
+<div class="case">
+  <div class="case-header"><div class="case-num">6</div><span>基础题 · 损伤与烧伤双编码</span><span class="case-tag practice">PRACTICE</span></div>
+  <div class="case-body">
+    <p>患者跌倒致右桡骨骨折；另一患者躯干三度烧伤（面积约 30%）。</p>
+    <p><strong>问题：</strong>分别应编哪些码？外因码能否做主诊断？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 桡骨骨折：</strong>主诊断 <code>S52.5</code>（桡骨骨折）+ 附加外因 <code>W01</code>（跌倒）。外因码<strong>绝不能单独做主诊断</strong>。</p>
+        <p><strong>✅ 躯干三度烧伤：</strong><code>T21.3</code>（躯干三度）+ <code>T31.x</code>（面积码，30% 对应相应区间）。烧伤双编码：深度 + 面积。</p>
+        <p><strong>💡 规律：</strong>损伤三维（部位+性质+外因）、烧伤双编码（深度+面积），附加码必编但不做主诊断。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题7 -->
+<div class="case">
+  <div class="case-header"><div class="case-num gold">7</div><span>进阶题 · 主诊断三件套综合</span><span class="case-tag challenge">CHALLENGE</span></div>
+  <div class="case-body">
+    <p>男 68 岁，因"突发胸痛 2 小时"急诊入院。冠脉造影确诊"冠心病、不稳定型心绞痛"，急诊行 PCI 支架植入。住院期间发现"2型糖尿病"（未治疗）、"慢性支气管炎"（稳定）。出院诊断：① 胸痛 ② 冠心病 ③ 糖尿病 ④ 慢支。</p>
+    <p><strong>问题：</strong>用"症状码替换 → 三最排序 → 手术匹配"三步确定主诊断，并说明理由。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 第一步（症状码替换）：</strong>胸痛（R07.4）已明确病因，淘汰，用冠心病替代。</p>
+        <p><strong>✅ 第二步（三最排序）：</strong>冠心病不稳定型心绞痛——危害最大（危及生命）、资源最多（PCI）、住院时间主导，胜出。糖尿病/慢支为其他诊断。</p>
+        <p><strong>✅ 第三步（手术匹配）：</strong>主诊断 <code>I20.0</code> 与 PCI（<code>36.07</code> + <code>00.66</code>）匹配，无 QY。</p>
+        <p><strong>✅ 最终：</strong>主诊断 <code>I20.0</code> 不稳定型心绞痛；其他诊断 E11.9、J42。手术码 36.07 + 00.66 等。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题8 -->
+<div class="case">
+  <div class="case-header"><div class="case-num gold">8</div><span>进阶题 · 放化疗主诊断</span><span class="case-tag challenge">CHALLENGE</span></div>
+  <div class="case-body">
+    <p>肺癌患者本次住院<strong>仅为化疗</strong>；另一肺癌患者本次住院<strong>首次确诊并同次开始化疗</strong>。</p>
+    <p><strong>问题：</strong>两人的主诊断分别编什么？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 仅为化疗：</strong>主诊断 <code>Z51.1</code>（恶性肿瘤化学治疗），C34.9 作附加诊断。</p>
+        <p><strong>✅ 确诊+同次治疗：</strong>主诊断 <code>C34.9</code>（肺癌本体），这是 Z51 规则的<strong>例外</strong>——确诊与治疗同次发生时以肿瘤本体为主诊断。</p>
+        <p><strong>💡 铁律：</strong>Z51.0 放疗 / Z51.1 化疗做主诊断，但"确诊+同次治疗"例外。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题9 -->
+<div class="case">
+  <div class="case-header"><div class="case-num gold">9</div><span>进阶题 · 肿瘤病史 vs 现症</span><span class="case-tag challenge">CHALLENGE</span></div>
+  <div class="case-body">
+    <p>胃癌术后 5 年，本次入院仅为复查，无复发。编码员给出：主诊断 <code>C16.9</code> 胃癌；其他诊断 <code>W01</code> 跌倒（实际无跌倒史）。</p>
+    <p><strong>问题：</strong>找出全部错误并给出正确方案。</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 错误一：</strong>主诊断 <code>C16.9</code> 错——术后复查无复发，应编 <code>Z08.0</code>（恶性肿瘤术后随诊）+ <code>Z85.0</code>（胃癌个人史），不能用现症 C 码。</p>
+        <p><strong>✅ 错误二：</strong>其他诊断 <code>W01</code> 凭空捏造——无跌倒史，属<strong>虚增诊断</strong>（高套风险），应删除。</p>
+        <p><strong>✅ 正确方案：</strong>主诊断 <code>Z08.0</code>，附加 <code>Z85.0</code>，删除 W01。</p>
+        <p><strong>💡 教训：</strong>病史 vs 现症、虚增诊断——都是医保飞检重点打击对象。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 题10 -->
+<div class="case">
+  <div class="case-header"><div class="case-num gold">10</div><span>压轴题 · DRG 价值编码</span><span class="case-tag final">FINAL</span></div>
+  <div class="case-body">
+    <p>2型糖尿病合并糖尿病肾病（CKD 3 期，GFR≈45）、糖尿病视网膜病变的患者住院调整血糖。编码员给出主诊断 <code>E11.9</code>（2型糖尿病无并发症）。</p>
+    <p><strong>问题：</strong>这个编码方案有什么问题？如何改进以体现真实诊疗难度（价值编码）？</p>
+    <details>
+      <summary>点击查看答案</summary>
+      <div class="answer-box">
+        <p><strong>✅ 问题：</strong>E11.9 是"无并发症"码，但患者明确有肾病、视网膜病变——漏报并发症，入组偏低，体现不出真实诊疗难度，且属<strong>漏报</strong>。</p>
+        <p><strong>✅ 改进方案：</strong></p>
+        <p>· 主诊断 <code>E11.2</code>†（2型糖尿病伴肾病）+ <code>N08.3</code>*（糖尿病性肾病）</p>
+        <p>· 其他诊断 <code>E11.3</code>（糖尿病伴视网膜病变）</p>
+        <p>· CKD 3 期：按 GFR≈45 编 <code>N18.3</code>（CKD 3 期）</p>
+        <p><strong>💡 价值编码核心：</strong>把真实存在的并发症如实编全（CC/MCC 不漏报），让 DRG 权重真实反映难度——这是精准，不是高套。分界线：每个码都有病历证据。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 六、今日重点回顾 ======== -->
+<h2><span class="icon">✅</span> 六、今日重点回顾（毕业清单）</h2>
+
+<div class="key-grid">
+  <div class="key-item"><div class="key-num gold">1</div><div><strong>编码三部曲</strong>：主导词 → 查卷三 → 核对卷一（含 Excludes）</div></div>
+  <div class="key-item"><div class="key-num gold">2</div><div><strong>术语清洗</strong>是编码第一道工序：临床话→标准话</div></div>
+  <div class="key-item"><div class="key-num gold">3</div><div><strong>主诊断三件套</strong>：症状替换 → 三最排序 → 手术匹配</div></div>
+  <div class="key-item"><div class="key-num gold">4</div><div><strong>有病因用病因</strong>，没病因才用症状——R 码替换铁律</div></div>
+  <div class="key-item"><div class="key-num">5</div><div><strong>放化疗主诊断</strong>用 Z51.0/Z51.1，确诊+同次治疗例外</div></div>
+  <div class="key-item"><div class="key-num">6</div><div><strong>合并编码三条件</strong>：明确条目 + 直接因果 + 卷一确认</div></div>
+  <div class="key-item"><div class="key-num">7</div><div><strong>星剑号双码</strong>缺一不可，剑号为主、星号为辅</div></div>
+  <div class="key-item"><div class="key-num">8</div><div><strong>肿瘤双编码</strong>：部位 C/D + 形态学 M，动态码一致</div></div>
+  <div class="key-item"><div class="key-num">9</div><div><strong>手术四要素</strong>：部位 + 术式 + 入路 + 疾病性质</div></div>
+  <div class="key-item"><div class="key-num">10</div><div><strong>外因码必编</strong>但绝不能单独做主诊断</div></div>
+  <div class="key-item"><div class="key-num">11</div><div><strong>烧伤双编码</strong>：深度 T20-T25 + 面积 T31</div></div>
+  <div class="key-item"><div class="key-num">12</div><div><strong>CKD 分期铁律</strong>：N18.1-N18.5 严格对应 GFR</div></div>
+  <div class="key-item"><div class="key-num">13</div><div><strong>首页必须编到</strong>国临版扩展码，不能停在类目</div></div>
+  <div class="key-item"><div class="key-num">14</div><div><strong>DRG 三层分组</strong>：MDC → ADRG → DRG，CC/MCC 拉权重</div></div>
+  <div class="key-item"><div class="key-num">15</div><div><strong>精准 ≠ 高套</strong>：每个码都要有病历证据</div></div>
+</div>
+
+<hr class="divider">
+
+<!-- ======== 七、60天学习总结与后续路径 ======== -->
+<h2><span class="icon">🚀</span> 七、60 天学习总结与后续进阶路径</h2>
+
+<div class="card gold">
+  <p><strong>🎓 60 天，你走过的路：</strong></p>
+  <p>从 Day 1 认识 ICD-10 三卷本，到 Day 25 拿下 ICD-10 全章；从 Day 35 攻克 ICD-9-CM-3 手术编码，到 Day 45 突破主诊断选择；从 Day 55 理解 DRG/DIP 价值编码，到今天 Day 60 把整条主线串成地图——你已经具备了一名合格编码员的核心知识体系。</p>
+  <p style="margin-top:10px;"><strong>但知识体系只是起点。真正的能力，是在病案堆里练出来的。</strong></p>
+</div>
+
+<h3>后续进阶的三条路径</h3>
+<div class="example-grid">
+  <div class="example-item">
+    <h4>📚 路径一 · 工具熟练度</h4>
+    <p>把国临版 ICD-10、ICD-9-CM-3 编码库用熟，做到"主导词一抓一个准"。建议每天用真实病案首页练 5-10 份，从慢到快。</p>
+  </div>
+  <div class="example-item">
+    <h4>🏥 路径二 · 临床知识补强</h4>
+    <p>编码员必须懂临床。重点补：影像报告读片（CT/MRI 定位）、化验单解读（GFR/肌钙蛋白/HBV-DNA）、手术记录（术式+入路）。读懂病历，编码才准。</p>
+  </div>
+  <div class="example-item">
+    <h4>💰 路径三 · DRG/DIP 实战</h4>
+    <p>从"技术编码"走向"价值编码"。学会分析本院 DRG 入组率、QY 率、高/低倍率病例，参与编码质控闭环与医保沟通。这是编码员的天花板方向。</p>
+  </div>
+</div>
+
+<h3>持续学习的资源</h3>
+<table>
+  <tr><th>资源</th><th>用途</th></tr>
+  <tr><td>病案编码案例库（289 例）</td><td>每周保持 5-10 例案例推导，维持手感</td></tr>
+  <tr><td>编码知识库（按章 PPT）</td><td>遇到生疏章节回查，定期复盘</td></tr>
+  <tr><td>《中国病案》期刊</td><td>跟进编码前沿研究与国临版更新</td></tr>
+  <tr><td>医保飞检通报 / 国考指标</td><td>了解合规红线与考核导向</td></tr>
+</table>
+
+<div class="note">
+  <strong>💡 最后一句：</strong>编码员的成长没有捷径，但有方向——<strong>读病历、懂规则、知支付</strong>。把这三件事做到极致，你就不只是"查码员"，而是医院数据链路上不可替代的一环。60 天计划收官，真正的编码生涯才刚开始。加油 🌱
+</div>
+
+<hr class="divider">
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>🏆 病案编码 60 天学习计划 · Day 60 / 60 · 圆满收官</p>
+  <p style="margin-top:4px;">制作：病案编码学习助手 | 标准：ICD-10 国临版 | 2026年6月19日 — 2026年8月17日</p>
+  <p style="margin-top:4px;color:var(--accent);font-weight:600;">恭喜完成全部 60 天学习！🎉</p>
+</div>
+
+</body>
+</html>
